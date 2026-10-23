@@ -1,13 +1,16 @@
 extends SceneTree
-## Gera o sprite provisório do herói (32x32, PNG com transparência).
+## Gera os PNGs provisórios do projeto (arte original, desenhada neste arquivo).
 ## Uso: godot --headless --path . --script res://tools/placeholders/generate_placeholders.gd
-## Arte original, desenhada pixel a pixel neste arquivo.
+## Saída determinística: rodar de novo produz os mesmos pixels.
 
-const OUTPUT_PATH := "res://assets/characters/placeholder_hero.png"
-const SIZE := 32
-const CORE_WIDTH := 14
-const PAD_LEFT := 9
-const TOP_ROW := 4
+const HERO_PATH := "res://assets/characters/placeholder_hero.png"
+const TILES_PATH := "res://assets/tilesets/placeholder_tiles.png"
+const SIGN_PATH := "res://assets/environments/placeholder_sign.png"
+
+const TILE := 16
+const TILE_COLUMNS := 4
+const TILE_ROWS := 2
+const RANDOM_SEED := 20261023
 
 const PALETTE := {
 	"o": Color8(26, 20, 35),        # contorno
@@ -20,8 +23,18 @@ const PALETTE := {
 	"x": Color(0.0, 0.0, 0.0, 0.3), # sombra
 }
 
-# Cada linha tem CORE_WIDTH colunas; "." é transparente.
-const ROWS: Array[String] = [
+const GRASS := [Color8(74, 122, 58), Color8(63, 107, 50), Color8(90, 140, 69)]
+const PATH := [Color8(156, 123, 82), Color8(138, 106, 69), Color8(176, 142, 98)]
+const SAND := [Color8(216, 196, 138), Color8(200, 180, 122), Color8(228, 210, 158)]
+const WATER := [Color8(58, 110, 165), Color8(48, 94, 146), Color8(90, 140, 192)]
+const STONE := [Color8(107, 107, 120), Color8(74, 74, 85), Color8(133, 133, 154)]
+const ROCK := [Color8(122, 122, 133), Color8(58, 58, 68), Color8(160, 160, 172)]
+const BUSH := [Color8(47, 90, 42), Color8(31, 58, 28), Color8(74, 122, 58)]
+const FLOWER_COLORS := [Color8(230, 214, 90), Color8(216, 216, 240), Color8(214, 110, 120)]
+const WOOD := [Color8(156, 123, 82), Color8(61, 43, 31), Color8(107, 74, 46)]
+
+# Herói: cada linha tem 14 colunas; "." é transparente. Colado em (9, 4) num quadro 32x32.
+const HERO_ROWS: Array[String] = [
 	"....oooooo....",
 	"...ohhhhhho...",
 	"..ohhhhhhhho..",
@@ -48,31 +61,140 @@ const ROWS: Array[String] = [
 	"....xxxxxx....",
 ]
 
+var _rng := RandomNumberGenerator.new()
+
 
 func _initialize() -> void:
-	var image := Image.create_empty(SIZE, SIZE, false, Image.FORMAT_RGBA8)
-	image.fill(Color(0, 0, 0, 0))
-	for row_index in ROWS.size():
-		var row: String = ROWS[row_index]
-		if row.length() != CORE_WIDTH:
-			push_error("Linha %d tem %d colunas (esperado %d)" % [row_index, row.length(), CORE_WIDTH])
-			quit(1)
-			return
-		for col in CORE_WIDTH:
+	_rng.seed = RANDOM_SEED
+	var ok := _save(_build_hero(), HERO_PATH)
+	ok = ok and _save(_build_tiles(), TILES_PATH)
+	ok = ok and _save(_build_sign(), SIGN_PATH)
+	quit(0 if ok else 1)
+
+
+func _save(image: Image, path: String) -> bool:
+	if image == null:
+		return false
+	DirAccess.make_dir_recursive_absolute(path.get_base_dir())
+	var err := image.save_png(path)
+	if err != OK:
+		push_error("Falha ao salvar %s: %s" % [path, error_string(err)])
+		return false
+	print("Gerado: %s (%dx%d)" % [path, image.get_width(), image.get_height()])
+	return true
+
+
+func _build_hero() -> Image:
+	var image := Image.create_empty(32, 32, false, Image.FORMAT_RGBA8)
+	for row_index in HERO_ROWS.size():
+		var row: String = HERO_ROWS[row_index]
+		if row.length() != 14:
+			push_error("Herói: linha %d tem %d colunas (esperado 14)" % [row_index, row.length()])
+			return null
+		for col in row.length():
 			var key := row[col]
 			if key == ".":
 				continue
 			if not PALETTE.has(key):
-				push_error("Cor desconhecida '%s' na linha %d" % [key, row_index])
-				quit(1)
-				return
-			image.set_pixel(PAD_LEFT + col, TOP_ROW + row_index, PALETTE[key])
+				push_error("Herói: cor desconhecida '%s' na linha %d" % [key, row_index])
+				return null
+			image.set_pixel(9 + col, 4 + row_index, PALETTE[key])
+	return image
 
-	DirAccess.make_dir_recursive_absolute(OUTPUT_PATH.get_base_dir())
-	var err := image.save_png(OUTPUT_PATH)
-	if err != OK:
-		push_error("Falha ao salvar %s: %s" % [OUTPUT_PATH, error_string(err)])
-		quit(1)
-		return
-	print("Gerado: %s (%dx%d)" % [OUTPUT_PATH, SIZE, SIZE])
-	quit(0)
+
+## Atlas 4x2 de tiles 16x16. A ordem deve coincidir com tools/placeholders/build_test_map.gd.
+## Linha 0: grama, grama com flores, caminho, água. Linha 1: muro, rocha, arbusto, areia.
+func _build_tiles() -> Image:
+	var image := Image.create_empty(TILE * TILE_COLUMNS, TILE * TILE_ROWS, false, Image.FORMAT_RGBA8)
+	_paint_speckled(image, Vector2i(0, 0), GRASS, 0.18)
+	_paint_speckled(image, Vector2i(1, 0), GRASS, 0.18)
+	_paint_flowers(image, Vector2i(1, 0))
+	_paint_speckled(image, Vector2i(2, 0), PATH, 0.22)
+	_paint_water(image, Vector2i(3, 0))
+	_paint_wall(image, Vector2i(0, 1))
+	_paint_speckled(image, Vector2i(1, 1), GRASS, 0.18)
+	_paint_blob(image, Vector2i(1, 1), ROCK, 5.5)
+	_paint_speckled(image, Vector2i(2, 1), GRASS, 0.18)
+	_paint_blob(image, Vector2i(2, 1), BUSH, 6.5)
+	_paint_speckled(image, Vector2i(3, 1), SAND, 0.2)
+	return image
+
+
+func _origin(cell: Vector2i) -> Vector2i:
+	return cell * TILE
+
+
+func _paint_speckled(image: Image, cell: Vector2i, colors: Array, density: float) -> void:
+	var o := _origin(cell)
+	for y in TILE:
+		for x in TILE:
+			var color: Color = colors[0]
+			if _rng.randf() < density:
+				color = colors[1 + _rng.randi_range(0, 1)]
+			image.set_pixel(o.x + x, o.y + y, color)
+
+
+func _paint_flowers(image: Image, cell: Vector2i) -> void:
+	var o := _origin(cell)
+	for i in 5:
+		var p := Vector2i(_rng.randi_range(1, TILE - 2), _rng.randi_range(1, TILE - 2))
+		image.set_pixel(o.x + p.x, o.y + p.y, FLOWER_COLORS[i % FLOWER_COLORS.size()])
+
+
+func _paint_water(image: Image, cell: Vector2i) -> void:
+	var o := _origin(cell)
+	for y in TILE:
+		for x in TILE:
+			var color: Color = WATER[0] if (x + y * 3) % 7 != 0 else WATER[1]
+			# Ondas: segmentos claros em linhas alternadas, deslocados para não formar grade.
+			if y % 5 == 2 and (x + y) % 8 < 3:
+				color = WATER[2]
+			image.set_pixel(o.x + x, o.y + y, color)
+
+
+func _paint_wall(image: Image, cell: Vector2i) -> void:
+	var o := _origin(cell)
+	for y in TILE:
+		for x in TILE:
+			var offset := 4 if (y % 8) >= 4 else 0
+			var mortar := y % 4 == 3 or (x + offset) % 8 == 7
+			var color: Color = STONE[1] if mortar else STONE[0]
+			if not mortar and y % 4 == 0:
+				color = STONE[2]
+			image.set_pixel(o.x + x, o.y + y, color)
+
+
+## Forma arredondada com contorno, luz no alto à esquerda e sombra projetada embaixo.
+func _paint_blob(image: Image, cell: Vector2i, colors: Array, radius: float) -> void:
+	var o := _origin(cell)
+	var center := Vector2(7.5, 7.0)
+	for y in TILE:
+		for x in TILE:
+			var d := Vector2(x, y).distance_to(center)
+			var shadow_d := Vector2(x, y).distance_to(center + Vector2(0, 2.5))
+			if d <= radius - 1.0:
+				var lit := Vector2(x, y).distance_to(center + Vector2(-2, -2)) < radius * 0.45
+				image.set_pixel(o.x + x, o.y + y, colors[2] if lit else colors[0])
+			elif d <= radius:
+				image.set_pixel(o.x + x, o.y + y, colors[1])
+			elif shadow_d <= radius:
+				var under := image.get_pixel(o.x + x, o.y + y)
+				image.set_pixel(o.x + x, o.y + y, under.darkened(0.3))
+
+
+## Placa de madeira 16x16 com a base do poste na linha 15.
+func _build_sign() -> Image:
+	var image := Image.create_empty(TILE, TILE, false, Image.FORMAT_RGBA8)
+	for y in range(9, 15):
+		for x in range(7, 9):
+			image.set_pixel(x, y, WOOD[2])
+	for y in range(2, 10):
+		for x in range(1, 15):
+			var border := y == 2 or y == 9 or x == 1 or x == 14
+			image.set_pixel(x, y, WOOD[1] if border else WOOD[0])
+	for line_y in [4, 6]:
+		for x in range(4, 12):
+			image.set_pixel(x, line_y, WOOD[1])
+	for x in range(5, 11):
+		image.set_pixel(x, 15, Color(0, 0, 0, 0.3))
+	return image

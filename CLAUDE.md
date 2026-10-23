@@ -16,7 +16,10 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 - Uma fase/tarefa por vez; estado e próxima tarefa em `docs/ROADMAP.md`.
 - Regras de RPG só no motor de regras (`scripts/rules/`), nunca na UI. Base: SRD 5.2.1 (2024); não misturar com 2014.
 - Testes novos: `tests/**/test_*.gd`, estendendo `res://tests/base_test.gd`.
-- Todo asset novo entra em `assets/asset_catalog.json` com origem e licença.
+- Todo asset novo entra em `assets/asset_catalog.json` com origem e licença; escala e paleta em `docs/ART_BIBLE.md`.
+- Placeholders e mapa de teste: ver `docs/ASSET_PIPELINE.md` (`build_test_map.gd --force` apaga edições do editor).
+- Exploração: `Interactable` não decide efeitos; o `ExplorationMap` decide. Detalhes em `docs/ARCHITECTURE.md`.
+- No navegador, eventos de teclado sintéticos precisam ser despachados no `<canvas>`, não no `window`.
 - Versionar arquivos `.uid` e `.import`; não versionar `.godot/` nem `exports/`.
 - Nunca afirmar que teste/exportação funcionou sem executar.
 - Ao encerrar: atualizar `docs/ROADMAP.md` e `docs/CHANGELOG.md`.

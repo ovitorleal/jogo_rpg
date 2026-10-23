@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/exploration/player.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/characters/placeholder_hero.png" id="2_texture"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_feet"]
+size = Vector2(10, 6)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_detector"]
+radius = 14.0
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 1
+motion_mode = 1
+script = ExtResource("1_script")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_texture")
+offset = Vector2(0, -11)
+
+[node name="Collision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -3)
+shape = SubResource("RectangleShape2D_feet")
+
+[node name="InteractionDetector" type="Area2D" parent="."]
+position = Vector2(0, -4)
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+
+[node name="Shape" type="CollisionShape2D" parent="InteractionDetector"]
+shape = SubResource("CircleShape2D_detector")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(0, -11)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0

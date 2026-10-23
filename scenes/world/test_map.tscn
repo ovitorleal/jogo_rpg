@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/world/test_map_ground.tscn" id="2_ground"]
+[ext_resource type="PackedScene" path="res://scenes/world/sign.tscn" id="3_sign"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/exploration_hud.tscn" id="5_hud"]
+
+[node name="TestMap" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Ground" parent="." instance=ExtResource("2_ground")]
+unique_name_in_owner = true
+
+[node name="Objects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="WelcomeSign" parent="Objects" instance=ExtResource("3_sign")]
+position = Vector2(536, 252)
+message_text = "Bem-vindo, viajante. Este é um mapa de teste: a estrada ainda não leva a lugar algum, mas um dia levará."
+
+[node name="Player" parent="Objects" instance=ExtResource("4_player")]
+unique_name_in_owner = true
+position = Vector2(504, 300)
+
+[node name="Hud" parent="." instance=ExtResource("5_hud")]
+unique_name_in_owner = true

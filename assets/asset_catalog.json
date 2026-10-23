@@ -32,6 +32,38 @@
 			"prompt_reference": "",
 			"approval_status": "placeholder",
 			"notes": "Gerado por tools/placeholders/generate_placeholders.gd para validar o pipeline de importação."
+		},
+		{
+			"asset_id": "tileset.placeholder_overworld",
+			"category": "tilesets",
+			"file_path": "res://assets/tilesets/placeholder_tiles.png",
+			"dimensions": [64, 32],
+			"format": "png",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "placeholder",
+			"notes": "Atlas 4x2 de tiles 16x16: grama, flores, caminho, água / muro, rocha, arbusto, areia. Colisões em assets/tilesets/placeholder_tileset.tres."
+		},
+		{
+			"asset_id": "environment.placeholder_sign",
+			"category": "environments",
+			"file_path": "res://assets/environments/placeholder_sign.png",
+			"dimensions": [16, 16],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "placeholder",
+			"notes": "Placa de madeira; base do poste na linha 15 (pivô nos pés)."
 		}
 	]
 }

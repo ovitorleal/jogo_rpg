@@ -1,8 +1,8 @@
 extends Control
-## Tela de título provisória (Fase 0).
+## Tela de título provisória.
 ## Apenas apresentação: não contém regras nem estado de jogo.
 
-const NEW_GAME_PENDING_TEXT := "Novo jogo ainda não implementado (previsto para a Fase 1)."
+const NEW_GAME_SCENE := "res://scenes/world/test_map.tscn"
 const CONTINUE_PENDING_TOOLTIP := "Nenhum salvamento disponível (sistema de salvamento previsto para a Fase 6)."
 
 @onready var _new_game_button: Button = %NewGameButton
@@ -28,7 +28,10 @@ func _ready() -> void:
 
 
 func _on_new_game_pressed() -> void:
-	_status_label.text = NEW_GAME_PENDING_TEXT
+	var err := get_tree().change_scene_to_file(NEW_GAME_SCENE)
+	if err != OK:
+		_status_label.text = "Não foi possível iniciar o jogo (%s)." % error_string(err)
+		push_error("Falha ao carregar %s: %s" % [NEW_GAME_SCENE, error_string(err)])
 
 
 func _on_quit_pressed() -> void:
