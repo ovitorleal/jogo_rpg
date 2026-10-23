@@ -1,0 +1,5 @@
+# Normaliza finais de linha (recomendação do Godot)
+* text=auto eol=lf
+
+*.png binary
+*.tpz binary

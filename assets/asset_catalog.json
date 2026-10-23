@@ -1,0 +1,37 @@
+{
+	"schema_version": 1,
+	"assets": [
+		{
+			"asset_id": "icon.project",
+			"category": "ui",
+			"file_path": "res://icon.svg",
+			"dimensions": [32, 32],
+			"format": "svg",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_manual",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "placeholder",
+			"notes": "Ícone provisório do projeto, SVG escrito à mão."
+		},
+		{
+			"asset_id": "character.placeholder_hero",
+			"category": "characters",
+			"file_path": "res://assets/characters/placeholder_hero.png",
+			"dimensions": [32, 32],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "placeholder",
+			"notes": "Gerado por tools/placeholders/generate_placeholders.gd para validar o pipeline de importação."
+		}
+	]
+}
