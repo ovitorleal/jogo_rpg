@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web-build",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8060", "--bind", "127.0.0.1", "--directory", "exports/web"],
+      "port": 8060
+    }
+  ]
+}

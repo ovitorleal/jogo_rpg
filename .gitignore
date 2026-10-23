@@ -1,0 +1,10 @@
+# Cache e importações do Godot 4
+.godot/
+/android/
+
+# Builds exportados (gerados localmente; não versionar)
+exports/
+
+# Arquivos temporários
+*.tmp
+*.translation
