@@ -26,20 +26,31 @@ func test_title_screen_initial_state() -> void:
 	tree.root.add_child(title)
 	await tree.process_frame
 
-	var new_game: Button = title.get_node("%NewGameButton")
 	var continue_button: Button = title.get_node("%ContinueButton")
 	var status: Label = title.get_node("%StatusLabel")
 	var version: Label = title.get_node("%VersionLabel")
+	var expected_version: String = ProjectSettings.get_setting("application/config/version")
 
 	assert_true(continue_button.disabled, "Continuar deve estar desabilitado sem save")
 	assert_eq(status.text, "", "Status deve começar vazio")
-	assert_true(version.text.begins_with("v0.0.1"), "Versão deve vir do project.godot")
-
-	new_game.pressed.emit()
-	assert_true(status.text.contains("Fase 1"), "Novo jogo deve informar que ainda não está implementado")
+	assert_true(version.text.begins_with("v%s" % expected_version), "Versão deve vir do project.godot")
 
 	title.queue_free()
 	await tree.process_frame
+
+
+func test_new_game_scene_exists() -> void:
+	var title_script: GDScript = load("res://scripts/ui/title_screen.gd")
+	var path: String = title_script.get_script_constant_map().get("NEW_GAME_SCENE", "")
+	assert_true(ResourceLoader.exists(path), "Cena de Novo jogo deve existir: %s" % path)
+	assert_true(load(path) is PackedScene, "Cena de Novo jogo deve ser uma PackedScene")
+
+
+func test_input_actions_exist() -> void:
+	for action in [&"move_up", &"move_down", &"move_left", &"move_right", &"interact"]:
+		assert_true(InputMap.has_action(action), "Ação de input ausente: %s" % action)
+		if InputMap.has_action(action):
+			assert_true(not InputMap.action_get_events(action).is_empty(), "Ação sem teclas: %s" % action)
 
 
 func test_web_export_preset() -> void:
