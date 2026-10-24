@@ -54,9 +54,14 @@ static func passive_score(bonus: int, advantage: D20Test.Advantage = D20Test.Adv
 ## - média: base_ac + Destreza limitada por dex_cap (penalidade negativa se aplica);
 ## - pesada: só base_ac (a Destreza não se aplica, nem negativa).
 ## shield_bonus vem do registro do escudo (0 = sem escudo).
-static func armor_class(dexterity_score: int, armor: Dictionary, shield_bonus: int = 0) -> int:
+## unarmored_defense_score: valor do atributo da Defesa sem Armadura (Bárbaro: Con; Monge: Sab),
+## ou -1 se não se aplica. Só vale sem armadura; com vários cálculos possíveis, usa-se o maior.
+static func armor_class(dexterity_score: int, armor: Dictionary, shield_bonus: int = 0,
+		unarmored_defense_score: int = -1) -> int:
 	var dex_mod := Ability.modifier(dexterity_score)
 	var ac := UNARMORED_BASE_AC + dex_mod
+	if armor.is_empty() and unarmored_defense_score >= 0:
+		ac = maxi(ac, UNARMORED_BASE_AC + dex_mod + Ability.modifier(unarmored_defense_score))
 	if not armor.is_empty():
 		var applied_dex := dex_mod
 		if armor.get("armor_category") == "heavy":

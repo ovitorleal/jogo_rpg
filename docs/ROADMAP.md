@@ -12,6 +12,12 @@
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
 
+## Conteúdo pós-Fase 2 — todas as classes e espécies (2026-10-23)
+
+- As 12 classes e as 9 espécies do SRD 5.2.1 no nível 1, mais 10 armas para os kits iniciais.
+- Defesa sem Armadura (Bárbaro, Monge) e Sentidos Aguçados (Elfo) implementados; demais características registradas.
+- Testes: 84/84; as 216 combinações classe × espécie × antecedente geram personagens válidos.
+
 ## Fase 2 — resultado
 
 Critério: "o personagem pode ser criado, consultado e salvo sem inconsistências conhecidas". Atendido, com o salvamento
@@ -38,10 +44,9 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 ## Problemas conhecidos
 
 - O projeto está dentro do OneDrive: `.godot/` e `exports/` (ignorados pelo Git, não pelo OneDrive) são sincronizados.
-- Avanço da tela de título sem input, observado duas vezes no painel de navegador do Claude logo após o painel mudar de
-  largura. Com instrumentação de eventos, três carregamentos não registraram nenhum evento de entrada nem avanço. O painel
-  roda a ~2 quadros/s quando fora de foco, o que atrasa a tela em relação ao estado real; provável clique entregue durante o
-  redimensionamento do painel. Verificar num navegador comum antes da Fase 8.
+- ~~Avanço da tela de título sem input~~ — **não é bug**: o painel de navegador é compartilhado e os avanços eram cliques
+  do próprio desenvolvedor jogando no painel (confirmado com instrumentação: evento de mouse entrando na janela e menus abertos
+  sem ação do agente). Ao testar no painel, o agente deve avisar antes para não haver interação simultânea.
 - Não há como voltar do mapa para o título (sem menu de pausa ainda).
 - Herói tem um único quadro (sem animação de caminhada).
 - Fontes pequenas (8–9 px na resolução interna, 16–18 px na tela em 1280×720): legíveis, mas revisar na direção de UI.

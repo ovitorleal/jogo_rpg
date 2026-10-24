@@ -50,6 +50,9 @@ func test_armor_class() -> void:
 	assert_eq(RulesEngine.armor_class(8, CHAIN_MAIL), 16, "Pesada: ignora Des negativa")
 	assert_eq(RulesEngine.armor_class(12, CHAIN_MAIL, 2), 18, "Escudo soma +2")
 	assert_eq(RulesEngine.armor_class(12, {}, 2), 13, "Escudo sem armadura")
+	assert_eq(RulesEngine.armor_class(14, {}, 0, 16), 15, "Defesa sem Armadura: 10 + Des 2 + 3")
+	assert_eq(RulesEngine.armor_class(14, {}, 0, 6), 12, "Defesa sem Armadura nunca reduz a CA")
+	assert_eq(RulesEngine.armor_class(14, LEATHER, 0, 16), 13, "Com armadura, Defesa sem Armadura não se aplica")
 
 
 func test_max_hit_points() -> void:

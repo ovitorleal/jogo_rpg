@@ -61,7 +61,12 @@ static func build(c: CharacterData, registry: ContentRegistry) -> CharacterSheet
 		}
 
 	var dex: int = sheet.scores[Ability.DEXTERITY]
-	sheet.armor_class = RulesEngine.armor_class(dex, sheet.armor, int(sheet.shield.get("ac_bonus", 0)))
+	var unarmored_score := -1
+	var unarmored_ability := StringName(sheet.class_entry.get("unarmored_defense_ability", ""))
+	if not unarmored_ability.is_empty() and (sheet.shield.is_empty()
+			or sheet.class_entry.get("unarmored_defense_allows_shield", true)):
+		unarmored_score = sheet.scores[unarmored_ability]
+	sheet.armor_class = RulesEngine.armor_class(dex, sheet.armor, int(sheet.shield.get("ac_bonus", 0)), unarmored_score)
 	sheet.max_hp = RulesEngine.max_hit_points(c.level, int(sheet.class_entry.get("hit_die", 6)),
 			sheet.scores[Ability.CONSTITUTION], int(sheet.species.get("hp_bonus_per_level", 0)))
 	sheet.initiative = RulesEngine.initiative_bonus(dex)
@@ -69,10 +74,9 @@ static func build(c: CharacterData, registry: ContentRegistry) -> CharacterSheet
 	sheet.passive_perception = RulesEngine.passive_score(sheet.skills[&"perception"]["bonus"])
 	sheet.stealth_disadvantage = bool(sheet.armor.get("stealth_disadvantage", false))
 
-	for feature: Dictionary in sheet.class_entry.get("features", []):
+	for feature: Dictionary in sheet.class_entry.get("features", []) + sheet.species.get("traits", []):
 		if int(feature.get("level", 1)) <= c.level:
 			sheet.features.append(feature)
-	sheet.features.append_array(sheet.species.get("traits", []))
 	sheet.features.append_array(sheet.background.get("origin_feat", []))
 	return sheet
 

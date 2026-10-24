@@ -82,7 +82,7 @@ static func validate(c: CharacterData, registry: ContentRegistry, check_hp: bool
 	errors.append_array(_validate_skill_choices(c.class_skills, int(class_entry["skill_choice_count"]),
 			class_options, background_skills, "classe"))
 	errors.append_array(_validate_skill_choices(c.species_skills, int(species["extra_skill_choices"]),
-			Skill.all(), _concat([background_skills, c.class_skills]), "espécie"))
+			species_skill_options(species), _concat([background_skills, c.class_skills]), "espécie"))
 
 	var proficient := _concat([background_skills, c.class_skills, c.species_skills])
 	var expertise_count := int(class_entry["expertise_choices"])
@@ -138,6 +138,12 @@ static func _validate_equipment(c: CharacterData, registry: ContentRegistry, cla
 		if registry.get_entry("item", weapon_id).get("item_type") != "weapon":
 			errors.append("Arma inválida: '%s'" % weapon_id)
 	return errors
+
+
+## Perícias que a espécie permite escolher (lista vazia nos dados = qualquer perícia).
+static func species_skill_options(species: Dictionary) -> Array[StringName]:
+	var options := _to_names(species.get("extra_skill_options", []))
+	return Skill.all() if options.is_empty() else options
 
 
 ## Concatena listas mantendo o tipo Array[StringName] (o operador + perde o tipo).

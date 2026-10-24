@@ -1,0 +1,39 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "class.sorcerer",
+			"name": "Feiticeiro",
+			"description": "Conjurador cuja magia nasce de dentro, herdada ou despertada.",
+			"source": "SRD 5.2.1",
+			"hit_die": 6,
+			"primary_abilities": ["cha"],
+			"saving_throws": ["con", "cha"],
+			"skill_choice_count": 2,
+			"skill_options": ["arcana", "deception", "insight", "intimidation", "persuasion", "religion"],
+			"expertise_choices": 0,
+			"armor_training": [],
+			"weapon_training": ["simple"],
+			"suggested_scores": [10, 13, 14, 8, 12, 15],
+			"starting_armor": "",
+			"starting_shield": false,
+			"starting_weapons": ["item.spear", "item.dagger", "item.dagger"],
+			"features": [
+				{
+					"id": "feature.spellcasting_sorcerer",
+					"name": "Conjuração",
+					"level": 1,
+					"description": "Conjura magias de feiticeiro usando Carisma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.innate_sorcery",
+					"name": "Feitiçaria Inata",
+					"level": 1,
+					"description": "Libera a magia interior por um tempo, fortalecendo as próprias magias.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

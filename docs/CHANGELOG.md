@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.2.1] — 2026-10-23 — Todas as classes e espécies
+
+### Adicionado
+- 10 classes: Bárbaro, Bardo, Clérigo, Druida, Monge, Paladino, Patrulheiro, Feiticeiro, Bruxo, Mago (nível 1).
+- 7 espécies: Draconato, Elfo, Gnomo, Golias, Pequenino, Orc, Tiefling.
+- 10 armas: Clava, Machadinha, Azagaia, Maça, Bordão, Foice, Lança, Machado Grande, Cimitarra, Arco Longo.
+- Defesa sem Armadura (Bárbaro: Con, com escudo; Monge: Sab, sem escudo).
+- Campo `extra_skill_options` nas espécies (Sentidos Aguçados do Elfo) e treinamento `martial_light` (Monge).
+- Ficha mostra tamanho, visão no escuro e resistências da espécie.
+- 11 testes novos (total 84), incluindo as 216 combinações classe × espécie × antecedente.
+
+### Corrigido
+- Traços de espécie com nível mínimo apareciam na ficha do nível 1.
+
 ## [0.2.0] — 2026-10-23 — Fase 2
 
 ### Adicionado

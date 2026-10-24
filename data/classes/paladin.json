@@ -1,0 +1,47 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "class.paladin",
+			"name": "Paladino",
+			"description": "Campeão de um juramento sagrado que combina armas e magia divina.",
+			"source": "SRD 5.2.1",
+			"hit_die": 10,
+			"primary_abilities": ["str", "cha"],
+			"saving_throws": ["wis", "cha"],
+			"skill_choice_count": 2,
+			"skill_options": ["athletics", "insight", "intimidation", "medicine", "persuasion", "religion"],
+			"expertise_choices": 0,
+			"armor_training": ["light", "medium", "heavy", "shield"],
+			"weapon_training": ["simple", "martial"],
+			"suggested_scores": [15, 10, 13, 8, 12, 14],
+			"starting_armor": "item.chain_mail",
+			"starting_shield": true,
+			"starting_weapons": ["item.longsword", "item.javelin", "item.javelin", "item.javelin",
+				"item.javelin", "item.javelin", "item.javelin"],
+			"features": [
+				{
+					"id": "feature.lay_on_hands",
+					"name": "Cura pelas Mãos",
+					"level": 1,
+					"description": "Possui uma reserva de cura que distribui com o toque.",
+					"implemented": false
+				},
+				{
+					"id": "feature.spellcasting_paladin",
+					"name": "Conjuração",
+					"level": 1,
+					"description": "Conjura magias de paladino usando Carisma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.weapon_mastery",
+					"name": "Maestria em Armas",
+					"level": 1,
+					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

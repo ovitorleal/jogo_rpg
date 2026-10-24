@@ -1,0 +1,48 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "class.barbarian",
+			"name": "Bárbaro",
+			"description": "Guerreiro movido por uma fúria primal que o torna mais forte e resistente.",
+			"source": "SRD 5.2.1",
+			"hit_die": 12,
+			"primary_abilities": ["str"],
+			"saving_throws": ["str", "con"],
+			"skill_choice_count": 2,
+			"skill_options": ["animal_handling", "athletics", "intimidation", "nature", "perception", "survival"],
+			"expertise_choices": 0,
+			"armor_training": ["light", "medium", "shield"],
+			"weapon_training": ["simple", "martial"],
+			"unarmored_defense_ability": "con",
+			"unarmored_defense_allows_shield": true,
+			"suggested_scores": [15, 13, 14, 8, 12, 10],
+			"starting_armor": "",
+			"starting_shield": false,
+			"starting_weapons": ["item.greataxe", "item.handaxe", "item.handaxe", "item.handaxe", "item.handaxe"],
+			"features": [
+				{
+					"id": "feature.rage",
+					"name": "Fúria",
+					"level": 1,
+					"description": "Entra em fúria com uma ação bônus: dano extra, resistência a dano físico e vantagem em testes de Força.",
+					"implemented": false
+				},
+				{
+					"id": "feature.unarmored_defense_barbarian",
+					"name": "Defesa sem Armadura",
+					"level": 1,
+					"description": "Sem armadura, a CA é 10 + Destreza + Constituição (escudo permitido).",
+					"implemented": true
+				},
+				{
+					"id": "feature.weapon_mastery",
+					"name": "Maestria em Armas",
+					"level": 1,
+					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}
