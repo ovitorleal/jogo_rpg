@@ -21,12 +21,107 @@
 			"notes": "Ícone provisório do projeto, SVG escrito à mão."
 		},
 		{
-			"asset_id": "character.placeholder_hero",
+			"asset_id": "character.hero",
 			"category": "characters",
-			"file_path": "res://assets/characters/placeholder_hero.png",
+			"file_path": "res://assets/characters/hero_sheet.png",
+			"dimensions": [
+				288,
+				128
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 36,
+			"animation_fps": 8,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Folha 9x4 de quadros 32x32 (baixo, esquerda, direita, cima): parado 2 (2,5 fps), caminhada 4 (8 fps), ataque 3 (10 fps). Gerado por tools/art/generate_characters.gd."
+		},
+		{
+			"asset_id": "enemy.goblin",
+			"category": "enemies",
+			"file_path": "res://assets/enemies/goblin_sheet.png",
+			"dimensions": [
+				288,
+				128
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 36,
+			"animation_fps": 8,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Mesmo layout do herói; orelhas, nariz e cimitarra curva."
+		},
+		{
+			"asset_id": "enemy.wolf",
+			"category": "enemies",
+			"file_path": "res://assets/enemies/wolf_sheet.png",
+			"dimensions": [
+				288,
+				64
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 18,
+			"animation_fps": 8,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Folha 9x2 (esquerda, direita): parado, caminhada, bote."
+		},
+		{
+			"asset_id": "portrait.hero",
+			"category": "portraits",
+			"file_path": "res://assets/portraits/hero_portrait.png",
 			"dimensions": [
 				32,
 				32
+			],
+			"format": "png",
+			"transparency": false,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Retrato com fundo controlado, exibido em 2x ao lado das falas."
+		},
+		{
+			"asset_id": "tileset.overworld",
+			"category": "tilesets",
+			"file_path": "res://assets/tilesets/overworld_tiles.png",
+			"dimensions": [
+				256,
+				144
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 3,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Atlas 16x16: 4 gramas, bloqueio invisível, muro; transições (marching squares) terra/grama, areia/grama e água/areia (água com 3 quadros a 3 fps). Gerado por tools/art/generate_environment.gd."
+		},
+		{
+			"asset_id": "environment.tree",
+			"category": "environments",
+			"file_path": "res://assets/environments/tree.png",
+			"dimensions": [
+				32,
+				48
 			],
 			"format": "png",
 			"transparency": true,
@@ -36,32 +131,32 @@
 			"source_url": "",
 			"license": "project",
 			"prompt_reference": "",
-			"approval_status": "placeholder",
-			"notes": "Gerado por tools/placeholders/generate_placeholders.gd para validar o pipeline de importação."
+			"approval_status": "in_review",
+			"notes": "Árvore de copa redonda; pivô na base do tronco (linha 44)."
 		},
 		{
-			"asset_id": "tileset.placeholder_overworld",
-			"category": "tilesets",
-			"file_path": "res://assets/tilesets/placeholder_tiles.png",
+			"asset_id": "environment.pine",
+			"category": "environments",
+			"file_path": "res://assets/environments/pine.png",
 			"dimensions": [
-				64,
-				32
+				32,
+				48
 			],
 			"format": "png",
-			"transparency": false,
-			"animation_frames": 0,
+			"transparency": true,
+			"animation_frames": 1,
 			"animation_fps": 0,
 			"source_type": "original_procedural",
 			"source_url": "",
 			"license": "project",
 			"prompt_reference": "",
-			"approval_status": "placeholder",
-			"notes": "Atlas 4x2 de tiles 16x16: grama, flores, caminho, água / muro, rocha, arbusto, areia. Colisões em assets/tilesets/placeholder_tileset.tres."
+			"approval_status": "in_review",
+			"notes": "Pinheiro; pivô na base do tronco (linha 44)."
 		},
 		{
-			"asset_id": "environment.placeholder_sign",
+			"asset_id": "environment.bush",
 			"category": "environments",
-			"file_path": "res://assets/environments/placeholder_sign.png",
+			"file_path": "res://assets/environments/bush.png",
 			"dimensions": [
 				16,
 				16
@@ -74,35 +169,16 @@
 			"source_url": "",
 			"license": "project",
 			"prompt_reference": "",
-			"approval_status": "placeholder",
-			"notes": "Placa de madeira; base do poste na linha 15 (pivô nos pés)."
+			"approval_status": "in_review",
+			"notes": "Arbusto com frutos; pivô na linha 14."
 		},
 		{
-			"asset_id": "portrait.placeholder_hero",
-			"category": "portraits",
-			"file_path": "res://assets/portraits/placeholder_hero_portrait.png",
+			"asset_id": "environment.rock",
+			"category": "environments",
+			"file_path": "res://assets/environments/rock.png",
 			"dimensions": [
-				32,
-				32
-			],
-			"format": "png",
-			"transparency": false,
-			"animation_frames": 1,
-			"animation_fps": 0,
-			"source_type": "original_procedural",
-			"source_url": "",
-			"license": "project",
-			"prompt_reference": "",
-			"approval_status": "placeholder",
-			"notes": "Retrato (rosto e ombros) com fundo controlado; exibido em 2x (64x64) ao lado das falas."
-		},
-		{
-			"asset_id": "enemy.placeholder_wolf",
-			"category": "enemies",
-			"file_path": "res://assets/enemies/placeholder_wolf.png",
-			"dimensions": [
-				32,
-				32
+				16,
+				16
 			],
 			"format": "png",
 			"transparency": true,
@@ -112,16 +188,16 @@
 			"source_url": "",
 			"license": "project",
 			"prompt_reference": "",
-			"approval_status": "placeholder",
-			"notes": "Lobo de perfil; pivô nos pés (linha 27)."
+			"approval_status": "in_review",
+			"notes": "Pedra com musgo; pivô na linha 14."
 		},
 		{
-			"asset_id": "enemy.placeholder_goblin",
-			"category": "enemies",
-			"file_path": "res://assets/enemies/placeholder_goblin.png",
+			"asset_id": "environment.sign",
+			"category": "environments",
+			"file_path": "res://assets/environments/sign.png",
 			"dimensions": [
-				32,
-				32
+				16,
+				16
 			],
 			"format": "png",
 			"transparency": true,
@@ -131,8 +207,8 @@
 			"source_url": "",
 			"license": "project",
 			"prompt_reference": "",
-			"approval_status": "placeholder",
-			"notes": "Goblin com cimitarra; pivô nos pés (linha 27)."
+			"approval_status": "in_review",
+			"notes": "Placa de madeira; pivô na linha 15."
 		}
 	]
 }

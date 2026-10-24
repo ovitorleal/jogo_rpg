@@ -1,20 +1,23 @@
 # Pipeline de assets
 
-## Placeholders atuais (gerados por script)
+## Arte atual (gerada por código)
 
-Arte provisória original, desenhada em código, com saída determinística:
+Arte original desenhada por scripts, com saída determinística (`tools/art/`, fora da exportação):
 
 ```bash
-# 1. Gerar PNGs (herói, tileset, placa)
-godot --headless --path . --script res://tools/placeholders/generate_placeholders.gd
-# 2. Importar
+# 1. Personagens animados (herói, goblin, lobo) e retrato
+godot --headless --path . --script res://tools/art/generate_characters.gd
+# 2. Atlas de terreno e objetos de cenário (árvores, arbustos, pedras, placa)
+godot --headless --path . --script res://tools/art/generate_environment.gd
+# 3. Importar
 godot --headless --path . --import
-# 3. Gerar TileSet com colisões e o terreno do mapa de teste (não sobrescreve sem --force)
-godot --headless --path . --script res://tools/placeholders/build_test_map.gd -- --force
+# 4. TileSet, terreno e objetos do mapa de teste (não sobrescreve sem --force)
+godot --headless --path . --script res://tools/art/build_overworld.gd -- --force
 ```
 
-O passo 3 apaga edições manuais feitas no editor em `placeholder_tileset.tres` e `test_map_ground.tscn`.
-Depois de editar o mapa no editor, não rode o passo 3 novamente.
+O passo 4 apaga edições manuais feitas no editor em `overworld_tileset.tres`, `test_map_terrain.tscn`
+e `test_map_props.tscn`. Depois de editar o mapa no editor, não rode o passo 4 novamente.
+`tools/art/pixel_canvas.gd` concentra as técnicas (partes com 3 tons, contorno seletivo, sombra).
 
 ## Fluxo para assets definitivos (especificação, seção 14)
 

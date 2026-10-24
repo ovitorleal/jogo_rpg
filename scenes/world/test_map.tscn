@@ -1,22 +1,23 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://scenes/world/test_map_ground.tscn" id="2_ground"]
+[ext_resource type="PackedScene" path="res://scenes/world/test_map_terrain.tscn" id="2_terrain"]
 [ext_resource type="PackedScene" path="res://scenes/world/sign.tscn" id="3_sign"]
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="4_player"]
 [ext_resource type="PackedScene" path="res://scenes/ui/exploration_hud.tscn" id="5_hud"]
 [ext_resource type="PackedScene" path="res://scenes/world/encounter_trigger.tscn" id="6_trigger"]
-[ext_resource type="Texture2D" path="res://assets/enemies/placeholder_wolf.png" id="7_wolf"]
-[ext_resource type="Texture2D" path="res://assets/enemies/placeholder_goblin.png" id="8_goblin"]
+[ext_resource type="PackedScene" path="res://scenes/world/test_map_props.tscn" id="7_props"]
 
 [node name="TestMap" type="Node2D"]
 script = ExtResource("1_script")
 
-[node name="Ground" parent="." instance=ExtResource("2_ground")]
+[node name="Terrain" parent="." instance=ExtResource("2_terrain")]
 unique_name_in_owner = true
 
 [node name="Objects" type="Node2D" parent="."]
 y_sort_enabled = true
+
+[node name="Props" parent="Objects" instance=ExtResource("7_props")]
 
 [node name="WelcomeSign" parent="Objects" instance=ExtResource("3_sign")]
 position = Vector2(536, 252)
@@ -26,13 +27,13 @@ message_text = "A placa diz: \"Bem-vindo, viajante. Cuidado com o lobo da mata a
 position = Vector2(712, 344)
 encounter_id = "encounter.lone_wolf"
 trigger_id = "test_map.lone_wolf"
-marker_texture = ExtResource("7_wolf")
+marker_sheet = "res://assets/enemies/wolf_sheet.png"
 
 [node name="GoblinEncounter" parent="Objects" instance=ExtResource("6_trigger")]
 position = Vector2(232, 408)
 encounter_id = "encounter.ruin_goblin"
 trigger_id = "test_map.ruin_goblin"
-marker_texture = ExtResource("8_goblin")
+marker_sheet = "res://assets/enemies/goblin_sheet.png"
 
 [node name="Player" parent="Objects" instance=ExtResource("4_player")]
 unique_name_in_owner = true

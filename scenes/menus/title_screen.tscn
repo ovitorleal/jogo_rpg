@@ -1,7 +1,11 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/characters/placeholder_hero.png" id="2_hero"]
+[ext_resource type="Texture2D" path="res://assets/characters/hero_sheet.png" id="2_hero"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hero"]
+atlas = ExtResource("2_hero")
+region = Rect2(0, 0, 32, 32)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_credits"]
 bg_color = Color(0.102, 0.078, 0.137, 1)
@@ -63,7 +67,7 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 size_flags_horizontal = 4
-texture = ExtResource("2_hero")
+texture = SubResource("AtlasTexture_hero")
 expand_mode = 1
 stretch_mode = 5
 

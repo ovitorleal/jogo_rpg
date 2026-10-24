@@ -1,31 +1,40 @@
 class_name CombatBoard
 extends Control
-## Desenha a arena em grade e os combatentes; converte cliques em casas. Só apresentação.
-## Estados importantes não dependem só de cor: alvos têm moldura tracejada, o participante
-## do turno tem moldura dupla e quem caiu fica acinzentado e deitado.
+## Desenha a arena em grade (com os mesmos tiles de grama da exploração), destaques de
+## movimento e de alvos, e mantém uma CombatToken animada por combatente. Converte cliques
+## em casas. Só apresentação. Estados importantes não dependem só de cor: alvos têm moldura
+## tracejada, o participante do turno tem moldura dupla e quem caiu fica tombado.
 
 signal cell_clicked(cell: Vector2i)
 
-const CELL := 28
-const GRASS_A := Color8(74, 122, 58)
-const GRASS_B := Color8(68, 114, 53)
-const GRID_LINE := Color(0, 0, 0, 0.18)
-const MOVE_FILL := Color(0.52, 0.59, 0.72, 0.45)
-const TARGET_LINE := Color8(214, 70, 60)
-const CURRENT_LINE := Color8(230, 214, 90)
-const HP_BACK := Color8(26, 20, 35)
-const HP_PARTY := Color8(111, 190, 90)
-const HP_ENEMY := Color8(214, 70, 60)
+const CELL := 32
+const TILES := "res://assets/tilesets/overworld_tiles.png"
+const GRID_LINE := Color(0.05, 0.1, 0.05, 0.16)
+const MOVE_FILL := Color(0.55, 0.75, 1.0, 0.30)
+const MOVE_LINE := Color(0.75, 0.88, 1.0, 0.55)
+const TARGET_LINE := Color8(255, 90, 70)
+const CURRENT_LINE := Color8(255, 226, 110)
 
 var manager: CombatManager
 var reachable: Dictionary = {}
 var targets: Array[Combatant] = []
 
-var _textures := {}
+var _tokens := {}
+var _tiles: Texture2D
+
+
+func _ready() -> void:
+	_tiles = load(TILES) if ResourceLoader.exists(TILES) else null
+	clip_contents = false
 
 
 func cell_to_local(cell: Vector2i) -> Vector2:
 	return Vector2(cell * CELL)
+
+
+## Ponto dos pés de quem está na casa.
+func cell_feet(cell: Vector2i) -> Vector2:
+	return cell_to_local(cell) + Vector2(CELL / 2.0, CELL - 4.0)
 
 
 func local_to_cell(point: Vector2) -> Vector2i:
@@ -36,9 +45,55 @@ func board_size() -> Vector2:
 	return Vector2(manager.arena_size * CELL) if manager != null else Vector2.ZERO
 
 
+func token_for(unit: Combatant) -> CombatToken:
+	return _tokens.get(unit.id)
+
+
+## Cria fichas que faltam e, com snap = true, coloca todas na casa atual do combatente.
+func sync_tokens(snap: bool = true) -> void:
+	if manager == null:
+		return
+	for unit in manager.combatants:
+		var token: CombatToken = _tokens.get(unit.id)
+		if token == null:
+			token = CombatToken.new()
+			token.name = "Token_%s" % unit.id.replace("#", "_").replace(".", "_")
+			add_child(token)
+			token.setup(unit)
+			token.position = cell_feet(unit.position)
+			_tokens[unit.id] = token
+		if snap:
+			token.position = cell_feet(unit.position)
+		token.z_index = unit.position.y
+		if not unit.is_up() and not token.downed:
+			token.downed = true
+			token.visible = unit.team == Combatant.Team.PARTY
+		token.refresh(snap)
+
+
 func refresh() -> void:
 	custom_minimum_size = board_size()
 	queue_redraw()
+
+
+## Texto que sobe e some (dano, erro, crítico).
+func float_text(text: String, at: Vector2, color: Color, big: bool = false) -> void:
+	var label := Label.new()
+	label.text = text
+	label.add_theme_font_size_override("font_size", 12 if big else 10)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Color8(26, 16, 32))
+	label.add_theme_constant_override("outline_size", 4)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.size = Vector2(80, 16)
+	label.position = at - Vector2(40, 34)
+	label.z_index = 100
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(label)
+	var tween := label.create_tween()
+	tween.tween_property(label, "position:y", label.position.y - 14.0, 0.7).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.7).set_delay(0.35)
+	tween.tween_callback(label.queue_free)
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -55,52 +110,39 @@ func _draw() -> void:
 		return
 	for y in manager.arena_size.y:
 		for x in manager.arena_size.x:
-			var rect := Rect2(cell_to_local(Vector2i(x, y)), Vector2(CELL, CELL))
-			draw_rect(rect, GRASS_A if (x + y) % 2 == 0 else GRASS_B)
-			draw_rect(rect, GRID_LINE, false, 1.0)
+			_draw_ground(Vector2i(x, y))
+	for y in manager.arena_size.y + 1:
+		draw_line(Vector2(0, y * CELL), Vector2(manager.arena_size.x * CELL, y * CELL), GRID_LINE)
+	for x in manager.arena_size.x + 1:
+		draw_line(Vector2(x * CELL, 0), Vector2(x * CELL, manager.arena_size.y * CELL), GRID_LINE)
 	for cell: Vector2i in reachable:
-		draw_rect(Rect2(cell_to_local(cell) + Vector2(1, 1), Vector2(CELL - 2, CELL - 2)), MOVE_FILL)
-
+		var rect := Rect2(cell_to_local(cell) + Vector2(2, 2), Vector2(CELL - 4, CELL - 4))
+		draw_rect(rect, MOVE_FILL)
+		draw_rect(rect, MOVE_LINE, false, 1.0)
 	var current := manager.current()
-	for unit in manager.combatants:
-		if unit.team == Combatant.Team.ENEMY and not unit.is_up():
-			continue
-		_draw_unit(unit, unit == current)
+	if current != null:
+		var origin := cell_to_local(current.position)
+		draw_rect(Rect2(origin + Vector2(1, 1), Vector2(CELL - 2, CELL - 2)), CURRENT_LINE, false, 1.0)
+		draw_rect(Rect2(origin + Vector2(3, 3), Vector2(CELL - 6, CELL - 6)), CURRENT_LINE, false, 1.0)
 	for unit in targets:
 		_draw_dashed_rect(Rect2(cell_to_local(unit.position) + Vector2(1, 1), Vector2(CELL - 2, CELL - 2)), TARGET_LINE)
 
 
-func _draw_unit(unit: Combatant, is_current: bool) -> void:
-	var origin := cell_to_local(unit.position)
-	var texture := _texture(unit.sprite_path)
-	var sprite_rect := Rect2(origin + Vector2((CELL - 32) / 2.0, CELL - 32 - 1), Vector2(32, 32))
-	if texture != null:
-		if unit.is_up():
-			draw_texture_rect(texture, sprite_rect, false)
-		else:
-			# Caído: deitado de lado e acinzentado.
-			draw_set_transform(origin + Vector2(CELL / 2.0, CELL / 2.0), PI / 2.0)
-			draw_texture_rect(texture, Rect2(Vector2(-16, -16), Vector2(32, 32)), false, Color(0.5, 0.5, 0.5, 0.8))
-			draw_set_transform(Vector2.ZERO)
-	if is_current:
-		draw_rect(Rect2(origin + Vector2(1, 1), Vector2(CELL - 2, CELL - 2)), CURRENT_LINE, false, 1.0)
-		draw_rect(Rect2(origin + Vector2(3, 3), Vector2(CELL - 6, CELL - 6)), CURRENT_LINE, false, 1.0)
-	var bar := Rect2(origin + Vector2(3, CELL - 4), Vector2(CELL - 6, 3))
-	draw_rect(bar, HP_BACK)
-	var ratio := float(unit.hp) / float(maxi(1, unit.max_hp))
-	draw_rect(Rect2(bar.position, Vector2(bar.size.x * ratio, bar.size.y)),
-			HP_PARTY if unit.team == Combatant.Team.PARTY else HP_ENEMY)
+## Cada casa = 2x2 tiles de grama do atlas da exploração, variando por posição.
+func _draw_ground(cell: Vector2i) -> void:
+	var origin := cell_to_local(cell)
+	if _tiles == null:
+		draw_rect(Rect2(origin, Vector2(CELL, CELL)), Color8(79, 154, 62))
+		return
+	for sy in 2:
+		for sx in 2:
+			var h := absi((cell.x * 7 + sx) * 92821 ^ (cell.y * 5 + sy) * 68917) % 100
+			var variant := 0 if h < 62 else (1 if h < 86 else (2 if h < 93 else 3))
+			draw_texture_rect_region(_tiles, Rect2(origin + Vector2(sx * 16, sy * 16), Vector2(16, 16)),
+					Rect2(variant * 16, 0, 16, 16))
 
 
 func _draw_dashed_rect(rect: Rect2, color: Color) -> void:
 	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
 	for i in 4:
 		draw_dashed_line(corners[i], corners[(i + 1) % 4], color, 2.0, 3.0)
-
-
-func _texture(path: String) -> Texture2D:
-	if path.is_empty():
-		return null
-	if not _textures.has(path):
-		_textures[path] = load(path) if ResourceLoader.exists(path) else null
-	return _textures[path]

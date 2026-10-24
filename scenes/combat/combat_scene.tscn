@@ -67,7 +67,7 @@ theme_override_constants/separation = 8
 
 [node name="Board" type="Control" parent="Margin/Layout/Columns"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(336, 224)
+custom_minimum_size = Vector2(384, 256)
 layout_mode = 2
 size_flags_vertical = 0
 mouse_filter = 0

@@ -17,6 +17,7 @@ func _hero() -> CharacterData:
 func _open(encounter_id: String, party: Array[CharacterData], roller: DiceRoller) -> void:
 	_scene = (load(SCENE) as PackedScene).instantiate()
 	_scene.ai_delay = 0.0
+	_scene.animations_enabled = false
 	_scene.setup(encounter_id, party, roller)
 	tree.root.add_child(_scene)
 	await tree.process_frame

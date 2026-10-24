@@ -1,7 +1,6 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/player.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/characters/placeholder_hero.png" id="2_texture"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_feet"]
 size = Vector2(10, 6)
@@ -15,9 +14,8 @@ collision_mask = 1
 motion_mode = 1
 script = ExtResource("1_script")
 
-[node name="Sprite" type="Sprite2D" parent="."]
-texture = ExtResource("2_texture")
-offset = Vector2(0, -11)
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+offset = Vector2(0, -13)
 
 [node name="Collision" type="CollisionShape2D" parent="."]
 position = Vector2(0, -3)

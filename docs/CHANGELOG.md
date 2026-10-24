@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.1] — 2026-10-24 — Reforma visual
+
+### Adicionado
+- `tools/art/`: biblioteca `PixelCanvas` (3 tons, contorno seletivo, sombra) e geradores de personagens,
+  terreno e objetos; `build_overworld.gd` monta TileSet, terreno (marching squares) e objetos do mapa.
+- Folhas animadas: herói e goblin (4 direções × parado/caminhada/ataque), lobo (2 direções); retrato novo.
+- Atlas de terreno com transições e água animada; árvore, pinheiro, arbusto, pedra e placa como objetos.
+- `SpriteLibrary` (animações a partir das folhas) e `CombatToken` (combatente animado).
+- Combate animado: caminhada entre casas, investida de ataque, dano flutuante, piscar/tremor, queda.
+
+### Alterado
+- Jogador usa `AnimatedSprite2D` com direção; marcadores de encontro animados.
+- Mapa de teste: camadas `Ground`/`Walls` dentro de `Terrain`, objetos de cenário em `Objects` (y-sort),
+  borda de floresta com bloqueio invisível; lago elíptico com praia.
+- Tabuleiro de combate com casas de 32 px sobre grama.
+- Bíblia visual reescrita para a direção 16 bits.
+
+### Removido
+- Arte provisória da Fase 0–3 (`placeholder_*`) e `tools/placeholders/`, substituídas pela nova arte.
+
 ## [0.3.0] — 2026-10-24 — Fase 3
 
 ### Adicionado

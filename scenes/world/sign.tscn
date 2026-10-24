@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/interactable.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://assets/environments/placeholder_sign.png" id="2_texture"]
+[ext_resource type="Texture2D" path="res://assets/environments/sign.png" id="2_texture"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_interaction"]
 radius = 10.0
@@ -18,7 +18,7 @@ prompt_text = "Ler placa"
 
 [node name="Sprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_texture")
-offset = Vector2(0, -8)
+offset = Vector2(0, -7)
 
 [node name="InteractionShape" type="CollisionShape2D" parent="."]
 position = Vector2(0, -6)

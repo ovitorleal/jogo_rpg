@@ -21,7 +21,11 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 - GDScript: `Array[T] + Array[T]` perde o tipo; use `append_array` para manter `Array[StringName]`.
 - Testes novos: `tests/**/test_*.gd`, estendendo `res://tests/base_test.gd`.
 - Todo asset novo entra em `assets/asset_catalog.json` com origem e licença; escala e paleta em `docs/ART_BIBLE.md`.
-- Placeholders e mapa de teste: ver `docs/ASSET_PIPELINE.md` (`build_test_map.gd --force` apaga edições do editor).
+- Arte e mapa de teste gerados por `tools/art/` (ver `docs/ASSET_PIPELINE.md`); `build_overworld.gd --force` apaga
+  edições do editor. Estilo e paleta em `docs/ART_BIBLE.md`; nada copiado de jogos existentes.
+- Sprites animados: folhas 9 colunas (parado 0-1, caminhada 2-5, ataque 6-8) via `SpriteLibrary`.
+- Verificação visual: o painel do navegador pode estar pausado; prefira uma sonda com janela real que salva
+  `root.get_texture().get_image()` no scratchpad.
 - Exploração: `Interactable` não decide efeitos; o `ExplorationMap` decide. Detalhes em `docs/ARCHITECTURE.md`.
 - Combate: estado só muda via `CombatManager.submit()`/`run_enemy_turn()`; a cena só exibe eventos. Nos testes,
   `ExplorationManager.scene_changes_enabled = false` e `ai_delay = 0`; sempre restaurar no fim do teste.

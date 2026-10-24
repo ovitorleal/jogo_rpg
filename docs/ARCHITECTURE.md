@@ -48,6 +48,16 @@
 | Gatilho de encontro só emite sinal; o mapa inicia o combate com `call_deferred` | Não remover a cena dentro de um callback de física |
 | Falas com retrato: `Interactable.speaker_name/speaker_portrait`; vazio = o personagem do jogador | Mesmo componente serve para placas e futuros NPCs |
 
+### Reforma visual (pós-Fase 3)
+
+| Decisão | Motivo |
+|---|---|
+| Arte gerada por código com biblioteca própria (`tools/art/`) | Custo zero, determinística, consistente com a bíblia visual; trocável por arte final depois |
+| `SpriteLibrary` monta `SpriteFrames` a partir de folhas com layout fixo | Um único formato para herói, inimigos e marcadores; sem recursos `.tres` por personagem |
+| Terreno por vértices (marching squares) em camadas `Ground` + `Walls` | Bordas suaves sem autotile manual; colisão da água por quadrante |
+| Objetos de cenário como cenas (`scenes/world/props/`) dentro do nó `Objects` com y-sort | Personagem passa atrás das árvores; colisão só na base |
+| Combate: `CombatToken` por combatente; a cena "toca" os eventos do `CombatManager` em sequência | Animação nunca decide resultado; com `animations_enabled = false` o combate é idêntico |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,
@@ -74,7 +84,11 @@ Persistência e Ferramentas. Estado atual:
 - `Combatant`: participante montado de `CharacterData` (ataques derivados da ficha) ou de um monstro.
 - `CombatManager`: posicionamento, iniciativa, turnos, comandos (`move`, `attack`, `end_turn`, `flee`), IA, fim e resultados.
 - `CombatLog`: texto do registro a partir dos eventos (apresentação).
-- `CombatBoard` + `combat_scene`: grade clicável, ordem de iniciativa, registro, ações, painel de resultado.
+- `CombatBoard` + `combat_scene`: grade clicável sobre grama, ordem de iniciativa, registro, ações, painel de resultado.
+- `CombatToken`: sprite animado + barra de PV; andar entre casas, investida de ataque, dano (piscar, tremor), queda.
+
+**Apresentação compartilhada** (`scripts/presentation/`)
+- `SpriteLibrary`: animações `idle/walk/attack_<direção>` a partir das folhas de sprites.
 
 **Sistemas de jogo — exploração** (`scripts/exploration/`)
 - Autoload `ExplorationManager`: retorno ao mapa, gatilhos resolvidos/desarmados, último resultado.
