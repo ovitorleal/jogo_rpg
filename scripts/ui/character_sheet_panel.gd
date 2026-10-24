@@ -6,6 +6,7 @@ extends PanelContainer
 const PROFICIENT_MARK := "(P)"
 const EXPERTISE_MARK := "(E)"
 const DISTANCE_UNIT := "pés"
+const SIZE_NAMES := {"small": "Pequeno", "medium": "Médio"}
 
 @onready var _text: RichTextLabel = %SheetText
 
@@ -42,6 +43,14 @@ static func format_sheet(sheet: CharacterSheet) -> String:
 			Ability.format_modifier(sheet.proficiency_bonus), str(sheet.passive_perception)]:
 		out.append("[cell]%s  [/cell]" % value)
 	out.append("[/table]")
+	var traits := PackedStringArray(["Tamanho: %s" % SIZE_NAMES.get(sheet.species.get("size", ""), "?")])
+	var darkvision := int(sheet.species.get("darkvision", 0))
+	if darkvision > 0:
+		traits.append("Visão no escuro: %d %s" % [darkvision, DISTANCE_UNIT])
+	var resistances: Array = sheet.species.get("damage_resistances", [])
+	if not resistances.is_empty():
+		traits.append("Resistência: %s" % ", ".join(resistances.map(func(t: String) -> String: return _damage_type_name(t))))
+	out.append(" · ".join(traits))
 	out.append("")
 
 	out.append("[b]Atributos[/b]  [color=#8597b8](valor, modificador, resistência)[/color]")
@@ -95,7 +104,11 @@ static func _dex_note(armor: Dictionary) -> String:
 
 
 static func _damage_type_name(damage_type: String) -> String:
-	const NAMES := {"piercing": "perfurante", "slashing": "cortante", "bludgeoning": "contundente"}
+	const NAMES := {
+		"acid": "ácido", "bludgeoning": "contundente", "cold": "frio", "fire": "fogo", "force": "energia",
+		"lightning": "elétrico", "necrotic": "necrótico", "piercing": "perfurante", "poison": "veneno",
+		"psychic": "psíquico", "radiant": "radiante", "slashing": "cortante", "thunder": "trovejante",
+	}
 	return NAMES.get(damage_type, damage_type)
 
 

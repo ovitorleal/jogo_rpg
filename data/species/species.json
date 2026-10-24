@@ -70,6 +70,263 @@
 					"implemented": false
 				}
 			]
+		},
+		{
+			"id": "species.dragonborn",
+			"name": "Draconato",
+			"description": "Descendentes de dragões, com escamas e um sopro elemental.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"speed": 30,
+			"darkvision": 60,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 0,
+			"traits": [
+				{
+					"id": "trait.draconic_ancestry",
+					"name": "Ancestral Dracônico",
+					"description": "Escolhe um tipo de dragão, que define o dano do sopro e a resistência.",
+					"implemented": false
+				},
+				{
+					"id": "trait.breath_weapon",
+					"name": "Arma de Sopro",
+					"description": "Exala energia em cone ou linha, causando dano do tipo do ancestral.",
+					"implemented": false
+				},
+				{
+					"id": "trait.draconic_damage_resistance",
+					"name": "Resistência a Dano",
+					"description": "Resistência ao tipo de dano do ancestral dracônico.",
+					"implemented": false
+				},
+				{
+					"id": "trait.darkvision",
+					"name": "Visão no Escuro",
+					"description": "Enxerga na penumbra e no escuro até certa distância.",
+					"implemented": false
+				},
+				{
+					"id": "trait.draconic_flight",
+					"name": "Voo Dracônico",
+					"level": 5,
+					"description": "A partir do nível 5, pode criar asas espectrais e voar por um curto período.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "species.elf",
+			"name": "Elfo",
+			"description": "Povo longevo ligado à magia feérica, de sentidos aguçados.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"speed": 30,
+			"darkvision": 60,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 1,
+			"extra_skill_options": ["insight", "perception", "survival"],
+			"traits": [
+				{
+					"id": "trait.darkvision",
+					"name": "Visão no Escuro",
+					"description": "Enxerga na penumbra e no escuro até certa distância.",
+					"implemented": false
+				},
+				{
+					"id": "trait.elven_lineage",
+					"name": "Linhagem Élfica",
+					"description": "Escolhe uma linhagem que concede magias e outros benefícios.",
+					"implemented": false
+				},
+				{
+					"id": "trait.fey_ancestry",
+					"name": "Ancestralidade Feérica",
+					"description": "Vantagem em resistências para evitar ou encerrar a condição enfeitiçado.",
+					"implemented": false
+				},
+				{
+					"id": "trait.keen_senses",
+					"name": "Sentidos Aguçados",
+					"description": "Proficiência em Intuição, Percepção ou Sobrevivência.",
+					"implemented": true
+				},
+				{
+					"id": "trait.trance",
+					"name": "Transe",
+					"description": "Completa um descanso longo em quatro horas de meditação, sem precisar dormir.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "species.gnome",
+			"name": "Gnomo",
+			"description": "Povo pequeno, curioso e inventivo, com afinidade mágica.",
+			"source": "SRD 5.2.1",
+			"size": "small",
+			"speed": 30,
+			"darkvision": 60,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 0,
+			"traits": [
+				{
+					"id": "trait.darkvision",
+					"name": "Visão no Escuro",
+					"description": "Enxerga na penumbra e no escuro até certa distância.",
+					"implemented": false
+				},
+				{
+					"id": "trait.gnomish_cunning",
+					"name": "Astúcia Gnômica",
+					"description": "Vantagem em resistências de Inteligência, Sabedoria e Carisma.",
+					"implemented": false
+				},
+				{
+					"id": "trait.gnomish_lineage",
+					"name": "Linhagem Gnômica",
+					"description": "Escolhe uma linhagem que concede magias.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "species.goliath",
+			"name": "Golias",
+			"description": "Gigantes entre os povos, herdeiros da força dos titãs.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"speed": 35,
+			"darkvision": 0,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 0,
+			"traits": [
+				{
+					"id": "trait.giant_ancestry",
+					"name": "Ancestral Gigante",
+					"description": "Escolhe uma dádiva sobrenatural ligada a um tipo de gigante.",
+					"implemented": false
+				},
+				{
+					"id": "trait.large_form",
+					"name": "Forma Grande",
+					"level": 5,
+					"description": "A partir do nível 5, pode crescer até o tamanho Grande por um curto período.",
+					"implemented": false
+				},
+				{
+					"id": "trait.powerful_build",
+					"name": "Constituição Poderosa",
+					"description": "Conta como um tamanho maior para carregar peso e tem vantagem para escapar de agarrões.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "species.halfling",
+			"name": "Pequenino",
+			"description": "Povo pequeno, corajoso e afortunado, que prefere o conforto do lar.",
+			"source": "SRD 5.2.1",
+			"size": "small",
+			"speed": 30,
+			"darkvision": 0,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 0,
+			"traits": [
+				{
+					"id": "trait.brave",
+					"name": "Corajoso",
+					"description": "Vantagem em resistências para evitar ou encerrar a condição amedrontado.",
+					"implemented": false
+				},
+				{
+					"id": "trait.halfling_nimbleness",
+					"name": "Agilidade Pequenina",
+					"description": "Pode atravessar o espaço de criaturas maiores.",
+					"implemented": false
+				},
+				{
+					"id": "trait.luck",
+					"name": "Sortudo",
+					"description": "Ao tirar 1 natural em um teste de d20, pode rolar de novo.",
+					"implemented": false
+				},
+				{
+					"id": "trait.naturally_stealthy",
+					"name": "Furtividade Natural",
+					"description": "Pode se esconder atrás de criaturas maiores.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "species.orc",
+			"name": "Orc",
+			"description": "Povo vigoroso e incansável, de resistência quase lendária.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"speed": 30,
+			"darkvision": 120,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 0,
+			"traits": [
+				{
+					"id": "trait.adrenaline_rush",
+					"name": "Ímpeto de Adrenalina",
+					"description": "Avança com uma ação bônus e recebe pontos de vida temporários.",
+					"implemented": false
+				},
+				{
+					"id": "trait.darkvision",
+					"name": "Visão no Escuro",
+					"description": "Enxerga na penumbra e no escuro até certa distância.",
+					"implemented": false
+				},
+				{
+					"id": "trait.relentless_endurance",
+					"name": "Resistência Implacável",
+					"description": "Uma vez por descanso longo, cai para 1 PV em vez de 0.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "species.tiefling",
+			"name": "Tiefling",
+			"description": "Pessoas marcadas por um legado dos planos inferiores.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"speed": 30,
+			"darkvision": 60,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 0,
+			"traits": [
+				{
+					"id": "trait.darkvision",
+					"name": "Visão no Escuro",
+					"description": "Enxerga na penumbra e no escuro até certa distância.",
+					"implemented": false
+				},
+				{
+					"id": "trait.fiendish_legacy",
+					"name": "Legado Ínfero",
+					"description": "Escolhe um legado que define uma resistência a dano e magias inatas.",
+					"implemented": false
+				},
+				{
+					"id": "trait.otherworldly_presence",
+					"name": "Presença Sobrenatural",
+					"description": "Conhece um truque que produz pequenos prodígios.",
+					"implemented": false
+				}
+			]
 		}
 	]
 }

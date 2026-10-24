@@ -1,0 +1,41 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "class.monk",
+			"name": "Monge",
+			"description": "Mestre das artes marciais que canaliza energia interior em golpes rápidos.",
+			"source": "SRD 5.2.1",
+			"hit_die": 8,
+			"primary_abilities": ["dex", "wis"],
+			"saving_throws": ["str", "dex"],
+			"skill_choice_count": 2,
+			"skill_options": ["acrobatics", "athletics", "history", "insight", "religion", "stealth"],
+			"expertise_choices": 0,
+			"armor_training": [],
+			"weapon_training": ["simple", "martial_light"],
+			"unarmored_defense_ability": "wis",
+			"unarmored_defense_allows_shield": false,
+			"suggested_scores": [12, 15, 13, 10, 14, 8],
+			"starting_armor": "",
+			"starting_shield": false,
+			"starting_weapons": ["item.spear", "item.dagger", "item.dagger", "item.dagger", "item.dagger", "item.dagger"],
+			"features": [
+				{
+					"id": "feature.martial_arts",
+					"name": "Artes Marciais",
+					"level": 1,
+					"description": "Golpes desarmados e armas de monge usam Destreza e um dado de artes marciais.",
+					"implemented": false
+				},
+				{
+					"id": "feature.unarmored_defense_monk",
+					"name": "Defesa sem Armadura",
+					"level": 1,
+					"description": "Sem armadura e sem escudo, a CA é 10 + Destreza + Sabedoria.",
+					"implemented": true
+				}
+			]
+		}
+	]
+}

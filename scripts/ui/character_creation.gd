@@ -227,8 +227,8 @@ func _fix_choices(fill: bool) -> void:
 	var background_skills := _names(_background().get("skill_proficiencies", []))
 	_fill_from(_class_skills, _names(_class().get("skill_options", [])), background_skills,
 			int(_class().get("skill_choice_count", 0)), fill)
-	_fill_from(_species_skills, Skill.all(), _names(background_skills + _class_skills),
-			int(_species().get("extra_skill_choices", 0)), fill)
+	_fill_from(_species_skills, CharacterFactory.species_skill_options(_species()),
+			_names(background_skills + _class_skills), int(_species().get("extra_skill_choices", 0)), fill)
 	var proficient := _names(background_skills + _class_skills + _species_skills)
 	_fill_from(_expertise, proficient, [] as Array[StringName], int(_class().get("expertise_choices", 0)), fill)
 
@@ -305,8 +305,8 @@ func _sync_widgets() -> void:
 	var species_locked := locked.duplicate()
 	for skill in _class_skills:
 		species_locked[skill] = "classe"
-	_fill_checkboxes(_species_skills_box, "Da espécie", Skill.all(), _species_skills,
-			int(_species().get("extra_skill_choices", 0)), species_locked)
+	_fill_checkboxes(_species_skills_box, "Da espécie", CharacterFactory.species_skill_options(_species()),
+			_species_skills, int(_species().get("extra_skill_choices", 0)), species_locked)
 
 	_fill_checkboxes(_expertise_box, "Especialização (dobra a proficiência)",
 			_names(background_skills + _class_skills + _species_skills), _expertise,

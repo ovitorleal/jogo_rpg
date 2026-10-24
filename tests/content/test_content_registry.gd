@@ -38,8 +38,12 @@ func _assert_error(data: Dictionary, fragment: String, message: String) -> void:
 func test_real_content_loads_without_errors() -> void:
 	var registry := _real_registry()
 	assert_eq(registry.errors, [] as Array[String], "Conteúdo real sem erros")
-	assert_eq(registry.ids("class"), ["class.fighter", "class.rogue"] as Array[String], "Classes")
-	assert_eq(registry.ids("species"), ["species.dwarf", "species.human"] as Array[String], "Espécies")
+	assert_eq(registry.ids("class"), ["class.barbarian", "class.bard", "class.cleric", "class.druid",
+			"class.fighter", "class.monk", "class.paladin", "class.ranger", "class.rogue", "class.sorcerer",
+			"class.warlock", "class.wizard"] as Array[String], "As 12 classes do SRD 5.2.1")
+	assert_eq(registry.ids("species"), ["species.dragonborn", "species.dwarf", "species.elf", "species.gnome",
+			"species.goliath", "species.halfling", "species.human", "species.orc", "species.tiefling"] as Array[String],
+			"As 9 espécies do SRD 5.2.1")
 	assert_eq(registry.ids("background"), ["background.criminal", "background.soldier"] as Array[String], "Antecedentes")
 	assert_true(registry.has("item", "item.chain_mail"), "Itens carregados")
 
@@ -127,6 +131,57 @@ func test_invalid_suggested_scores() -> void:
 	var data := _valid_data()
 	_find(data, "class", "class.fighter")["suggested_scores"] = [15, 15, 14, 8, 12, 10]
 	_assert_error(data, "suggested_scores", "Sugestão fora do arranjo padrão")
+
+
+func test_class_data_matches_srd_level_1() -> void:
+	var registry := _real_registry()
+	# [dado de vida, resistências, nº de perícias, treinamento de armadura]
+	var expected := {
+		"class.barbarian": [12, ["str", "con"], 2, ["light", "medium", "shield"]],
+		"class.bard": [8, ["dex", "cha"], 3, ["light"]],
+		"class.cleric": [8, ["wis", "cha"], 2, ["light", "medium", "shield"]],
+		"class.druid": [8, ["int", "wis"], 2, ["light", "shield"]],
+		"class.fighter": [10, ["str", "con"], 2, ["light", "medium", "heavy", "shield"]],
+		"class.monk": [8, ["str", "dex"], 2, []],
+		"class.paladin": [10, ["wis", "cha"], 2, ["light", "medium", "heavy", "shield"]],
+		"class.ranger": [10, ["str", "dex"], 3, ["light", "medium", "shield"]],
+		"class.rogue": [8, ["dex", "int"], 4, ["light"]],
+		"class.sorcerer": [6, ["con", "cha"], 2, []],
+		"class.warlock": [8, ["wis", "cha"], 2, ["light"]],
+		"class.wizard": [6, ["int", "wis"], 2, []],
+	}
+	for id: String in expected:
+		var entry := registry.get_entry("class", id)
+		var values: Array = expected[id]
+		assert_eq(entry.get("hit_die"), values[0], "%s: dado de vida" % id)
+		assert_eq(entry.get("saving_throws"), values[1], "%s: resistências" % id)
+		assert_eq(entry.get("skill_choice_count"), values[2], "%s: perícias" % id)
+		assert_eq(entry.get("armor_training"), values[3], "%s: treinamento de armadura" % id)
+	assert_eq(registry.get_entry("class", "class.bard")["skill_options"].size(), 18, "Bardo escolhe entre todas as perícias")
+
+
+func test_species_data_matches_srd() -> void:
+	var registry := _real_registry()
+	# [tamanho, deslocamento, visão no escuro]
+	var expected := {
+		"species.dragonborn": ["medium", 30, 60], "species.dwarf": ["medium", 30, 120],
+		"species.elf": ["medium", 30, 60], "species.gnome": ["small", 30, 60],
+		"species.goliath": ["medium", 35, 0], "species.halfling": ["small", 30, 0],
+		"species.human": ["medium", 30, 0], "species.orc": ["medium", 30, 120],
+		"species.tiefling": ["medium", 30, 60],
+	}
+	for id: String in expected:
+		var entry := registry.get_entry("species", id)
+		assert_eq([entry.get("size"), entry.get("speed"), entry.get("darkvision")], expected[id], "%s: tamanho, deslocamento, visão" % id)
+
+
+func test_species_skill_options_consistency() -> void:
+	var data := _valid_data()
+	_find(data, "species", "species.elf")["extra_skill_choices"] = 4
+	_assert_error(data, "extra_skill_choices maior que o número de opções", "Mais escolhas que opções")
+	data = _valid_data()
+	_find(data, "species", "species.elf")["extra_skill_choices"] = 0
+	_assert_error(data, "extra_skill_options sem extra_skill_choices", "Opções sem escolha")
 
 
 func test_versatile_weapon_requires_versatile_damage() -> void:

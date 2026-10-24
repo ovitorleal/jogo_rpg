@@ -37,6 +37,8 @@ const TYPES := {
 			"hp_bonus_per_level": {"type": "int", "min": 0, "max": 5},
 			"damage_resistances": {"type": "array", "of": "string", "ref": "damage_type"},
 			"extra_skill_choices": {"type": "int", "min": 0, "max": 4},
+			## Perícias permitidas na escolha da espécie; vazio = qualquer perícia.
+			"extra_skill_options": {"type": "array", "of": "string", "ref": "skill", "required": false, "default": []},
 			"traits": {"type": "object_array", "fields": FEATURE_FIELDS},
 		},
 	},
@@ -52,7 +54,10 @@ const TYPES := {
 			"expertise_choices": {"type": "int", "min": 0, "max": 4},
 			"armor_training": {"type": "array", "of": "string", "enum": ["light", "medium", "heavy", "shield"]},
 			"weapon_training": {"type": "array", "of": "string",
-					"enum": ["simple", "martial", "martial_finesse_or_light"]},
+					"enum": ["simple", "martial", "martial_finesse_or_light", "martial_light"]},
+			## Defesa sem Armadura: atributo somado à CA sem armadura ("" = não tem).
+			"unarmored_defense_ability": {"type": "string", "enum": ["", "con", "wis"], "required": false, "default": ""},
+			"unarmored_defense_allows_shield": {"type": "bool", "required": false, "default": true},
 			"suggested_scores": {"type": "array", "of": "int", "min_length": 6, "max_length": 6,
 					"allow_duplicates": true},
 			"starting_armor": {"type": "string", "ref": "item", "ref_item_type": "armor"},
@@ -248,6 +253,13 @@ func _check_consistency() -> void:
 				scores[Ability.ALL[i]] = suggested[i]
 			for problem in RulesEngine.validate_standard_array(scores):
 				errors.append("%s: suggested_scores: %s" % [id, problem])
+	for id in ids("species"):
+		var species := get_entry("species", id)
+		var options: Array = species.get("extra_skill_options", [])
+		if not options.is_empty() and int(species.get("extra_skill_choices", 0)) > options.size():
+			errors.append("%s: extra_skill_choices maior que o número de opções" % id)
+		if not options.is_empty() and int(species.get("extra_skill_choices", 0)) == 0:
+			errors.append("%s: extra_skill_options sem extra_skill_choices" % id)
 	for id in ids("item"):
 		var item := get_entry("item", id)
 		if item.get("item_type") != "weapon":

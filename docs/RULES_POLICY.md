@@ -27,28 +27,38 @@
 | Geração de atributos: arranjo padrão (15, 14, 13, 12, 10, 8) e compra de pontos (8–15, 27 pontos) | `RulesEngine.validate_*` | A tela de criação usa só o arranjo padrão por enquanto |
 | Aumento do antecedente: +2/+1 ou +1/+1/+1 nos três atributos listados, máximo 20 | `RulesEngine.validate_background_increase` | Espécies não dão aumento de atributo (2024) |
 | Proficiências repetidas de fontes diferentes não são permitidas: escolher outra | `CharacterFactory` | |
+| Defesa sem Armadura: Bárbaro 10 + Des + Con (escudo permitido); Monge 10 + Des + Sab (sem armadura e sem escudo) | `RulesEngine.armor_class`, `CharacterSheet` | Usa o maior cálculo disponível, então nunca reduz a CA |
+| Sentidos Aguçados do Elfo: proficiência em Intuição, Percepção ou Sobrevivência | dados `extra_skill_options` | Habilidoso do Humano: qualquer perícia |
+| Traços de espécie com nível mínimo (Voo Dracônico, Forma Grande: nível 5) só aparecem a partir desse nível | `CharacterSheet` | |
 
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
-- Classes: Guerreiro, Ladino (somente nível 1: PV, resistências, perícias, treinamentos, Especialização do Ladino).
-- Espécies: Humano (perícia extra), Anão (Robustez Anã; resistência a veneno e visão no escuro registradas, sem efeito ainda).
+- Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
+  Bárbaro, Bardo, Clérigo, Druida, Guerreiro, Monge, Paladino, Patrulheiro, Ladino, Feiticeiro, Bruxo, Mago.
+- Espécies (as 9): Draconato, Anão, Elfo, Gnomo, Golias, Pequenino, Humano, Orc, Tiefling — tamanho, deslocamento,
+  visão no escuro e traços.
 - Antecedentes: Soldado, Criminoso (atributos, perícias, ferramenta e talento de origem registrados).
-- Itens: Couro, Couro Batido, Camisão de Malha, Brunea, Cota de Malha, Escudo, Adaga, Espada Curta, Espada Longa, Rapieira, Arco Curto.
+  Acólito e Sábio, também do SRD, ainda não cadastrados.
+- Armaduras: Couro, Couro Batido, Camisão de Malha, Brunea, Cota de Malha, Escudo.
+- Armas: Adaga, Azagaia, Bordão, Clava, Foice, Lança, Maça, Machadinha, Arco Curto (simples); Cimitarra, Espada Curta,
+  Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
 - Descrições são resumos próprios em português; nomes de regras traduzidos livremente.
 
 ## Adaptações
 
 | Adaptação | Motivo |
 |---|---|
-| Kit inicial simplificado: Guerreiro com Cota de Malha, Escudo e Espada Longa; Ladino com Couro, Espada Curta, 2 Adagas e Arco Curto | Apenas itens já cadastrados; o pacote de aventureiro, munição, ferramentas e PO entram com o inventário (Fase 5) |
-| Humano sempre tamanho Médio | Escolha de tamanho ainda não exposta na criação |
+| Kit inicial simplificado: só armadura, escudo e armas da opção A de cada classe (o Guerreiro recebe Cota de Malha, Escudo e Espada Longa) | Pacotes, munição, focos, ferramentas e PO entram com o inventário (Fase 5) |
+| Humano e Tiefling sempre tamanho Médio | Escolha de tamanho ainda não exposta na criação |
+| Escolhas com efeito mecânico ainda não modeladas (Ancestral Dracônico, Legado Ínfero, Linhagens, Ordem Divina/Primal, Ancestral Gigante) | Registradas como características não implementadas; resistências que dependem delas ainda não aparecem na ficha |
 | Unidades em pés nos dados e na ficha | Conversão para a grade de combate (quadrados de 5 pés) na Fase 3 |
 
 ## Pendências
 
-- Características marcadas `"implemented": false` nos dados (aparecem na ficha como "ainda não implementada"):
-  Estilo de Luta, Retomar o Fôlego, Maestria em Armas, Ataque Furtivo, Gíria de Ladrão, Engenhoso, Versátil, Visão no Escuro,
-  Resiliência Anã (efeito), Conhecimento da Pedra, talentos de origem (Atacante Selvagem, Alerta).
+- Características marcadas `"implemented": false` nos dados (aparecem na ficha como "ainda não implementada"), entre elas:
+  Conjuração/Magia de Pacto de todas as classes conjuradoras (sistema de magias ainda não existe), Fúria, Artes Marciais,
+  Inspiração de Bardo, Estilo de Luta, Retomar o Fôlego, Maestria em Armas, Ataque Furtivo, Cura pelas Mãos, traços de espécie
+  com escolha ou efeito em combate, talentos de origem (Atacante Selvagem, Alerta).
 - Ataques, dano, críticos, condições e descansos: Fase 3 em diante.
 - Experiência e subida de nível: Fase 5.
 - Treinamento com armas (simples/marciais) registrado, mas ainda sem efeito (ataques na Fase 3).

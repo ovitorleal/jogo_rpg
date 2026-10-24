@@ -1,0 +1,39 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "class.cleric",
+			"name": "Clérigo",
+			"description": "Servo de um poder divino que canaliza milagres para curar e proteger.",
+			"source": "SRD 5.2.1",
+			"hit_die": 8,
+			"primary_abilities": ["wis"],
+			"saving_throws": ["wis", "cha"],
+			"skill_choice_count": 2,
+			"skill_options": ["history", "insight", "medicine", "persuasion", "religion"],
+			"expertise_choices": 0,
+			"armor_training": ["light", "medium", "shield"],
+			"weapon_training": ["simple"],
+			"suggested_scores": [14, 8, 13, 10, 15, 12],
+			"starting_armor": "item.chain_shirt",
+			"starting_shield": true,
+			"starting_weapons": ["item.mace"],
+			"features": [
+				{
+					"id": "feature.spellcasting_cleric",
+					"name": "Conjuração",
+					"level": 1,
+					"description": "Conjura magias de clérigo usando Sabedoria.",
+					"implemented": false
+				},
+				{
+					"id": "feature.divine_order",
+					"name": "Ordem Divina",
+					"level": 1,
+					"description": "Escolhe ser Protetor (armas marciais e armadura pesada) ou Taumaturgo (truque extra e conhecimento).",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

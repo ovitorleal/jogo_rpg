@@ -1,0 +1,46 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "class.wizard",
+			"name": "Mago",
+			"description": "Estudioso da magia arcana que registra seus feitiços em um grimório.",
+			"source": "SRD 5.2.1",
+			"hit_die": 6,
+			"primary_abilities": ["int"],
+			"saving_throws": ["int", "wis"],
+			"skill_choice_count": 2,
+			"skill_options": ["arcana", "history", "insight", "investigation", "medicine", "nature", "religion"],
+			"expertise_choices": 0,
+			"armor_training": [],
+			"weapon_training": ["simple"],
+			"suggested_scores": [8, 12, 13, 15, 14, 10],
+			"starting_armor": "",
+			"starting_shield": false,
+			"starting_weapons": ["item.dagger", "item.dagger", "item.quarterstaff"],
+			"features": [
+				{
+					"id": "feature.spellcasting_wizard",
+					"name": "Conjuração",
+					"level": 1,
+					"description": "Conjura magias de mago usando Inteligência, a partir de um grimório.",
+					"implemented": false
+				},
+				{
+					"id": "feature.ritual_adept",
+					"name": "Adepto de Rituais",
+					"level": 1,
+					"description": "Conjura como ritual qualquer magia de ritual do grimório, sem prepará-la.",
+					"implemented": false
+				},
+				{
+					"id": "feature.arcane_recovery",
+					"name": "Recuperação Arcana",
+					"level": 1,
+					"description": "Recupera alguns espaços de magia ao terminar um descanso curto.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}
