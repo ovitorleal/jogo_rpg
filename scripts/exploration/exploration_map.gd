@@ -1,9 +1,12 @@
 class_name ExplorationMap
 extends Node2D
 ## Controlador de um mapa de exploração: limites da câmera, aviso de interação,
-## mensagens e ficha do personagem. Espera os nós únicos %Ground, %Player e %Hud.
+## falas com retrato, ficha do personagem e início/retorno de encontros.
+## Espera os nós únicos %Ground, %Player e %Hud.
 
 const NO_CHARACTER_MESSAGE := "Nenhum personagem no grupo. Use \"Novo jogo\" no menu para criar um."
+const NO_CHARACTER_COMBAT_MESSAGE := "Algo se move entre as sombras... mas não há ninguém no grupo para lutar."
+const PLAYER_PORTRAIT := preload("res://assets/portraits/placeholder_hero_portrait.png")
 
 @onready var _ground: TileMapLayer = %Ground
 @onready var _player: Player = %Player
@@ -11,12 +14,23 @@ const NO_CHARACTER_MESSAGE := "Nenhum personagem no grupo. Use \"Novo jogo\" no 
 
 
 func _ready() -> void:
+	var back: Variant = ExplorationManager.take_return_position(scene_file_path)
+	if back is Vector2:
+		_player.global_position = back
+		_player.reset_physics_interpolation()
 	_configure_camera_limits()
 	_player.interaction_target_changed.connect(_on_interaction_target_changed)
 	for node in get_tree().get_nodes_in_group(Interactable.GROUP):
 		var interactable := node as Interactable
 		if interactable != null and is_ancestor_of(interactable):
 			interactable.interacted.connect(_on_interacted)
+	for node in get_tree().get_nodes_in_group(EncounterTrigger.GROUP):
+		var trigger := node as EncounterTrigger
+		if trigger != null and is_ancestor_of(trigger) and not trigger.is_queued_for_deletion():
+			trigger.triggered.connect(_on_encounter_triggered)
+	var message := ExplorationManager.take_return_message()
+	if not message.is_empty():
+		_show_player_line(message)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -88,6 +102,33 @@ func _on_interaction_target_changed(target: Interactable) -> void:
 func _on_interacted(source: Interactable) -> void:
 	if source.message_text.is_empty():
 		return
+	if source.speaker_name.is_empty() and source.speaker_portrait == null:
+		_show_player_line(source.message_text)
+	else:
+		_player.input_enabled = false
+		_hud.hide_prompt()
+		_hud.show_message(source.message_text, source.speaker_name, source.speaker_portrait)
+
+
+## Fala do personagem do jogador, com nome e retrato em destaque (sem grupo, mensagem simples).
+func _show_player_line(text: String) -> void:
+	var leader: CharacterData = PartyManager.get_leader()
 	_player.input_enabled = false
 	_hud.hide_prompt()
-	_hud.show_message(source.message_text)
+	if leader == null:
+		_hud.show_message(text)
+	else:
+		_hud.show_message(text, leader.name, PLAYER_PORTRAIT)
+
+
+func _on_encounter_triggered(trigger: EncounterTrigger) -> void:
+	var leader: CharacterData = PartyManager.get_leader()
+	if leader == null or leader.current_hp <= 0:
+		_player.input_enabled = false
+		_hud.hide_prompt()
+		_hud.show_message(NO_CHARACTER_COMBAT_MESSAGE)
+		return
+	_player.input_enabled = false
+	# Adiado: o sinal vem de um callback de física, onde não se pode remover a cena atual.
+	ExplorationManager.begin_encounter.call_deferred(trigger.encounter_id, trigger.trigger_id, scene_file_path,
+			_player.global_position)

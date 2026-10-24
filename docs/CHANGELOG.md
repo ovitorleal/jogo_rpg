@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.0] — 2026-10-24 — Fase 3
+
+### Adicionado
+- Regras de combate: `Attack` (ataque, crítico, dano, resistência, bônus de arma, desarmado, distância na grade).
+- `Combatant`, `CombatManager` (iniciativa, turnos, movimento, ataques, IA, vitória/derrota/fuga, XP) e `CombatLog`.
+- Cena de combate (`scenes/combat/combat_scene.tscn`) com tabuleiro clicável, iniciativa, registro e resultado.
+- Monstros (`data/monsters/`: Lobo, Goblin Guerreiro) e encontros (`data/encounters/`), validados pelo registro.
+- Autoload `ExplorationManager` e `EncounterTrigger`; dois encontros no mapa de teste.
+- Falas com retrato e nome de quem fala; placa lida em voz alta pelo personagem.
+- Retrato provisório do herói e sprites do Lobo e do Goblin (catalogados).
+- 37 testes novos (total 121).
+
+### Corrigido
+- Início de combate removia a cena durante um callback de física.
+- Mapa não quebra mais com grupo sem líder válido ao entrar numa área de encontro.
+
 ## [0.2.1] — 2026-10-23 — Todas as classes e espécies
 
 ### Adicionado

@@ -184,6 +184,24 @@ func test_species_skill_options_consistency() -> void:
 	_assert_error(data, "extra_skill_options sem extra_skill_choices", "Opções sem escolha")
 
 
+func test_monsters_and_encounters() -> void:
+	var registry := _real_registry()
+	assert_eq(registry.ids("monster"), ["monster.goblin_warrior", "monster.wolf"] as Array[String], "Monstros")
+	assert_eq(registry.ids("encounter"), ["encounter.lone_wolf", "encounter.ruin_goblin"] as Array[String], "Encontros")
+	var data := _valid_data()
+	_find(data, "monster", "monster.wolf")["hit_points"] = 40
+	_assert_error(data, "fora do intervalo de 2d8+2", "PV incompatíveis com os dados de vida")
+	data = _valid_data()
+	_find(data, "encounter", "encounter.lone_wolf")["enemies"] = [{"monster_id": "monster.dragon", "count": 1}]
+	_assert_error(data, "referência a monster inexistente 'monster.dragon'", "Monstro inexistente no encontro")
+	data = _valid_data()
+	_find(data, "monster", "monster.goblin_warrior")["attacks"][1].erase("range_normal")
+	_assert_error(data, "sem range_normal", "Ataque à distância sem alcance")
+	data = _valid_data()
+	_find(data, "monster", "monster.wolf")["sprite"] = "res://nada.png"
+	_assert_error(data, "sprite inexistente", "Sprite ausente")
+
+
 func test_versatile_weapon_requires_versatile_damage() -> void:
 	var data := _valid_data()
 	_find(data, "item", "item.longsword")["versatile_damage"] = ""

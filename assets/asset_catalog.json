@@ -5,7 +5,10 @@
 			"asset_id": "icon.project",
 			"category": "ui",
 			"file_path": "res://icon.svg",
-			"dimensions": [32, 32],
+			"dimensions": [
+				32,
+				32
+			],
 			"format": "svg",
 			"transparency": false,
 			"animation_frames": 0,
@@ -21,7 +24,10 @@
 			"asset_id": "character.placeholder_hero",
 			"category": "characters",
 			"file_path": "res://assets/characters/placeholder_hero.png",
-			"dimensions": [32, 32],
+			"dimensions": [
+				32,
+				32
+			],
 			"format": "png",
 			"transparency": true,
 			"animation_frames": 1,
@@ -37,7 +43,10 @@
 			"asset_id": "tileset.placeholder_overworld",
 			"category": "tilesets",
 			"file_path": "res://assets/tilesets/placeholder_tiles.png",
-			"dimensions": [64, 32],
+			"dimensions": [
+				64,
+				32
+			],
 			"format": "png",
 			"transparency": false,
 			"animation_frames": 0,
@@ -53,7 +62,10 @@
 			"asset_id": "environment.placeholder_sign",
 			"category": "environments",
 			"file_path": "res://assets/environments/placeholder_sign.png",
-			"dimensions": [16, 16],
+			"dimensions": [
+				16,
+				16
+			],
 			"format": "png",
 			"transparency": true,
 			"animation_frames": 1,
@@ -64,6 +76,63 @@
 			"prompt_reference": "",
 			"approval_status": "placeholder",
 			"notes": "Placa de madeira; base do poste na linha 15 (pivô nos pés)."
+		},
+		{
+			"asset_id": "portrait.placeholder_hero",
+			"category": "portraits",
+			"file_path": "res://assets/portraits/placeholder_hero_portrait.png",
+			"dimensions": [
+				32,
+				32
+			],
+			"format": "png",
+			"transparency": false,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "placeholder",
+			"notes": "Retrato (rosto e ombros) com fundo controlado; exibido em 2x (64x64) ao lado das falas."
+		},
+		{
+			"asset_id": "enemy.placeholder_wolf",
+			"category": "enemies",
+			"file_path": "res://assets/enemies/placeholder_wolf.png",
+			"dimensions": [
+				32,
+				32
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "placeholder",
+			"notes": "Lobo de perfil; pivô nos pés (linha 27)."
+		},
+		{
+			"asset_id": "enemy.placeholder_goblin",
+			"category": "enemies",
+			"file_path": "res://assets/enemies/placeholder_goblin.png",
+			"dimensions": [
+				32,
+				32
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "placeholder",
+			"notes": "Goblin com cimitarra; pivô nos pés (linha 27)."
 		}
 	]
 }

@@ -1,0 +1,27 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "encounter.lone_wolf",
+			"name": "Lobo na mata",
+			"description": "Um lobo faminto sai do meio dos arbustos.",
+			"source": "original",
+			"enemies": [{"monster_id": "monster.wolf", "count": 1}],
+			"flee_allowed": true,
+			"arena_width": 12,
+			"arena_height": 8,
+			"intro_text": "Um lobo faminto rosna e avança!"
+		},
+		{
+			"id": "encounter.ruin_goblin",
+			"name": "Sentinela da ruína",
+			"description": "Um goblin vigia a ruína e não gosta de visitas.",
+			"source": "original",
+			"enemies": [{"monster_id": "monster.goblin_warrior", "count": 1}],
+			"flee_allowed": true,
+			"arena_width": 12,
+			"arena_height": 8,
+			"intro_text": "Um goblin salta das pedras com a cimitarra em punho!"
+		}
+	]
+}

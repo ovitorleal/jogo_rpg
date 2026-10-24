@@ -31,6 +31,25 @@
 | Sentidos Aguçados do Elfo: proficiência em Intuição, Percepção ou Sobrevivência | dados `extra_skill_options` | Habilidoso do Humano: qualquer perícia |
 | Traços de espécie com nível mínimo (Voo Dracônico, Forma Grande: nível 5) só aparecem a partir desse nível | `CharacterSheet` | |
 
+### Combate (Fase 3)
+
+| Regra | Onde | Notas |
+|---|---|---|
+| Iniciativa: d20 + modificador de Destreza | `CombatManager.start` | Empates: maior bônus, maior Destreza, grupo antes dos inimigos, id (adaptação determinística) |
+| Jogada de ataque: d20 + bônus ≥ CA acerta; 20 natural sempre acerta e é Acerto Crítico; 1 natural sempre erra | `Attack.roll_attack` | |
+| Dano: dados da arma + modificador; no crítico os dados são rolados duas vezes (modificador uma vez); mínimo 0 | `Attack.roll_damage` | |
+| Resistência: metade, arredondando para baixo; vulnerabilidade: dobro | `Attack.apply_damage_modifiers` | Resistência a veneno do Anão já vale em combate |
+| Bônus de ataque com arma: Força (corpo a corpo) ou Destreza (distância); Acuidade usa o maior; + proficiência se treinado | `Attack.weapon_attacks` | Treinamentos: simples, marciais, marciais com Acuidade/Leve (Ladino), marciais Leves (Monge) |
+| Versátil: dano de duas mãos quando não há escudo | `Attack.weapon_attacks` | |
+| Arremesso: arma corpo a corpo com Arremesso vira também ataque à distância (alcance normal/longo) | `Attack.weapon_attacks` | |
+| Ataque Desarmado: Força + proficiência; dano 1 + Força, contundente | `Attack.unarmed_strike` | |
+| Desvantagem à distância além do alcance normal e com inimigo adjacente; inválido além do alcance longo | `CombatManager.attack_advantage` | |
+| Vantagem e desvantagem se anulam (qualquer quantidade) | `D20Test.resolve_advantage` | |
+| Turno: uma ação e movimento igual ao deslocamento; quadrados de 5 pés, diagonal também 5 pés | `CombatManager` | Atravessa aliados, não inimigos; não termina em casa ocupada |
+| Táticas de Matilha (Lobo): vantagem com aliado a até 5 pés do alvo | `CombatManager.attack_advantage` | |
+| Monstro a 0 PV morre; personagem a 0 PV cai inconsciente; grupo todo a 0 PV = derrota | `CombatManager` | Testes de morte ainda não implementados |
+| XP do encontro dividido igualmente entre o grupo na vitória | `CombatManager.apply_results_to_party` | |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
@@ -42,6 +61,7 @@
 - Armaduras: Couro, Couro Batido, Camisão de Malha, Brunea, Cota de Malha, Escudo.
 - Armas: Adaga, Azagaia, Bordão, Clava, Foice, Lança, Maça, Machadinha, Arco Curto (simples); Cimitarra, Espada Curta,
   Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
+- Monstros: Lobo e Goblin Guerreiro (CA, PV, dados de vida, deslocamento, atributos, ataques, ND e XP).
 - Descrições são resumos próprios em português; nomes de regras traduzidos livremente.
 
 ## Adaptações
@@ -51,7 +71,10 @@
 | Kit inicial simplificado: só armadura, escudo e armas da opção A de cada classe (o Guerreiro recebe Cota de Malha, Escudo e Espada Longa) | Pacotes, munição, focos, ferramentas e PO entram com o inventário (Fase 5) |
 | Humano e Tiefling sempre tamanho Médio | Escolha de tamanho ainda não exposta na criação |
 | Escolhas com efeito mecânico ainda não modeladas (Ancestral Dracônico, Legado Ínfero, Linhagens, Ordem Divina/Primal, Ancestral Gigante) | Registradas como características não implementadas; resistências que dependem delas ainda não aparecem na ficha |
-| Unidades em pés nos dados e na ficha | Conversão para a grade de combate (quadrados de 5 pés) na Fase 3 |
+| Unidades em pés nos dados e na ficha; grade de combate com quadrados de 5 pés | Padrão do SRD para grade |
+| Fugir: usa a ação do turno e encerra o combate para o grupo inteiro, sem teste | Simplificação até existirem Desengajar e ataques de oportunidade |
+| Sem reações (ataques de oportunidade) e sem ações bônus em combate | Fatia inicial da Fase 3 |
+| Dados de vida dos monstros fixos na média do SRD (Lobo 11, Goblin 10) | Previsibilidade; o validador confere se a média cabe nos dados |
 
 ## Pendências
 
@@ -59,7 +82,9 @@
   Conjuração/Magia de Pacto de todas as classes conjuradoras (sistema de magias ainda não existe), Fúria, Artes Marciais,
   Inspiração de Bardo, Estilo de Luta, Retomar o Fôlego, Maestria em Armas, Ataque Furtivo, Cura pelas Mãos, traços de espécie
   com escolha ou efeito em combate, talentos de origem (Atacante Selvagem, Alerta).
-- Ataques, dano, críticos, condições e descansos: Fase 3 em diante.
+- Testes de morte, condições (Caído, Inconsciente com efeitos, Amedrontado...), reações, ações bônus, Desengajar/Esquivar/Disparada.
+- Derrubar da mordida do Lobo e Fuga Ágil do Goblin (registrados como não implementados).
+- Descanso curto/longo (hoje os PV perdidos só voltam com um novo personagem).
 - Experiência e subida de nível: Fase 5.
 - Treinamento com armas (simples/marciais) registrado, mas ainda sem efeito (ataques na Fase 3).
 - Compra de pontos na tela de criação.

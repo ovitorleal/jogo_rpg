@@ -37,6 +37,17 @@
 | JSON incluídos na exportação via `include_filter = "data/*.json"` | `all_resources` não empacota arquivos que não são recursos |
 | Texto do jogador escapado antes de ir para BBCode | Nome com `[` não pode injetar formatação |
 
+### Fase 3
+
+| Decisão | Motivo |
+|---|---|
+| `CombatManager` é `RefCounted` puro, sem nós; recebe comandos e devolve eventos | Testável sem cena; resultado independente de animação; base para servidor autoritativo |
+| Comandos validados (turno, ação, alcance, movimento) com mensagem de erro | A interface nunca altera estado diretamente |
+| IA dos inimigos determinística por prioridades | Previsível e reproduzível com semente |
+| Cena de combate separada; `ExplorationManager` (autoload) guarda retorno, encontros resolvidos e resultado | Estado da exploração sobrevive às trocas de cena |
+| Gatilho de encontro só emite sinal; o mapa inicia o combate com `call_deferred` | Não remover a cena dentro de um callback de física |
+| Falas com retrato: `Interactable.speaker_name/speaker_portrait`; vazio = o personagem do jogador | Mesmo componente serve para placas e futuros NPCs |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,
@@ -59,7 +70,15 @@ Persistência e Ferramentas. Estado atual:
 - `CharacterSheet`: ficha derivada e rolagens de teste/resistência do personagem.
 - Autoload `PartyManager`: grupo atual (só o líder no MVP).
 
+**Sistemas de jogo — combate** (`scripts/combat/`)
+- `Combatant`: participante montado de `CharacterData` (ataques derivados da ficha) ou de um monstro.
+- `CombatManager`: posicionamento, iniciativa, turnos, comandos (`move`, `attack`, `end_turn`, `flee`), IA, fim e resultados.
+- `CombatLog`: texto do registro a partir dos eventos (apresentação).
+- `CombatBoard` + `combat_scene`: grade clicável, ordem de iniciativa, registro, ações, painel de resultado.
+
 **Sistemas de jogo — exploração** (`scripts/exploration/`)
+- Autoload `ExplorationManager`: retorno ao mapa, gatilhos resolvidos/desarmados, último resultado.
+- `EncounterTrigger` (Area2D): inicia um encontro (`data/encounters/`); some após vitória; após fuga, só rearma ao sair da área.
 - `Player` (`scenes/characters/player.tscn`): movimento, colisão, câmera filha, detecção do `Interactable` mais próximo.
 - `Interactable` (Area2D): componente genérico com `prompt_text`, `message_text`, `enabled` e o sinal `interacted`.
 - `ExplorationMap`: controlador de um mapa; trata `interact` e `character_sheet` (C/Esc), bloqueia o jogador
@@ -71,9 +90,10 @@ Persistência e Ferramentas. Estado atual:
 - `CharacterSheetPanel`: formata uma `CharacterSheet` (marcas "(P)"/"(E)" em texto, não só cor).
 - `ExplorationHud`: aviso, mensagem e ficha.
 
-Fluxo: Título → Criação → `PartyManager.start_new_party()` → Mapa de teste → [C] Ficha.
+Fluxo: Título → Criação → `PartyManager.start_new_party()` → Mapa de teste → [C] Ficha / [E] falas com retrato →
+área de encontro → Combate → vitória/fuga: volta ao mapa na mesma posição (PV e XP mantidos) · derrota: título.
 
-Módulos ainda não criados: `ExplorationManager` (estado entre mapas), `CombatManager`, `EncounterDirector`, `TravelSystem`,
+Módulos ainda não criados: `EncounterDirector`, `TravelSystem`,
 `InventorySystem`, `QuestManager`, `DialogueSystem`, `SaveManager`, `AssetRegistry`, `AudioManager`, `SettingsManager`.
 
 ## Testes

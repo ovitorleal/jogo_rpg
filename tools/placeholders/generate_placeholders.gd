@@ -6,6 +6,64 @@ extends SceneTree
 const HERO_PATH := "res://assets/characters/placeholder_hero.png"
 const TILES_PATH := "res://assets/tilesets/placeholder_tiles.png"
 const SIGN_PATH := "res://assets/environments/placeholder_sign.png"
+const PORTRAIT_PATH := "res://assets/portraits/placeholder_hero_portrait.png"
+const WOLF_PATH := "res://assets/enemies/placeholder_wolf.png"
+const GOBLIN_PATH := "res://assets/enemies/placeholder_goblin.png"
+
+const PORTRAIT_BG := [Color8(43, 35, 64), Color8(58, 48, 80)]
+
+## Mapas de pixels com largura livre: cada linha é centralizada no quadro 32x32 e a última
+## linha fica na linha BOTTOM_ROW (pés no mesmo pivô do herói).
+const BOTTOM_ROW := 27
+const CREATURE_PALETTE := {
+	"o": Color8(26, 20, 35),
+	"g": Color8(122, 122, 133),
+	"G": Color8(160, 160, 172),
+	"d": Color8(74, 74, 85),
+	"e": Color8(230, 214, 90),
+	"k": Color8(111, 154, 74),
+	"K": Color8(74, 107, 50),
+	"r": Color8(214, 70, 60),
+	"b": Color8(107, 74, 46),
+	"B": Color8(61, 43, 31),
+	"s": Color8(200, 200, 208),
+	"x": Color(0.0, 0.0, 0.0, 0.3),
+}
+
+const WOLF_ROWS: Array[String] = [
+	"...o.o...............",
+	"..ogogo..............",
+	".ogggggo.............",
+	"oegggggooooooooooooo.",
+	"ogggggggggggggggggggo",
+	"oddoggggggggggggggggo",
+	".oo.oGGGGGGGGGGgggggoo",
+	"....oggggggggggggggo.go",
+	"....ogggoooooooogggo..o",
+	"....oggo.......oggo....",
+	"....oggo.......oggo....",
+	"....oddo.......oddo....",
+	"....ooo........ooo.....",
+	"...xxxxxxxxxxxxxxxx....",
+]
+
+const GOBLIN_ROWS: Array[String] = [
+	"o..........o..",
+	"ko.oooooo.ok..",
+	".okkkkkkkko...",
+	"..okrkkrko....",
+	"..okkkkkko....",
+	"...okKKko.....",
+	"....oooo......",
+	"..obbbbbbo..s.",
+	".okbbbbbbkoss.",
+	".okbBBBBbkos..",
+	"..obbbbbbos...",
+	"..obboobbo....",
+	"..okko.okko...",
+	"..ooo..ooo....",
+	".xxxxxxxxxx...",
+]
 
 const TILE := 16
 const TILE_COLUMNS := 4
@@ -69,7 +127,84 @@ func _initialize() -> void:
 	var ok := _save(_build_hero(), HERO_PATH)
 	ok = ok and _save(_build_tiles(), TILES_PATH)
 	ok = ok and _save(_build_sign(), SIGN_PATH)
+	ok = ok and _save(_build_portrait(), PORTRAIT_PATH)
+	ok = ok and _save(_build_from_rows(WOLF_ROWS, "Lobo"), WOLF_PATH)
+	ok = ok and _save(_build_from_rows(GOBLIN_ROWS, "Goblin"), GOBLIN_PATH)
 	quit(0 if ok else 1)
+
+
+func _build_from_rows(rows: Array[String], label: String) -> Image:
+	var image := Image.create_empty(32, 32, false, Image.FORMAT_RGBA8)
+	var top := BOTTOM_ROW - rows.size() + 1
+	for row_index in rows.size():
+		var row: String = rows[row_index]
+		if row.length() > 32:
+			push_error("%s: linha %d com mais de 32 colunas" % [label, row_index])
+			return null
+		@warning_ignore("integer_division")
+		var left := (32 - row.length()) / 2
+		for col in row.length():
+			var key := row[col]
+			if key == ".":
+				continue
+			if not CREATURE_PALETTE.has(key):
+				push_error("%s: cor desconhecida '%s' na linha %d" % [label, key, row_index])
+				return null
+			image.set_pixel(left + col, top + row_index, CREATURE_PALETTE[key])
+	return image
+
+
+## Retrato do herói (rosto e ombros), 32x32 com fundo controlado. Exibido em 2x na interface.
+func _build_portrait() -> Image:
+	var image := Image.create_empty(32, 32, false, Image.FORMAT_RGBA8)
+	var outline: Color = PALETTE["o"]
+	for y in 32:
+		for x in 32:
+			var lit := Vector2(x, y).distance_to(Vector2(16, 13)) < 13.0
+			image.set_pixel(x, y, PORTRAIT_BG[1] if lit else PORTRAIT_BG[0])
+	# Ombros: capa nas laterais, armadura no centro, contorno no topo.
+	for y in range(23, 32):
+		for x in range(2, 30):
+			var dx := absf(x - 15.5)
+			var top := 23.0 + pow(dx / 14.0, 2.0) * 4.0
+			if y < top:
+				continue
+			var color: Color = PALETTE["c"] if dx > 9.0 else PALETTE["a"]
+			if dx <= 9.0 and dx > 6.0 and y < 27:
+				color = PALETTE["A"]
+			if y < top + 1.0:
+				color = outline
+			image.set_pixel(x, y, color)
+	# Pescoço.
+	for y in range(19, 24):
+		for x in range(13, 19):
+			image.set_pixel(x, y, outline if x == 13 or x == 18 else PALETTE["s"])
+	# Cabeça (elipse) com contorno.
+	var center := Vector2(15.5, 13.0)
+	for y in range(3, 22):
+		for x in range(6, 26):
+			var d := pow((x - center.x) / 6.5, 2.0) + pow((y - center.y) / 7.5, 2.0)
+			if d <= 0.82:
+				image.set_pixel(x, y, PALETTE["s"])
+			elif d <= 1.0:
+				image.set_pixel(x, y, outline)
+	# Cabelo: topo da cabeça e laterais.
+	for y in range(4, 13):
+		for x in range(9, 23):
+			var d := pow((x - center.x) / 6.5, 2.0) + pow((y - center.y) / 7.5, 2.0)
+			var fringe := y <= 8 or (y <= 12 and (x <= 10 or x >= 21))
+			if d <= 0.82 and fringe:
+				image.set_pixel(x, y, PALETTE["h"])
+	# Olhos, sobrancelhas e boca.
+	for eye_x in [12, 19]:
+		image.set_pixel(eye_x, 13, outline)
+		image.set_pixel(eye_x, 12, PALETTE["h"])
+		image.set_pixel(eye_x + 1, 12, PALETTE["h"])
+	image.set_pixel(15, 15, Color8(200, 150, 110))
+	image.set_pixel(16, 15, Color8(200, 150, 110))
+	for x in range(14, 18):
+		image.set_pixel(x, 17, Color8(160, 100, 80))
+	return image
 
 
 func _save(image: Image, path: String) -> bool:
