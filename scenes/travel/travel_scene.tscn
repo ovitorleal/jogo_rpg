@@ -1,0 +1,207 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/travel/travel_scene.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/travel/route_strip.gd" id="2_strip"]
+
+[sub_resource type="Theme" id="Theme_small"]
+default_font_size = 9
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.102, 0.078, 0.137, 0.97)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.522, 0.592, 0.722, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_event"]
+bg_color = Color(0.102, 0.078, 0.137, 0.98)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.878, 0.706, 0.541, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="TravelScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_small")
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.102, 0.078, 0.137, 1)
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="Layout" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Header" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.902, 0.882, 0.827, 1)
+theme_override_font_sizes/font_size = 12
+text = "Viagem"
+
+[node name="Clock" type="Label" parent="Margin/Layout/Header"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
+theme_override_font_sizes/font_size = 10
+text = "Dia 1, 08:00"
+
+[node name="Strip" type="Control" parent="Margin/Layout"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+script = ExtResource("2_strip")
+
+[node name="Status" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.902, 0.882, 0.827, 1)
+text = "..."
+
+[node name="Message" type="Label" parent="Margin/Layout"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
+autowrap_mode = 3
+
+[node name="Columns" type="HBoxContainer" parent="Margin/Layout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="Actions" type="VBoxContainer" parent="Margin/Layout/Columns"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+
+[node name="AdvanceButton" type="Button" parent="Margin/Layout/Columns/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Seguir viagem"
+
+[node name="ArriveButton" type="Button" parent="Margin/Layout/Columns/Actions"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Chegar ao destino"
+
+[node name="ShortRestButton" type="Button" parent="Margin/Layout/Columns/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "1 hora: gasta um Dado de Vida e recupera PV"
+text = "Descanso curto (1 Dado de Vida)"
+
+[node name="LongRestButton" type="Button" parent="Margin/Layout/Columns/Actions"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "8 horas: PV e Dados de Vida completos; gasta 1 ração por membro"
+text = "Acampar (descanso longo, 1 ração)"
+
+[node name="LogPanel" type="PanelContainer" parent="Margin/Layout/Columns"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Log" type="RichTextLabel" parent="Margin/Layout/Columns/LogPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/default_color = Color(0.902, 0.882, 0.827, 1)
+theme_override_font_sizes/normal_font_size = 8
+bbcode_enabled = true
+scroll_following = true
+
+[node name="EventPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -220.0
+offset_top = -120.0
+offset_right = 220.0
+offset_bottom = 120.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_event")
+
+[node name="Margin" type="MarginContainer" parent="EventPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="Content" type="VBoxContainer" parent="EventPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="EventTitle" type="Label" parent="EventPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.902, 0.882, 0.827, 1)
+theme_override_font_sizes/font_size = 12
+
+[node name="EventSpeaker" type="Label" parent="EventPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
+theme_override_font_sizes/font_size = 10
+
+[node name="EventText" type="RichTextLabel" parent="EventPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/default_color = Color(0.902, 0.882, 0.827, 1)
+theme_override_font_sizes/normal_font_size = 10
+theme_override_font_sizes/bold_font_size = 10
+bbcode_enabled = true
+
+[node name="EventChoices" type="VBoxContainer" parent="EventPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="EventContinue" type="Button" parent="EventPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Continuar"

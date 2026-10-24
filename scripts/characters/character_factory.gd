@@ -100,6 +100,8 @@ static func validate(c: CharacterData, registry: ContentRegistry, check_hp: bool
 		var max_hp := CharacterSheet.build(c, registry).max_hp
 		if c.current_hp < 0 or c.current_hp > max_hp:
 			errors.append("PV atuais %d fora de 0-%d" % [c.current_hp, max_hp])
+	if c.hit_dice_spent < 0 or c.hit_dice_spent > RulesEngine.hit_dice_total(c.level):
+		errors.append("Dados de Vida gastos %d fora de 0-%d" % [c.hit_dice_spent, RulesEngine.hit_dice_total(c.level)])
 	return errors
 
 

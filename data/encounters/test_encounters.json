@@ -6,7 +6,12 @@
 			"name": "Lobo na mata",
 			"description": "Um lobo faminto sai do meio dos arbustos.",
 			"source": "original",
-			"enemies": [{"monster_id": "monster.wolf", "count": 1}],
+			"enemies": [
+				{
+					"monster_id": "monster.wolf",
+					"count": 1
+				}
+			],
 			"flee_allowed": true,
 			"arena_width": 12,
 			"arena_height": 8,
@@ -17,11 +22,48 @@
 			"name": "Sentinela da ruína",
 			"description": "Um goblin vigia a ruína e não gosta de visitas.",
 			"source": "original",
-			"enemies": [{"monster_id": "monster.goblin_warrior", "count": 1}],
+			"enemies": [
+				{
+					"monster_id": "monster.goblin_warrior",
+					"count": 1
+				}
+			],
 			"flee_allowed": true,
 			"arena_width": 12,
 			"arena_height": 8,
 			"intro_text": "Um goblin salta das pedras com a cimitarra em punho!"
+		},
+		{
+			"id": "encounter.wolf_pair",
+			"name": "Uivos na noite",
+			"description": "Dois lobos cercam o acampamento.",
+			"source": "original",
+			"enemies": [
+				{
+					"monster_id": "monster.wolf",
+					"count": 2
+				}
+			],
+			"flee_allowed": true,
+			"arena_width": 12,
+			"arena_height": 8,
+			"intro_text": "Olhos amarelos brilham no escuro: dois lobos se aproximam!"
+		},
+		{
+			"id": "encounter.goblin_scout",
+			"name": "Batedor goblin",
+			"description": "Um goblin vigia a trilha de cima de uma pedra.",
+			"source": "original",
+			"enemies": [
+				{
+					"monster_id": "monster.goblin_warrior",
+					"count": 1
+				}
+			],
+			"flee_allowed": true,
+			"arena_width": 12,
+			"arena_height": 8,
+			"intro_text": "Uma flecha passa zunindo: um batedor goblin bloqueia a trilha!"
 		}
 	]
 }

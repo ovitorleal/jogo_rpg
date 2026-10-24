@@ -50,6 +50,16 @@
 | Monstro a 0 PV morre; personagem a 0 PV cai inconsciente; grupo todo a 0 PV = derrota | `CombatManager` | Testes de morte ainda não implementados |
 | XP do encontro dividido igualmente entre o grupo na vitória | `CombatManager.apply_results_to_party` | |
 
+### Descanso e viagem (Fase 4)
+
+| Regra | Onde | Notas |
+|---|---|---|
+| Dados de Vida: total = nível; descanso curto gasta um por vez e recupera 1 dado + Con | `RulesEngine.spend_hit_die`, `Rest` | Mínimo 0 por dado (**a conferir** no SRD 5.2.1 se há mínimo de 1) |
+| Descanso longo: recupera todos os PV e todos os Dados de Vida gastos | `Rest.long_rest` | |
+| Personagem com 0 PV não gasta Dados de Vida | `Rest.spend_hit_die` | |
+| Testes de perícia em eventos de viagem usam a ficha do líder (com desvantagem de armadura em Furtividade) | `TravelSystem.choose_option` | |
+| Dano de perigos aplica resistências da espécie (ex.: veneno no Anão) | `TravelSystem.choose_option` | |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
@@ -75,6 +85,11 @@
 | Fugir: usa a ação do turno e encerra o combate para o grupo inteiro, sem teste | Simplificação até existirem Desengajar e ataques de oportunidade |
 | Sem reações (ataques de oportunidade) e sem ações bônus em combate | Fatia inicial da Fase 3 |
 | Dados de vida dos monstros fixos na média do SRD (Lobo 11, Goblin 10) | Previsibilidade; o validador confere se a média cabe nos dados |
+| Viagem em trechos: cada trecho consome 1 ração por membro; sem ração o grupo fica "com fome" e não pode acampar | Regra original simples até existirem exaustão e inventário |
+| Descanso curto na viagem: 1 hora por Dado de Vida gasto; acampar: 8 horas e 1 ração por membro | Simplificação do tempo de descanso |
+| Perigos de eventos nunca reduzem abaixo de 1 PV | Evitar derrota fora do combate no MVP |
+| Orçamento de encontros: 100 XP × nível × membros (combates acima disso não são sorteados) | Heurística original do projeto (não é tabela do SRD) |
+| Fogueira do mapa concede descanso longo sem custo | Ponto seguro de recuperação do protótipo |
 
 ## Pendências
 

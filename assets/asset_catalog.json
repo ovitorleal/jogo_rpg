@@ -209,6 +209,25 @@
 			"prompt_reference": "",
 			"approval_status": "in_review",
 			"notes": "Placa de madeira; pivô na linha 15."
+		},
+		{
+			"asset_id": "environment.campfire",
+			"category": "environments",
+			"file_path": "res://assets/environments/campfire_sheet.png",
+			"dimensions": [
+				48,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 3,
+			"animation_fps": 6,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Fogueira em 3 quadros 16x16 (chama tremulando); pivô na linha 15. Gerado por tools/art/generate_environment.gd."
 		}
 	]
 }

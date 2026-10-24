@@ -1,0 +1,31 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "route.east_road",
+			"name": "Estrada do Leste",
+			"description": "Trilha de terra que entra na Floresta Sussurrante até o Bosque do Riacho.",
+			"source": "original",
+			"from_map": "map.clearing",
+			"to_map": "map.forest_brook",
+			"to_entrance": "Entrance_west",
+			"region_id": "region.whispering_forest",
+			"segments": 4,
+			"hours_per_segment": 3,
+			"start_hour": 8
+		},
+		{
+			"id": "route.east_road_back",
+			"name": "Estrada do Leste (volta)",
+			"description": "O caminho de volta do Bosque do Riacho até a clareira da encruzilhada.",
+			"source": "original",
+			"from_map": "map.forest_brook",
+			"to_map": "map.clearing",
+			"to_entrance": "Entrance_east",
+			"region_id": "region.whispering_forest",
+			"segments": 4,
+			"hours_per_segment": 3,
+			"start_hour": 14
+		}
+	]
+}

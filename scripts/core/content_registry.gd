@@ -121,6 +121,67 @@ const TYPES := {
 			"intro_text": {"type": "string"},
 		},
 	},
+	"map": {
+		"dir": "maps",
+		"prefix": "map.",
+		"fields": {
+			"scene": {"type": "string"},
+			"region_id": {"type": "string", "ref": "region"},
+		},
+	},
+	"region": {
+		"dir": "regions",
+		"prefix": "region.",
+		"fields": {
+			"danger": {"type": "int", "min": 1, "max": 5},
+			## Peso de um trecho sem acontecimentos.
+			"quiet_weight": {"type": "int", "min": 0, "max": 100},
+			"table": {"type": "object_array", "min_length": 1, "fields": {
+				"kind": {"type": "string", "enum": ["combat", "event"]},
+				"id": {"type": "string"},
+				"weight": {"type": "int", "min": 1, "max": 100},
+				"time": {"type": "string", "enum": ["any", "day", "night"], "required": false, "default": "any"},
+				"once": {"type": "bool", "required": false, "default": false},
+			}},
+		},
+	},
+	"route": {
+		"dir": "routes",
+		"prefix": "route.",
+		"fields": {
+			"from_map": {"type": "string", "ref": "map"},
+			"to_map": {"type": "string", "ref": "map"},
+			## Nome do Marker2D de chegada no mapa de destino.
+			"to_entrance": {"type": "string"},
+			"region_id": {"type": "string", "ref": "region"},
+			"segments": {"type": "int", "min": 1, "max": 8},
+			"hours_per_segment": {"type": "int", "min": 1, "max": 12},
+			"start_hour": {"type": "int", "min": 0, "max": 23},
+		},
+	},
+	"event": {
+		"dir": "events",
+		"prefix": "event.",
+		"fields": {
+			"kind": {"type": "string", "enum": ["discovery", "npc", "hazard"]},
+			"text": {"type": "string"},
+			"speaker_name": {"type": "string", "required": false, "default": ""},
+			"choices": {"type": "object_array", "min_length": 1, "max_length": 4, "fields": {
+				"id": {"type": "string"},
+				"label": {"type": "string"},
+				"skill": {"type": "string", "ref": "skill", "required": false, "default": ""},
+				"dc": {"type": "int", "min": 0, "max": 30, "required": false, "default": 0},
+				"success_text": {"type": "string"},
+				"failure_text": {"type": "string", "required": false, "default": ""},
+				"success_rations": {"type": "int", "min": -5, "max": 10, "required": false, "default": 0},
+				"success_xp": {"type": "int", "min": 0, "max": 500, "required": false, "default": 0},
+				"success_heal": {"type": "string", "dice": true, "required": false, "default": ""},
+				"failure_damage": {"type": "string", "dice": true, "required": false, "default": ""},
+				"failure_damage_type": {"type": "string", "ref": "damage_type", "required": false, "default": "bludgeoning"},
+				"failure_rations": {"type": "int", "min": -5, "max": 0, "required": false, "default": 0},
+			}},
+		},
+	},
 	"item": {
 		"dir": "items",
 		"prefix": "item.",
@@ -323,6 +384,28 @@ func _check_consistency() -> void:
 			total += int(group.get("count", 0))
 		if encounter.has("arena_width") and total > int(encounter["arena_height"]):
 			errors.append("%s: %d inimigos não cabem na coluna inicial da arena" % [id, total])
+	for id in ids("map"):
+		var map := get_entry("map", id)
+		if map.has("scene") and not ResourceLoader.exists(str(map["scene"])):
+			errors.append("%s: cena inexistente '%s'" % [id, map["scene"]])
+	for id in ids("region"):
+		var table: Array = get_entry("region", id).get("table", [])
+		for i in table.size():
+			var row: Dictionary = table[i]
+			var type_name := "encounter" if row.get("kind") == "combat" else "event"
+			if not has(type_name, str(row.get("id", ""))):
+				errors.append("%s.table[%d]: %s inexistente '%s'" % [id, i, type_name, row.get("id", "")])
+	for id in ids("route"):
+		var route := get_entry("route", id)
+		if route.get("from_map") == route.get("to_map"):
+			errors.append("%s: origem e destino iguais" % id)
+	for id in ids("event"):
+		for choice: Dictionary in get_entry("event", id).get("choices", []):
+			var has_check := not str(choice.get("skill", "")).is_empty()
+			if has_check and int(choice.get("dc", 0)) <= 0:
+				errors.append("%s.%s: teste de perícia sem CD" % [id, choice.get("id")])
+			if has_check and str(choice.get("failure_text", "")).is_empty():
+				errors.append("%s.%s: teste de perícia sem failure_text" % [id, choice.get("id")])
 	for id in ids("item"):
 		var item := get_entry("item", id)
 		if item.get("item_type") != "weapon":

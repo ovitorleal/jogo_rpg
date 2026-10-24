@@ -187,7 +187,8 @@ func test_species_skill_options_consistency() -> void:
 func test_monsters_and_encounters() -> void:
 	var registry := _real_registry()
 	assert_eq(registry.ids("monster"), ["monster.goblin_warrior", "monster.wolf"] as Array[String], "Monstros")
-	assert_eq(registry.ids("encounter"), ["encounter.lone_wolf", "encounter.ruin_goblin"] as Array[String], "Encontros")
+	assert_eq(registry.ids("encounter"), ["encounter.goblin_scout", "encounter.lone_wolf", "encounter.ruin_goblin",
+			"encounter.wolf_pair"] as Array[String], "Encontros")
 	var data := _valid_data()
 	_find(data, "monster", "monster.wolf")["hit_points"] = 40
 	_assert_error(data, "fora do intervalo de 2d8+2", "PV incompatíveis com os dados de vida")

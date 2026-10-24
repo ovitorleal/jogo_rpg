@@ -1,0 +1,697 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/world/props/pine.tscn" id="1_5lp7f"]
+[ext_resource type="PackedScene" path="res://scenes/world/props/tree.tscn" id="2_e081b"]
+[ext_resource type="PackedScene" path="res://scenes/world/props/bush.tscn" id="3_poukp"]
+[ext_resource type="PackedScene" path="res://scenes/world/props/rock.tscn" id="4_s477m"]
+
+[node name="Props" type="Node2D" unique_id=1582621903]
+y_sort_enabled = true
+
+[node name="pine_0" type="StaticBody2D" parent="." unique_id=1861706625 instance=ExtResource("1_5lp7f")]
+position = Vector2(4, 14)
+collision_mask = 0
+
+[node name="pine_1" type="StaticBody2D" parent="." unique_id=512062146 instance=ExtResource("1_5lp7f")]
+position = Vector2(3, 415)
+collision_mask = 0
+
+[node name="tree_2" type="StaticBody2D" parent="." unique_id=353089341 instance=ExtResource("2_e081b")]
+position = Vector2(23, 14)
+collision_mask = 0
+
+[node name="tree_3" type="StaticBody2D" parent="." unique_id=1781133980 instance=ExtResource("2_e081b")]
+position = Vector2(23, 415)
+collision_mask = 0
+
+[node name="tree_4" type="StaticBody2D" parent="." unique_id=1849621033 instance=ExtResource("2_e081b")]
+position = Vector2(42, 14)
+collision_mask = 0
+
+[node name="pine_5" type="StaticBody2D" parent="." unique_id=16721308 instance=ExtResource("1_5lp7f")]
+position = Vector2(45, 415)
+collision_mask = 0
+
+[node name="pine_6" type="StaticBody2D" parent="." unique_id=20822277 instance=ExtResource("1_5lp7f")]
+position = Vector2(65, 14)
+collision_mask = 0
+
+[node name="tree_7" type="StaticBody2D" parent="." unique_id=381869917 instance=ExtResource("2_e081b")]
+position = Vector2(64, 415)
+collision_mask = 0
+
+[node name="tree_8" type="StaticBody2D" parent="." unique_id=1147370108 instance=ExtResource("2_e081b")]
+position = Vector2(83, 14)
+collision_mask = 0
+
+[node name="pine_9" type="StaticBody2D" parent="." unique_id=226798229 instance=ExtResource("1_5lp7f")]
+position = Vector2(83, 415)
+collision_mask = 0
+
+[node name="tree_10" type="StaticBody2D" parent="." unique_id=1779593898 instance=ExtResource("2_e081b")]
+position = Vector2(102, 14)
+collision_mask = 0
+
+[node name="tree_11" type="StaticBody2D" parent="." unique_id=1884479786 instance=ExtResource("2_e081b")]
+position = Vector2(105, 415)
+collision_mask = 0
+
+[node name="pine_12" type="StaticBody2D" parent="." unique_id=5282579 instance=ExtResource("1_5lp7f")]
+position = Vector2(124, 14)
+collision_mask = 0
+
+[node name="pine_13" type="StaticBody2D" parent="." unique_id=1358489686 instance=ExtResource("1_5lp7f")]
+position = Vector2(124, 415)
+collision_mask = 0
+
+[node name="tree_14" type="StaticBody2D" parent="." unique_id=740840739 instance=ExtResource("2_e081b")]
+position = Vector2(145, 14)
+collision_mask = 0
+
+[node name="tree_15" type="StaticBody2D" parent="." unique_id=1002856011 instance=ExtResource("2_e081b")]
+position = Vector2(142, 415)
+collision_mask = 0
+
+[node name="tree_16" type="StaticBody2D" parent="." unique_id=570998524 instance=ExtResource("2_e081b")]
+position = Vector2(166, 14)
+collision_mask = 0
+
+[node name="pine_17" type="StaticBody2D" parent="." unique_id=853131667 instance=ExtResource("1_5lp7f")]
+position = Vector2(162, 415)
+collision_mask = 0
+
+[node name="pine_18" type="StaticBody2D" parent="." unique_id=319025384 instance=ExtResource("1_5lp7f")]
+position = Vector2(184, 14)
+collision_mask = 0
+
+[node name="tree_19" type="StaticBody2D" parent="." unique_id=15302241 instance=ExtResource("2_e081b")]
+position = Vector2(186, 415)
+collision_mask = 0
+
+[node name="tree_20" type="StaticBody2D" parent="." unique_id=1656351625 instance=ExtResource("2_e081b")]
+position = Vector2(205, 14)
+collision_mask = 0
+
+[node name="pine_21" type="StaticBody2D" parent="." unique_id=291222389 instance=ExtResource("1_5lp7f")]
+position = Vector2(205, 415)
+collision_mask = 0
+
+[node name="tree_22" type="StaticBody2D" parent="." unique_id=772189996 instance=ExtResource("2_e081b")]
+position = Vector2(224, 14)
+collision_mask = 0
+
+[node name="tree_23" type="StaticBody2D" parent="." unique_id=665298912 instance=ExtResource("2_e081b")]
+position = Vector2(226, 415)
+collision_mask = 0
+
+[node name="pine_24" type="StaticBody2D" parent="." unique_id=1061600373 instance=ExtResource("1_5lp7f")]
+position = Vector2(245, 14)
+collision_mask = 0
+
+[node name="pine_25" type="StaticBody2D" parent="." unique_id=1901046789 instance=ExtResource("1_5lp7f")]
+position = Vector2(243, 415)
+collision_mask = 0
+
+[node name="tree_26" type="StaticBody2D" parent="." unique_id=1421915041 instance=ExtResource("2_e081b")]
+position = Vector2(265, 14)
+collision_mask = 0
+
+[node name="tree_27" type="StaticBody2D" parent="." unique_id=1189362181 instance=ExtResource("2_e081b")]
+position = Vector2(265, 415)
+collision_mask = 0
+
+[node name="tree_28" type="StaticBody2D" parent="." unique_id=1258156139 instance=ExtResource("2_e081b")]
+position = Vector2(284, 14)
+collision_mask = 0
+
+[node name="pine_29" type="StaticBody2D" parent="." unique_id=716589948 instance=ExtResource("1_5lp7f")]
+position = Vector2(282, 415)
+collision_mask = 0
+
+[node name="pine_30" type="StaticBody2D" parent="." unique_id=1383867193 instance=ExtResource("1_5lp7f")]
+position = Vector2(303, 14)
+collision_mask = 0
+
+[node name="tree_31" type="StaticBody2D" parent="." unique_id=619467284 instance=ExtResource("2_e081b")]
+position = Vector2(303, 415)
+collision_mask = 0
+
+[node name="tree_32" type="StaticBody2D" parent="." unique_id=670994022 instance=ExtResource("2_e081b")]
+position = Vector2(323, 14)
+collision_mask = 0
+
+[node name="pine_33" type="StaticBody2D" parent="." unique_id=766148070 instance=ExtResource("1_5lp7f")]
+position = Vector2(322, 415)
+collision_mask = 0
+
+[node name="tree_34" type="StaticBody2D" parent="." unique_id=1810397788 instance=ExtResource("2_e081b")]
+position = Vector2(344, 14)
+collision_mask = 0
+
+[node name="tree_35" type="StaticBody2D" parent="." unique_id=1919998812 instance=ExtResource("2_e081b")]
+position = Vector2(346, 415)
+collision_mask = 0
+
+[node name="pine_36" type="StaticBody2D" parent="." unique_id=681929532 instance=ExtResource("1_5lp7f")]
+position = Vector2(365, 14)
+collision_mask = 0
+
+[node name="pine_37" type="StaticBody2D" parent="." unique_id=69029877 instance=ExtResource("1_5lp7f")]
+position = Vector2(366, 415)
+collision_mask = 0
+
+[node name="tree_38" type="StaticBody2D" parent="." unique_id=74201744 instance=ExtResource("2_e081b")]
+position = Vector2(384, 14)
+collision_mask = 0
+
+[node name="tree_39" type="StaticBody2D" parent="." unique_id=439322022 instance=ExtResource("2_e081b")]
+position = Vector2(383, 415)
+collision_mask = 0
+
+[node name="tree_40" type="StaticBody2D" parent="." unique_id=1118704066 instance=ExtResource("2_e081b")]
+position = Vector2(405, 14)
+collision_mask = 0
+
+[node name="pine_41" type="StaticBody2D" parent="." unique_id=792440725 instance=ExtResource("1_5lp7f")]
+position = Vector2(406, 415)
+collision_mask = 0
+
+[node name="pine_42" type="StaticBody2D" parent="." unique_id=1496529672 instance=ExtResource("1_5lp7f")]
+position = Vector2(422, 14)
+collision_mask = 0
+
+[node name="tree_43" type="StaticBody2D" parent="." unique_id=1986284331 instance=ExtResource("2_e081b")]
+position = Vector2(422, 415)
+collision_mask = 0
+
+[node name="tree_44" type="StaticBody2D" parent="." unique_id=474538234 instance=ExtResource("2_e081b")]
+position = Vector2(443, 14)
+collision_mask = 0
+
+[node name="pine_45" type="StaticBody2D" parent="." unique_id=2137475582 instance=ExtResource("1_5lp7f")]
+position = Vector2(442, 415)
+collision_mask = 0
+
+[node name="tree_46" type="StaticBody2D" parent="." unique_id=1886528993 instance=ExtResource("2_e081b")]
+position = Vector2(464, 14)
+collision_mask = 0
+
+[node name="tree_47" type="StaticBody2D" parent="." unique_id=223413445 instance=ExtResource("2_e081b")]
+position = Vector2(466, 415)
+collision_mask = 0
+
+[node name="pine_48" type="StaticBody2D" parent="." unique_id=2000354774 instance=ExtResource("1_5lp7f")]
+position = Vector2(483, 14)
+collision_mask = 0
+
+[node name="pine_49" type="StaticBody2D" parent="." unique_id=256259596 instance=ExtResource("1_5lp7f")]
+position = Vector2(484, 415)
+collision_mask = 0
+
+[node name="tree_50" type="StaticBody2D" parent="." unique_id=308513728 instance=ExtResource("2_e081b")]
+position = Vector2(503, 14)
+collision_mask = 0
+
+[node name="tree_51" type="StaticBody2D" parent="." unique_id=876501569 instance=ExtResource("2_e081b")]
+position = Vector2(506, 415)
+collision_mask = 0
+
+[node name="tree_52" type="StaticBody2D" parent="." unique_id=2071427134 instance=ExtResource("2_e081b")]
+position = Vector2(524, 14)
+collision_mask = 0
+
+[node name="pine_53" type="StaticBody2D" parent="." unique_id=729132597 instance=ExtResource("1_5lp7f")]
+position = Vector2(524, 415)
+collision_mask = 0
+
+[node name="pine_54" type="StaticBody2D" parent="." unique_id=2101134255 instance=ExtResource("1_5lp7f")]
+position = Vector2(546, 14)
+collision_mask = 0
+
+[node name="tree_55" type="StaticBody2D" parent="." unique_id=1617836218 instance=ExtResource("2_e081b")]
+position = Vector2(543, 415)
+collision_mask = 0
+
+[node name="tree_56" type="StaticBody2D" parent="." unique_id=644670190 instance=ExtResource("2_e081b")]
+position = Vector2(564, 14)
+collision_mask = 0
+
+[node name="pine_57" type="StaticBody2D" parent="." unique_id=501197966 instance=ExtResource("1_5lp7f")]
+position = Vector2(563, 415)
+collision_mask = 0
+
+[node name="tree_58" type="StaticBody2D" parent="." unique_id=1190250057 instance=ExtResource("2_e081b")]
+position = Vector2(584, 14)
+collision_mask = 0
+
+[node name="tree_59" type="StaticBody2D" parent="." unique_id=916970654 instance=ExtResource("2_e081b")]
+position = Vector2(582, 415)
+collision_mask = 0
+
+[node name="pine_60" type="StaticBody2D" parent="." unique_id=1176172216 instance=ExtResource("1_5lp7f")]
+position = Vector2(604, 14)
+collision_mask = 0
+
+[node name="pine_61" type="StaticBody2D" parent="." unique_id=194146220 instance=ExtResource("1_5lp7f")]
+position = Vector2(602, 415)
+collision_mask = 0
+
+[node name="tree_62" type="StaticBody2D" parent="." unique_id=238393245 instance=ExtResource("2_e081b")]
+position = Vector2(626, 14)
+collision_mask = 0
+
+[node name="tree_63" type="StaticBody2D" parent="." unique_id=2122836830 instance=ExtResource("2_e081b")]
+position = Vector2(623, 415)
+collision_mask = 0
+
+[node name="tree_64" type="StaticBody2D" parent="." unique_id=619857523 instance=ExtResource("2_e081b")]
+position = Vector2(644, 14)
+collision_mask = 0
+
+[node name="pine_65" type="StaticBody2D" parent="." unique_id=927996888 instance=ExtResource("1_5lp7f")]
+position = Vector2(642, 415)
+collision_mask = 0
+
+[node name="pine_66" type="StaticBody2D" parent="." unique_id=477975573 instance=ExtResource("1_5lp7f")]
+position = Vector2(665, 14)
+collision_mask = 0
+
+[node name="tree_67" type="StaticBody2D" parent="." unique_id=264753932 instance=ExtResource("2_e081b")]
+position = Vector2(662, 415)
+collision_mask = 0
+
+[node name="tree_68" type="StaticBody2D" parent="." unique_id=1861843 instance=ExtResource("2_e081b")]
+position = Vector2(682, 14)
+collision_mask = 0
+
+[node name="pine_69" type="StaticBody2D" parent="." unique_id=868208239 instance=ExtResource("1_5lp7f")]
+position = Vector2(682, 415)
+collision_mask = 0
+
+[node name="pine_70" type="StaticBody2D" parent="." unique_id=446388962 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 30)
+collision_mask = 0
+
+[node name="pine_71" type="StaticBody2D" parent="." unique_id=1025282623 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 30)
+collision_mask = 0
+
+[node name="pine_72" type="StaticBody2D" parent="." unique_id=1607597453 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 52)
+collision_mask = 0
+
+[node name="pine_73" type="StaticBody2D" parent="." unique_id=300369291 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 52)
+collision_mask = 0
+
+[node name="pine_74" type="StaticBody2D" parent="." unique_id=1462314042 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 74)
+collision_mask = 0
+
+[node name="pine_75" type="StaticBody2D" parent="." unique_id=849935169 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 74)
+collision_mask = 0
+
+[node name="pine_76" type="StaticBody2D" parent="." unique_id=1993620459 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 96)
+collision_mask = 0
+
+[node name="pine_77" type="StaticBody2D" parent="." unique_id=1375624411 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 96)
+collision_mask = 0
+
+[node name="pine_78" type="StaticBody2D" parent="." unique_id=1512692151 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 118)
+collision_mask = 0
+
+[node name="pine_79" type="StaticBody2D" parent="." unique_id=1458993987 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 118)
+collision_mask = 0
+
+[node name="pine_80" type="StaticBody2D" parent="." unique_id=994155586 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 140)
+collision_mask = 0
+
+[node name="pine_81" type="StaticBody2D" parent="." unique_id=1043921247 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 140)
+collision_mask = 0
+
+[node name="pine_82" type="StaticBody2D" parent="." unique_id=1889882055 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 162)
+collision_mask = 0
+
+[node name="pine_83" type="StaticBody2D" parent="." unique_id=445333633 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 162)
+collision_mask = 0
+
+[node name="pine_84" type="StaticBody2D" parent="." unique_id=2109615520 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 184)
+collision_mask = 0
+
+[node name="pine_85" type="StaticBody2D" parent="." unique_id=89298669 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 184)
+collision_mask = 0
+
+[node name="pine_86" type="StaticBody2D" parent="." unique_id=1348948836 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 206)
+collision_mask = 0
+
+[node name="pine_87" type="StaticBody2D" parent="." unique_id=537228478 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 206)
+collision_mask = 0
+
+[node name="pine_88" type="StaticBody2D" parent="." unique_id=26271985 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 228)
+collision_mask = 0
+
+[node name="pine_89" type="StaticBody2D" parent="." unique_id=1420911784 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 228)
+collision_mask = 0
+
+[node name="pine_90" type="StaticBody2D" parent="." unique_id=1024162590 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 250)
+collision_mask = 0
+
+[node name="pine_91" type="StaticBody2D" parent="." unique_id=774099304 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 250)
+collision_mask = 0
+
+[node name="pine_92" type="StaticBody2D" parent="." unique_id=2111195310 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 272)
+collision_mask = 0
+
+[node name="pine_93" type="StaticBody2D" parent="." unique_id=93397366 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 272)
+collision_mask = 0
+
+[node name="pine_94" type="StaticBody2D" parent="." unique_id=1916965609 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 294)
+collision_mask = 0
+
+[node name="pine_95" type="StaticBody2D" parent="." unique_id=234523961 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 294)
+collision_mask = 0
+
+[node name="pine_96" type="StaticBody2D" parent="." unique_id=209531931 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 316)
+collision_mask = 0
+
+[node name="pine_97" type="StaticBody2D" parent="." unique_id=301328506 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 316)
+collision_mask = 0
+
+[node name="pine_98" type="StaticBody2D" parent="." unique_id=587370803 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 338)
+collision_mask = 0
+
+[node name="pine_99" type="StaticBody2D" parent="." unique_id=977580810 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 338)
+collision_mask = 0
+
+[node name="pine_100" type="StaticBody2D" parent="." unique_id=782145637 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 360)
+collision_mask = 0
+
+[node name="pine_101" type="StaticBody2D" parent="." unique_id=1495308565 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 360)
+collision_mask = 0
+
+[node name="pine_102" type="StaticBody2D" parent="." unique_id=1691073815 instance=ExtResource("1_5lp7f")]
+position = Vector2(6, 382)
+collision_mask = 0
+
+[node name="pine_103" type="StaticBody2D" parent="." unique_id=1750330267 instance=ExtResource("1_5lp7f")]
+position = Vector2(698, 382)
+collision_mask = 0
+
+[node name="tree_104" type="StaticBody2D" parent="." unique_id=281500228 instance=ExtResource("2_e081b")]
+position = Vector2(344, 62)
+collision_mask = 0
+
+[node name="pine_105" type="StaticBody2D" parent="." unique_id=1224829663 instance=ExtResource("1_5lp7f")]
+position = Vector2(424, 350)
+collision_mask = 0
+
+[node name="tree_106" type="StaticBody2D" parent="." unique_id=1873710400 instance=ExtResource("2_e081b")]
+position = Vector2(264, 270)
+collision_mask = 0
+
+[node name="tree_107" type="StaticBody2D" parent="." unique_id=336331950 instance=ExtResource("2_e081b")]
+position = Vector2(152, 174)
+collision_mask = 0
+
+[node name="pine_108" type="StaticBody2D" parent="." unique_id=600246130 instance=ExtResource("1_5lp7f")]
+position = Vector2(248, 78)
+collision_mask = 0
+
+[node name="tree_109" type="StaticBody2D" parent="." unique_id=703570205 instance=ExtResource("2_e081b")]
+position = Vector2(648, 270)
+collision_mask = 0
+
+[node name="tree_110" type="StaticBody2D" parent="." unique_id=1026721236 instance=ExtResource("2_e081b")]
+position = Vector2(136, 254)
+collision_mask = 0
+
+[node name="pine_111" type="StaticBody2D" parent="." unique_id=1604275092 instance=ExtResource("1_5lp7f")]
+position = Vector2(488, 78)
+collision_mask = 0
+
+[node name="tree_112" type="StaticBody2D" parent="." unique_id=498044522 instance=ExtResource("2_e081b")]
+position = Vector2(88, 78)
+collision_mask = 0
+
+[node name="tree_113" type="StaticBody2D" parent="." unique_id=352447892 instance=ExtResource("2_e081b")]
+position = Vector2(328, 382)
+collision_mask = 0
+
+[node name="pine_114" type="StaticBody2D" parent="." unique_id=1213982134 instance=ExtResource("1_5lp7f")]
+position = Vector2(280, 110)
+collision_mask = 0
+
+[node name="tree_115" type="StaticBody2D" parent="." unique_id=878254353 instance=ExtResource("2_e081b")]
+position = Vector2(72, 126)
+collision_mask = 0
+
+[node name="tree_116" type="StaticBody2D" parent="." unique_id=1341744113 instance=ExtResource("2_e081b")]
+position = Vector2(344, 110)
+collision_mask = 0
+
+[node name="pine_117" type="StaticBody2D" parent="." unique_id=1384554566 instance=ExtResource("1_5lp7f")]
+position = Vector2(536, 62)
+collision_mask = 0
+
+[node name="tree_118" type="StaticBody2D" parent="." unique_id=147982428 instance=ExtResource("2_e081b")]
+position = Vector2(152, 142)
+collision_mask = 0
+
+[node name="tree_119" type="StaticBody2D" parent="." unique_id=663626320 instance=ExtResource("2_e081b")]
+position = Vector2(56, 334)
+collision_mask = 0
+
+[node name="pine_120" type="StaticBody2D" parent="." unique_id=567526891 instance=ExtResource("1_5lp7f")]
+position = Vector2(440, 62)
+collision_mask = 0
+
+[node name="tree_121" type="StaticBody2D" parent="." unique_id=603237071 instance=ExtResource("2_e081b")]
+position = Vector2(72, 382)
+collision_mask = 0
+
+[node name="tree_122" type="StaticBody2D" parent="." unique_id=1755131930 instance=ExtResource("2_e081b")]
+position = Vector2(472, 318)
+collision_mask = 0
+
+[node name="pine_123" type="StaticBody2D" parent="." unique_id=756484452 instance=ExtResource("1_5lp7f")]
+position = Vector2(552, 350)
+collision_mask = 0
+
+[node name="tree_124" type="StaticBody2D" parent="." unique_id=1871226049 instance=ExtResource("2_e081b")]
+position = Vector2(408, 78)
+collision_mask = 0
+
+[node name="tree_125" type="StaticBody2D" parent="." unique_id=60748423 instance=ExtResource("2_e081b")]
+position = Vector2(328, 270)
+collision_mask = 0
+
+[node name="pine_126" type="StaticBody2D" parent="." unique_id=1469321783 instance=ExtResource("1_5lp7f")]
+position = Vector2(664, 382)
+collision_mask = 0
+
+[node name="tree_127" type="StaticBody2D" parent="." unique_id=878809537 instance=ExtResource("2_e081b")]
+position = Vector2(184, 142)
+collision_mask = 0
+
+[node name="tree_128" type="StaticBody2D" parent="." unique_id=2076354546 instance=ExtResource("2_e081b")]
+position = Vector2(504, 366)
+collision_mask = 0
+
+[node name="pine_129" type="StaticBody2D" parent="." unique_id=930491292 instance=ExtResource("1_5lp7f")]
+position = Vector2(136, 286)
+collision_mask = 0
+
+[node name="tree_130" type="StaticBody2D" parent="." unique_id=1566602634 instance=ExtResource("2_e081b")]
+position = Vector2(104, 382)
+collision_mask = 0
+
+[node name="tree_131" type="StaticBody2D" parent="." unique_id=1562943567 instance=ExtResource("2_e081b")]
+position = Vector2(216, 302)
+collision_mask = 0
+
+[node name="pine_132" type="StaticBody2D" parent="." unique_id=128599397 instance=ExtResource("1_5lp7f")]
+position = Vector2(296, 174)
+collision_mask = 0
+
+[node name="tree_133" type="StaticBody2D" parent="." unique_id=635438504 instance=ExtResource("2_e081b")]
+position = Vector2(40, 302)
+collision_mask = 0
+
+[node name="tree_134" type="StaticBody2D" parent="." unique_id=1902503006 instance=ExtResource("2_e081b")]
+position = Vector2(248, 302)
+collision_mask = 0
+
+[node name="pine_135" type="StaticBody2D" parent="." unique_id=638351303 instance=ExtResource("1_5lp7f")]
+position = Vector2(232, 126)
+collision_mask = 0
+
+[node name="tree_136" type="StaticBody2D" parent="." unique_id=1539479573 instance=ExtResource("2_e081b")]
+position = Vector2(168, 78)
+collision_mask = 0
+
+[node name="tree_137" type="StaticBody2D" parent="." unique_id=1254858683 instance=ExtResource("2_e081b")]
+position = Vector2(104, 110)
+collision_mask = 0
+
+[node name="pine_138" type="StaticBody2D" parent="." unique_id=2003435597 instance=ExtResource("1_5lp7f")]
+position = Vector2(504, 286)
+collision_mask = 0
+
+[node name="tree_139" type="StaticBody2D" parent="." unique_id=1706310871 instance=ExtResource("2_e081b")]
+position = Vector2(312, 302)
+collision_mask = 0
+
+[node name="tree_140" type="StaticBody2D" parent="." unique_id=1506913833 instance=ExtResource("2_e081b")]
+position = Vector2(296, 270)
+collision_mask = 0
+
+[node name="pine_141" type="StaticBody2D" parent="." unique_id=494456220 instance=ExtResource("1_5lp7f")]
+position = Vector2(312, 238)
+collision_mask = 0
+
+[node name="tree_142" type="StaticBody2D" parent="." unique_id=63551107 instance=ExtResource("2_e081b")]
+position = Vector2(168, 302)
+collision_mask = 0
+
+[node name="tree_143" type="StaticBody2D" parent="." unique_id=1425753583 instance=ExtResource("2_e081b")]
+position = Vector2(168, 366)
+collision_mask = 0
+
+[node name="pine_144" type="StaticBody2D" parent="." unique_id=257695654 instance=ExtResource("1_5lp7f")]
+position = Vector2(72, 302)
+collision_mask = 0
+
+[node name="tree_145" type="StaticBody2D" parent="." unique_id=1578146701 instance=ExtResource("2_e081b")]
+position = Vector2(280, 78)
+collision_mask = 0
+
+[node name="tree_146" type="StaticBody2D" parent="." unique_id=1430554876 instance=ExtResource("2_e081b")]
+position = Vector2(216, 270)
+collision_mask = 0
+
+[node name="pine_147" type="StaticBody2D" parent="." unique_id=1734496214 instance=ExtResource("1_5lp7f")]
+position = Vector2(280, 382)
+collision_mask = 0
+
+[node name="tree_148" type="StaticBody2D" parent="." unique_id=1765075758 instance=ExtResource("2_e081b")]
+position = Vector2(552, 318)
+collision_mask = 0
+
+[node name="tree_149" type="StaticBody2D" parent="." unique_id=2144904804 instance=ExtResource("2_e081b")]
+position = Vector2(104, 350)
+collision_mask = 0
+
+[node name="bush_150" type="StaticBody2D" parent="." unique_id=261276166 instance=ExtResource("3_poukp")]
+position = Vector2(488, 286)
+collision_mask = 0
+
+[node name="bush_151" type="StaticBody2D" parent="." unique_id=147150285 instance=ExtResource("3_poukp")]
+position = Vector2(472, 382)
+collision_mask = 0
+
+[node name="bush_152" type="StaticBody2D" parent="." unique_id=719475871 instance=ExtResource("3_poukp")]
+position = Vector2(344, 158)
+collision_mask = 0
+
+[node name="bush_153" type="StaticBody2D" parent="." unique_id=1518073380 instance=ExtResource("3_poukp")]
+position = Vector2(120, 46)
+collision_mask = 0
+
+[node name="bush_154" type="StaticBody2D" parent="." unique_id=950411355 instance=ExtResource("3_poukp")]
+position = Vector2(296, 350)
+collision_mask = 0
+
+[node name="bush_155" type="StaticBody2D" parent="." unique_id=980078187 instance=ExtResource("3_poukp")]
+position = Vector2(392, 46)
+collision_mask = 0
+
+[node name="bush_156" type="StaticBody2D" parent="." unique_id=589023680 instance=ExtResource("3_poukp")]
+position = Vector2(136, 270)
+collision_mask = 0
+
+[node name="bush_157" type="StaticBody2D" parent="." unique_id=601481339 instance=ExtResource("3_poukp")]
+position = Vector2(392, 94)
+collision_mask = 0
+
+[node name="bush_158" type="StaticBody2D" parent="." unique_id=1121409351 instance=ExtResource("3_poukp")]
+position = Vector2(280, 238)
+collision_mask = 0
+
+[node name="bush_159" type="StaticBody2D" parent="." unique_id=74612473 instance=ExtResource("3_poukp")]
+position = Vector2(136, 382)
+collision_mask = 0
+
+[node name="bush_160" type="StaticBody2D" parent="." unique_id=1795793303 instance=ExtResource("3_poukp")]
+position = Vector2(136, 78)
+collision_mask = 0
+
+[node name="bush_161" type="StaticBody2D" parent="." unique_id=413355422 instance=ExtResource("3_poukp")]
+position = Vector2(216, 382)
+collision_mask = 0
+
+[node name="bush_162" type="StaticBody2D" parent="." unique_id=220377051 instance=ExtResource("3_poukp")]
+position = Vector2(440, 350)
+collision_mask = 0
+
+[node name="bush_163" type="StaticBody2D" parent="." unique_id=1782708401 instance=ExtResource("3_poukp")]
+position = Vector2(120, 302)
+collision_mask = 0
+
+[node name="rock_164" type="StaticBody2D" parent="." unique_id=1856576247 instance=ExtResource("4_s477m")]
+position = Vector2(40, 142)
+collision_mask = 0
+
+[node name="rock_165" type="StaticBody2D" parent="." unique_id=1939039959 instance=ExtResource("4_s477m")]
+position = Vector2(360, 158)
+collision_mask = 0
+
+[node name="rock_166" type="StaticBody2D" parent="." unique_id=1748686940 instance=ExtResource("4_s477m")]
+position = Vector2(72, 366)
+collision_mask = 0
+
+[node name="rock_167" type="StaticBody2D" parent="." unique_id=2023619142 instance=ExtResource("4_s477m")]
+position = Vector2(232, 94)
+collision_mask = 0
+
+[node name="rock_168" type="StaticBody2D" parent="." unique_id=284450302 instance=ExtResource("4_s477m")]
+position = Vector2(488, 366)
+collision_mask = 0
+
+[node name="rock_169" type="StaticBody2D" parent="." unique_id=1872651586 instance=ExtResource("4_s477m")]
+position = Vector2(664, 270)
+collision_mask = 0
+
+[node name="rock_170" type="StaticBody2D" parent="." unique_id=1475510398 instance=ExtResource("4_s477m")]
+position = Vector2(88, 382)
+collision_mask = 0
+
+[node name="rock_171" type="StaticBody2D" parent="." unique_id=1725057136 instance=ExtResource("4_s477m")]
+position = Vector2(424, 46)
+collision_mask = 0

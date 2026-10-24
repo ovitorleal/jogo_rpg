@@ -145,6 +145,7 @@ theme_override_font_sizes/font_size = 10
 autowrap_mode = 3
 
 [node name="HintLabel" type="Label" parent="MessagePanel/Margin/Row/Content"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.522, 0.592, 0.722, 1)
 theme_override_font_sizes/font_size = 8

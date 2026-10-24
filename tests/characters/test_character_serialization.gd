@@ -57,7 +57,7 @@ func test_save_and_load_file() -> void:
 
 func test_rejects_wrong_schema_version() -> void:
 	var data := _make().to_dict()
-	data["schema_version"] = 2
+	data["schema_version"] = 99
 	var result := CharacterData.from_dict(data)
 	assert_true(result[0] == null and str(result[1]).contains("Versão de esquema"), "Versão desconhecida rejeitada")
 

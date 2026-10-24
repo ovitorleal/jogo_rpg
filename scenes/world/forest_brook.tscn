@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/world/forest_brook_terrain.tscn" id="2_terrain"]
+[ext_resource type="PackedScene" path="res://scenes/world/sign.tscn" id="3_sign"]
+[ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="4_player"]
+[ext_resource type="PackedScene" path="res://scenes/ui/exploration_hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/world/forest_brook_props.tscn" id="6_props"]
+[ext_resource type="PackedScene" path="res://scenes/world/campfire.tscn" id="7_campfire"]
+
+[node name="ForestBrook" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Terrain" parent="." instance=ExtResource("2_terrain")]
+unique_name_in_owner = true
+
+[node name="Entrances" type="Node2D" parent="."]
+
+[node name="Entrance_west" type="Marker2D" parent="Entrances"]
+position = Vector2(56, 222)
+
+[node name="Objects" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Props" parent="Objects" instance=ExtResource("6_props")]
+
+[node name="RoadSign" parent="Objects" instance=ExtResource("3_sign")]
+position = Vector2(40, 190)
+prompt_text = "Ler placa"
+message_text = "A placa diz: \"Estrada do Leste — de volta à Clareira da Encruzilhada.\" Pegar a estrada agora?"
+action = "travel:route.east_road_back"
+
+[node name="Campfire" parent="Objects" instance=ExtResource("7_campfire")]
+position = Vector2(448, 204)
+
+[node name="Player" parent="Objects" instance=ExtResource("4_player")]
+unique_name_in_owner = true
+position = Vector2(56, 222)
+
+[node name="Hud" parent="." instance=ExtResource("5_hud")]
+unique_name_in_owner = true

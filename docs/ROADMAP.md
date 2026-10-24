@@ -5,12 +5,27 @@
 | 0 | Fundação técnica | Concluída (2026-10-23) |
 | 1 | Primeiro mapa | Concluída (2026-10-23) |
 | 2 | Modelo de personagens | Concluída (2026-10-23) |
-| 3 | Combate | **Concluída** (2026-10-24) |
-| 4 | Viagens e encontros | Próxima |
-| 5 | Progressão e conteúdo | — |
+| 3 | Combate | Concluída (2026-10-24) |
+| 4 | Viagens e encontros | **Concluída** (2026-10-24) |
+| 5 | Progressão e conteúdo | Próxima |
 | 6 | Salvamento e integração | — |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
+
+## Fase 4 — resultado
+
+Critério: "uma viagem pode gerar eventos, iniciar combates e continuar após a resolução dos encontros". Atendido.
+
+- Região Floresta Sussurrante com tabela de encontros (3 combates, 5 eventos), rota de ida e volta entre a Clareira da
+  Encruzilhada e o novo mapa Bosque do Riacho (riacho, acampamento com fogueira).
+- `EncounterDirector` (dia/noite, eventos únicos, sem repetir o último, orçamento de XP) e `TravelSystem` (trechos,
+  relógio, rações, fome, eventos com escolhas e testes de perícia, combate pendente, descansos, chegada).
+- Tela de viagem com o herói andando pela trilha; combate da viagem volta para a viagem; chegada no mapa de destino.
+- Descanso curto (Dados de Vida) e longo; fogueira no mapa; personagem no esquema 2 com migração do esquema 1.
+- Testes: 146/146 (25 novos), incluindo 40 viagens completas simuladas e o fluxo mapa → viagem → combate → viagem → mapa.
+  Checagem de mutação: desligar o filtro dia/noite e o piso de 1 PV derruba exatamente os testes correspondentes.
+- Verificação visual com sonda em janela real (placa com confirmação, viagem, evento, resultado, Bosque do Riacho);
+  corrigido o herói da trilha desenhado por cima do painel de evento.
 
 ## Reforma visual — resultado (2026-10-24)
 
@@ -86,6 +101,12 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 - Biblioteca de testes: manter o executor próprio ou adotar GUT/gdUnit4 (ambos MIT).
 - Mais classes/espécies/antecedentes do SRD no MVP, ou manter os dois de cada até o vertical slice.
 
+## Pendências da viagem
+
+- Emboscada ao acampar, exaustão por fome, clima, mais regiões e rotas com escolha de caminho.
+- Mapa-múndi (hoje a rota é escolhida pela placa).
+- Confirmar no SRD 5.2.1 se a cura por Dado de Vida tem mínimo de 1.
+
 ## Pendências do combate
 
 - Testes de morte, condições, reações (ataques de oportunidade), ações bônus, Esquivar/Disparada/Desengajar.
@@ -95,7 +116,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 4 (viagens e encontros): `data/regions/` com uma região e uma rota; `TravelSystem` com trechos, tempo e recursos;
-`EncounterDirector` escolhendo encontros por região, nível do grupo e histórico (com semente); eventos sem combate
-(descoberta, NPC, perigo ambiental); transição viagem → combate → continuação. Considerar descanso curto/longo junto,
-para a viagem ter recuperação de PV.
+Fase 5 (progressão e conteúdo): `InventorySystem` (itens empilháveis, equipar/desequipar com atualização da ficha, consumíveis
+como poção de cura do SRD, rações como item), XP → nível (tabela do SRD, PV por nível, novas características), `QuestManager`
+com uma missão (objetivos por estado, recompensa) e um NPC com diálogo em dados (`DialogueSystem`).
