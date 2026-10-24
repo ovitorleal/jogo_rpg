@@ -1,0 +1,39 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "background.soldier",
+			"name": "Soldado",
+			"description": "Treinou e serviu em uma tropa, aprendendo disciplina e combate.",
+			"source": "SRD 5.2.1",
+			"ability_options": ["str", "dex", "con"],
+			"skill_proficiencies": ["athletics", "intimidation"],
+			"tool_proficiency": "Kit de jogos",
+			"origin_feat": [
+				{
+					"id": "feat.savage_attacker",
+					"name": "Atacante Selvagem",
+					"description": "Uma vez por turno, rola o dano da arma duas vezes e usa o maior resultado.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "background.criminal",
+			"name": "Criminoso",
+			"description": "Sobreviveu nas sombras das cidades com furtos e esquemas.",
+			"source": "SRD 5.2.1",
+			"ability_options": ["dex", "con", "int"],
+			"skill_proficiencies": ["sleight_of_hand", "stealth"],
+			"tool_proficiency": "Ferramentas de ladrão",
+			"origin_feat": [
+				{
+					"id": "feat.alert",
+					"name": "Alerta",
+					"description": "Soma o bônus de proficiência à iniciativa e pode trocar de iniciativa com um aliado.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

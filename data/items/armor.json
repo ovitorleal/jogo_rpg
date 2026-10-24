@@ -1,0 +1,85 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "item.leather_armor",
+			"name": "Armadura de Couro",
+			"description": "Couro endurecido e flexível; protege sem atrapalhar os movimentos.",
+			"source": "SRD 5.2.1",
+			"item_type": "armor",
+			"armor_category": "light",
+			"base_ac": 11,
+			"dex_cap": -1,
+			"strength_requirement": 0,
+			"stealth_disadvantage": false,
+			"weight_lb": 10,
+			"cost_gp": 10
+		},
+		{
+			"id": "item.studded_leather_armor",
+			"name": "Couro Batido",
+			"description": "Couro reforçado com rebites de metal.",
+			"source": "SRD 5.2.1",
+			"item_type": "armor",
+			"armor_category": "light",
+			"base_ac": 12,
+			"dex_cap": -1,
+			"strength_requirement": 0,
+			"stealth_disadvantage": false,
+			"weight_lb": 13,
+			"cost_gp": 45
+		},
+		{
+			"id": "item.chain_shirt",
+			"name": "Camisão de Malha",
+			"description": "Malha de anéis metálicos usada sob roupas comuns.",
+			"source": "SRD 5.2.1",
+			"item_type": "armor",
+			"armor_category": "medium",
+			"base_ac": 13,
+			"dex_cap": 2,
+			"strength_requirement": 0,
+			"stealth_disadvantage": false,
+			"weight_lb": 20,
+			"cost_gp": 50
+		},
+		{
+			"id": "item.scale_mail",
+			"name": "Brunea",
+			"description": "Escamas de metal sobrepostas presas a um gibão de couro; ruidosa.",
+			"source": "SRD 5.2.1",
+			"item_type": "armor",
+			"armor_category": "medium",
+			"base_ac": 14,
+			"dex_cap": 2,
+			"strength_requirement": 0,
+			"stealth_disadvantage": true,
+			"weight_lb": 45,
+			"cost_gp": 50
+		},
+		{
+			"id": "item.chain_mail",
+			"name": "Cota de Malha",
+			"description": "Armadura completa de anéis entrelaçados; pesada e barulhenta.",
+			"source": "SRD 5.2.1",
+			"item_type": "armor",
+			"armor_category": "heavy",
+			"base_ac": 16,
+			"dex_cap": 0,
+			"strength_requirement": 13,
+			"stealth_disadvantage": true,
+			"weight_lb": 55,
+			"cost_gp": 75
+		},
+		{
+			"id": "item.shield",
+			"name": "Escudo",
+			"description": "Escudo de madeira ou metal empunhado em uma das mãos.",
+			"source": "SRD 5.2.1",
+			"item_type": "shield",
+			"ac_bonus": 2,
+			"weight_lb": 6,
+			"cost_gp": 10
+		}
+	]
+}

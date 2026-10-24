@@ -1,0 +1,47 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "class.fighter",
+			"name": "Guerreiro",
+			"description": "Especialista em armas e armaduras, treinado para resistir e vencer pelo combate.",
+			"source": "SRD 5.2.1",
+			"hit_die": 10,
+			"primary_abilities": ["str", "dex"],
+			"saving_throws": ["str", "con"],
+			"skill_choice_count": 2,
+			"skill_options": ["acrobatics", "animal_handling", "athletics", "history", "insight",
+				"intimidation", "persuasion", "perception", "survival"],
+			"expertise_choices": 0,
+			"armor_training": ["light", "medium", "heavy", "shield"],
+			"weapon_training": ["simple", "martial"],
+			"suggested_scores": [15, 13, 14, 8, 12, 10],
+			"starting_armor": "item.chain_mail",
+			"starting_shield": true,
+			"starting_weapons": ["item.longsword"],
+			"features": [
+				{
+					"id": "feature.fighting_style",
+					"name": "Estilo de Luta",
+					"level": 1,
+					"description": "Escolha um talento de estilo de luta.",
+					"implemented": false
+				},
+				{
+					"id": "feature.second_wind",
+					"name": "Retomar o Fôlego",
+					"level": 1,
+					"description": "Recupera pontos de vida com uma ação bônus, algumas vezes por descanso.",
+					"implemented": false
+				},
+				{
+					"id": "feature.weapon_mastery",
+					"name": "Maestria em Armas",
+					"level": 1,
+					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

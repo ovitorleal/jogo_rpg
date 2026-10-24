@@ -9,7 +9,7 @@
 | Viewport 640×360, stretch `canvas_items`, aspect `keep` | Base para pixel art; escala para 1280×720 (2×) e mantém proporção 16:9 |
 | Filtro de textura padrão Nearest + snap 2D por pixel | Evitar borrar pixel art |
 | Build Web sem threads (`variant/thread_support=false`) | Dispensa cabeçalhos COOP/COEP, compatível com hospedagens gratuitas |
-| Testes com executor próprio (`tests/run_tests.gd`) | Sem dependências na Fase 0; GUT/gdUnit4 (ambos MIT) podem ser avaliados na Fase 2 |
+| Testes com executor próprio (`tests/run_tests.gd`) | Sem dependências; GUT/gdUnit4 (ambos MIT) continuam opção |
 | `tests/` e `tools/` excluídos da exportação | Não distribuir código de desenvolvimento |
 | Raiz do repositório = raiz do projeto Godot | Simplicidade; a pasta `fantasy-rpg/` da especificação corresponde a esta raiz |
 
@@ -24,37 +24,64 @@
 | Interação acionada pelo mapa, não pelo jogador | Um único ponto decide entre abrir/fechar mensagem; sem disputa de input no mesmo quadro |
 | TileSet e terreno gerados por script uma vez, depois editáveis no editor | Reprodutível agora, fluxo nativo do Godot depois |
 
+### Fase 2
+
+| Decisão | Motivo |
+|---|---|
+| Regras como funções estáticas sem estado (`RulesEngine`, `D20Test`, `Ability`, `Skill`) | Testáveis isoladamente; reutilizáveis no futuro servidor autoritativo |
+| Toda aleatoriedade passa por `DiceRoller` (semente ou valores roteirizados) | Testes determinísticos; reprodução de bugs |
+| Conteúdo em JSON (`data/<tipo>/*.json`, `{schema_version, entries}`) validado por esquema declarativo | Separar dados de lógica; mensagens de erro com arquivo, índice, id e campo |
+| `CharacterData` guarda só escolhas; `CharacterSheet` recalcula o resto | Save pequeno e sem valores derivados que possam divergir das regras |
+| Ao carregar: `CharacterData.from_dict` (estrutura) + `CharacterFactory.validate` (regras e conteúdo) | Rejeitar saves adulterados ou incoerentes |
+| Autoloads `Content` e `PartyManager` | Conteúdo carregado uma vez; personagem preservado entre cenas |
+| JSON incluídos na exportação via `include_filter = "data/*.json"` | `all_resources` não empacota arquivos que não são recursos |
+| Texto do jogador escapado antes de ir para BBCode | Nome com `[` não pode injetar formatação |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,
 Persistência e Ferramentas. Estado atual:
 
-**Apresentação**
-- `scenes/menus/title_screen.tscn` + `scripts/ui/title_screen.gd`: tela de título (cena principal); "Novo jogo" abre o mapa de teste.
-- `scenes/ui/exploration_hud.tscn` + `scripts/ui/exploration_hud.gd` (`ExplorationHud`): aviso de interação e caixa de mensagem. Só exibe.
+**Motor de regras** (`scripts/rules/`)
+- `Ability`, `Skill`: constantes, nomes em português, modificador.
+- `DiceRoller`, `DiceExpression` (`NdM±K`, sem execução de código), `D20Test` (vantagem/desvantagem, CD).
+- `RulesEngine`: proficiência, bônus de teste, passivos, CA, PV máximos, iniciativa, deslocamento, validação de geração de atributos.
+
+**Dados de conteúdo** (`scripts/core/`, `data/`)
+- `ContentSchema`: validador (tipos, obrigatórios, enums, limites, referências, dados, campos desconhecidos, duplicatas em listas).
+- `ContentRegistry`: carrega `data/`, valida, indexa por id estável (`class.fighter`, `item.dagger`...), checa referências
+  cruzadas e consistência (ex.: armadura inicial exige treinamento da classe). `load_from_dictionaries` para testes.
+- Autoload `Content` (`scripts/core/content.gd`): instância global; erros vão para o console.
+
+**Sistemas de jogo — personagens e grupo** (`scripts/characters/`, `scripts/party/`)
+- `CharacterData`: estado persistente e serialização (`to_dict`/`from_dict`, `schema_version` 1).
+- `CharacterFactory`: cria personagens de nível 1 e valida qualquer personagem contra regras e conteúdo.
+- `CharacterSheet`: ficha derivada e rolagens de teste/resistência do personagem.
+- Autoload `PartyManager`: grupo atual (só o líder no MVP).
 
 **Sistemas de jogo — exploração** (`scripts/exploration/`)
 - `Player` (`scenes/characters/player.tscn`): movimento, colisão, câmera filha, detecção do `Interactable` mais próximo.
-  Expõe `input_enabled`, `try_interact()` e o sinal `interaction_target_changed`.
 - `Interactable` (Area2D): componente genérico com `prompt_text`, `message_text`, `enabled` e o sinal `interacted`.
-  Não decide o que acontece. Exemplo: `scenes/world/sign.tscn`.
-- `ExplorationMap`: controlador de um mapa. Espera os nós únicos `%Ground`, `%Player` e `%Hud`; define os limites da câmera
-  a partir dos tiles usados, liga os `Interactable` do mapa ao HUD e trata a ação `interact` (`handle_interact()`).
+- `ExplorationMap`: controlador de um mapa; trata `interact` e `character_sheet` (C/Esc), bloqueia o jogador
+  enquanto há mensagem ou ficha aberta.
 
-Fluxo de interação: `interact` (E/Espaço/Enter) → `ExplorationMap.handle_interact()` → fecha a mensagem aberta **ou**
-`Player.try_interact()` → `Interactable.interacted` → `ExplorationMap` bloqueia o jogador e mostra a mensagem no HUD.
+**Apresentação** (`scenes/`, `scripts/ui/`)
+- Título (`title_screen`): Novo jogo, Continuar (desabilitado), Créditos (atribuições), Sair (só desktop).
+- Criação de personagem (`character_creation`): formulário + prévia ao vivo; só coleta escolhas, a validação é do `CharacterFactory`.
+- `CharacterSheetPanel`: formata uma `CharacterSheet` (marcas "(P)"/"(E)" em texto, não só cor).
+- `ExplorationHud`: aviso, mensagem e ficha.
 
-**Mapa de teste** (`scenes/world/test_map.tscn`): terreno `test_map_ground.tscn` (60×34 tiles), `Objects` com y-sort
-(placa e jogador) e HUD.
+Fluxo: Título → Criação → `PartyManager.start_new_party()` → Mapa de teste → [C] Ficha.
 
-Os demais módulos (`ExplorationManager` para estado entre mapas, `RulesEngine`, `CombatManager`, `SaveManager` etc.) serão
-criados nas fases correspondentes. Diretórios são criados somente quando recebem conteúdo.
+Módulos ainda não criados: `ExplorationManager` (estado entre mapas), `CombatManager`, `EncounterDirector`, `TravelSystem`,
+`InventorySystem`, `QuestManager`, `DialogueSystem`, `SaveManager`, `AssetRegistry`, `AudioManager`, `SettingsManager`.
 
 ## Testes
 
 - Arquivos `tests/**/test_*.gd` estendendo `res://tests/base_test.gd`; métodos `test_*` são executados em instâncias novas.
-- `tree` dá acesso à `SceneTree` para testes que instanciam cenas.
+- `tree` dá acesso à `SceneTree`; os autoloads estão disponíveis também no modo `--script`.
 - O executor retorna código 1 se houver falha ou nenhum teste.
+- Pastas: `rules/`, `content/`, `characters/`, `exploration/`, `integration/`.
 
 ## Assets
 

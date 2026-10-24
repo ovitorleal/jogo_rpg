@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.0] — 2026-10-23 — Fase 2
+
+### Adicionado
+- Motor de regras (SRD 5.2.1): `Ability`, `Skill`, `DiceRoller`, `DiceExpression`, `D20Test`, `RulesEngine`.
+- Conteúdo em JSON com validação (`ContentSchema`, `ContentRegistry`, autoload `Content`): Guerreiro, Ladino, Humano, Anão,
+  Soldado, Criminoso, 5 armaduras, escudo e 5 armas.
+- Personagens: `CharacterData` (serialização versionada), `CharacterFactory` (criação e validação), `CharacterSheet` (ficha derivada).
+- Autoload `PartyManager` (grupo entre cenas).
+- Tela de criação de personagem com prévia da ficha ao vivo.
+- Ficha no mapa (tecla C; Esc fecha) e dica "[C] Ficha" no HUD.
+- Tela de Créditos com atribuição do SRD 5.2, aviso de produto não oficial e aviso do Godot.
+- Ação de input `character_sheet`.
+- 55 testes novos (total 73): regras, dados, conteúdo, criação, serialização, tela de criação, ficha no mapa, créditos.
+
+### Alterado
+- "Novo jogo" abre a criação de personagem antes do mapa.
+- Exportação Web inclui `data/*.json`.
+- Versão 0.1.0 → 0.2.0.
+
 ## [0.1.0] — 2026-10-23 — Fase 1
 
 ### Adicionado

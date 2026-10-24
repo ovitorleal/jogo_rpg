@@ -166,6 +166,43 @@ func test_map_border_is_closed_and_spawn_is_walkable() -> void:
 	await _teardown()
 
 
+func test_character_sheet_toggle() -> void:
+	var party: Node = tree.root.get_node("PartyManager")
+	var factory_tests: Object = load("res://tests/characters/test_character_factory.gd").new()
+	var registry: ContentRegistry = tree.root.get_node("Content").registry
+	var hero: CharacterData = CharacterFactory.create(factory_tests.fighter_choices(), registry)[0]
+	party.start_new_party(hero)
+	await _setup()
+
+	_map.toggle_character_sheet()
+	assert_true(_hud.is_sheet_open(), "Ficha abre")
+	assert_true(_hud.get_sheet_text().contains(hero.name), "Ficha mostra o líder do grupo")
+	assert_true(_hud.get_sheet_text().contains("Guerreiro"), "Ficha mostra a classe")
+	assert_true(not _player.input_enabled, "Jogador parado com a ficha aberta")
+	var frozen_at := _player.global_position
+	await _hold(&"move_right", 10)
+	assert_eq(_player.global_position, frozen_at, "Não anda com a ficha aberta")
+	_map.handle_interact()
+	assert_true(not _hud.is_message_open(), "Interação ignorada com a ficha aberta")
+
+	_map.toggle_character_sheet()
+	assert_true(not _hud.is_sheet_open(), "Ficha fecha")
+	assert_true(_player.input_enabled, "Controle volta")
+	party.clear()
+	await _teardown()
+
+
+func test_character_sheet_without_party_shows_message() -> void:
+	tree.root.get_node("PartyManager").clear()
+	await _setup()
+	_map.toggle_character_sheet()
+	assert_true(not _hud.is_sheet_open(), "Sem grupo, não abre ficha")
+	assert_true(_hud.is_message_open() and _hud.get_message_text().contains("Nenhum personagem"), "Explica o motivo")
+	_map.handle_interact()
+	assert_true(not _hud.is_message_open() and _player.input_enabled, "Mensagem fecha normalmente")
+	await _teardown()
+
+
 func _is_blocking(cell: Vector2i) -> bool:
 	var data := _ground.get_cell_tile_data(cell)
 	return data != null and data.get_collision_polygons_count(0) > 0

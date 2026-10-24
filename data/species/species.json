@@ -1,0 +1,75 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "species.human",
+			"name": "Humano",
+			"description": "Povo adaptável e ambicioso, presente em quase todas as terras.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"speed": 30,
+			"darkvision": 0,
+			"hp_bonus_per_level": 0,
+			"damage_resistances": [],
+			"extra_skill_choices": 1,
+			"traits": [
+				{
+					"id": "trait.resourceful",
+					"name": "Engenhoso",
+					"description": "Ganha Inspiração Heroica ao terminar um descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "trait.skillful",
+					"name": "Habilidoso",
+					"description": "Ganha proficiência em uma perícia à escolha.",
+					"implemented": true
+				},
+				{
+					"id": "trait.versatile",
+					"name": "Versátil",
+					"description": "Ganha um talento de origem à escolha.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "species.dwarf",
+			"name": "Anão",
+			"description": "Povo robusto e persistente, ligado à pedra e às forjas.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"speed": 30,
+			"darkvision": 120,
+			"hp_bonus_per_level": 1,
+			"damage_resistances": ["poison"],
+			"extra_skill_choices": 0,
+			"traits": [
+				{
+					"id": "trait.darkvision",
+					"name": "Visão no Escuro",
+					"description": "Enxerga na penumbra e no escuro até certa distância.",
+					"implemented": false
+				},
+				{
+					"id": "trait.dwarven_resilience",
+					"name": "Resiliência Anã",
+					"description": "Resistência a dano de veneno e vantagem contra a condição envenenado.",
+					"implemented": false
+				},
+				{
+					"id": "trait.dwarven_toughness",
+					"name": "Robustez Anã",
+					"description": "Pontos de vida máximos aumentam em 1 por nível.",
+					"implemented": true
+				},
+				{
+					"id": "trait.stonecunning",
+					"name": "Conhecimento da Pedra",
+					"description": "Pode sentir tremores através da pedra por um tempo limitado.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

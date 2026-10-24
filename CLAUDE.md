@@ -15,6 +15,10 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 
 - Uma fase/tarefa por vez; estado e próxima tarefa em `docs/ROADMAP.md`.
 - Regras de RPG só no motor de regras (`scripts/rules/`), nunca na UI. Base: SRD 5.2.1 (2024); não misturar com 2014.
+  Registrar regra, fonte e adaptação em `docs/RULES_POLICY.md`. Aleatoriedade só via `DiceRoller`.
+- Conteúdo novo: JSON em `data/<tipo>/` com `source`; esquema em `ContentRegistry.TYPES`; ids estáveis com prefixo do tipo.
+- Personagem salvo = `CharacterData.to_dict()`; ao carregar, sempre `from_dict` + `CharacterFactory.validate`.
+- GDScript: `Array[T] + Array[T]` perde o tipo; use `append_array` para manter `Array[StringName]`.
 - Testes novos: `tests/**/test_*.gd`, estendendo `res://tests/base_test.gd`.
 - Todo asset novo entra em `assets/asset_catalog.json` com origem e licença; escala e paleta em `docs/ART_BIBLE.md`.
 - Placeholders e mapa de teste: ver `docs/ASSET_PIPELINE.md` (`build_test_map.gd --force` apaga edições do editor).
