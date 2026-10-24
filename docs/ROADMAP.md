@@ -8,11 +8,21 @@
 | 3 | Combate | Concluída (2026-10-24) |
 | 4 | Viagens e encontros | Concluída (2026-10-24) |
 | 5 | Progressão e conteúdo | Concluída (2026-10-24) |
-| 6 | Salvamento e integração | **Concluída** (2026-10-24) |
+| 6 | Salvamento e integração | Concluída (2026-10-24) |
+| 6.5 | Magias e efeitos visuais | **Concluída** (2026-10-24) |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
+
+## Fase 6.5 — resultado (2026-10-24)
+
+- Conjuração completa para as 8 classes conjuradoras (tabelas 1–20), 16 magias do SRD 5.2.1 e efeitos visuais próprios.
+- Concentração, efeitos por turno, áreas na grade, empurrão, cura, e um único espaço gasto por turno (2024).
+- Verificado em janela real: cada estilo de efeito visual aparece no tabuleiro durante a conjuração.
+- Pendências: escolher magias na subida de nível, magias de 2º círculo em diante, mais magias por classe (Clérigo e
+  Bardo têm poucos truques), dardos de Mísseis Mágicos em alvos diferentes, conjurar cura fora do combate, inimigos
+  conjuradores, conferir as tabelas de truques/preparadas acima do nível 2.
 
 ## Fase 6 — resultado (2026-10-24)
 
@@ -163,6 +173,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 6.5 (pedido do responsável): sistema de magias do SRD 5.2.1 para as classes conjuradoras (espaços de magia,
-truques, magias de 1º círculo, CD e ataque de magia) no motor de regras, uso em combate e efeitos visuais das magias.
-Alternativa: seguir para a Fase 7 (vertical slice). Confirmar com o responsável.
+Fase 7 (vertical slice): uma aventura curta completa e polida com começo, meio e fim — arco de história, mapa e
+encontros melhorados (incluindo um inimigo que use magias), dificuldade ajustada, polimento da interface, desempenho e
+verificação do build Web.

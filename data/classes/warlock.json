@@ -59,7 +59,7 @@
 					"name": "Magia de Pacto",
 					"level": 1,
 					"description": "Conjura magias de bruxo usando Carisma, com espaços que voltam em descanso curto.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.magical_cunning",
@@ -68,6 +68,52 @@
 					"description": "Recupera espaços de Magia de Pacto com um ritual curto.",
 					"implemented": false
 				}
+			],
+			"spellcasting_ability": "cha",
+			"spellcasting_type": "pact",
+			"cantrips_known": [
+				2,
+				2,
+				2,
+				3,
+				3,
+				3,
+				3,
+				3,
+				3,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4
+			],
+			"prepared_spells": [
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				10,
+				11,
+				11,
+				12,
+				12,
+				13,
+				13,
+				14,
+				14,
+				15,
+				15
 			]
 		}
 	]

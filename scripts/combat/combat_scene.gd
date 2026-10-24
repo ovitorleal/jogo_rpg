@@ -2,6 +2,8 @@ extends Control
 ## Cena de combate (apresentação). Monta o combate a partir de um encontro, envia os
 ## comandos do jogador ao CombatManager, executa os turnos dos inimigos e mostra o resultado.
 ## Clique numa casa azul para mover; clique num inimigo marcado para atacar com o ataque escolhido.
+## Magias aparecem no mesmo menu ("✦"): clique no alvo marcado ou, em cone/cubo, numa casa vizinha
+## (laranja) para escolher a direção.
 
 ## Pausa entre ações dos inimigos, só para leitura; não altera resultados. 0 nos testes.
 @export var ai_delay: float = 0.3
@@ -9,6 +11,8 @@ extends Control
 @export var animations_enabled: bool = true
 ## Segundos por casa ao andar.
 const STEP_TIME := 0.11
+const SPELL_PREFIX := "spell:"
+const SCHOOL_LEVEL := ["truque", "1º", "2º", "3º", "4º", "5º", "6º", "7º", "8º", "9º"]
 
 var manager := CombatManager.new()
 var encounter: Dictionary = {}
@@ -91,6 +95,19 @@ func click_cell(cell: Vector2i) -> Dictionary:
 	var actor := manager.current()
 	var occupant := manager.combatant_at(cell)
 	var result: Dictionary
+	var spell_id := selected_spell_id()
+	if not spell_id.is_empty():
+		var entry: Dictionary = actor.get_spell(spell_id)["entry"]
+		if CombatManager.is_area_spell(entry):
+			result = manager.submit({"type": "cast", "actor": actor.id, "spell_id": spell_id, "cell": cell})
+		elif occupant != null and (occupant.is_hostile_to(actor) == (entry["target"] == "enemy")):
+			result = manager.submit({"type": "cast", "actor": actor.id, "spell_id": spell_id, "target": occupant.id})
+		elif occupant == null:
+			result = manager.submit({"type": "move", "actor": actor.id, "to": cell})
+		else:
+			result = {"ok": false, "error": "Alvo inválido para %s" % entry["name"], "events": []}
+		_after_command(result)
+		return result
 	if occupant != null and occupant.is_hostile_to(actor):
 		result = manager.submit({"type": "attack", "actor": actor.id, "target": occupant.id,
 				"attack_id": _selected_attack_id})
@@ -105,6 +122,15 @@ func click_cell(cell: Vector2i) -> Dictionary:
 func select_attack(attack_id: String) -> void:
 	_selected_attack_id = attack_id
 	_refresh()
+
+
+func select_spell(spell_id: String) -> void:
+	select_attack(SPELL_PREFIX + spell_id)
+
+
+## Magia escolhida no menu ("" se for um ataque).
+func selected_spell_id() -> String:
+	return _selected_attack_id.trim_prefix(SPELL_PREFIX) if _selected_attack_id.begins_with(SPELL_PREFIX) else ""
 
 
 func press_end_turn() -> void:
@@ -221,8 +247,57 @@ func _animate(event: Dictionary) -> void:
 		"down":
 			var unit := manager.get_combatant(event["actor"])
 			await _board.token_for(unit).fall(bool(event["dead"]))
+		"cast":
+			await _animate_cast(event)
+		"spell_effect":
+			var target_token := _board.token_for(manager.get_combatant(event["target"]))
+			if int(event["damage"]) > 0:
+				target_token.hurt(int(event["target_hp"]))
+				_board.float_text(str(event["damage"]), target_token.position, Color8(255, 240, 230))
+			elif int(event["healed"]) > 0:
+				target_token.refresh(false)
+				_board.float_text("+%d" % event["healed"], target_token.position, Color8(140, 255, 150))
+			elif event.has("roll") and not event["roll"]["hit"]:
+				_board.float_text("Errou", target_token.position, Color8(190, 200, 230))
+			elif event.has("save") and event["save"]["success"]:
+				_board.float_text("Resistiu", target_token.position, Color8(190, 200, 230))
+			elif not str(event["effect"]).is_empty():
+				_board.float_text(event["spell"], target_token.position, Color8(200, 180, 255))
+			await get_tree().create_timer(0.15).timeout
+		"pushed":
+			var pushed_token := _board.token_for(manager.get_combatant(event["actor"]))
+			await pushed_token.walk_to(_board.cell_feet(event["to"]), STEP_TIME)
+		"concentration_end":
+			var token_end := _board.token_for(manager.get_combatant(event["actor"]))
+			_board.float_text("Concentração encerrada", token_end.position, Color8(200, 180, 255))
 		"turn_start":
 			_refresh_highlights_only()
+
+
+## Pose de conjuração e efeito visual da magia, das mãos do conjurador até os alvos.
+func _animate_cast(event: Dictionary) -> void:
+	var caster := _board.token_for(manager.get_combatant(event["actor"]))
+	var aim := caster.position + Vector2(24, 0)
+	var target_points: Array[Vector2] = []
+	for id: String in event["targets"]:
+		var token := _board.token_for(manager.get_combatant(id))
+		if token != null:
+			target_points.append(token.position + Vector2(0, -12))
+	var cells: Array[Rect2] = []
+	for cell: Vector2i in event["cells"]:
+		cells.append(Rect2(_board.cell_to_local(cell), Vector2(CombatBoard.CELL, CombatBoard.CELL)))
+	if not target_points.is_empty():
+		aim = target_points[0]
+	elif not cells.is_empty():
+		aim = cells[0].get_center()
+	# Magia em si mesmo: sem golpe na direção do alvo.
+	if aim.distance_to(caster.position + Vector2(0, -12)) > 4.0:
+		caster.attack_towards(aim)
+		await get_tree().create_timer(0.15).timeout
+	var fx := SpellVfx.create(str(event["vfx"]), Color(str(event["color"])), caster.position + Vector2(0, -14),
+			target_points, cells, int(event.get("darts", 3)))
+	_board.add_child(fx)
+	await fx.finished
 
 
 func _show_result() -> void:
@@ -318,6 +393,12 @@ func _refresh() -> void:
 		_status.text = "Seu turno: %s · Movimento %d pés · Ação %s · Ação bônus %s" % [actor.name,
 				manager.movement_left_feet, "disponível" if manager.action_available else "usada",
 				"disponível" if manager.bonus_action_available else "usada"]
+		if actor.character != null and not actor.spells.is_empty():
+			var slots := Spellcasting.slots_text(actor.character, Content.registry)
+			if not slots.is_empty():
+				_status.text += " · Espaços: %s" % slots
+			if not actor.concentration.is_empty():
+				_status.text += " · Concentração: %s" % actor.concentration["name"]
 	elif actor != null:
 		_status.text = "Turno de %s..." % actor.name
 
@@ -325,11 +406,26 @@ func _refresh() -> void:
 func _refresh_highlights(actor: Combatant, party_turn: bool) -> void:
 	_board.reachable = manager.reachable_cells(actor) if party_turn else {}
 	_board.targets.clear()
+	_board.aim_cells.clear()
 	if party_turn:
-		var attack := actor.get_attack(_selected_attack_id)
-		for unit in manager.combatants:
-			if manager.attack_error(actor, unit, attack).is_empty():
-				_board.targets.append(unit)
+		var spell_id := selected_spell_id()
+		if not spell_id.is_empty() and not actor.get_spell(spell_id).is_empty():
+			var entry: Dictionary = actor.get_spell(spell_id)["entry"]
+			if CombatManager.is_area_spell(entry):
+				if manager.spell_error(actor, spell_id).is_empty():
+					for offset in CombatManager.NEIGHBORS:
+						var cell: Vector2i = actor.position + offset
+						if cell.x >= 0 and cell.y >= 0 and cell.x < manager.arena_size.x and cell.y < manager.arena_size.y:
+							_board.aim_cells.append(cell)
+			else:
+				for unit in manager.combatants:
+					if manager.spell_target_error(actor, spell_id, unit).is_empty():
+						_board.targets.append(unit)
+		else:
+			var attack := actor.get_attack(_selected_attack_id)
+			for unit in manager.combatants:
+				if manager.attack_error(actor, unit, attack).is_empty():
+					_board.targets.append(unit)
 	_board.refresh()
 
 
@@ -349,7 +445,42 @@ func _refresh_attack_options(actor: Combatant) -> void:
 		_attack_option.add_item("%s %s · %s · %s" % [attack["name"], Ability.format_modifier(attack["attack_bonus"]),
 				attack["damage"], reach])
 		_attack_option.set_item_metadata(_attack_option.item_count - 1, attack["id"])
-	if actor.get_attack(_selected_attack_id).is_empty():
+	for spell in actor.spells:
+		var entry: Dictionary = spell["entry"]
+		var detail := ""
+		match str(entry["resolution"]):
+			"spell_attack":
+				detail = "%s · %s" % [Ability.format_modifier(actor.spell_attack), entry["damage"]]
+			"save":
+				detail = "CD %d · %s" % [actor.spell_dc, entry["damage"]]
+			"auto":
+				detail = "%d× %s" % [entry["darts"], entry["damage"]]
+			"heal":
+				detail = "cura %s%s" % [entry["heal"], Ability.format_modifier(actor.spell_modifier)]
+			"buff":
+				match str(entry["effect"]):
+					"ac_bonus":
+						detail = "+%s CA" % entry["effect_value"]
+					"blessed":
+						detail = "+%s em ataques e resistências" % entry["effect_value"]
+					"marked":
+						detail = "+%s de dano" % entry["effect_value"]
+					_:
+						detail = "efeito"
+		var reach := "área %d pés" % entry["area_feet"] if CombatManager.is_area_spell(entry) \
+				else ("toque" if int(entry["range_feet"]) <= 5 else "%d pés" % entry["range_feet"])
+		var timing := " · bônus" if entry["casting_time"] == "bonus_action" else ""
+		_attack_option.add_item("✦ %s (%s) · %s · %s%s" % [entry["name"], SCHOOL_LEVEL[int(entry["level"])], detail,
+				reach, timing])
+		var index := _attack_option.item_count - 1
+		_attack_option.set_item_metadata(index, SPELL_PREFIX + str(spell["id"]))
+		var error := manager.spell_error(actor, str(spell["id"]))
+		_attack_option.set_item_disabled(index, not error.is_empty())
+		_attack_option.set_item_tooltip(index, error if not error.is_empty() else str(entry["description"]))
+	var spell_selected := selected_spell_id()
+	var valid_spell := not spell_selected.is_empty() and not actor.get_spell(spell_selected).is_empty() \
+			and manager.spell_error(actor, spell_selected).is_empty()
+	if actor.get_attack(_selected_attack_id).is_empty() and not valid_spell:
 		_selected_attack_id = actor.attacks[0]["id"]
 	for i in _attack_option.item_count:
 		if _attack_option.get_item_metadata(i) == _selected_attack_id:

@@ -2,7 +2,8 @@ class_name Rest
 extends RefCounted
 ## Descansos (SRD 5.2.1) aplicados a um personagem.
 ## - Curto: gasta Dados de Vida, um por vez; cada um recupera 1 dado + Con.
-## - Longo: recupera todos os PV e todos os Dados de Vida gastos.
+## - Longo: recupera todos os PV, todos os Dados de Vida gastos e todos os espaços de magia.
+## - Magia de Pacto (Bruxo) recupera os espaços também no descanso curto (Spellcasting.short_rest).
 ## Um personagem com 0 PV não pode gastar Dados de Vida (precisa de cura ou descanso longo).
 
 
@@ -26,6 +27,7 @@ static func long_rest(c: CharacterData, registry: ContentRegistry) -> int:
 	var before := c.current_hp
 	c.current_hp = CharacterSheet.build(c, registry).max_hp
 	c.hit_dice_spent = 0
+	Spellcasting.long_rest(c)
 	return c.current_hp - before
 
 

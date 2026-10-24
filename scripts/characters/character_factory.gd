@@ -7,7 +7,8 @@ extends RefCounted
 ##   ability_method: "standard_array" | "point_buy"
 ##   base_scores, background_increases: { StringName -> int }
 ##   class_skills, species_skills, expertise: Array[StringName]
-##   id (opcional)
+##   cantrips, prepared_spells: Array[String] (opcionais; ausentes = primeiras da lista da classe)
+##   appearance, id (opcionais)
 
 const ABILITY_METHODS: Array[String] = ["standard_array", "point_buy"]
 
@@ -31,6 +32,11 @@ static func create(choices: Dictionary, registry: ContentRegistry) -> Array:
 	c.appearance = (look as Dictionary).duplicate() if look is Dictionary else {}
 
 	var class_entry := registry.get_entry("class", c.class_id)
+	if choices.has("cantrips") or choices.has("prepared_spells"):
+		c.cantrips.assign(Array(choices.get("cantrips", [])).map(func(v: Variant) -> String: return str(v)))
+		c.prepared_spells.assign(Array(choices.get("prepared_spells", [])).map(func(v: Variant) -> String: return str(v)))
+	elif not class_entry.is_empty():
+		Spellcasting.fill_defaults(c, registry)
 	if not class_entry.is_empty():
 		c.armor_id = class_entry.get("starting_armor", "")
 		c.shield_id = "item.shield" if class_entry.get("starting_shield", false) else ""
@@ -100,6 +106,7 @@ static func validate(c: CharacterData, registry: ContentRegistry, check_hp: bool
 
 	errors.append_array(_validate_equipment(c, registry, class_entry))
 	errors.append_array(Appearance.validate(c, registry))
+	errors.append_array(Spellcasting.validate(c, registry))
 
 	if check_hp and errors.is_empty():
 		var max_hp := CharacterSheet.build(c, registry).max_hp

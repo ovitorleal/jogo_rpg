@@ -37,6 +37,8 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
   Nos testes use `roller_override` para dados determinísticos.
 - Missões e diálogos: dados em `data/quests/` e `data/dialogues/`; progresso só via `QuestManager.notify*`.
   Inventário do grupo em `PartyManager.inventory`; equipamento em uso fica no `CharacterData`.
+- Magias: regras em `Spellcasting` (`scripts/rules/`), dados em `data/spells/` (efeito e estilo visual por magia),
+  resolução no `CombatManager` (comando `cast`); efeitos visuais em `SpellVfx`. Classes de regras não usam autoloads.
 - Salvamento: só via `SaveManager` (um slot; `request_autosave` em pontos seguros, `save_now` manual). Estado novo que
   precise persistir entra em `SaveGame.capture/validate/apply` (com migração se mudar o esquema). Cenas que permitem
   salvar expõem `save_blocker()`. Nos testes o executor já usa `user://test_save` e desliga o autosave.

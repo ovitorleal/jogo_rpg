@@ -89,6 +89,23 @@ static func format_sheet(sheet: CharacterSheet) -> String:
 		out.append("%s (%s %s)" % [weapon.get("name", "?"), weapon.get("damage", "?"), _damage_type_name(weapon.get("damage_type", ""))])
 	out.append("")
 
+	if Spellcasting.is_caster(sheet.class_entry):
+		var registry: ContentRegistry = Content.registry
+		var caster := sheet.character
+		out.append("[b]Magias[/b]  [color=#8597b8](%s · CD %d · ataque %s)[/color]" % [
+				Ability.NAMES[Spellcasting.ability(sheet.class_entry)], Spellcasting.save_dc(sheet),
+				Ability.format_modifier(Spellcasting.attack_bonus(sheet))])
+		var slots := Spellcasting.slots_text(caster, registry)
+		if not slots.is_empty():
+			out.append("Espaços: %s" % slots)
+		var spell_names := func(ids: Array[String]) -> String:
+			return ", ".join(ids.map(func(id: String) -> String: return registry.get_entry("spell", id).get("name", id)))
+		if not caster.cantrips.is_empty():
+			out.append("Truques: %s" % spell_names.call(caster.cantrips))
+		if not caster.prepared_spells.is_empty():
+			out.append("Preparadas: %s" % spell_names.call(caster.prepared_spells))
+		out.append("")
+
 	out.append("[b]Características[/b]")
 	for feature in sheet.features:
 		out.append("- %s%s" % [feature["name"], "" if feature["implemented"] else " [color=#8597b8](ainda não implementada)[/color]"])

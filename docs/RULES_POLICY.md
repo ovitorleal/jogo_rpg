@@ -71,6 +71,22 @@
 | Uma ação bônus por turno | `CombatManager.bonus_action_available` | Por enquanto só poções usam a ação bônus |
 | Rações (1 dia) como item do SRD | `data/items/supplies.json` | |
 
+### Magias (Fase 6.5)
+
+| Regra | Onde | Notas |
+|---|---|---|
+| CD de magia = 8 + atributo de conjuração + proficiência; ataque mágico = atributo + proficiência | `Spellcasting.save_dc/attack_bonus` | Atributo por classe em `data/classes/*.json` |
+| Espaços por nível: conjuradores completos, meio-conjuradores (Paladino e Patrulheiro desde o nível 1, regra de 2024) e Magia de Pacto | `Spellcasting.FULL_SLOTS/HALF_SLOTS/PACT_*` | Tabelas dos níveis 1–20 |
+| Truques conhecidos e magias preparadas por nível | `cantrips_known`/`prepared_spells` nas classes | **Conferir** os níveis acima de 2 com o SRD 5.2.1 antes do vertical slice |
+| Magia em círculo maior usa o menor espaço livre que comporta; dados extras por círculo (`upcast_dice`), +1 dardo em Mísseis Mágicos, +1 alvo em Bênção | `Spellcasting.lowest_slot/scaled_dice` | |
+| Truques: dados ×2/×3/×4 nos níveis 5/11/17 | `Spellcasting.cantrip_multiplier` | |
+| Só um espaço de magia gasto por turno | `CombatManager.slot_used_this_turn` | Regra de 2024 (substitui a restrição antiga de ação bônus) |
+| Ataque mágico segue as regras de ataque (20 crítico, 1 erra, vantagem/desvantagem, inimigo adjacente em ataque à distância) | `CombatManager._resolve_spell_on` | |
+| Teste de resistência contra a CD do conjurador; metade do dano com sucesso quando a magia diz | idem | Monstros usam o modificador do atributo (goblin e lobo não têm proficiência em resistências) |
+| Concentração: nova magia de concentração encerra a anterior; dano exige teste de Constituição CD max(10, metade do dano), até 30; cair encerra | `CombatManager._apply_damage/_end_concentration` | |
+| Descanso longo recupera todos os espaços; Magia de Pacto também no descanso curto | `Rest.long_rest`, `Spellcasting.short_rest` | |
+| Efeitos com duração "até o início/fim do próximo turno" | `CombatManager._expire_effects` | Raio de Gelo, Zombaria Viciosa, Raio Guiador |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
@@ -83,6 +99,9 @@
 - Armas: Adaga, Azagaia, Bordão, Clava, Foice, Lança, Maça, Machadinha, Arco Curto (simples); Cimitarra, Espada Curta,
   Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
 - Monstros: Lobo e Goblin Guerreiro (CA, PV, dados de vida, deslocamento, atributos, ataques, ND e XP).
+- Magias (16): truques Raio de Fogo, Raio de Gelo, Spray Venenoso, Chama Sagrada, Rajada Mística, Zombaria Viciosa;
+  1º círculo Mísseis Mágicos, Mãos Flamejantes, Onda Trovejante, Raio Guiador, Curar Ferimentos, Palavra Curativa,
+  Escudo da Fé, Bênção, Marca do Caçador, Maldição.
 - Itens: Poção de Cura e Rações (1 dia); características de nível 2 das 12 classes (registradas, sem efeito ainda).
 - Descrições são resumos próprios em português; nomes de regras traduzidos livremente.
 
@@ -90,6 +109,13 @@
 
 | Adaptação | Motivo |
 |---|---|
+| Truques/preparadas limitados ao que existe na lista da classe (ex.: Clérigo conhece 1 truque em vez de 3; Bruxo prepara só Maldição) | Ainda há poucas magias cadastradas |
+| Magias novas da subida de nível são escolhidas automaticamente (primeiras da lista) | Tela de escolha na subida de nível fica para depois |
+| Mísseis Mágicos: todos os dardos no mesmo alvo | Escolha de alvos por dardo fica para depois |
+| Cone de 4,5 m na grade = 7 casas (1-3-3) em linha reta ou 3x3 na diagonal; cubo de 4,5 m = 3x3 casas encostadas no conjurador | Modelos de área na grade de 5 pés |
+| Marca do Caçador/Maldição: sem trocar a marca de alvo e sem a desvantagem em testes de atributo da Maldição | Fora do combate do MVP |
+| Componentes (V, S, M), rituais, alcance de toque além de 5 pés e cobertura não são simulados | Sem regras de cobertura e inventário de componentes ainda |
+| Inimigos não conjuram | Goblins e lobos do SRD não têm magias |
 | Aparência (corpo, chifres, cauda, escamas...) é só visual; não altera regras. Aasimar fora (não está no SRD 5.2.1) | O SRD define traços de espécie por regras, não por aparência |
 | Kit inicial simplificado: só armadura, escudo e armas da opção A de cada classe (o Guerreiro recebe Cota de Malha, Escudo e Espada Longa) | Pacotes, munição, focos, ferramentas e PO entram com o inventário (Fase 5) |
 | Humano e Tiefling sempre tamanho Médio | Escolha de tamanho ainda não exposta na criação |

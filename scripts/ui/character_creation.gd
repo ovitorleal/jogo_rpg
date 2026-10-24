@@ -31,6 +31,8 @@ var _plus_one: StringName = &""
 var _class_skills: Array[StringName] = []
 var _species_skills: Array[StringName] = []
 var _expertise: Array[StringName] = []
+var _cantrips: Array[String] = []
+var _prepared: Array[String] = []
 var _character: CharacterData = null
 var _refresh_queued := false
 ## Aparência completa escolhida (todas as categorias e índices de cor).
@@ -55,6 +57,8 @@ var _background_skills_label: Label
 var _class_skills_box: VBoxContainer
 var _species_skills_box: VBoxContainer
 var _expertise_box: VBoxContainer
+var _spells_section: Control
+var _spells_box: VBoxContainer
 var _look_options: Dictionary = {}
 var _look_rows: Dictionary = {}
 var _swatch_boxes: Dictionary = {}
@@ -104,6 +108,8 @@ func build_choices() -> Dictionary:
 		"class_skills": _class_skills.duplicate(),
 		"species_skills": _species_skills.duplicate(),
 		"expertise": _expertise.duplicate(),
+		"cantrips": _cantrips.duplicate(),
+		"prepared_spells": _prepared.duplicate(),
 		"appearance": _look.duplicate(),
 	}
 
@@ -236,6 +242,11 @@ func _build_form() -> void:
 	_expertise_box = VBoxContainer.new()
 	_form.add_child(_expertise_box)
 
+	_add_section("Magias")
+	_spells_section = _form.get_child(_form.get_child_count() - 1)
+	_spells_box = VBoxContainer.new()
+	_form.add_child(_spells_box)
+
 
 ## Coluna com o personagem animado, o retrato e os botões Aleatório/Girar.
 func _build_look_preview() -> void:
@@ -340,6 +351,7 @@ func _fix_choices(fill: bool) -> void:
 	_fill_from(_species_skills, CharacterFactory.species_skill_options(_species()),
 			_names(background_skills + _class_skills), int(_species().get("extra_skill_choices", 0)), fill)
 	_fix_look()
+	_fix_spells(fill)
 	var proficient := _names(background_skills + _class_skills + _species_skills)
 	_fill_from(_expertise, proficient, [] as Array[StringName], int(_class().get("expertise_choices", 0)), fill)
 
@@ -525,6 +537,80 @@ func _sync_widgets() -> void:
 	_fill_checkboxes(_expertise_box, "Especialização (dobra a proficiência)",
 			_names(background_skills + _class_skills + _species_skills), _expertise,
 			int(_class().get("expertise_choices", 0)), {})
+	_sync_spell_widgets()
+
+
+## Truques e magias preparadas: remove o que não é da classe e, com fill, completa até o limite.
+func _fix_spells(fill: bool) -> void:
+	var limits := _spell_limits()
+	for pair: Array in [[_cantrips, _spell_options(0, 0), int(limits["cantrips"])],
+			[_prepared, _spell_options(1, 1), int(limits["prepared"])]]:
+		var chosen: Array[String] = pair[0]
+		var options: Array[String] = pair[1]
+		for id in chosen.duplicate():
+			if not id in options:
+				chosen.erase(id)
+		while chosen.size() > int(pair[2]):
+			chosen.pop_back()
+		if fill:
+			for id in options:
+				if chosen.size() >= int(pair[2]):
+					break
+				if not id in chosen:
+					chosen.append(id)
+
+
+func _spell_limits() -> Dictionary:
+	var probe := CharacterData.new()
+	probe.class_id = _class_id
+	probe.level = 1
+	return Spellcasting.limits(probe, _registry)
+
+
+func _spell_options(min_level: int, max_level: int) -> Array[String]:
+	return Spellcasting.class_spells(_class_id, _registry, min_level, max_level)
+
+
+func _sync_spell_widgets() -> void:
+	for child in _spells_box.get_children():
+		_spells_box.remove_child(child)
+		child.queue_free()
+	var limits := _spell_limits()
+	var caster := Spellcasting.is_caster(_class())
+	_spells_section.visible = caster
+	_spells_box.visible = caster
+	if not caster:
+		return
+	_add_spell_group("Truques", _spell_options(0, 0), _cantrips, int(limits["cantrips"]))
+	_add_spell_group("Magias preparadas (1º círculo)", _spell_options(1, 1), _prepared, int(limits["prepared"]))
+
+
+func _add_spell_group(title: String, options: Array[String], chosen: Array[String], count: int) -> void:
+	if count <= 0:
+		return
+	var label := Label.new()
+	label.text = "%s: escolha %d (%d/%d)" % [title, count, chosen.size(), count]
+	_spells_box.add_child(label)
+	var grid := GridContainer.new()
+	grid.columns = 2
+	_spells_box.add_child(grid)
+	for id in options:
+		var entry := _registry.get_entry("spell", id)
+		var check := CheckBox.new()
+		check.text = entry["name"]
+		check.tooltip_text = entry["description"]
+		check.button_pressed = id in chosen
+		check.disabled = not id in chosen and chosen.size() >= count
+		check.toggled.connect(_on_spell_toggled.bind(chosen, id))
+		grid.add_child(check)
+
+
+func _on_spell_toggled(pressed: bool, chosen: Array[String], spell_id: String) -> void:
+	if pressed and not spell_id in chosen:
+		chosen.append(spell_id)
+	elif not pressed:
+		chosen.erase(spell_id)
+	_queue_refresh()
 
 
 func _fill_checkboxes(box: VBoxContainer, title: String, options: Array[StringName],
@@ -583,6 +669,8 @@ func _on_look_tick() -> void:
 
 func _on_class_selected(index: int) -> void:
 	_class_id = _class_option.get_item_metadata(index)
+	_cantrips.clear()
+	_prepared.clear()
 	_apply_class_defaults()
 	_fix_choices(true)
 	_queue_refresh()

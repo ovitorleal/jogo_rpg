@@ -196,7 +196,8 @@ func _refresh() -> void:
 	_advance_button.disabled = blocked
 	_arrive_button.visible = arrived
 	_arrive_button.disabled = _busy or _event_open
-	_short_rest_button.disabled = blocked or Rest.hit_dice_left(leader) <= 0 or leader.current_hp >= sheet.max_hp
+	var can_heal := Rest.hit_dice_left(leader) > 0 and leader.current_hp < sheet.max_hp
+	_short_rest_button.disabled = blocked or not (can_heal or Spellcasting.short_rest_would_restore(leader, Content.registry))
 	_long_rest_button.disabled = blocked or _inventory.count(Inventory.RATIONS) < _party.size()
 
 
