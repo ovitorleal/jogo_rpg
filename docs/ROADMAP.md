@@ -7,12 +7,31 @@
 | 2 | Modelo de personagens | Concluída (2026-10-23) |
 | 3 | Combate | Concluída (2026-10-24) |
 | 4 | Viagens e encontros | Concluída (2026-10-24) |
-| 5 | Progressão e conteúdo | **Concluída** (2026-10-24) |
-| 6 | Salvamento e integração | Próxima |
-
-Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
+| 5 | Progressão e conteúdo | Concluída (2026-10-24) |
+| 6 | Salvamento e integração | **Concluída** (2026-10-24) |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
+
+Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
+
+## Fase 6 — resultado (2026-10-24)
+
+- `SaveGame` (formato, captura, validação, migração, aplicação) e autoload `SaveManager` (um slot em `user://`).
+- Gravação segura: validação antes de gravar → arquivo temporário conferido → anterior vira cópia de recuperação →
+  principal substituído e relido. Leitura tenta principal, temporário e cópia; arquivo cortado ou alterado é detectado
+  pela soma SHA-256 do conteúdo.
+- Autosave agrupado (0,4 s) só em pontos seguros: chegada a um mapa (troca de área, volta de combate, missão), fim de
+  conversa, descanso, troca de equipamento e etapas da viagem. Espera enquanto há conversa, ação pendente, deslocamento
+  ou combate começando.
+- Menu do mapa (Esc): Continuar jogo, Salvar agora, Voltar ao título. Título: "Continuar" com resumo do salvamento e
+  confirmação antes de um novo jogo substituir o salvamento.
+- **Verificado no navegador** (build Web servido localmente): autosave e "Salvar agora" gravam; o salvamento continua
+  após recarregar a página e após fechar a aba e abrir outra; "Continuar" volta ao mesmo lugar com a mesma aparência.
+  IndexedDB não foi necessário além do que o Godot já usa para `user://`.
+- Limitações: o salvamento fica no navegador e no endereço do site; limpar os dados do site, usar outro navegador ou
+  janela anônima apaga/separa o progresso (a tela de título avisa quando o armazenamento não é permanente). Não há
+  exportação/importação de salvamento (fora do escopo).
+- Não testado: fechar o navegador inteiro (o painel só permite fechar a aba) e navegadores móveis.
 
 ## Arte dos personagens em alta resolução — resultado (2026-10-24)
 
@@ -120,9 +139,7 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 - ~~Avanço da tela de título sem input~~ — **não é bug**: o painel de navegador é compartilhado e os avanços eram cliques
   do próprio desenvolvedor jogando no painel (confirmado com instrumentação: evento de mouse entrando na janela e menus abertos
   sem ação do agente). Ao testar no painel, o agente deve avisar antes para não haver interação simultânea.
-- Não há como voltar do mapa para o título (sem menu de pausa ainda).
 - Fontes pequenas (8–9 px na resolução interna, 16–18 px na tela em 1280×720): legíveis, mas revisar na direção de UI.
-- Persistência de `user://` na Web ainda não verificada (Fase 6).
 
 ## Decisões pendentes (responsável do projeto)
 
@@ -146,7 +163,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 6 (salvamento): `SaveManager` com um slot em `user://` (escrita temporária + troca segura, cópia de recuperação),
-`schema_version` do save e migrações; salvar grupo (`CharacterData`), inventário, missões, estado de exploração e viagem;
-autosave após combate, missão, troca de mapa e descanso; "Salvar agora" e "Continuar" no título; mensagens de sucesso/falha;
-teste de persistência no navegador (recarregar a página e reabrir o navegador).
+Fase 6.5 (pedido do responsável): sistema de magias do SRD 5.2.1 para as classes conjuradoras (espaços de magia,
+truques, magias de 1º círculo, CD e ataque de magia) no motor de regras, uso em combate e efeitos visuais das magias.
+Alternativa: seguir para a Fase 7 (vertical slice). Confirmar com o responsável.

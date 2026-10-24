@@ -8,6 +8,7 @@ const NO_CHARACTER_MESSAGE := "Nenhum personagem no grupo. Use \"Novo jogo\" no 
 const NO_CHARACTER_COMBAT_MESSAGE := "Algo se move entre as sombras... mas não há ninguém no grupo para lutar."
 const PLAYER_PORTRAIT := preload("res://assets/portraits/hero_portrait.png")
 const CONFIRM_HINT := "[E] Confirmar · [Esc] Cancelar"
+const TITLE_SCENE := "res://scenes/menus/title_screen.tscn"
 
 ## Ação aguardando confirmação (texto do Interactable.action).
 var _pending_action: String = ""
@@ -40,6 +41,10 @@ func _ready() -> void:
 		if trigger != null and is_ancestor_of(trigger) and not trigger.is_queued_for_deletion():
 			trigger.triggered.connect(_on_encounter_triggered)
 	_hud.dialogue_choice.connect(choose_dialogue_option)
+	_hud.pause_menu.resume_requested.connect(close_overlays)
+	_hud.pause_menu.save_requested.connect(save_from_menu)
+	_hud.pause_menu.title_requested.connect(return_to_title)
+	_hud.inventory_panel.changed.connect(func() -> void: SaveManager.request_autosave("equipamento"))
 	var notes: Array[String] = []
 	var message := ExplorationManager.take_return_message()
 	if not message.is_empty():
@@ -50,6 +55,8 @@ func _ready() -> void:
 		notes.append_array(QuestManager.notify("reach_map", map_id))
 	if not notes.is_empty():
 		_show_player_line("\n".join(notes))
+	# Ponto seguro: chegada ao mapa (troca de área, volta de combate, missão atualizada).
+	SaveManager.request_autosave("mapa")
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -71,6 +78,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed(&"ui_cancel") and _hud.is_message_open():
 		get_viewport().set_input_as_handled()
 		cancel_message()
+	elif event.is_action_pressed(&"ui_cancel"):
+		get_viewport().set_input_as_handled()
+		open_pause_menu()
 	elif event.is_action_pressed(&"interact"):
 		get_viewport().set_input_as_handled()
 		handle_interact()
@@ -104,6 +114,59 @@ func cancel_message() -> void:
 	_hud.hide_message()
 	_player.input_enabled = true
 	_on_interaction_target_changed(_player.get_interaction_target())
+
+
+# --- Menu e salvamento --------------------------------------------------------------
+
+func open_pause_menu() -> void:
+	_player.input_enabled = false
+	_hud.hide_prompt()
+	_hud.show_pause_menu(_save_status())
+
+
+func is_pause_menu_open() -> bool:
+	return _hud.pause_menu.visible
+
+
+func save_from_menu() -> Dictionary:
+	var result := SaveManager.save_now()
+	_hud.pause_menu.set_status(result["message"] if not result["ok"] else "%s\n%s" % [result["message"], _save_status()])
+	return result
+
+
+## Volta ao título; o que não foi salvo se perde (o menu avisa).
+func return_to_title() -> void:
+	PartyManager.clear()
+	QuestManager.reset()
+	ExplorationManager.reset()
+	if ExplorationManager.scene_changes_enabled:
+		get_tree().change_scene_to_file.call_deferred(TITLE_SCENE)
+
+
+func _save_status() -> String:
+	if SaveManager.last_saved_at <= 0:
+		return "Ainda não há salvamento deste jogo."
+	return "Último salvamento: %s. Ao voltar ao título, o que veio depois é perdido." % \
+			_format_time(SaveManager.last_saved_at)
+
+
+static func _format_time(unix: int) -> String:
+	var bias := int(Time.get_time_zone_from_system().get("bias", 0))
+	var local := Time.get_datetime_dict_from_unix_time(unix + bias * 60)
+	return "%02d/%02d %02d:%02d" % [local["day"], local["month"], local["hour"], local["minute"]]
+
+
+## Motivo para não salvar agora ("" se o estado está consistente).
+func save_blocker() -> String:
+	if _dialogue != null:
+		return "há uma conversa em andamento"
+	if not _pending_action.is_empty():
+		return "há uma ação aguardando confirmação"
+	return ""
+
+
+func player_position() -> Vector2:
+	return _player.global_position
 
 
 ## Abre ou fecha a ficha do líder do grupo. Não abre por cima de uma mensagem.
@@ -181,6 +244,7 @@ func choose_dialogue_option(index: int) -> void:
 
 func end_dialogue() -> void:
 	_dialogue = null
+	SaveManager.request_autosave("diálogo")
 	_hud.hide_message()
 	_player.input_enabled = true
 	if not _dialogue_notes.is_empty():
@@ -293,6 +357,7 @@ func _execute_action(action: String) -> void:
 		for c in PartyManager.members:
 			healed += Rest.long_rest(c, Content.registry)
 		_show_player_line("Você descansa junto à fogueira até o amanhecer. PV e Dados de Vida restaurados (+%d PV)." % healed)
+		SaveManager.request_autosave("descanso")
 	else:
 		push_error("Ação desconhecida: %s" % action)
 

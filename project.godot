@@ -12,7 +12,7 @@ config_version=5
 
 config/name="PROJECT_NAME"
 config/description="RPG 2D de fantasia (protótipo)."
-config/version="0.5.2"
+config/version="0.6.0"
 run/main_scene="res://scenes/menus/title_screen.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -23,6 +23,7 @@ Content="*res://scripts/core/content.gd"
 PartyManager="*res://scripts/party/party_manager.gd"
 ExplorationManager="*res://scripts/exploration/exploration_manager.gd"
 QuestManager="*res://scripts/quests/quest_manager.gd"
+SaveManager="*res://scripts/save/save_manager.gd"
 
 [display]
 

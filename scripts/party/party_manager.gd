@@ -15,6 +15,13 @@ func start_new_party(leader: CharacterData) -> void:
 	party_changed.emit()
 
 
+## Grupo e inventário vindos de um salvamento já validado.
+func restore(saved_members: Array[CharacterData], saved_inventory: Inventory) -> void:
+	members = saved_members.duplicate()
+	inventory = saved_inventory
+	party_changed.emit()
+
+
 func get_leader() -> CharacterData:
 	return members[0] if not members.is_empty() else null
 

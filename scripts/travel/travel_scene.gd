@@ -1,3 +1,4 @@
+class_name TravelScene
 extends Control
 ## Tela de viagem (apresentação). Envia comandos ao TravelSystem e mostra trechos, eventos com
 ## escolhas, descanso, combates e chegada. O estado da viagem fica no ExplorationManager para
@@ -202,3 +203,15 @@ func _refresh() -> void:
 func _store() -> void:
 	if not _configured:
 		ExplorationManager.store_travel(travel)
+		SaveManager.request_autosave("viagem")
+
+
+## Motivo para não salvar agora ("" se a viagem está num estado consistente).
+func save_blocker() -> String:
+	if travel == null:
+		return "não há viagem em andamento"
+	if _busy:
+		return "o grupo está se deslocando"
+	if travel.pending.get("kind") == "combat":
+		return "um combate está começando"
+	return ""

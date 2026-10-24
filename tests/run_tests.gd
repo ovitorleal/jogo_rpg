@@ -17,6 +17,8 @@ class ScriptErrorCatcher extends Logger:
 			errors.append("%s (%s:%d)" % [rationale if not rationale.is_empty() else code, file.get_file(), line])
 
 
+const TEST_SAVE_DIR := "user://test_save"
+
 var _passed: int = 0
 var _failed: int = 0
 var _catcher := ScriptErrorCatcher.new()
@@ -24,6 +26,11 @@ var _catcher := ScriptErrorCatcher.new()
 
 func _initialize() -> void:
 	OS.add_logger(_catcher)
+	# Testes nunca tocam no salvamento real do jogador: pasta própria, sem autosave nem indicador.
+	var saves: Node = root.get_node("SaveManager")
+	saves.save_dir = TEST_SAVE_DIR
+	saves.autosave_enabled = false
+	saves.indicator_enabled = false
 	var files: Array[String] = []
 	_collect_test_files(TEST_ROOT, files)
 	files.sort()
