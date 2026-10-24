@@ -20,6 +20,7 @@ const OUT_BUSH := "res://assets/environments/bush.png"
 const OUT_ROCK := "res://assets/environments/rock.png"
 const OUT_SIGN := "res://assets/environments/sign.png"
 const OUT_CAMPFIRE := "res://assets/environments/campfire_sheet.png"
+const ICONS_DIR := "res://assets/icons"
 
 ## Posição no atlas: terra/areia em blocos 4x4 a partir de (0,1) e (4,1);
 ## água: 16 máscaras × 3 quadros de animação, a partir de (0,5), 12 colunas por linha.
@@ -56,6 +57,8 @@ func _initialize() -> void:
 	ok = ok and _save(_rock(), OUT_ROCK)
 	ok = ok and _save(_sign(), OUT_SIGN)
 	ok = ok and _save(_campfire_sheet(), OUT_CAMPFIRE)
+	for icon_name in ["potion", "rations", "coin", "weapon", "armor", "shield"]:
+		ok = ok and _save(_icon(icon_name), "%s/icon_%s.png" % [ICONS_DIR, icon_name])
 	quit(0 if ok else 1)
 
 
@@ -342,6 +345,71 @@ func _campfire_sheet() -> Image:
 		c.shadow(8, 15, 6, 1)
 		sheet.blit_rect(c.image, Rect2i(0, 0, 16, 16), Vector2i(frame * 16, 0))
 	return sheet
+
+
+## Ícones 16x16 de itens, com contorno e luz do alto à esquerda, fundo transparente.
+func _icon(kind: String) -> Image:
+	var c := PixelCanvas.new(16, 16)
+	var metal := PixelCanvas.ramp("#5c6a84", "#b4c4da", "#f2f8ff")
+	var gold := PixelCanvas.ramp("#86560e", "#d09c2c", "#ffe27a")
+	var wood := PixelCanvas.ramp("#5a341c", "#9a6438", "#c8915a")
+	match kind:
+		"potion":
+			var glass := c.new_mask()
+			c.mask_ellipse(glass, 8, 10.5, 4.5, 4)
+			c.mask_rect(glass, 6, 4, 4, 4)
+			c.paint_part(glass, PixelCanvas.ramp("#7a1428", "#d0303c", "#ff7a7a"), 1, 1)
+			var cork := c.new_mask()
+			c.mask_rect(cork, 6, 2, 4, 2)
+			c.paint_part(cork, wood)
+			c.set_px(6, 9, Color("#ffd0d0"))
+			c.set_px(6, 10, Color("#ffd0d0"))
+		"rations":
+			var bread := c.new_mask()
+			c.mask_ellipse(bread, 8, 9, 6, 4)
+			c.paint_part(bread, PixelCanvas.ramp("#8a4a1a", "#d08a40", "#f2c070"), 1, 1)
+			for x in [5, 8, 11]:
+				c.set_px(x, 7, Color("#8a4a1a"))
+				c.set_px(x + 1, 8, Color("#8a4a1a"))
+			var cloth := c.new_mask()
+			c.mask_rect(cloth, 3, 11, 10, 2)
+			c.paint_part(cloth, PixelCanvas.ramp("#5a5a6a", "#9a9aaa", "#d0d0dc"))
+		"coin":
+			var coin := c.new_mask()
+			c.mask_ellipse(coin, 8, 8, 5.5, 5.5)
+			c.paint_part(coin, gold, 1, 1)
+			for y in range(5, 11):
+				c.set_px(8, y, gold[0])
+		"weapon":
+			var blade := c.new_mask()
+			c.mask_line(blade, Vector2(4, 12), Vector2(13, 3), 2)
+			c.paint_part(blade, metal)
+			var guard := c.new_mask()
+			c.mask_line(guard, Vector2(2, 10), Vector2(6, 14), 1)
+			c.paint_part(guard, gold)
+			var grip := c.new_mask()
+			c.mask_line(grip, Vector2(2, 14), Vector2(3, 13), 2)
+			c.paint_part(grip, wood)
+		"armor":
+			var body := c.new_mask()
+			c.mask_rect(body, 4, 4, 8, 9)
+			c.mask_rect(body, 2, 4, 3, 4)
+			c.mask_rect(body, 11, 4, 3, 4)
+			c.paint_part(body, metal, 1, 2)
+			for x in range(5, 11):
+				c.set_px(x, 9, metal[0])
+			c.set_px(8, 5, metal[0])
+			c.set_px(8, 6, metal[0])
+		"shield":
+			var shield := c.new_mask()
+			c.mask_rect(shield, 3, 2, 10, 7)
+			c.mask_ellipse(shield, 8, 9, 5, 5)
+			c.paint_part(shield, PixelCanvas.ramp("#6e1a28", "#b42e3c", "#ea5c5c"), 1, 2)
+			var boss := c.new_mask()
+			c.mask_ellipse(boss, 8, 7.5, 2, 2)
+			c.paint_part(boss, gold)
+	c.outline()
+	return c.image
 
 
 func _sign() -> Image:

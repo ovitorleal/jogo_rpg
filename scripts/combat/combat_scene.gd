@@ -20,6 +20,9 @@ var _configured := false
 var _busy := false
 var _selected_attack_id: String = ""
 var _log_lines: PackedStringArray = []
+var _inventory: Inventory = null
+## Recompensas do encontro aplicadas na vitória (texto exibido no resultado).
+var loot_lines: Array[String] = []
 
 @onready var _board: CombatBoard = %Board
 @onready var _title: Label = %Title
@@ -29,6 +32,7 @@ var _log_lines: PackedStringArray = []
 @onready var _attack_option: OptionButton = %AttackOption
 @onready var _end_turn_button: Button = %EndTurnButton
 @onready var _flee_button: Button = %FleeButton
+@onready var _potion_button: Button = %PotionButton
 @onready var _result_panel: PanelContainer = %ResultPanel
 @onready var _result_label: Label = %ResultLabel
 @onready var _result_button: Button = %ResultButton
@@ -36,7 +40,9 @@ var _log_lines: PackedStringArray = []
 
 ## Configura antes de entrar na árvore (testes). Sem isso, usa o encontro pendente
 ## do ExplorationManager e o grupo do PartyManager.
-func setup(encounter_id: String, party: Array[CharacterData], roller: DiceRoller = null) -> void:
+func setup(encounter_id: String, party: Array[CharacterData], roller: DiceRoller = null,
+		inventory: Inventory = null) -> void:
+	_inventory = inventory
 	_encounter_id = encounter_id
 	_party = party
 	_roller = roller
@@ -54,6 +60,7 @@ func _ready() -> void:
 	_attack_option.item_selected.connect(_on_attack_selected)
 	_end_turn_button.pressed.connect(_on_end_turn_pressed)
 	_flee_button.pressed.connect(_on_flee_pressed)
+	_potion_button.pressed.connect(press_potion)
 	_result_button.pressed.connect(_on_result_pressed)
 
 	var error := _build_combat()
@@ -108,6 +115,12 @@ func press_flee() -> void:
 	_on_flee_pressed()
 
 
+func press_potion() -> void:
+	if _busy or not manager.is_party_turn():
+		return
+	_after_command(manager.submit({"type": "use_item", "actor": manager.current().id, "item_id": Inventory.POTION}))
+
+
 # --- Montagem -----------------------------------------------------------------
 
 func _build_combat() -> String:
@@ -126,6 +139,8 @@ func _build_combat() -> String:
 		var monster := registry.get_entry("monster", group["monster_id"])
 		for i in int(group["count"]):
 			enemies.append(Combatant.from_monster(monster, i + 1, int(group["count"])))
+	manager.inventory = PartyManager.inventory if not _configured or _inventory == null else _inventory
+	manager.registry = registry
 	manager.setup(party_units, enemies, Vector2i(int(encounter["arena_width"]), int(encounter["arena_height"])),
 			bool(encounter["flee_allowed"]), _roller)
 	_board.manager = manager
@@ -211,10 +226,16 @@ func _animate(event: Dictionary) -> void:
 
 
 func _show_result() -> void:
-	manager.apply_results_to_party()
+	manager.apply_results_to_party(Content.registry)
 	match manager.outcome:
 		CombatManager.Outcome.VICTORY:
+			loot_lines = manager.inventory.grant(int(encounter.get("reward_gold", 0)), encounter.get("reward_items", []),
+					Content.registry) if manager.inventory != null else []
 			_result_label.text = "Vitória!\n+%d XP" % manager.total_xp()
+			if not loot_lines.is_empty():
+				_result_label.text += "\n" + ", ".join(loot_lines)
+			for message in manager.level_up_messages:
+				_result_label.text += "\n" + message
 			_result_button.text = "Continuar"
 		CombatManager.Outcome.DEFEAT:
 			_result_label.text = "Derrota.\nSeu grupo caiu em combate."
@@ -286,12 +307,17 @@ func _refresh() -> void:
 
 	_end_turn_button.disabled = not party_turn
 	_flee_button.disabled = not party_turn or not manager.flee_allowed or not manager.action_available
+	var potions := manager.inventory.count(Inventory.POTION) if manager.inventory != null else 0
+	_potion_button.text = "Poção (%d)" % potions
+	_potion_button.disabled = not party_turn or potions <= 0 or not manager.bonus_action_available \
+			or actor.hp >= actor.max_hp
 	_attack_option.disabled = not party_turn
 	if manager.state == CombatManager.State.FINISHED:
 		_status.text = "Combate encerrado."
 	elif party_turn:
-		_status.text = "Seu turno: %s · Movimento %d pés · Ação %s" % [actor.name, manager.movement_left_feet,
-				"disponível" if manager.action_available else "usada"]
+		_status.text = "Seu turno: %s · Movimento %d pés · Ação %s · Ação bônus %s" % [actor.name,
+				manager.movement_left_feet, "disponível" if manager.action_available else "usada",
+				"disponível" if manager.bonus_action_available else "usada"]
 	elif actor != null:
 		_status.text = "Turno de %s..." % actor.name
 

@@ -1,0 +1,92 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "dialogue.amara",
+			"name": "Amara, guarda da encruzilhada",
+			"description": "Guarda que vigia a encruzilhada e oferece trabalho a viajantes.",
+			"source": "original",
+			"speaker": "Amara",
+			"portrait": "res://assets/portraits/amara_portrait.png",
+			"entries": [
+				{"condition": "quest_ready:quest.ruin_threat", "node": "ruin_report"},
+				{"condition": "quest_active:quest.ruin_threat", "node": "ruin_reminder"},
+				{"condition": "quest_available:quest.ruin_threat", "node": "greeting"},
+				{"condition": "quest_ready:quest.brook_message", "node": "brook_report"},
+				{"condition": "quest_active:quest.brook_message", "node": "brook_reminder"},
+				{"condition": "quest_available:quest.brook_message", "node": "brook_offer"},
+				{"condition": "", "node": "idle"}
+			],
+			"nodes": [
+				{
+					"id": "greeting",
+					"text": "Alto lá, viajante. Sou Amara, guarda desta encruzilhada. Estrada tranquila não é... um goblin tomou a ruína a sudoeste e anda atacando quem passa.",
+					"choices": [
+						{"text": "Eu cuido do goblin.", "next": "accept_ruin", "action": "start_quest:quest.ruin_threat"},
+						{"text": "O que tem na ruína?", "next": "ruin_lore"},
+						{"text": "Agora não.", "next": ""}
+					]
+				},
+				{
+					"id": "ruin_lore",
+					"text": "Era um posto de vigia, antes da floresta engolir a estrada velha. Hoje só sobraram os muros... e um goblin com cimitarra e arco.",
+					"choices": [
+						{"text": "Eu cuido dele.", "next": "accept_ruin", "action": "start_quest:quest.ruin_threat"},
+						{"text": "Vou pensar.", "next": ""}
+					]
+				},
+				{
+					"id": "accept_ruin",
+					"text": "Corajoso! Leve isto em conta: ele atira de longe, então chegue perto rápido. Volte quando estiver feito e o pagamento é seu.",
+					"choices": [{"text": "Até já.", "next": ""}]
+				},
+				{
+					"id": "ruin_reminder",
+					"text": "O goblin ainda está na ruína, a sudoeste. Cuidado com as flechas.",
+					"choices": [{"text": "Estou indo.", "next": ""}]
+				},
+				{
+					"id": "ruin_report",
+					"text": "Vi a fumaça do combate daqui! A ruína está livre? Então tome: o pagamento combinado e duas poções da guarnição.",
+					"choices": [{"text": "Obrigado(a), Amara.", "next": "after_ruin", "action": "complete_quest:quest.ruin_threat"}]
+				},
+				{
+					"id": "after_ruin",
+					"text": "Se ainda tiver fôlego, tenho outro serviço. Ninguém volta do acampamento do Bosque do Riacho há dias.",
+					"choices": [
+						{"text": "Eu vou até lá.", "next": "accept_brook", "action": "start_quest:quest.brook_message"},
+						{"text": "Outra hora.", "next": ""}
+					]
+				},
+				{
+					"id": "brook_offer",
+					"text": "Ninguém volta do acampamento do Bosque do Riacho há dias. Pode ir pela Estrada do Leste e ver se está tudo bem?",
+					"choices": [
+						{"text": "Eu vou até lá.", "next": "accept_brook", "action": "start_quest:quest.brook_message"},
+						{"text": "Agora não.", "next": ""}
+					]
+				},
+				{
+					"id": "accept_brook",
+					"text": "A placa no fim da estrada leste indica o caminho. Leve rações: a floresta é traiçoeira.",
+					"choices": [{"text": "Pode deixar.", "next": ""}]
+				},
+				{
+					"id": "brook_reminder",
+					"text": "Alguma notícia do Bosque do Riacho? A estrada leste leva até lá.",
+					"choices": [{"text": "Ainda não.", "next": ""}]
+				},
+				{
+					"id": "brook_report",
+					"text": "O acampamento está de pé e a fogueira acesa? Que alívio! Tome, você merece.",
+					"choices": [{"text": "Fico feliz em ajudar.", "next": "idle", "action": "complete_quest:quest.brook_message"}]
+				},
+				{
+					"id": "idle",
+					"text": "A encruzilhada está mais segura graças a você. Boa estrada, viajante.",
+					"choices": [{"text": "Até mais.", "next": ""}]
+				}
+			]
+		}
+	]
+}

@@ -7,18 +7,46 @@
 			"description": "Guardião da natureza que extrai magia do mundo selvagem.",
 			"source": "SRD 5.2.1",
 			"hit_die": 8,
-			"primary_abilities": ["wis"],
-			"saving_throws": ["int", "wis"],
+			"primary_abilities": [
+				"wis"
+			],
+			"saving_throws": [
+				"int",
+				"wis"
+			],
 			"skill_choice_count": 2,
-			"skill_options": ["arcana", "animal_handling", "insight", "medicine", "nature", "perception",
-				"religion", "survival"],
+			"skill_options": [
+				"arcana",
+				"animal_handling",
+				"insight",
+				"medicine",
+				"nature",
+				"perception",
+				"religion",
+				"survival"
+			],
 			"expertise_choices": 0,
-			"armor_training": ["light", "shield"],
-			"weapon_training": ["simple"],
-			"suggested_scores": [8, 12, 14, 13, 15, 10],
+			"armor_training": [
+				"light",
+				"shield"
+			],
+			"weapon_training": [
+				"simple"
+			],
+			"suggested_scores": [
+				8,
+				12,
+				14,
+				13,
+				15,
+				10
+			],
 			"starting_armor": "item.leather_armor",
 			"starting_shield": true,
-			"starting_weapons": ["item.sickle", "item.quarterstaff"],
+			"starting_weapons": [
+				"item.sickle",
+				"item.quarterstaff"
+			],
 			"features": [
 				{
 					"id": "feature.spellcasting_druid",
@@ -39,6 +67,20 @@
 					"name": "Ordem Primal",
 					"level": 1,
 					"description": "Escolhe ser Mágico (truque extra e conhecimento) ou Guardião (armas marciais e armadura média).",
+					"implemented": false
+				},
+				{
+					"id": "feature.wild_shape",
+					"name": "Forma Selvagem",
+					"level": 2,
+					"description": "Assume a forma de um animal por um tempo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.wild_companion",
+					"name": "Companheiro Selvagem",
+					"level": 2,
+					"description": "Invoca um espírito animal como familiar.",
 					"implemented": false
 				}
 			]

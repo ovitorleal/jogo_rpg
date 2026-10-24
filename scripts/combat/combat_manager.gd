@@ -10,6 +10,7 @@ extends RefCounted
 ##   {"type": "attack", "actor": id, "target": id, "attack_id": id}
 ##   {"type": "end_turn", "actor": id}
 ##   {"type": "flee", "actor": id}
+##   {"type": "use_item", "actor": id, "item_id": id} (consumível do inventário do grupo; ação bônus)
 ## Cada comando devolve {"ok": bool, "error": String, "events": Array[Dictionary]}.
 
 enum State { SETUP, IN_PROGRESS, FINISHED }
@@ -31,7 +32,11 @@ var turn_order: Array[Combatant] = []
 var arena_size := Vector2i(12, 8)
 var flee_allowed: bool = true
 var action_available: bool = false
+var bonus_action_available: bool = false
 var movement_left_feet: int = 0
+## Inventário do grupo, para consumíveis (opcional).
+var inventory: Inventory = null
+var registry: ContentRegistry = null
 
 var _turn_index: int = -1
 var _roller: DiceRoller
@@ -126,6 +131,8 @@ func submit(command: Dictionary) -> Dictionary:
 			return {"ok": true, "error": "", "events": _end_turn()}
 		"flee":
 			return _do_flee(actor)
+		"use_item":
+			return _do_use_item(actor, str(command.get("item_id", "")))
 	return _fail("Comando desconhecido: '%s'" % str(command.get("type", "")))
 
 
@@ -217,8 +224,12 @@ func run_enemy_turn() -> Array[Dictionary]:
 	return events
 
 
-## Copia PV e XP de volta para os personagens. Idempotente.
-func apply_results_to_party() -> void:
+## Mensagens de subida de nível geradas ao aplicar o XP da vitória.
+var level_up_messages: Array[String] = []
+
+
+## Copia PV e XP de volta para os personagens (subindo de nível se for o caso). Idempotente.
+func apply_results_to_party(registry: ContentRegistry = null) -> void:
 	if _results_applied or state != State.FINISHED:
 		return
 	_results_applied = true
@@ -230,8 +241,13 @@ func apply_results_to_party() -> void:
 		@warning_ignore("integer_division")
 		var share := total_xp() / party.size()
 		for unit: Combatant in party:
-			if unit.character != null:
+			if unit.character == null:
+				continue
+			if registry == null:
 				unit.character.experience += share
+				continue
+			for up in Progression.award_xp(unit.character, share, registry):
+				level_up_messages.append(Progression.describe(unit.character, up))
 
 
 # --- Comandos -----------------------------------------------------------------
@@ -275,6 +291,34 @@ func _do_attack(actor: Combatant, target: Combatant, attack_id: String) -> Dicti
 	return {"ok": true, "error": "", "events": events}
 
 
+## Bebe um consumível: ação bônus (SRD 2024) ou ação, conforme o item.
+func _do_use_item(actor: Combatant, item_id: String) -> Dictionary:
+	if actor.team != Combatant.Team.PARTY or inventory == null or registry == null:
+		return _fail("Sem acesso ao inventário")
+	var item := registry.get_entry("item", item_id)
+	if item.get("item_type") != "consumable":
+		return _fail("Item não pode ser usado em combate")
+	if inventory.count(item_id) <= 0:
+		return _fail("Nenhum(a) %s no inventário" % item["name"])
+	var uses_bonus: bool = item["use_time"] == "bonus_action"
+	if uses_bonus and not bonus_action_available:
+		return _fail("A ação bônus deste turno já foi usada")
+	if not uses_bonus and not action_available:
+		return _fail("A ação deste turno já foi usada")
+	if actor.hp >= actor.max_hp:
+		return _fail("PV já estão no máximo")
+	inventory.remove(item_id)
+	if uses_bonus:
+		bonus_action_available = false
+	else:
+		action_available = false
+	var amount := DiceExpression.parse(item["effect_dice"]).roll(_roller)
+	var before := actor.hp
+	actor.hp = mini(actor.max_hp, actor.hp + amount)
+	return {"ok": true, "error": "", "events": [{"type": "heal", "actor": actor.id, "item": item["name"],
+			"amount": actor.hp - before, "hp": actor.hp}] as Array[Dictionary]}
+
+
 func _do_flee(actor: Combatant) -> Dictionary:
 	if not flee_allowed:
 		return _fail("Não é possível fugir deste combate")
@@ -305,6 +349,7 @@ func _advance_turn() -> Array[Dictionary]:
 		var unit := turn_order[_turn_index]
 		if unit.is_up():
 			action_available = true
+			bonus_action_available = true
 			movement_left_feet = unit.speed_feet
 			events.append({"type": "turn_start", "actor": unit.id, "round": round_number})
 			return events
@@ -323,6 +368,7 @@ func _finish(result: Outcome) -> Array[Dictionary]:
 	state = State.FINISHED
 	outcome = result
 	action_available = false
+	bonus_action_available = false
 	movement_left_feet = 0
 	return [{"type": "combat_end", "outcome": result, "xp": total_xp() if result == Outcome.VICTORY else 0}]
 

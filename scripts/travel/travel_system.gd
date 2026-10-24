@@ -72,7 +72,7 @@ func time_label() -> String:
 
 ## Percorre o próximo trecho. Retorna {"ok", "error", "kind", "id", "text"}.
 ## kind: "quiet", "event", "combat" ou "arrived".
-func advance(party: Array[CharacterData], registry: ContentRegistry, supplies: Dictionary) -> Dictionary:
+func advance(party: Array[CharacterData], registry: ContentRegistry, inventory: Inventory) -> Dictionary:
 	if not pending.is_empty():
 		return _fail("Resolva o acontecimento atual antes de seguir")
 	var r := route(registry)
@@ -81,8 +81,7 @@ func advance(party: Array[CharacterData], registry: ContentRegistry, supplies: D
 	segments_done += 1
 	clock += int(r["hours_per_segment"])
 	var needed := RATIONS_PER_MEMBER * party.size()
-	if int(supplies.get("rations", 0)) >= needed:
-		supplies["rations"] = int(supplies.get("rations", 0)) - needed
+	if inventory.remove(Inventory.RATIONS, needed):
 		hungry = false
 	else:
 		hungry = true
@@ -113,7 +112,7 @@ func advance(party: Array[CharacterData], registry: ContentRegistry, supplies: D
 ## Resolve a escolha do evento pendente: teste de perícia (se houver) e efeitos.
 ## Retorna {"ok", "error", "success", "text", "check": D20Test ou null, "effects": Array[String]}.
 func choose_option(choice_id: String, party: Array[CharacterData], registry: ContentRegistry,
-		supplies: Dictionary) -> Dictionary:
+		inventory: Inventory) -> Dictionary:
 	if pending.get("kind") != "event":
 		return _fail("Nenhum evento aguardando escolha")
 	var event := registry.get_entry("event", pending["id"])
@@ -133,17 +132,18 @@ func choose_option(choice_id: String, party: Array[CharacterData], registry: Con
 		success = check.success
 	var effects: Array[String] = []
 	if success:
-		_change_rations(supplies, int(choice.get("success_rations", 0)), effects)
+		_change_rations(inventory, int(choice.get("success_rations", 0)), effects)
 		var xp := int(choice.get("success_xp", 0))
 		if xp > 0:
-			for c in party:
-				c.experience += xp
 			effects.append("+%d XP" % xp)
+			for c in party:
+				for up in Progression.award_xp(c, xp, registry):
+					effects.append(Progression.describe(c, up))
 		if not str(choice.get("success_heal", "")).is_empty():
 			var healed := _heal(leader, registry, DiceExpression.parse(choice["success_heal"]).roll(roller))
 			effects.append("+%d PV" % healed)
 	else:
-		_change_rations(supplies, int(choice.get("failure_rations", 0)), effects)
+		_change_rations(inventory, int(choice.get("failure_rations", 0)), effects)
 		if not str(choice.get("failure_damage", "")).is_empty():
 			var raw := DiceExpression.parse(choice["failure_damage"]).roll(roller)
 			var species := registry.get_entry("species", leader.species_id)
@@ -183,13 +183,12 @@ func short_rest(party: Array[CharacterData], registry: ContentRegistry) -> Dicti
 	return result
 
 
-func long_rest(party: Array[CharacterData], registry: ContentRegistry, supplies: Dictionary) -> Dictionary:
+func long_rest(party: Array[CharacterData], registry: ContentRegistry, inventory: Inventory) -> Dictionary:
 	if not pending.is_empty():
 		return _fail("Não é possível acampar agora")
 	var needed := RATIONS_PER_MEMBER * party.size()
-	if int(supplies.get("rations", 0)) < needed:
+	if not inventory.remove(Inventory.RATIONS, needed):
 		return _fail("Sem rações para acampar")
-	supplies["rations"] = int(supplies["rations"]) - needed
 	var healed := 0
 	for c in party:
 		healed += Rest.long_rest(c, registry)
@@ -252,12 +251,15 @@ func _heal(c: CharacterData, registry: ContentRegistry, amount: int) -> int:
 	return c.current_hp - before
 
 
-func _change_rations(supplies: Dictionary, amount: int, effects: Array[String]) -> void:
+func _change_rations(inventory: Inventory, amount: int, effects: Array[String]) -> void:
 	if amount == 0:
 		return
-	var before := int(supplies.get("rations", 0))
-	supplies["rations"] = maxi(0, before + amount)
-	var delta := int(supplies["rations"]) - before
+	var before := inventory.count(Inventory.RATIONS)
+	if amount > 0:
+		inventory.add(Inventory.RATIONS, amount)
+	else:
+		inventory.remove(Inventory.RATIONS, mini(before, -amount))
+	var delta := inventory.count(Inventory.RATIONS) - before
 	effects.append("%s %s" % [Ability.format_modifier(delta), "ração" if absi(delta) == 1 else "rações"])
 
 

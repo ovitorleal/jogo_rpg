@@ -29,13 +29,13 @@ script = ExtResource("1_script")
 [node name="ControlsHint" type="Label" parent="."]
 offset_left = 6.0
 offset_top = 4.0
-offset_right = 200.0
+offset_right = 320.0
 offset_bottom = 16.0
 theme_override_colors/font_color = Color(0.902, 0.882, 0.827, 0.8)
 theme_override_colors/font_outline_color = Color(0.102, 0.078, 0.137, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 8
-text = "[C] Ficha"
+text = "[C] Ficha · [I] Inventário · [J] Diário"
 
 [node name="SheetPanel" parent="." instance=ExtResource("2_sheet")]
 unique_name_in_owner = true
@@ -95,7 +95,7 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = -96.0
+offset_top = -118.0
 offset_right = -16.0
 offset_bottom = -10.0
 grow_horizontal = 2
@@ -143,6 +143,11 @@ size_flags_vertical = 3
 theme_override_colors/font_color = Color(0.902, 0.882, 0.827, 1)
 theme_override_font_sizes/font_size = 10
 autowrap_mode = 3
+
+[node name="Choices" type="VBoxContainer" parent="MessagePanel/Margin/Row/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 2
 
 [node name="HintLabel" type="Label" parent="MessagePanel/Margin/Row/Content"]
 unique_name_in_owner = true

@@ -15,6 +15,8 @@ const OUT_HERO := "res://assets/characters/hero_sheet.png"
 const OUT_GOBLIN := "res://assets/enemies/goblin_sheet.png"
 const OUT_WOLF := "res://assets/enemies/wolf_sheet.png"
 const OUT_PORTRAIT := "res://assets/portraits/hero_portrait.png"
+const OUT_AMARA := "res://assets/characters/npc_amara_sheet.png"
+const OUT_AMARA_PORTRAIT := "res://assets/portraits/amara_portrait.png"
 
 var HERO := {
 	"skin": PixelCanvas.ramp("#b8694a", "#f0ac84", "#ffd6b4"),
@@ -22,6 +24,23 @@ var HERO := {
 	"tunic": PixelCanvas.ramp("#22386e", "#3a66bc", "#6ea2f2"),
 	"cape": PixelCanvas.ramp("#6e1a28", "#b42e3c", "#ea5c5c"),
 	"pants": PixelCanvas.ramp("#2e2644", "#4e4472", "#7268a0"),
+	"leather": PixelCanvas.ramp("#36200f", "#6a4024", "#9c6a3c"),
+	"metal": PixelCanvas.ramp("#5c6a84", "#b4c4da", "#f2f8ff"),
+	"gold": PixelCanvas.ramp("#86560e", "#d09c2c", "#ffe27a"),
+	"eye": PixelCanvas.hex("#1a1020"),
+	"has_hair": true,
+	"has_cape": true,
+	"ears": false,
+	"y_shift": 0,
+	"curved_blade": false,
+}
+
+var AMARA := {
+	"skin": PixelCanvas.ramp("#7a4a30", "#b8805a", "#e0b08a"),
+	"hair": PixelCanvas.ramp("#1a1010", "#3a2420", "#6a4436"),
+	"tunic": PixelCanvas.ramp("#1e4a2e", "#2f7a46", "#58b070"),
+	"cape": PixelCanvas.ramp("#3c2414", "#74482a", "#a8723e"),
+	"pants": PixelCanvas.ramp("#2a2a30", "#4a4a56", "#70707e"),
 	"leather": PixelCanvas.ramp("#36200f", "#6a4024", "#9c6a3c"),
 	"metal": PixelCanvas.ramp("#5c6a84", "#b4c4da", "#f2f8ff"),
 	"gold": PixelCanvas.ramp("#86560e", "#d09c2c", "#ffe27a"),
@@ -58,7 +77,9 @@ func _initialize() -> void:
 	var ok := _save(_humanoid_sheet(HERO), OUT_HERO)
 	ok = ok and _save(_humanoid_sheet(GOBLIN), OUT_GOBLIN)
 	ok = ok and _save(_wolf_sheet(), OUT_WOLF)
-	ok = ok and _save(_portrait(), OUT_PORTRAIT)
+	ok = ok and _save(_portrait(HERO, "#3a6ec0"), OUT_PORTRAIT)
+	ok = ok and _save(_humanoid_sheet(AMARA), OUT_AMARA)
+	ok = ok and _save(_portrait(AMARA, "#4a8a3a"), OUT_AMARA_PORTRAIT)
 	quit(0 if ok else 1)
 
 
@@ -455,9 +476,8 @@ func _wolf_frame(column: int) -> PixelCanvas:
 # --- Retrato --------------------------------------------------------------------
 
 ## Retrato 32x32 (rosto e ombros), mesmo estilo dos sprites; exibido em 2x.
-func _portrait() -> Image:
+func _portrait(look: Dictionary, iris: String) -> Image:
 	var c := PixelCanvas.new(32, 32)
-	var look := HERO
 	for y in 32:
 		for x in 32:
 			var d := Vector2(x, y).distance_to(Vector2(16, 12))
@@ -489,7 +509,7 @@ func _portrait() -> Image:
 		figure.set_px(ex, 13, Color.WHITE)
 		figure.set_px(ex + 1, 13, look["eye"])
 		figure.set_px(ex + 1, 14, look["eye"])
-		figure.set_px(ex, 14, PixelCanvas.hex("#3a6ec0"))
+		figure.set_px(ex, 14, PixelCanvas.hex(iris))
 		figure.set_px(ex, 12, look["hair"][0])
 		figure.set_px(ex + 1, 12, look["hair"][0])
 	figure.set_px(15, 16, look["skin"][0])

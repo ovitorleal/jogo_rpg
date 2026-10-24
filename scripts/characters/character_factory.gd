@@ -53,6 +53,8 @@ static func validate(c: CharacterData, registry: ContentRegistry, check_hp: bool
 		errors.append("Nível %d fora de %d-%d" % [c.level, RulesEngine.MIN_LEVEL, RulesEngine.MAX_LEVEL])
 	if c.experience < 0:
 		errors.append("Experiência negativa")
+	elif c.level > Progression.level_for_xp(c.experience):
+		errors.append("Nível %d exige mais experiência que %d XP" % [c.level, c.experience])
 
 	var species := registry.get_entry("species", c.species_id)
 	var class_entry := registry.get_entry("class", c.class_id)

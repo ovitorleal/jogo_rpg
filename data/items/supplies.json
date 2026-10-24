@@ -1,0 +1,26 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "item.potion_of_healing",
+			"name": "Poção de Cura",
+			"description": "Líquido vermelho que fecha feridas ao ser bebido.",
+			"source": "SRD 5.2.1",
+			"item_type": "consumable",
+			"effect": "heal",
+			"effect_dice": "2d4+2",
+			"use_time": "bonus_action",
+			"weight_lb": 0.5,
+			"cost_gp": 50
+		},
+		{
+			"id": "item.rations",
+			"name": "Rações (1 dia)",
+			"description": "Comida seca e duradoura para um dia de viagem.",
+			"source": "SRD 5.2.1",
+			"item_type": "gear",
+			"weight_lb": 2,
+			"cost_gp": 0.5
+		}
+	]
+}

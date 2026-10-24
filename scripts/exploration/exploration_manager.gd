@@ -45,6 +45,8 @@ func begin_encounter(encounter_id: String, trigger_id: String, scene_path: Strin
 func finish_encounter(outcome: int, xp: int, change_scene: bool = true) -> String:
 	last_outcome = outcome
 	last_xp = xp
+	if outcome == CombatManager.Outcome.VICTORY and not pending_encounter_id.is_empty():
+		QuestManager.notify_later("defeat_encounter", pending_encounter_id)
 	match outcome:
 		CombatManager.Outcome.VICTORY:
 			if not pending_trigger_id.is_empty():
@@ -58,6 +60,7 @@ func finish_encounter(outcome: int, xp: int, change_scene: bool = true) -> Strin
 		destination = TITLE_SCENE
 		reset()
 		PartyManager.clear()
+		QuestManager.reset()
 		last_outcome = outcome
 	if change_scene and scene_changes_enabled:
 		get_tree().change_scene_to_file(destination)

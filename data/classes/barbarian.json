@@ -7,19 +7,51 @@
 			"description": "Guerreiro movido por uma fúria primal que o torna mais forte e resistente.",
 			"source": "SRD 5.2.1",
 			"hit_die": 12,
-			"primary_abilities": ["str"],
-			"saving_throws": ["str", "con"],
+			"primary_abilities": [
+				"str"
+			],
+			"saving_throws": [
+				"str",
+				"con"
+			],
 			"skill_choice_count": 2,
-			"skill_options": ["animal_handling", "athletics", "intimidation", "nature", "perception", "survival"],
+			"skill_options": [
+				"animal_handling",
+				"athletics",
+				"intimidation",
+				"nature",
+				"perception",
+				"survival"
+			],
 			"expertise_choices": 0,
-			"armor_training": ["light", "medium", "shield"],
-			"weapon_training": ["simple", "martial"],
+			"armor_training": [
+				"light",
+				"medium",
+				"shield"
+			],
+			"weapon_training": [
+				"simple",
+				"martial"
+			],
 			"unarmored_defense_ability": "con",
 			"unarmored_defense_allows_shield": true,
-			"suggested_scores": [15, 13, 14, 8, 12, 10],
+			"suggested_scores": [
+				15,
+				13,
+				14,
+				8,
+				12,
+				10
+			],
 			"starting_armor": "",
 			"starting_shield": false,
-			"starting_weapons": ["item.greataxe", "item.handaxe", "item.handaxe", "item.handaxe", "item.handaxe"],
+			"starting_weapons": [
+				"item.greataxe",
+				"item.handaxe",
+				"item.handaxe",
+				"item.handaxe",
+				"item.handaxe"
+			],
 			"features": [
 				{
 					"id": "feature.rage",
@@ -40,6 +72,20 @@
 					"name": "Maestria em Armas",
 					"level": 1,
 					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.danger_sense",
+					"name": "Sentido de Perigo",
+					"level": 2,
+					"description": "Vantagem em resistências de Destreza contra efeitos que pode ver.",
+					"implemented": false
+				},
+				{
+					"id": "feature.reckless_attack",
+					"name": "Ataque Imprudente",
+					"level": 2,
+					"description": "Ataca com vantagem, mas os inimigos também ganham vantagem contra você.",
 					"implemented": false
 				}
 			]

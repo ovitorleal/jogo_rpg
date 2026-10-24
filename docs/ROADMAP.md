@@ -6,11 +6,26 @@
 | 1 | Primeiro mapa | Concluída (2026-10-23) |
 | 2 | Modelo de personagens | Concluída (2026-10-23) |
 | 3 | Combate | Concluída (2026-10-24) |
-| 4 | Viagens e encontros | **Concluída** (2026-10-24) |
-| 5 | Progressão e conteúdo | Próxima |
-| 6 | Salvamento e integração | — |
+| 4 | Viagens e encontros | Concluída (2026-10-24) |
+| 5 | Progressão e conteúdo | **Concluída** (2026-10-24) |
+| 6 | Salvamento e integração | Próxima |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
+
+## Fase 5 — resultado
+
+Critério: "o jogador pode explorar, lutar, receber recompensas, concluir uma missão e continuar a aventura". Atendido.
+
+- Progressão pela tabela de XP do SRD (PV, Dados de Vida, proficiência, características de nível 2 das 12 classes).
+- Inventário do grupo com ouro, Poção de Cura e Rações; equipar/trocar/remover com treinamento; poção no combate como
+  ação bônus; recompensas de encontro (goblins) e de missão.
+- Guarda Amara (sprite e retrato novos) com diálogo em dados e duas missões encadeadas: "Ameaça na Ruína" e
+  "Notícias do Bosque" (esta usa a viagem da Fase 4).
+- Telas: Inventário (I) e Diário (J); avisos de objetivo cumprido e de subida de nível.
+- Testes: 170/170 (24 novos). O executor de testes passou a reprovar scripts que não compilam e erros de script
+  durante um teste — isso revelou um teste da Fase 4 que vinha passando sem executar até o fim (corrigido).
+- Verificação visual com sonda em janela real (conversa com retrato e escolhas, diário, inventário, poção no combate);
+  corrigido o foco adiado em botões de diálogo já removidos.
 
 ## Fase 4 — resultado
 
@@ -116,6 +131,7 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 5 (progressão e conteúdo): `InventorySystem` (itens empilháveis, equipar/desequipar com atualização da ficha, consumíveis
-como poção de cura do SRD, rações como item), XP → nível (tabela do SRD, PV por nível, novas características), `QuestManager`
-com uma missão (objetivos por estado, recompensa) e um NPC com diálogo em dados (`DialogueSystem`).
+Fase 6 (salvamento): `SaveManager` com um slot em `user://` (escrita temporária + troca segura, cópia de recuperação),
+`schema_version` do save e migrações; salvar grupo (`CharacterData`), inventário, missões, estado de exploração e viagem;
+autosave após combate, missão, troca de mapa e descanso; "Salvar agora" e "Continuar" no título; mensagens de sucesso/falha;
+teste de persistência no navegador (recarregar a página e reabrir o navegador).

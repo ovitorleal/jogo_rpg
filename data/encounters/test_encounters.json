@@ -31,7 +31,14 @@
 			"flee_allowed": true,
 			"arena_width": 12,
 			"arena_height": 8,
-			"intro_text": "Um goblin salta das pedras com a cimitarra em punho!"
+			"intro_text": "Um goblin salta das pedras com a cimitarra em punho!",
+			"reward_gold": 8,
+			"reward_items": [
+				{
+					"item_id": "item.potion_of_healing",
+					"count": 1
+				}
+			]
 		},
 		{
 			"id": "encounter.wolf_pair",
@@ -63,7 +70,8 @@
 			"flee_allowed": true,
 			"arena_width": 12,
 			"arena_height": 8,
-			"intro_text": "Uma flecha passa zunindo: um batedor goblin bloqueia a trilha!"
+			"intro_text": "Uma flecha passa zunindo: um batedor goblin bloqueia a trilha!",
+			"reward_gold": 5
 		}
 	]
 }

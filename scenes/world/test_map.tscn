@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/world/test_map_terrain.tscn" id="2_terrain"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/exploration_hud.tscn" id="5_hud"]
 [ext_resource type="PackedScene" path="res://scenes/world/encounter_trigger.tscn" id="6_trigger"]
 [ext_resource type="PackedScene" path="res://scenes/world/test_map_props.tscn" id="7_props"]
+[ext_resource type="PackedScene" path="res://scenes/world/npc_amara.tscn" id="8_amara"]
 
 [node name="TestMap" type="Node2D"]
 script = ExtResource("1_script")
@@ -33,6 +34,9 @@ position = Vector2(872, 250)
 prompt_text = "Ler placa"
 message_text = "A placa diz: \"Estrada do Leste — Bosque do Riacho, meio dia de caminhada pela Floresta Sussurrante.\" Partir agora?"
 action = "travel:route.east_road"
+
+[node name="Amara" parent="Objects" instance=ExtResource("8_amara")]
+position = Vector2(470, 252)
 
 [node name="WolfEncounter" parent="Objects" instance=ExtResource("6_trigger")]
 position = Vector2(712, 344)

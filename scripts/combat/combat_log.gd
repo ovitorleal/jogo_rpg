@@ -23,6 +23,8 @@ static func describe(event: Dictionary, manager: CombatManager) -> String:
 			return "%s se move (%d pés restantes)." % [actor, event["movement_left"]]
 		"attack":
 			return _describe_attack(event, manager, actor)
+		"heal":
+			return "%s bebe %s e recupera %d PV (agora %d)." % [actor, event["item"], event["amount"], event["hp"]]
 		"down":
 			return "[color=#d6463c]%s %s![/color]" % [actor, "morre" if event["dead"] else "cai inconsciente"]
 		"combat_end":

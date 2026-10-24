@@ -7,19 +7,49 @@
 			"description": "Mestre das artes marciais que canaliza energia interior em golpes rápidos.",
 			"source": "SRD 5.2.1",
 			"hit_die": 8,
-			"primary_abilities": ["dex", "wis"],
-			"saving_throws": ["str", "dex"],
+			"primary_abilities": [
+				"dex",
+				"wis"
+			],
+			"saving_throws": [
+				"str",
+				"dex"
+			],
 			"skill_choice_count": 2,
-			"skill_options": ["acrobatics", "athletics", "history", "insight", "religion", "stealth"],
+			"skill_options": [
+				"acrobatics",
+				"athletics",
+				"history",
+				"insight",
+				"religion",
+				"stealth"
+			],
 			"expertise_choices": 0,
 			"armor_training": [],
-			"weapon_training": ["simple", "martial_light"],
+			"weapon_training": [
+				"simple",
+				"martial_light"
+			],
 			"unarmored_defense_ability": "wis",
 			"unarmored_defense_allows_shield": false,
-			"suggested_scores": [12, 15, 13, 10, 14, 8],
+			"suggested_scores": [
+				12,
+				15,
+				13,
+				10,
+				14,
+				8
+			],
 			"starting_armor": "",
 			"starting_shield": false,
-			"starting_weapons": ["item.spear", "item.dagger", "item.dagger", "item.dagger", "item.dagger", "item.dagger"],
+			"starting_weapons": [
+				"item.spear",
+				"item.dagger",
+				"item.dagger",
+				"item.dagger",
+				"item.dagger",
+				"item.dagger"
+			],
 			"features": [
 				{
 					"id": "feature.martial_arts",
@@ -34,6 +64,27 @@
 					"level": 1,
 					"description": "Sem armadura e sem escudo, a CA é 10 + Destreza + Sabedoria.",
 					"implemented": true
+				},
+				{
+					"id": "feature.monks_focus",
+					"name": "Foco do Monge",
+					"level": 2,
+					"description": "Pontos de foco para técnicas como Rajada de Golpes.",
+					"implemented": false
+				},
+				{
+					"id": "feature.unarmored_movement",
+					"name": "Movimento sem Armadura",
+					"level": 2,
+					"description": "Deslocamento aumenta sem armadura e sem escudo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.uncanny_metabolism",
+					"name": "Metabolismo Sobrenatural",
+					"level": 2,
+					"description": "Recupera foco e PV ao rolar iniciativa, uma vez por descanso longo.",
+					"implemented": false
 				}
 			]
 		}

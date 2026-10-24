@@ -10,7 +10,7 @@ extends Control
 
 var travel: TravelSystem
 var _party: Array[CharacterData] = []
-var _supplies: Dictionary = {}
+var _inventory: Inventory
 var _configured := false
 var _busy := false
 var _event_open := false
@@ -34,10 +34,10 @@ var _event_open := false
 
 
 ## Configura antes de entrar na árvore (testes); sem isso, usa a viagem do ExplorationManager.
-func setup(travel_system: TravelSystem, party: Array[CharacterData], supplies: Dictionary) -> void:
+func setup(travel_system: TravelSystem, party: Array[CharacterData], inventory: Inventory) -> void:
 	travel = travel_system
 	_party = party
-	_supplies = supplies
+	_inventory = inventory
 	_configured = true
 
 
@@ -45,7 +45,7 @@ func _ready() -> void:
 	if not _configured:
 		travel = ExplorationManager.current_travel()
 		_party = PartyManager.members
-		_supplies = PartyManager.supplies
+		_inventory = PartyManager.inventory
 	_event_panel.visible = false
 	_advance_button.pressed.connect(advance)
 	_short_rest_button.pressed.connect(short_rest)
@@ -77,7 +77,7 @@ func is_busy() -> bool:
 func advance() -> void:
 	if _busy or _event_open:
 		return
-	var result := travel.advance(_party, Content.registry, _supplies)
+	var result := travel.advance(_party, Content.registry, _inventory)
 	if not result["ok"]:
 		_message.text = result["error"]
 		return
@@ -102,7 +102,7 @@ func advance() -> void:
 
 
 func choose(choice_id: String) -> Dictionary:
-	var result := travel.choose_option(choice_id, _party, Content.registry, _supplies)
+	var result := travel.choose_option(choice_id, _party, Content.registry, _inventory)
 	if not result["ok"]:
 		_message.text = result["error"]
 		return result
@@ -143,7 +143,7 @@ func short_rest() -> void:
 func long_rest() -> void:
 	if _busy or _event_open:
 		return
-	var result := travel.long_rest(_party, Content.registry, _supplies)
+	var result := travel.long_rest(_party, Content.registry, _inventory)
 	_message.text = result["error"] if not result["ok"] else "Acampamento: +%d PV, Dados de Vida recuperados." % result["healed"]
 	_store()
 	_refresh()
@@ -186,7 +186,7 @@ func _refresh() -> void:
 	var leader := _party[0]
 	var sheet := CharacterSheet.build(leader, Content.registry)
 	_status.text = "%s · PV %d/%d · Dados de Vida %d/%d · Rações %d%s" % [leader.name, leader.current_hp, sheet.max_hp,
-			Rest.hit_dice_left(leader), RulesEngine.hit_dice_total(leader.level), int(_supplies.get("rations", 0)),
+			Rest.hit_dice_left(leader), RulesEngine.hit_dice_total(leader.level), _inventory.count(Inventory.RATIONS),
 			" · com fome" if travel.hungry else ""]
 	_log.text = "\n".join(PackedStringArray(travel.log))
 	var arrived := travel.is_arrived(Content.registry)
@@ -196,7 +196,7 @@ func _refresh() -> void:
 	_arrive_button.visible = arrived
 	_arrive_button.disabled = _busy or _event_open
 	_short_rest_button.disabled = blocked or Rest.hit_dice_left(leader) <= 0 or leader.current_hp >= sheet.max_hp
-	_long_rest_button.disabled = blocked or int(_supplies.get("rations", 0)) < _party.size()
+	_long_rest_button.disabled = blocked or _inventory.count(Inventory.RATIONS) < _party.size()
 
 
 func _store() -> void:

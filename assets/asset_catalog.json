@@ -228,6 +228,158 @@
 			"prompt_reference": "",
 			"approval_status": "in_review",
 			"notes": "Fogueira em 3 quadros 16x16 (chama tremulando); pivô na linha 15. Gerado por tools/art/generate_environment.gd."
+		},
+		{
+			"asset_id": "character.npc_amara",
+			"category": "characters",
+			"file_path": "res://assets/characters/npc_amara_sheet.png",
+			"dimensions": [
+				288,
+				128
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 36,
+			"animation_fps": 8,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Guarda Amara: mesmo layout do herói (tools/art/generate_characters.gd)."
+		},
+		{
+			"asset_id": "portrait.amara",
+			"category": "portraits",
+			"file_path": "res://assets/portraits/amara_portrait.png",
+			"dimensions": [
+				32,
+				32
+			],
+			"format": "png",
+			"transparency": false,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Retrato da Amara, exibido em 2x nas falas."
+		},
+		{
+			"asset_id": "icon.potion",
+			"category": "icons",
+			"file_path": "res://assets/icons/icon_potion.png",
+			"dimensions": [
+				16,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Ícone de inventário (tools/art/generate_environment.gd)."
+		},
+		{
+			"asset_id": "icon.rations",
+			"category": "icons",
+			"file_path": "res://assets/icons/icon_rations.png",
+			"dimensions": [
+				16,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Ícone de inventário (tools/art/generate_environment.gd)."
+		},
+		{
+			"asset_id": "icon.coin",
+			"category": "icons",
+			"file_path": "res://assets/icons/icon_coin.png",
+			"dimensions": [
+				16,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Ícone de inventário (tools/art/generate_environment.gd)."
+		},
+		{
+			"asset_id": "icon.weapon",
+			"category": "icons",
+			"file_path": "res://assets/icons/icon_weapon.png",
+			"dimensions": [
+				16,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Ícone de inventário (tools/art/generate_environment.gd)."
+		},
+		{
+			"asset_id": "icon.armor",
+			"category": "icons",
+			"file_path": "res://assets/icons/icon_armor.png",
+			"dimensions": [
+				16,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Ícone de inventário (tools/art/generate_environment.gd)."
+		},
+		{
+			"asset_id": "icon.shield",
+			"category": "icons",
+			"file_path": "res://assets/icons/icon_shield.png",
+			"dimensions": [
+				16,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Ícone de inventário (tools/art/generate_environment.gd)."
 		}
 	]
 }

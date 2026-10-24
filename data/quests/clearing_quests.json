@@ -1,0 +1,41 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "quest.ruin_threat",
+			"name": "Ameaça na Ruína",
+			"description": "Um goblin armado tomou a velha ruína a sudoeste da encruzilhada e ataca quem passa por perto.",
+			"source": "original",
+			"giver": "Amara",
+			"objectives": [
+				{
+					"id": "defeat_goblin",
+					"text": "Derrotar o goblin que vigia a ruína",
+					"type": "defeat_encounter",
+					"target": "encounter.ruin_goblin"
+				}
+			],
+			"reward_xp": 150,
+			"reward_gold": 20,
+			"reward_items": [{"item_id": "item.potion_of_healing", "count": 2}]
+		},
+		{
+			"id": "quest.brook_message",
+			"name": "Notícias do Bosque",
+			"description": "Amara quer saber se o acampamento do Bosque do Riacho continua seguro.",
+			"source": "original",
+			"giver": "Amara",
+			"objectives": [
+				{
+					"id": "reach_brook",
+					"text": "Chegar ao Bosque do Riacho pela Estrada do Leste",
+					"type": "reach_map",
+					"target": "map.forest_brook"
+				}
+			],
+			"reward_xp": 100,
+			"reward_gold": 10,
+			"reward_items": [{"item_id": "item.rations", "count": 3}]
+		}
+	]
+}
