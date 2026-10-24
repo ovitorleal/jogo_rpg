@@ -28,6 +28,8 @@ static func long_rest(c: CharacterData, registry: ContentRegistry) -> int:
 	c.current_hp = CharacterSheet.build(c, registry).max_hp
 	c.hit_dice_spent = 0
 	Spellcasting.long_rest(c)
+	# Usos de recursos voltam no descanso longo (Iniciado em Magia, Fúria, Inspiração...).
+	c.resources_spent.clear()
 	return c.current_hp - before
 
 

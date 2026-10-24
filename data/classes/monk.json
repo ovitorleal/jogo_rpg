@@ -55,36 +55,292 @@
 					"id": "feature.martial_arts",
 					"name": "Artes Marciais",
 					"level": 1,
-					"description": "Golpes desarmados e armas de monge usam Destreza e um dado de artes marciais.",
-					"implemented": false
+					"description": "Sem armadura e escudo, com armas de monge ou desarmado: ataque desarmado como ação bônus, dado de Artes Marciais no dano (d6 a d12) e Destreza no lugar da Força.",
+					"implemented": true
 				},
 				{
 					"id": "feature.unarmored_defense_monk",
 					"name": "Defesa sem Armadura",
 					"level": 1,
-					"description": "Sem armadura e sem escudo, a CA é 10 + Destreza + Sabedoria.",
+					"description": "Sem armadura e escudo, CA = 10 + Destreza + Sabedoria.",
 					"implemented": true
 				},
 				{
 					"id": "feature.monks_focus",
 					"name": "Foco do Monge",
 					"level": 2,
-					"description": "Pontos de foco para técnicas como Rajada de Golpes.",
-					"implemented": false
+					"description": "Pontos de Foco iguais ao nível (recuperados no descanso curto): Rajada de Golpes (2 ataques desarmados), Defesa Paciente (Desengajar ou, com 1 ponto, Desengajar e Esquivar) e Passo do Vento (Disparada ou, com 1 ponto, Desengajar e Disparada) como ação bônus.",
+					"implemented": true
 				},
 				{
 					"id": "feature.unarmored_movement",
 					"name": "Movimento sem Armadura",
 					"level": 2,
-					"description": "Deslocamento aumenta sem armadura e sem escudo.",
-					"implemented": false
+					"description": "Sem armadura e escudo, +3 m de deslocamento (+4,5 no 6, +6 no 10, +7,5 no 14, +9 no 18).",
+					"implemented": true
 				},
 				{
 					"id": "feature.uncanny_metabolism",
 					"name": "Metabolismo Sobrenatural",
 					"level": 2,
-					"description": "Recupera foco e PV ao rolar iniciativa, uma vez por descanso longo.",
+					"description": "Ao rolar iniciativa, recupera todo o Foco e PV iguais ao nível + dado de Artes Marciais; uma vez por descanso longo.",
+					"implemented": true
+				},
+				{
+					"id": "feature.deflect_attacks",
+					"name": "Desviar Ataques",
+					"level": 3,
+					"description": "Reação ao ser atingido por dano contundente, perfurante ou cortante: reduz o dano em 1d10 + Destreza + nível; se zerar, 1 Foco devolve o golpe (teste de Destreza, dois dados de Artes Marciais + Destreza).",
+					"implemented": true
+				},
+				{
+					"id": "feature.monk_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_monk_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_monk_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_monk_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_monk_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.slow_fall",
+					"name": "Queda Lenta",
+					"level": 4,
+					"description": "Reação ao cair: reduz o dano em 5 x nível.",
 					"implemented": false
+				},
+				{
+					"id": "feature.extra_attack",
+					"name": "Ataque Extra",
+					"level": 5,
+					"description": "Ataca duas vezes ao usar a ação de Ataque.",
+					"implemented": true
+				},
+				{
+					"id": "feature.stunning_strike",
+					"name": "Golpe Atordoante",
+					"level": 5,
+					"description": "Uma vez por turno, ao acertar com arma de monge ou desarmado, gasta 1 Foco: teste de Constituição ou Atordoado até o início do seu próximo turno (com sucesso, deslocamento pela metade e próximo ataque contra ele com vantagem).",
+					"implemented": true
+				},
+				{
+					"id": "feature.empowered_strikes",
+					"name": "Golpes Fortalecidos",
+					"level": 6,
+					"description": "Ataques desarmados podem causar dano de energia.",
+					"implemented": true
+				},
+				{
+					"id": "feature.evasion_monk",
+					"name": "Evasão",
+					"level": 7,
+					"description": "Em testes de Destreza para metade do dano: nenhum dano com sucesso e metade com falha (exceto Incapacitado).",
+					"implemented": true
+				},
+				{
+					"id": "feature.acrobatic_movement",
+					"name": "Movimento Acrobático",
+					"level": 9,
+					"description": "Sem armadura e escudo, move por superfícies verticais e líquidos.",
+					"implemented": false
+				},
+				{
+					"id": "feature.heightened_focus",
+					"name": "Foco Ampliado",
+					"level": 10,
+					"description": "Rajada faz 3 ataques; Defesa Paciente dá PV temporários (dois dados de Artes Marciais); Passo do Vento leva um aliado junto.",
+					"implemented": true
+				},
+				{
+					"id": "feature.self_restoration",
+					"name": "Autorrestauração",
+					"level": 10,
+					"description": "No fim do turno, remove Enfeitiçado, Amedrontado ou Envenenado de si.",
+					"implemented": true
+				},
+				{
+					"id": "feature.deflect_energy",
+					"name": "Desviar Energia",
+					"level": 13,
+					"description": "Desviar Ataques funciona contra qualquer tipo de dano.",
+					"implemented": true
+				},
+				{
+					"id": "feature.disciplined_survivor",
+					"name": "Sobrevivente Disciplinado",
+					"level": 14,
+					"description": "Proficiência em todos os testes de resistência; ao falhar, 1 Foco permite refazer.",
+					"implemented": true
+				},
+				{
+					"id": "feature.perfect_focus",
+					"name": "Foco Perfeito",
+					"level": 15,
+					"description": "Ao rolar iniciativa sem usar Metabolismo Sobrenatural, recupera Foco até 4.",
+					"implemented": true
+				},
+				{
+					"id": "feature.superior_defense",
+					"name": "Defesa Superior",
+					"level": 18,
+					"description": "No início do turno, 3 Foco: resistência a todo dano exceto energia por 1 minuto.",
+					"implemented": true
+				},
+				{
+					"id": "feature.epic_boon_monk",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Ofensiva Irresistível é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.body_and_mind",
+					"name": "Corpo e Mente",
+					"level": 20,
+					"description": "Destreza e Sabedoria +4 (máximo 25).",
+					"implemented": true
+				}
+			],
+			"resources": [
+				{
+					"id": "focus",
+					"name": "Pontos de Foco",
+					"values": [
+						"0",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20"
+					],
+					"recharge": "short"
+				},
+				{
+					"id": "martial_arts_die",
+					"name": "Dado de Artes Marciais",
+					"values": [
+						"1d6",
+						"1d6",
+						"1d6",
+						"1d6",
+						"1d8",
+						"1d8",
+						"1d8",
+						"1d8",
+						"1d8",
+						"1d8",
+						"1d10",
+						"1d10",
+						"1d10",
+						"1d10",
+						"1d10",
+						"1d10",
+						"1d12",
+						"1d12",
+						"1d12",
+						"1d12"
+					],
+					"recharge": "none"
+				},
+				{
+					"id": "unarmored_movement",
+					"name": "Movimento sem Armadura",
+					"values": [
+						"0",
+						"10",
+						"10",
+						"10",
+						"10",
+						"15",
+						"15",
+						"15",
+						"15",
+						"20",
+						"20",
+						"20",
+						"20",
+						"25",
+						"25",
+						"25",
+						"25",
+						"30",
+						"30",
+						"30"
+					],
+					"recharge": "none"
+				},
+				{
+					"id": "uncanny_metabolism",
+					"name": "Metabolismo Sobrenatural",
+					"values": [
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
 				}
 			]
 		}

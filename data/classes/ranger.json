@@ -63,28 +63,144 @@
 					"id": "feature.favored_enemy",
 					"name": "Inimigo Favorito",
 					"level": 1,
-					"description": "Sempre tem a magia de marcar a presa preparada e pode usá-la algumas vezes sem gastar espaço.",
+					"description": "Sempre tem Marca do Caçador preparada e a conjura sem espaço algumas vezes por descanso longo (tabela).",
 					"implemented": false
 				},
 				{
 					"id": "feature.weapon_mastery",
 					"name": "Maestria em Armas",
 					"level": 1,
-					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
-					"implemented": false
+					"description": "Usa as propriedades de maestria de duas armas à escolha (troca após descanso longo).",
+					"implemented": true,
+					"grants": "weapon_mastery"
 				},
 				{
 					"id": "feature.deft_explorer",
 					"name": "Explorador Hábil",
 					"level": 2,
-					"description": "Especialização em uma perícia e idiomas extras.",
-					"implemented": false
+					"description": "Especialização em uma perícia proficiente e dois idiomas.",
+					"implemented": true,
+					"grants": "expertise"
 				},
 				{
 					"id": "feature.fighting_style_ranger",
 					"name": "Estilo de Luta",
 					"level": 2,
-					"description": "Escolha um talento de estilo de luta.",
+					"description": "Ganha um talento de Estilo de Luta.",
+					"implemented": true,
+					"grants": "fighting_style"
+				},
+				{
+					"id": "feature.ranger_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_ranger_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_ranger_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_ranger_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_ranger_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.extra_attack",
+					"name": "Ataque Extra",
+					"level": 5,
+					"description": "Ataca duas vezes ao usar a ação de Ataque.",
+					"implemented": true
+				},
+				{
+					"id": "feature.roving",
+					"name": "Andarilho",
+					"level": 6,
+					"description": "+3 m de deslocamento sem armadura pesada; deslocamento de escalada e natação iguais.",
+					"implemented": true
+				},
+				{
+					"id": "feature.expertise_ranger_9",
+					"name": "Especialização",
+					"level": 9,
+					"description": "Especialização em duas perícias proficientes.",
+					"implemented": true,
+					"grants": "expertise",
+					"count": 2
+				},
+				{
+					"id": "feature.tireless",
+					"name": "Incansável",
+					"level": 10,
+					"description": "Ação de Magia: PV temporários de 1d8 + Sabedoria (usos = Sabedoria por descanso longo); descanso curto reduz a Exaustão.",
+					"implemented": false
+				},
+				{
+					"id": "feature.relentless_hunter",
+					"name": "Caçador Implacável",
+					"level": 13,
+					"description": "Dano não quebra a concentração na Marca do Caçador.",
+					"implemented": false
+				},
+				{
+					"id": "feature.natures_veil",
+					"name": "Véu da Natureza",
+					"level": 14,
+					"description": "Ação bônus: Invisível até o fim do próximo turno; usos = Sabedoria por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.precise_hunter",
+					"name": "Caçador Preciso",
+					"level": 17,
+					"description": "Vantagem nos ataques contra a criatura marcada pela Marca do Caçador.",
+					"implemented": false
+				},
+				{
+					"id": "feature.feral_senses",
+					"name": "Sentidos Ferais",
+					"level": 18,
+					"description": "Percepção às cegas a 9 m.",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_ranger",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Viagem Dimensional é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.foe_slayer",
+					"name": "Matador de Inimigos",
+					"level": 20,
+					"description": "O dado de dano da Marca do Caçador vira d10.",
 					"implemented": false
 				}
 			],
@@ -133,7 +249,113 @@
 				14,
 				15,
 				15
-			]
+			],
+			"resources": [
+				{
+					"id": "favored_enemy",
+					"name": "Marca do Caçador gratuita",
+					"values": [
+						"2",
+						"2",
+						"2",
+						"2",
+						"3",
+						"3",
+						"3",
+						"3",
+						"4",
+						"4",
+						"4",
+						"4",
+						"5",
+						"5",
+						"5",
+						"5",
+						"6",
+						"6",
+						"6",
+						"6"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "tireless",
+					"name": "Incansável",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "natures_veil",
+					"name": "Véu da Natureza",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis"
+					],
+					"recharge": "long"
+				}
+			],
+			"weapon_mastery_counts": [
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2
+			],
+			"weapon_mastery_rule": "proficient"
 		}
 	]
 }

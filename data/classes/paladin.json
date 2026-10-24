@@ -59,7 +59,7 @@
 					"id": "feature.lay_on_hands",
 					"name": "Cura pelas Mãos",
 					"level": 1,
-					"description": "Possui uma reserva de cura que distribui com o toque.",
+					"description": "Reserva de cura igual a 5 x nível por descanso longo; ação bônus para curar um toque (ou 5 pontos para remover Envenenado).",
 					"implemented": false
 				},
 				{
@@ -73,22 +73,135 @@
 					"id": "feature.weapon_mastery",
 					"name": "Maestria em Armas",
 					"level": 1,
-					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
-					"implemented": false
+					"description": "Usa as propriedades de maestria de duas armas à escolha (troca após descanso longo).",
+					"implemented": true,
+					"grants": "weapon_mastery"
 				},
 				{
 					"id": "feature.fighting_style_paladin",
 					"name": "Estilo de Luta",
 					"level": 2,
-					"description": "Escolha um talento de estilo de luta.",
-					"implemented": false
+					"description": "Ganha um talento de Estilo de Luta.",
+					"implemented": true,
+					"grants": "fighting_style"
 				},
 				{
 					"id": "feature.paladins_smite",
 					"name": "Golpe do Paladino",
 					"level": 2,
-					"description": "Sempre tem a magia de golpe divino preparada.",
+					"description": "Sempre tem Golpe Divino preparada e pode conjurá-la uma vez sem espaço por descanso longo.",
 					"implemented": false
+				},
+				{
+					"id": "feature.channel_divinity_paladin",
+					"name": "Canalizar Divindade",
+					"level": 3,
+					"description": "Sentido Divino (ação bônus: detecta celestiais, corruptores e mortos-vivos a até 18 m) e efeitos da subclasse. Usos 2 (3 no 11); recupera um no descanso curto.",
+					"implemented": false
+				},
+				{
+					"id": "feature.paladin_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_paladin_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_paladin_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_paladin_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_paladin_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.extra_attack",
+					"name": "Ataque Extra",
+					"level": 5,
+					"description": "Ataca duas vezes ao usar a ação de Ataque.",
+					"implemented": true
+				},
+				{
+					"id": "feature.faithful_steed",
+					"name": "Montaria Fiel",
+					"level": 5,
+					"description": "Sempre tem Encontrar Montaria preparada e pode conjurá-la uma vez sem espaço por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.aura_of_protection",
+					"name": "Aura de Proteção",
+					"level": 6,
+					"description": "Você e aliados a até 3 m somam seu Carisma (mínimo +1) aos testes de resistência.",
+					"implemented": false
+				},
+				{
+					"id": "feature.abjure_foes",
+					"name": "Repelir Inimigos",
+					"level": 9,
+					"description": "Canalizar Divindade: criaturas (quantidade = Carisma) a até 18 m testam Sabedoria ou ficam Amedrontadas por 1 minuto.",
+					"implemented": false
+				},
+				{
+					"id": "feature.aura_of_courage",
+					"name": "Aura de Coragem",
+					"level": 10,
+					"description": "Você e aliados na aura são imunes a Amedrontado.",
+					"implemented": false
+				},
+				{
+					"id": "feature.radiant_strikes",
+					"name": "Golpes Radiantes",
+					"level": 11,
+					"description": "Ataques corpo a corpo e desarmados que acertam causam +1d8 de dano radiante.",
+					"implemented": false
+				},
+				{
+					"id": "feature.restoring_touch",
+					"name": "Toque Restaurador",
+					"level": 14,
+					"description": "Cura pelas Mãos pode remover Cego, Enfeitiçado, Surdo, Amedrontado, Paralisado ou Atordoado (5 pontos cada).",
+					"implemented": false
+				},
+				{
+					"id": "feature.aura_expansion",
+					"name": "Expansão da Aura",
+					"level": 18,
+					"description": "A Aura de Proteção passa a 9 m.",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_paladin",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Visão Verdadeira é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
 				}
 			],
 			"spellcasting_ability": "cha",
@@ -136,7 +249,113 @@
 				14,
 				15,
 				15
-			]
+			],
+			"resources": [
+				{
+					"id": "lay_on_hands",
+					"name": "Cura pelas Mãos",
+					"values": [
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x",
+						"5x"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "channel_divinity",
+					"name": "Canalizar Divindade",
+					"values": [
+						"0",
+						"0",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3"
+					],
+					"recharge": "short_one"
+				},
+				{
+					"id": "paladins_smite",
+					"name": "Golpe Divino gratuito",
+					"values": [
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
+			],
+			"weapon_mastery_counts": [
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2
+			],
+			"weapon_mastery_rule": "proficient"
 		}
 	]
 }

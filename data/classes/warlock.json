@@ -51,21 +51,255 @@
 					"id": "feature.eldritch_invocations",
 					"name": "Invocações Místicas",
 					"level": 1,
-					"description": "Fragmentos de conhecimento proibido que concedem habilidades mágicas.",
-					"implemented": false
+					"description": "Aprende Invocações Místicas (quantidade pela tabela).",
+					"implemented": false,
+					"grants": "invocation",
+					"options": [
+						{
+							"id": "invocation.agonizing_blast@2",
+							"name": "Explosão Agonizante",
+							"description": "Soma o Carisma ao dano de um truque de bruxo que cause dano."
+						},
+						{
+							"id": "invocation.armor_of_shadows",
+							"name": "Armadura das Sombras",
+							"description": "Conjura Armadura Arcana em si mesmo sem espaço."
+						},
+						{
+							"id": "invocation.ascendant_step@5",
+							"name": "Passo Ascendente",
+							"description": "Conjura Levitação em si mesmo sem espaço."
+						},
+						{
+							"id": "invocation.devils_sight@2",
+							"name": "Visão do Diabo",
+							"description": "Enxerga normalmente na penumbra e na escuridão a até 36 m."
+						},
+						{
+							"id": "invocation.devouring_blade@12",
+							"name": "Lâmina Devoradora",
+							"description": "A Lâmina Sedenta concede dois ataques extras (requer Lâmina Sedenta)."
+						},
+						{
+							"id": "invocation.eldritch_mind",
+							"name": "Mente Mística",
+							"description": "Vantagem nos testes de Constituição para manter concentração."
+						},
+						{
+							"id": "invocation.eldritch_smite@5",
+							"name": "Golpe Místico",
+							"description": "Uma vez por turno, gasta espaço de pacto ao acertar com a arma de pacto: +1d8 de energia +1d8 por círculo e Caído (requer Pacto da Lâmina)."
+						},
+						{
+							"id": "invocation.eldritch_spear@2",
+							"name": "Lança Mística",
+							"description": "Aumenta o alcance de um truque de bruxo em 9 m por nível."
+						},
+						{
+							"id": "invocation.fiendish_vigor@2",
+							"name": "Vigor Corruptor",
+							"description": "Conjura Vida Falsa em si sem espaço, com o valor máximo."
+						},
+						{
+							"id": "invocation.gaze_of_two_minds@5",
+							"name": "Olhar de Duas Mentes",
+							"description": "Percebe pelos sentidos de uma criatura disposta."
+						},
+						{
+							"id": "invocation.gift_of_the_depths@5",
+							"name": "Dom das Profundezas",
+							"description": "Respira na água, nada e conjura Respirar na Água uma vez por descanso longo."
+						},
+						{
+							"id": "invocation.gift_of_the_protectors@9",
+							"name": "Dom dos Protetores",
+							"description": "Nomes no Livro das Sombras caem a 1 PV em vez de 0 uma vez por descanso longo (requer Pacto do Tomo)."
+						},
+						{
+							"id": "invocation.investment_of_the_chain_master@5",
+							"name": "Investimento do Mestre da Corrente",
+							"description": "Melhora o familiar do Pacto da Corrente."
+						},
+						{
+							"id": "invocation.lessons_of_the_first_ones@2",
+							"name": "Lições dos Primeiros",
+							"description": "Ganha um talento de origem."
+						},
+						{
+							"id": "invocation.lifedrinker@9",
+							"name": "Bebedor de Vida",
+							"description": "Uma vez por turno, +1d6 de dano com a arma de pacto e pode gastar um Dado de Vida para se curar (requer Pacto da Lâmina)."
+						},
+						{
+							"id": "invocation.mask_of_many_faces@2",
+							"name": "Máscara de Muitas Faces",
+							"description": "Conjura Disfarçar-se sem espaço."
+						},
+						{
+							"id": "invocation.master_of_myriad_forms@5",
+							"name": "Mestre de Inúmeras Formas",
+							"description": "Conjura Alterar-se sem espaço."
+						},
+						{
+							"id": "invocation.misty_visions@2",
+							"name": "Visões Nebulosas",
+							"description": "Conjura Imagem Silenciosa sem espaço."
+						},
+						{
+							"id": "invocation.one_with_shadows@5",
+							"name": "Um com as Sombras",
+							"description": "Na penumbra ou escuridão, conjura Invisibilidade em si sem espaço."
+						},
+						{
+							"id": "invocation.otherworldly_leap@2",
+							"name": "Salto Sobrenatural",
+							"description": "Conjura Salto em si sem espaço."
+						},
+						{
+							"id": "invocation.pact_of_the_blade",
+							"name": "Pacto da Lâmina",
+							"description": "Ação bônus: conjura uma arma de pacto; usa Carisma para atacar e causar dano, que pode ser necrótico, psíquico ou radiante."
+						},
+						{
+							"id": "invocation.pact_of_the_chain",
+							"name": "Pacto da Corrente",
+							"description": "Aprende Encontrar Familiar (formas especiais) e o conjura sem espaço."
+						},
+						{
+							"id": "invocation.pact_of_the_tome",
+							"name": "Pacto do Tomo",
+							"description": "Livro das Sombras com três truques e dois rituais de qualquer lista."
+						},
+						{
+							"id": "invocation.repelling_blast@2",
+							"name": "Explosão Repulsiva",
+							"description": "Truque de bruxo com ataque empurra o alvo até 3 m."
+						},
+						{
+							"id": "invocation.thirsting_blade@5",
+							"name": "Lâmina Sedenta",
+							"description": "Ataque Extra com a arma de pacto (requer Pacto da Lâmina)."
+						},
+						{
+							"id": "invocation.visions_of_distant_realms@9",
+							"name": "Visões de Reinos Distantes",
+							"description": "Conjura Olho Arcano sem espaço."
+						},
+						{
+							"id": "invocation.whispers_of_the_grave@7",
+							"name": "Sussurros do Túmulo",
+							"description": "Conjura Falar com os Mortos sem espaço."
+						},
+						{
+							"id": "invocation.witch_sight@15",
+							"name": "Visão da Bruxa",
+							"description": "Visão verdadeira a 9 m."
+						}
+					],
+					"count_by_level": [
+						1,
+						3,
+						3,
+						3,
+						5,
+						5,
+						6,
+						6,
+						7,
+						7,
+						7,
+						8,
+						8,
+						8,
+						9,
+						9,
+						9,
+						10,
+						10,
+						10
+					]
 				},
 				{
 					"id": "feature.pact_magic",
 					"name": "Magia de Pacto",
 					"level": 1,
-					"description": "Conjura magias de bruxo usando Carisma, com espaços que voltam em descanso curto.",
+					"description": "Conjura magias de bruxo usando Carisma; espaços de mesmo círculo recuperados no descanso curto.",
 					"implemented": true
 				},
 				{
 					"id": "feature.magical_cunning",
 					"name": "Astúcia Mágica",
 					"level": 2,
-					"description": "Recupera espaços de Magia de Pacto com um ritual curto.",
+					"description": "Rito de 1 minuto: recupera espaços de pacto até metade do máximo (arredondado para cima); uma vez por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.warlock_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_warlock_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_warlock_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_warlock_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_warlock_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.contact_patron",
+					"name": "Contatar Patrono",
+					"level": 9,
+					"description": "Sempre tem Contatar Outro Plano preparada e a conjura sem espaço uma vez por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.mystic_arcanum",
+					"name": "Arcano Místico",
+					"level": 11,
+					"description": "Uma magia de 6º círculo (7º no 13, 8º no 15, 9º no 17) conjurada uma vez sem espaço por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_warlock",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva do Destino é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.eldritch_master",
+					"name": "Mestre Místico",
+					"level": 20,
+					"description": "Astúcia Mágica recupera todos os espaços de pacto.",
 					"implemented": false
 				}
 			],
@@ -114,6 +348,35 @@
 				14,
 				15,
 				15
+			],
+			"resources": [
+				{
+					"id": "magical_cunning",
+					"name": "Astúcia Mágica",
+					"values": [
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
 			]
 		}
 	]

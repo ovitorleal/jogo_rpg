@@ -12,6 +12,14 @@ extends Control
 ## Segundos por casa ao andar.
 const STEP_TIME := 0.11
 const SPELL_PREFIX := "spell:"
+const OFFHAND_ID := "offhand"
+const FEATURE_PREFIX := "feature:"
+const FEATURE_BASE := 100
+const TOGGLE_BASE := 200
+## Itens do menu "Ações": [comando, rótulo, como ação bônus?].
+const STANDARD_ACTIONS := [["dash", "Disparada (ação)", false], ["disengage", "Desengajar (ação)", false],
+		["dodge", "Esquivar (ação)", false], ["dash", "Disparada (ação bônus)", true],
+		["disengage", "Desengajar (ação bônus)", true]]
 const SCHOOL_LEVEL := ["truque", "1º", "2º", "3º", "4º", "5º", "6º", "7º", "8º", "9º"]
 
 var manager := CombatManager.new()
@@ -27,6 +35,9 @@ var _log_lines: PackedStringArray = []
 var _inventory: Inventory = null
 ## Recompensas do encontro aplicadas na vitória (texto exibido no resultado).
 var loot_lines: Array[String] = []
+var _actions_button: MenuButton
+var _menu_features: Array[Dictionary] = []
+var _menu_toggles: Array[Dictionary] = []
 
 @onready var _board: CombatBoard = %Board
 @onready var _title: Label = %Title
@@ -66,6 +77,13 @@ func _ready() -> void:
 	_flee_button.pressed.connect(_on_flee_pressed)
 	_potion_button.pressed.connect(press_potion)
 	_result_button.pressed.connect(_on_result_pressed)
+	_actions_button = MenuButton.new()
+	_actions_button.name = "ActionsButton"
+	_actions_button.text = "Ações ▾"
+	_actions_button.flat = false
+	_actions_button.get_popup().id_pressed.connect(_on_action_menu)
+	_end_turn_button.get_parent().add_child(_actions_button)
+	_end_turn_button.get_parent().move_child(_actions_button, _end_turn_button.get_index())
 
 	var error := _build_combat()
 	if not error.is_empty():
@@ -95,6 +113,26 @@ func click_cell(cell: Vector2i) -> Dictionary:
 	var actor := manager.current()
 	var occupant := manager.combatant_at(cell)
 	var result: Dictionary
+	if _selected_attack_id.begins_with(FEATURE_PREFIX):
+		if occupant != null and occupant.is_hostile_to(actor):
+			result = manager.submit({"type": "feature", "actor": actor.id, "feature": _selected_attack_id.trim_prefix(FEATURE_PREFIX),
+					"target": occupant.id})
+			_selected_attack_id = ""
+		elif occupant == null:
+			result = manager.submit({"type": "move", "actor": actor.id, "to": cell})
+		else:
+			result = {"ok": false, "error": "Escolha um inimigo", "events": []}
+		_after_command(result)
+		return result
+	if _selected_attack_id == OFFHAND_ID:
+		if occupant != null and occupant.is_hostile_to(actor):
+			result = manager.submit({"type": "offhand", "actor": actor.id, "target": occupant.id})
+		elif occupant == null:
+			result = manager.submit({"type": "move", "actor": actor.id, "to": cell})
+		else:
+			result = {"ok": false, "error": "Casa ocupada", "events": []}
+		_after_command(result)
+		return result
 	var spell_id := selected_spell_id()
 	if not spell_id.is_empty():
 		var entry: Dictionary = actor.get_spell(spell_id)["entry"]
@@ -122,6 +160,42 @@ func click_cell(cell: Vector2i) -> Dictionary:
 func select_attack(attack_id: String) -> void:
 	_selected_attack_id = attack_id
 	_refresh()
+
+
+## Disparada, Desengajar ou Esquivar (use_bonus = como ação bônus, ex.: Ação Astuta).
+func press_standard_action(action: String, use_bonus: bool = false) -> Dictionary:
+	if _busy or not manager.is_party_turn():
+		return {"ok": false, "error": "Aguarde o seu turno", "events": []}
+	var result := manager.submit({"type": action, "actor": manager.current().id, "bonus": use_bonus})
+	_after_command(result)
+	return result
+
+
+func _on_action_menu(id: int) -> void:
+	if id >= TOGGLE_BASE:
+		var toggle: Dictionary = _menu_toggles[id - TOGGLE_BASE]
+		manager.submit({"type": "option", "actor": manager.current().id, "key": toggle["key"], "value": toggle["value"]})
+		_refresh()
+		return
+	if id >= FEATURE_BASE:
+		var action: Dictionary = _menu_features[id - FEATURE_BASE]
+		if action["target"] == "enemy":
+			select_attack(FEATURE_PREFIX + str(action["id"]))
+			_status.text = "%s: clique num inimigo marcado." % action["name"]
+			return
+		press_feature(str(action["id"]))
+		return
+	var entry: Array = STANDARD_ACTIONS[id]
+	press_standard_action(entry[0], entry[2])
+
+
+## Usa uma característica de classe (Fúria, Retomar o Fôlego...), com alvo se precisar.
+func press_feature(feature_id: String, target_id: String = "") -> Dictionary:
+	if _busy or not manager.is_party_turn():
+		return {"ok": false, "error": "Aguarde o seu turno", "events": []}
+	var result := manager.submit({"type": "feature", "actor": manager.current().id, "feature": feature_id, "target": target_id})
+	_after_command(result)
+	return result
 
 
 func select_spell(spell_id: String) -> void:
@@ -264,6 +338,34 @@ func _animate(event: Dictionary) -> void:
 			elif not str(event["effect"]).is_empty():
 				_board.float_text(event["spell"], target_token.position, Color8(200, 180, 255))
 			await get_tree().create_timer(0.15).timeout
+		"feature":
+			var feature_unit := manager.get_combatant(str(event.get("target", event["actor"])))
+			var feature_token := _board.token_for(feature_unit)
+			if event.has("vfx"):
+				var colors := {"rage": "#ff4a3a", "heal": "#7aff9a", "aura": "#9ad0ff", "fear": "#b04aff"}
+				var style: String = {"rage": "aura", "fear": "mock"}.get(event["vfx"], event["vfx"])
+				var fx := SpellVfx.create(style, Color(colors.get(event["vfx"], "#ffffff")), feature_token.position + Vector2(0, -14),
+						[feature_token.position + Vector2(0, -12)] as Array[Vector2], [] as Array[Rect2])
+				_board.add_child(fx)
+				await fx.finished
+			if int(event.get("damage", 0)) > 0 and event.has("target"):
+				feature_token.hurt(int(feature_unit.hp))
+				_board.float_text(str(event["damage"]), feature_token.position, Color8(255, 240, 230))
+			elif int(event.get("healed", 0)) > 0:
+				feature_token.refresh(false)
+				_board.float_text("+%d" % event["healed"], feature_token.position, Color8(140, 255, 150))
+			await get_tree().create_timer(0.1).timeout
+		"mastery", "unarmed", "condition", "standard_action":
+			var shown := manager.get_combatant(str(event.get("target", event.get("actor", ""))))
+			if shown != null:
+				var label := CombatLog.short_label(event)
+				if not label.is_empty():
+					_board.float_text(label, _board.token_for(shown).position, Color8(255, 210, 140))
+			await get_tree().create_timer(0.12).timeout
+		"opportunity":
+			_board.float_text("Ataque de oportunidade!", _board.token_for(manager.get_combatant(event["actor"])).position,
+					Color8(255, 170, 120))
+			await get_tree().create_timer(0.15).timeout
 		"pushed":
 			var pushed_token := _board.token_for(manager.get_combatant(event["actor"]))
 			await pushed_token.walk_to(_board.cell_feet(event["to"]), STEP_TIME)
@@ -376,6 +478,14 @@ func _refresh() -> void:
 	for unit in manager.turn_order:
 		var marker := "> " if unit == actor else "   "
 		var state := "" if unit.is_up() else (" (morto)" if unit.team == Combatant.Team.ENEMY else " (caído)")
+		var conditions := PackedStringArray()
+		for effect in unit.effects:
+			if effect["kind"] == "condition":
+				conditions.append(CombatManager.CONDITION_NAMES[effect["condition"]])
+		if unit.temp_hp > 0:
+			conditions.append("+%d PV temp." % unit.temp_hp)
+		if not conditions.is_empty() and unit.is_up():
+			state += " [%s]" % ", ".join(conditions)
 		var text := "%s%d  %s  %d/%d PV%s" % [marker, unit.initiative, unit.name, unit.hp, unit.max_hp, state]
 		lines.append("[b]%s[/b]" % text if unit == actor else text)
 	_order.text = "\n".join(lines)
@@ -387,12 +497,43 @@ func _refresh() -> void:
 	_potion_button.disabled = not party_turn or potions <= 0 or not manager.bonus_action_available \
 			or actor.hp >= actor.max_hp
 	_attack_option.disabled = not party_turn
+	_actions_button.disabled = not party_turn
+	var popup := _actions_button.get_popup()
+	popup.clear()
+	if party_turn:
+		for i in STANDARD_ACTIONS.size():
+			var entry: Array = STANDARD_ACTIONS[i]
+			var error := manager.standard_action_error(actor, entry[0], entry[2])
+			if entry[2] and error.contains("característica"):
+				continue
+			popup.add_item(entry[1], i)
+			popup.set_item_disabled(popup.get_item_index(i), not error.is_empty())
+		_menu_features = CombatFeatures.actions(manager, actor)
+		if not _menu_features.is_empty():
+			popup.add_separator("Classe")
+		for i in _menu_features.size():
+			var action: Dictionary = _menu_features[i]
+			popup.add_item(str(action["name"]), FEATURE_BASE + i)
+			var index := popup.get_item_index(FEATURE_BASE + i)
+			popup.set_item_disabled(index, not str(action["error"]).is_empty())
+			popup.set_item_tooltip(index, str(action["error"]))
+		_menu_toggles = CombatFeatures.toggles(actor)
+		if not _menu_toggles.is_empty():
+			popup.add_separator("Opções")
+		for i in _menu_toggles.size():
+			popup.add_check_item(str(_menu_toggles[i]["name"]), TOGGLE_BASE + i)
+			popup.set_item_checked(popup.get_item_index(TOGGLE_BASE + i), bool(_menu_toggles[i]["checked"]))
+		if not actor.concentration.is_empty():
+			pass
 	if manager.state == CombatManager.State.FINISHED:
 		_status.text = "Combate encerrado."
 	elif party_turn:
-		_status.text = "Seu turno: %s · Movimento %d pés · Ação %s · Ação bônus %s" % [actor.name,
-				manager.movement_left_feet, "disponível" if manager.action_available else "usada",
-				"disponível" if manager.bonus_action_available else "usada"]
+		var action_text := "✓" if manager.action_available else "usada"
+		if manager.attack_action_used and manager.attacks_left > 0:
+			action_text = "%d ataque(s)" % manager.attacks_left
+		_status.text = "%s · Mov. %d pés · Ação %s · Bônus %s · Reação %s" % [actor.name,
+				manager.movement_left_feet, action_text, "✓" if manager.bonus_action_available else "usada",
+				"✓" if actor.reaction_available else "usada"]
 		if actor.character != null and not actor.spells.is_empty():
 			var slots := Spellcasting.slots_text(actor.character, Content.registry)
 			if not slots.is_empty():
@@ -421,6 +562,15 @@ func _refresh_highlights(actor: Combatant, party_turn: bool) -> void:
 				for unit in manager.combatants:
 					if manager.spell_target_error(actor, spell_id, unit).is_empty():
 						_board.targets.append(unit)
+		elif _selected_attack_id == OFFHAND_ID:
+			for unit in manager.combatants:
+				if manager.offhand_error(actor, unit).is_empty():
+					_board.targets.append(unit)
+		elif _selected_attack_id.begins_with(FEATURE_PREFIX):
+			for unit in manager.combatants:
+				var reach := 5
+				if unit.is_up() and unit.is_hostile_to(actor) and Attack.grid_distance_feet(actor.position, unit.position) <= reach:
+					_board.targets.append(unit)
 		else:
 			var attack := actor.get_attack(_selected_attack_id)
 			for unit in manager.combatants:
@@ -445,6 +595,14 @@ func _refresh_attack_options(actor: Combatant) -> void:
 		_attack_option.add_item("%s %s · %s · %s" % [attack["name"], Ability.format_modifier(attack["attack_bonus"]),
 				attack["damage"], reach])
 		_attack_option.set_item_metadata(_attack_option.item_count - 1, attack["id"])
+	var offhand := manager.offhand_attack(actor)
+	if not offhand.is_empty() and not manager.light_weapon_used.is_empty():
+		_attack_option.add_item("↺ Ataque extra (Leve): %s · %s" % [offhand["name"], offhand["damage"]])
+		var offhand_index := _attack_option.item_count - 1
+		_attack_option.set_item_metadata(offhand_index, OFFHAND_ID)
+		var offhand_error := manager.offhand_error(actor)
+		_attack_option.set_item_disabled(offhand_index, not offhand_error.is_empty())
+		_attack_option.set_item_tooltip(offhand_index, offhand_error)
 	for spell in actor.spells:
 		var entry: Dictionary = spell["entry"]
 		var detail := ""
@@ -480,6 +638,10 @@ func _refresh_attack_options(actor: Combatant) -> void:
 	var spell_selected := selected_spell_id()
 	var valid_spell := not spell_selected.is_empty() and not actor.get_spell(spell_selected).is_empty() \
 			and manager.spell_error(actor, spell_selected).is_empty()
+	if _selected_attack_id == OFFHAND_ID and manager.offhand_error(actor).is_empty():
+		valid_spell = true
+	if _selected_attack_id.begins_with(FEATURE_PREFIX):
+		valid_spell = true
 	if actor.get_attack(_selected_attack_id).is_empty() and not valid_spell:
 		_selected_attack_id = actor.attacks[0]["id"]
 	for i in _attack_option.item_count:

@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.6.7] — 2026-10-24 — Fase 6.6, entrega 2: classes marciais
+
+### Adicionado
+- `CombatFeatures`: ganchos de combate das características (iniciativa, início/fim de turno, ataque, dano, acerto,
+  dano recebido, PV 0, resistências e testes de resistência), ações de classe e opções marcáveis.
+- Bárbaro e Berserker (níveis 1–20): Fúria com aura, Ataque Imprudente, Golpe Brutal, Fúria Implacável, Frenesi,
+  Retaliação, Presença Intimidante, Campeão Primitivo e demais características.
+- Guerreiro e Campeão: Retomar o Fôlego, Surto de Ação, Mente Tática (viagem), Indomável, Ataques Estudados, Mestre
+  Tático, críticos aprimorados, Atleta Notável, Guerreiro Heroico e Sobrevivente.
+- Ladino e Ladrão: Ataque Furtivo com Golpe Astuto e Golpes Engenhosos, Ação Astuta, Mira Firme, Esquiva
+  Sobrenatural, Evasão, Talento Confiável, Elusivo, Golpe de Sorte e Reflexos de Ladrão.
+- Monge e Mão Aberta: Artes Marciais, Foco (Rajada, Defesa Paciente, Passo do Vento), Desviar Ataques, Golpe
+  Atordoante, Ataques Fortalecidos, Defesa Superior, Técnica da Mão Aberta, Integridade do Corpo e Palma Trêmula.
+- Menu "Ações ▾": seções "Classe" (ações com usos restantes) e "Opções" (efeitos marcáveis); efeitos visuais e
+  mensagens próprias no registro.
+- 12 testes novos (total 226).
+
+### Alterado
+- 173 de 274 características marcadas com efeito nos dados das classes e subclasses.
+## [0.6.6] — 2026-10-24 — Fase 6.6, entrega 1: motor de características, antecedentes e talentos
+
+### Adicionado
+- Antecedentes Acólito e Sábio (os 4 do SRD) e os 17 talentos do SRD (tipo de conteúdo `feat`).
+- Características das 12 classes (níveis 1–20) e das 12 subclasses do SRD (tipo `subclass`), com recursos por nível
+  (Fúria, Inspiração, Canalizar Divindade, Forma Selvagem, Foco, Pontos de Feitiçaria...) conferidos com o SRD.
+- `CharacterChoices`: talento do antecedente, Aumento no Valor de Atributo/Dádiva Épica, Estilo de Luta, Maestria em
+  Armas, perícias, Especialização, subclasse, Invocações e Metamagia — com padrões automáticos e validação.
+- `ClassFeatures`: recursos com usos, recarga no descanso curto/longo e resumo na ficha.
+- Combate: ação de Ataque com vários golpes (Ataque Extra), Disparada, Desengajar, Esquivar, ataque de oportunidade
+  (reação), 13 condições, Exaustão, PV temporários, Agarrar/Empurrar, armas Pesadas e ataque extra Leve.
+- Maestria em Armas: as 8 propriedades. Talentos Alerta, Iniciado em Magia, Atacante Selvagem, Habilidoso e os 4 estilos.
+- Menu "Ações ▾" no combate; seção "Talentos e escolhas" na criação; tela "Escolhas de nível" no mapa (tecla L).
+- `CharacterData` esquema 5 (subclasse, escolhas, recursos gastos, Exaustão) com migração.
+- 16 testes novos (total 214).
+
+### Corrigido
+- Tabelas de truques e magias preparadas acima do nível 2 conferidas com o SRD (estavam corretas).
+- Valores padrão de listas no validador de conteúdo eram compartilhados entre registros.
+
 ## [0.6.5] — 2026-10-24 — Fase 6.5: magias e efeitos visuais
 
 ### Adicionado

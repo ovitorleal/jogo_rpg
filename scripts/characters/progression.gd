@@ -48,8 +48,11 @@ static func level_up(c: CharacterData, registry: ContentRegistry) -> Dictionary:
 			features.append(feature)
 	# Adaptação: truques e magias novas da subida de nível são escolhidas automaticamente.
 	var spells := Spellcasting.fill_defaults(c, registry)
+	# Escolhas novas do nível (talento, subclasse, estilo...) recebem o padrão; o jogador pode trocá-las.
+	var new_choices := CharacterChoices.fill_defaults(c, registry)
 	var spell_names: Array = spells.map(func(id: String) -> String: return registry.get_entry("spell", id).get("name", id))
-	return {"level": c.level, "hp_gained": gained, "features": features, "spells": spells, "spell_names": spell_names}
+	return {"level": c.level, "hp_gained": gained, "features": features, "spells": spells, "spell_names": spell_names,
+			"choices": new_choices}
 
 
 ## Texto curto para avisos de subida de nível.
@@ -58,6 +61,8 @@ static func describe(c: CharacterData, up: Dictionary) -> String:
 	var names: Array = up["features"].map(func(f: Dictionary) -> String: return f["name"])
 	if not names.is_empty():
 		text += " Novas características: %s." % ", ".join(names)
+	if not (up.get("choices", []) as Array).is_empty():
+		text += " Há escolhas novas de nível: veja com a tecla L."
 	var spell_names: Array = up.get("spell_names", [])
 	if not spell_names.is_empty():
 		text += " Novas magias: %s." % ", ".join(spell_names)

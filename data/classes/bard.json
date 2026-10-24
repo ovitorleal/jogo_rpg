@@ -61,7 +61,7 @@
 					"id": "feature.bardic_inspiration",
 					"name": "Inspiração de Bardo",
 					"level": 1,
-					"description": "Concede a um aliado um dado extra para somar a um teste de d20.",
+					"description": "Ação bônus: uma criatura a até 18 m ganha um dado de Inspiração (d6, d8 no 5, d10 no 10, d12 no 15) para somar a um Teste de d20 que falhar. Usos = Carisma (mínimo 1) por descanso longo.",
 					"implemented": false
 				},
 				{
@@ -75,14 +75,108 @@
 					"id": "feature.expertise_bard",
 					"name": "Especialização",
 					"level": 2,
-					"description": "Dobra o bônus de proficiência em duas perícias.",
-					"implemented": false
+					"description": "Especialização em duas perícias proficientes.",
+					"implemented": true,
+					"grants": "expertise",
+					"count": 2
 				},
 				{
 					"id": "feature.jack_of_all_trades",
 					"name": "Pau para Toda Obra",
 					"level": 2,
-					"description": "Soma metade da proficiência em testes de perícia sem proficiência.",
+					"description": "Soma metade da proficiência a testes de perícia em que não é proficiente.",
+					"implemented": true
+				},
+				{
+					"id": "feature.bard_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_bard_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_bard_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_bard_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_bard_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.font_of_inspiration",
+					"name": "Fonte de Inspiração",
+					"level": 5,
+					"description": "Recupera a Inspiração de Bardo no descanso curto; pode gastar um espaço de magia para recuperar um uso.",
+					"implemented": false
+				},
+				{
+					"id": "feature.countercharm",
+					"name": "Contraencanto",
+					"level": 7,
+					"description": "Reação: quando você ou alguém a até 9 m falha num teste contra Enfeitiçado ou Amedrontado, o teste é refeito com vantagem.",
+					"implemented": false
+				},
+				{
+					"id": "feature.expertise_bard_9",
+					"name": "Especialização",
+					"level": 9,
+					"description": "Especialização em mais duas perícias proficientes.",
+					"implemented": true,
+					"grants": "expertise",
+					"count": 2
+				},
+				{
+					"id": "feature.magical_secrets",
+					"name": "Segredos Mágicos",
+					"level": 10,
+					"description": "Novas magias preparadas podem vir das listas de Bardo, Clérigo, Druida e Mago.",
+					"implemented": false
+				},
+				{
+					"id": "feature.superior_inspiration",
+					"name": "Inspiração Superior",
+					"level": 18,
+					"description": "Ao rolar iniciativa, recupera Inspiração de Bardo até ter dois usos.",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_bard",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Recordação de Magias é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.words_of_creation",
+					"name": "Palavras da Criação",
+					"level": 20,
+					"description": "Sempre tem Palavra de Poder Curar e Palavra de Poder Matar preparadas; podem atingir um segundo alvo a até 3 m do primeiro.",
 					"implemented": false
 				}
 			],
@@ -131,6 +225,62 @@
 				20,
 				21,
 				22
+			],
+			"resources": [
+				{
+					"id": "bardic_inspiration",
+					"name": "Inspiração de Bardo",
+					"values": [
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "bardic_die",
+					"name": "Dado de Inspiração",
+					"values": [
+						"d6",
+						"d6",
+						"d6",
+						"d6",
+						"d8",
+						"d8",
+						"d8",
+						"d8",
+						"d8",
+						"d10",
+						"d10",
+						"d10",
+						"d10",
+						"d10",
+						"d12",
+						"d12",
+						"d12",
+						"d12",
+						"d12",
+						"d12"
+					],
+					"recharge": "none"
+				}
 			]
 		}
 	]

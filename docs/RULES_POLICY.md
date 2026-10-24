@@ -87,14 +87,48 @@
 | Descanso longo recupera todos os espaços; Magia de Pacto também no descanso curto | `Rest.long_rest`, `Spellcasting.short_rest` | |
 | Efeitos com duração "até o início/fim do próximo turno" | `CombatManager._expire_effects` | Raio de Gelo, Zombaria Viciosa, Raio Guiador |
 
+### Ações, reações, condições e talentos (Fase 6.6, entrega 1)
+
+| Regra | Onde | Notas |
+|---|---|---|
+| Ação de Ataque: um golpe por ataque; Ataque Extra (2), Dois Ataques Extras (3) e Três Ataques Extras (4); pode mover entre os golpes | `CombatManager.attacks_per_action/_use_attack` | Pelas características `feature.extra_attack` etc. |
+| Disparada (movimento extra igual ao deslocamento), Desengajar (sem ataques de oportunidade no turno), Esquivar (ataques contra têm desvantagem; vantagem em Destreza) | `CombatManager._do_standard_action` | Como ação bônus só com característica (Ação Astuta) |
+| Ataque de oportunidade: reação, ataque corpo a corpo quando um inimigo sai do alcance; uma reação por rodada | `CombatManager._do_move/_can_opportunity_attack` | Feito automaticamente por personagens e monstros |
+| Condições do glossário: Cego, Enfeitiçado, Amedrontado, Agarrado, Incapacitado, Invisível, Paralisado, Petrificado, Envenenado, Caído, Contido, Atordoado, Inconsciente | `CombatManager.add_condition`, `attack_advantage`, `_roll_save`, `effective_speed` | Vantagem/desvantagem, falha automática em Força/Destreza, deslocamento 0, crítico automático a 1,5 m, levantar-se custa metade do deslocamento |
+| Exaustão: -2 x nível nos Testes de d20, -1,5 m x nível no deslocamento; descanso longo reduz 1 | `CharacterData.exhaustion`, `CombatManager._exhaustion` | Fontes de Exaustão ainda não existem no jogo |
+| PV temporários absorvem o dano primeiro | `CombatManager._apply_damage` | |
+| Ataque Desarmado: Dano, Agarrar ou Empurrar (teste de Força ou Destreza contra CD 8 + Força + proficiência); escapar com Atletismo/Acrobacia | `Attack.unarmed_options`, `CombatManager._resolve_unarmed_option/_try_escape_grapple` | Empurrar derruba (Caído) |
+| Arma Pesada: desvantagem com Força (corpo a corpo) ou Destreza (distância) menor que 13 | `CombatManager.attack_advantage` | |
+| Propriedade Leve: ataque extra com outra arma Leve como ação bônus, sem modificador no dano (salvo negativo) | `CombatManager._do_offhand` | |
+| Maestria em Armas: Trespassar, Raspar, Talhar, Empurrar, Enfraquecer, Lentidão, Derrubar, Atormentar | `CombatManager._apply_mastery_on_hit`, `Attack.MASTERY_*` | Só nas armas escolhidas na característica Maestria em Armas |
+| Talentos de origem: Alerta (proficiência na iniciativa), Iniciado em Magia (2 truques + magia de 1º com uso gratuito por descanso longo), Atacante Selvagem (uma vez por turno rola o dano duas vezes), Habilidoso (3 perícias) | `CharacterSheet.build`, `Combatant.from_character`, `CombatManager._weapon_damage` | |
+| Aumento no Valor de Atributo (+2 ou +1/+1, máximo 20) e Dádivas Épicas (+1, máximo 30) nos níveis de talento | `CharacterChoices`, `CharacterData.ability_score` | |
+| Estilos de Luta: Arquearia (+2 à distância), Defesa (+1 CA com armadura), Armas Grandes (1 e 2 viram 3 em arma de duas mãos/versátil empunhada com as duas), Duas Armas (modificador no ataque extra Leve) | `Combatant.from_character`, `CharacterSheet.build`, `CombatManager._weapon_damage` | |
+| Recursos de classe com usos por descanso curto, um por descanso curto ou longo | `ClassFeatures`, `Rest.long_rest`, `TravelSystem.short_rest` | Tabelas conferidas com o SRD 5.2.1 (modo texto) |
+
+### Classes marciais (Fase 6.6, entrega 2)
+
+Ganchos em `CombatFeatures` (estáticos, recebem o `CombatManager`); ações no menu "Ações ▾" pelo comando `feature`,
+opções marcáveis pelo comando `option`.
+
+| Classe | Características com efeito | Notas |
+|---|---|---|
+| Bárbaro | Fúria (ação bônus; dano de Fúria por nível; resistência a contundente/cortante/perfurante; vantagem em Força; dura enquanto atacar/forçar teste ou estender com ação bônus; sem conjurar/concentrar), Defesa sem Armadura, Ataque Imprudente, Sentido de Perigo, Ataque Extra, Movimento Rápido, Instinto Feroz, Golpe Brutal (abre mão da vantagem: +1d10 e Golpe Forte/Jarrete; nível 13: Golpe Cambaleante/Rasgante; nível 17: +2d10 e dois efeitos), Fúria Implacável (CD 10, +5 por uso), Fúria Persistente, Poderio Indomável, Campeão Primitivo | Berserker: Frenesi (dano extra = dados de dano de Fúria), Fúria Irracional (imune a Enfeitiçado/Amedrontado em Fúria), Retaliação (reação), Presença Intimidante |
+| Guerreiro | Estilo de Luta, Retomar o Fôlego (1d10 + nível), Surto de Ação (uma vez por turno; sem ação de Magia), Mente Tática (+1d10 em teste falho; só gasta se der certo), Ataque Extra (2/3/4 golpes), Indomável (rola de novo com +nível), Ataques Estudados, Mestre Tático | Campeão: Crítico Aprimorado (19) e Superior (18), Atleta Notável (vantagem na iniciativa; após crítico, meio deslocamento sem oportunidade), Guerreiro Heroico (Inspiração Heroica no início do turno), Sobrevivente (recupera 5 + CON abaixo de metade dos PV; vantagem em testes de morte registrada) |
+| Ladino | Ataque Furtivo (vantagem, ou aliado a 1,5 m sem desvantagem; uma vez por turno), Ação Astuta, Golpe Astuto (Envenenar, Tropeçar, Recuar) e Golpes Engenhosos (Atordoar, Nocautear, Obscurecer), Mira Firme, Esquiva Sobrenatural (reação: metade do dano), Evasão, Talento Confiável (d20 mínimo 10 em perícias proficientes), Mente Escorregadia, Elusivo, Golpe de Sorte | Ladrão: Reflexos de Ladrão (dois turnos na primeira rodada) |
+| Monge | Artes Marciais (Destreza, dado marcial, golpe desarmado como ação bônus), Foco (Rajada de Golpes, Defesa Paciente, Passo do Vento), Defesa sem Armadura, Movimento sem Armadura, Metabolismo Sobrenatural, Desviar Ataques (com redirecionar), Golpe Atordoante, Ataques Fortalecidos (dano de energia), Evasão, Autorrestauração, Foco Perfeito, Defesa Superior, Corpo e Mente | Mão Aberta: Técnica da Mão Aberta (Desequilibrar, Empurrar, Derrubar), Integridade do Corpo, Passo Ligeiro, Palma Trêmula (10d12 de energia; metade se passar) |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
   Bárbaro, Bardo, Clérigo, Druida, Guerreiro, Monge, Paladino, Patrulheiro, Ladino, Feiticeiro, Bruxo, Mago.
 - Espécies (as 9): Draconato, Anão, Elfo, Gnomo, Golias, Pequenino, Humano, Orc, Tiefling — tamanho, deslocamento,
   visão no escuro e traços.
-- Antecedentes: Soldado, Criminoso (atributos, perícias, ferramenta e talento de origem registrados).
-  Acólito e Sábio, também do SRD, ainda não cadastrados.
+- Antecedentes: os 4 do SRD (Acólito, Criminoso, Sábio, Soldado), cada um com seu talento de origem.
+- Talentos: os 17 do SRD (4 de origem, 2 gerais, 4 de Estilo de Luta, 7 Dádivas Épicas).
+- Características das 12 classes dos níveis 1 a 20 e das 12 subclasses do SRD (Berserker, Conhecimento, Vida, Terra,
+  Campeão, Mão Aberta, Devoção, Caçador, Ladrão, Dracônica, Corruptor, Evocador); o indicador `implemented` diz quais
+  já têm efeito.
 - Armaduras: Couro, Couro Batido, Camisão de Malha, Brunea, Cota de Malha, Escudo.
 - Armas: Adaga, Azagaia, Bordão, Clava, Foice, Lança, Maça, Machadinha, Arco Curto (simples); Cimitarra, Espada Curta,
   Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
@@ -109,6 +143,17 @@
 
 | Adaptação | Motivo |
 |---|---|
+| Propriedades de Maestria e ataques de oportunidade são aplicados automaticamente (o jogo escolhe aplicar) | Evita perguntas a cada golpe; a escolha raramente é desfavorável |
+| Ações Ajudar, Esconder, Influenciar, Preparar, Procurar, Estudar e Usar ainda não existem no combate | Dependem de cobertura, iluminação ou situações fora da grade atual |
+| Troca de iniciativa do Alerta, partes sociais e de exploração das características ficam registradas sem efeito | Grupo de um personagem; sem sistema social/exploração detalhado |
+| Agarrador e os efeitos das Dádivas Épicas (exceto o aumento de atributo) ainda não têm efeito | Ficam para as entregas das classes |
+| Gíria de Ladrão, Mãos Rápidas, Trabalho no Segundo Andar, Furtividade Suprema, Usar Dispositivo Mágico, Queda Lenta e Movimento Acrobático registrados sem efeito | Dependem de Esconder, escalada, queda, itens mágicos ou idiomas, que ainda não existem |
+| Golpe Brutal, Golpe Astuto, Golpe Atordoante e Técnica da Mão Aberta são escolhidos antes do ataque (opções marcadas no menu) e aplicados no próximo acerto que permitir | Evita interromper cada acerto com uma pergunta |
+| Esquiva Sobrenatural, Desviar Ataques, Retaliação, Indomável e Golpe de Sorte são usados automaticamente quando ajudam | O grupo tem um personagem; perguntar a cada reação deixaria o combate lento |
+| Fúria termina no fim do turno se o bárbaro não atacou nem forçou um teste e não estendeu com ação bônus | Leitura direta do SRD 5.2.1, sem o controle de "1 minuto" |
+| Defesa Paciente, Passo do Vento e Rajada de Golpes sem Foco usam a ação bônus; a versão com Foco aparece como item separado | Duas entradas no menu em vez de uma pergunta |
+| Testes de morte ainda não existem (Sobrevivente: só a parte de cura) | Derrota do grupo encerra o combate |
+| Talentos/características com escolhas recebem padrões automáticos; o jogador troca na criação ou com a tecla L | Subir de nível nunca trava o jogo |
 | Truques/preparadas limitados ao que existe na lista da classe (ex.: Clérigo conhece 1 truque em vez de 3; Bruxo prepara só Maldição) | Ainda há poucas magias cadastradas |
 | Magias novas da subida de nível são escolhidas automaticamente (primeiras da lista) | Tela de escolha na subida de nível fica para depois |
 | Mísseis Mágicos: todos os dardos no mesmo alvo | Escolha de alvos por dardo fica para depois |
@@ -135,10 +180,9 @@
 
 ## Pendências
 
-- Características marcadas `"implemented": false` nos dados (aparecem na ficha como "ainda não implementada"), entre elas:
-  Conjuração/Magia de Pacto de todas as classes conjuradoras (sistema de magias ainda não existe), Fúria, Artes Marciais,
-  Inspiração de Bardo, Estilo de Luta, Retomar o Fôlego, Maestria em Armas, Ataque Furtivo, Cura pelas Mãos, traços de espécie
-  com escolha ou efeito em combate, talentos de origem (Atacante Selvagem, Alerta).
+- Características marcadas `"implemented": false` nos dados (aparecem na ficha como "ainda não implementada"): as das
+  classes conjuradoras (entregas 3 a 5 da Fase 6.6), as exceções marciais listadas nas Adaptações e traços de espécie com
+  escolha ou efeito em combate.
 - Testes de morte, condições (Caído, Inconsciente com efeitos, Amedrontado...), reações, ações bônus, Desengajar/Esquivar/Disparada.
 - Derrubar da mordida do Lobo e Fuga Ágil do Goblin (registrados como não implementados).
 - Descanso curto/longo (hoje os PV perdidos só voltam com um novo personagem).

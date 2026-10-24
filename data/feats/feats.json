@@ -1,0 +1,232 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "feat.alert",
+			"name": "Alerta",
+			"description": "Soma o bônus de proficiência à iniciativa e pode trocar de iniciativa com um aliado disposto.",
+			"source": "SRD 5.2.1",
+			"category": "origin",
+			"implemented": true
+		},
+		{
+			"id": "feat.magic_initiate",
+			"name": "Iniciado em Magia",
+			"description": "Aprende dois truques e uma magia de 1º círculo de uma lista (Clérigo, Druida ou Mago). Conjura essa magia uma vez sem espaço por descanso longo.",
+			"source": "SRD 5.2.1",
+			"category": "origin",
+			"repeatable": true,
+			"implemented": true
+		},
+		{
+			"id": "feat.savage_attacker",
+			"name": "Atacante Selvagem",
+			"description": "Uma vez por turno, ao acertar com uma arma, rola os dados de dano duas vezes e usa o maior resultado.",
+			"source": "SRD 5.2.1",
+			"category": "origin",
+			"implemented": true
+		},
+		{
+			"id": "feat.skilled",
+			"name": "Habilidoso",
+			"description": "Proficiência em três perícias à escolha.",
+			"source": "SRD 5.2.1",
+			"category": "origin",
+			"repeatable": true,
+			"implemented": true
+		},
+		{
+			"id": "feat.ability_score_improvement",
+			"name": "Aumento no Valor de Atributo",
+			"description": "+2 em um atributo ou +1 em dois atributos (máximo 20).",
+			"source": "SRD 5.2.1",
+			"category": "general",
+			"prerequisite_level": 4,
+			"repeatable": true,
+			"ability_choices": [
+				"str",
+				"dex",
+				"con",
+				"int",
+				"wis",
+				"cha"
+			],
+			"ability_points": 2,
+			"implemented": true
+		},
+		{
+			"id": "feat.grappler",
+			"name": "Agarrador",
+			"description": "+1 em Força ou Destreza; vantagem nos ataques contra quem você agarra; ao acertar um Ataque Desarmado, pode causar dano e agarrar.",
+			"source": "SRD 5.2.1",
+			"category": "general",
+			"prerequisite_level": 4,
+			"prerequisite_ability": "str_or_dex_13",
+			"ability_choices": [
+				"str",
+				"dex"
+			],
+			"ability_points": 1,
+			"implemented": false
+		},
+		{
+			"id": "feat.archery",
+			"name": "Estilo de Luta: Arquearia",
+			"description": "+2 nas jogadas de ataque com armas à distância.",
+			"source": "SRD 5.2.1",
+			"category": "fighting_style",
+			"implemented": true
+		},
+		{
+			"id": "feat.defense",
+			"name": "Estilo de Luta: Defesa",
+			"description": "+1 na CA enquanto usa armadura leve, média ou pesada.",
+			"source": "SRD 5.2.1",
+			"category": "fighting_style",
+			"implemented": true
+		},
+		{
+			"id": "feat.great_weapon_fighting",
+			"name": "Estilo de Luta: Armas Grandes",
+			"description": "Com arma corpo a corpo de duas mãos ou versátil empunhada com as duas mãos, trata 1 ou 2 nos dados de dano como 3.",
+			"source": "SRD 5.2.1",
+			"category": "fighting_style",
+			"implemented": true
+		},
+		{
+			"id": "feat.two_weapon_fighting",
+			"name": "Estilo de Luta: Duas Armas",
+			"description": "No ataque extra da propriedade Leve, soma o modificador de atributo ao dano.",
+			"source": "SRD 5.2.1",
+			"category": "fighting_style",
+			"implemented": true
+		},
+		{
+			"id": "feat.boon_of_combat_prowess",
+			"name": "Dádiva da Proeza em Combate",
+			"description": "+1 em um atributo (máximo 30). Quando errar um ataque, pode acertar; uma vez até o início do seu próximo turno.",
+			"source": "SRD 5.2.1",
+			"category": "epic_boon",
+			"prerequisite_level": 19,
+			"ability_choices": [
+				"str",
+				"dex",
+				"con",
+				"int",
+				"wis",
+				"cha"
+			],
+			"ability_points": 1,
+			"ability_max": 30,
+			"implemented": false
+		},
+		{
+			"id": "feat.boon_of_dimensional_travel",
+			"name": "Dádiva da Viagem Dimensional",
+			"description": "+1 em um atributo (máximo 30). Logo após a ação de Ataque ou de Magia, pode se teleportar até 9 m.",
+			"source": "SRD 5.2.1",
+			"category": "epic_boon",
+			"prerequisite_level": 19,
+			"ability_choices": [
+				"str",
+				"dex",
+				"con",
+				"int",
+				"wis",
+				"cha"
+			],
+			"ability_points": 1,
+			"ability_max": 30,
+			"implemented": false
+		},
+		{
+			"id": "feat.boon_of_fate",
+			"name": "Dádiva do Destino",
+			"description": "+1 em um atributo (máximo 30). Soma ou subtrai 2d4 de um Teste de d20 seu ou de alguém a até 18 m; recarrega ao rolar iniciativa ou descansar.",
+			"source": "SRD 5.2.1",
+			"category": "epic_boon",
+			"prerequisite_level": 19,
+			"ability_choices": [
+				"str",
+				"dex",
+				"con",
+				"int",
+				"wis",
+				"cha"
+			],
+			"ability_points": 1,
+			"ability_max": 30,
+			"implemented": false
+		},
+		{
+			"id": "feat.boon_of_irresistible_offense",
+			"name": "Dádiva da Ofensiva Irresistível",
+			"description": "+1 em Força ou Destreza (máximo 30). Dano contundente, perfurante e cortante ignora resistência; no 20 natural, dano extra igual ao atributo aumentado.",
+			"source": "SRD 5.2.1",
+			"category": "epic_boon",
+			"prerequisite_level": 19,
+			"ability_choices": [
+				"str",
+				"dex"
+			],
+			"ability_points": 1,
+			"ability_max": 30,
+			"implemented": false
+		},
+		{
+			"id": "feat.boon_of_spell_recall",
+			"name": "Dádiva da Recordação de Magias",
+			"description": "+1 em Inteligência, Sabedoria ou Carisma (máximo 30). Ao gastar espaço de 1º a 4º círculo, rola 1d4: se igual ao círculo, o espaço não é gasto.",
+			"source": "SRD 5.2.1",
+			"category": "epic_boon",
+			"prerequisite_level": 19,
+			"requires_feature": "spellcasting",
+			"ability_choices": [
+				"int",
+				"wis",
+				"cha"
+			],
+			"ability_points": 1,
+			"ability_max": 30,
+			"implemented": false
+		},
+		{
+			"id": "feat.boon_of_the_night_spirit",
+			"name": "Dádiva do Espírito Noturno",
+			"description": "+1 em um atributo (máximo 30). Na penumbra ou escuridão: fica invisível como ação bônus e tem resistência a dano exceto psíquico e radiante.",
+			"source": "SRD 5.2.1",
+			"category": "epic_boon",
+			"prerequisite_level": 19,
+			"ability_choices": [
+				"str",
+				"dex",
+				"con",
+				"int",
+				"wis",
+				"cha"
+			],
+			"ability_points": 1,
+			"ability_max": 30,
+			"implemented": false
+		},
+		{
+			"id": "feat.boon_of_truesight",
+			"name": "Dádiva da Visão Verdadeira",
+			"description": "+1 em um atributo (máximo 30). Visão verdadeira a 18 m.",
+			"source": "SRD 5.2.1",
+			"category": "epic_boon",
+			"prerequisite_level": 19,
+			"ability_choices": [
+				"str",
+				"dex",
+				"con",
+				"int",
+				"wis",
+				"cha"
+			],
+			"ability_points": 1,
+			"ability_max": 30,
+			"implemented": false
+		}
+	]
+}

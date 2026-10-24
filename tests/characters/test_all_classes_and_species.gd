@@ -72,7 +72,7 @@ func test_every_combination_creates_a_valid_character() -> void:
 					var sheet := CharacterSheet.build(result[0], _registry())
 					assert_true(sheet.max_hp > 0 and sheet.armor_class >= 10, "%s + %s: PV e CA plausíveis" % [class_id, species_id])
 				count += 1
-	assert_eq(count, 12 * 9 * 2, "Combinações testadas")
+	assert_eq(count, 12 * 9 * 4, "Combinações testadas (12 classes, 9 espécies, 4 antecedentes)")
 
 
 func test_barbarian_unarmored_defense() -> void:

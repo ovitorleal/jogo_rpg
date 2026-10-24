@@ -130,6 +130,16 @@ func choose_option(choice_id: String, party: Array[CharacterData], registry: Con
 		var sheet := CharacterSheet.build(leader, registry)
 		check = sheet.roll_skill_check(StringName(choice["skill"]), int(choice["dc"]), roller)
 		success = check.success
+		# Mente Tática (Guerreiro 2): soma 1d10 a um teste que falhou; gasta Retomar o Fôlego só se der certo.
+		if not success and "feature.tactical_mind" in sheet.feature_ids and ClassFeatures.remaining(leader, registry, "second_wind") > 0:
+			var bonus := roller.roll_die(10)
+			if check.total + bonus >= check.dc:
+				check.total += bonus
+				check.modifier += bonus
+				check.success = true
+				success = true
+				ClassFeatures.spend(leader, "second_wind")
+				_log("Mente Tática: +%d no teste (Retomar o Fôlego gasto)." % bonus)
 	var effects: Array[String] = []
 	if success:
 		_change_rations(inventory, int(choice.get("success_rations", 0)), effects)
@@ -178,13 +188,16 @@ func short_rest(party: Array[CharacterData], registry: ContentRegistry) -> Dicti
 		return _fail("Não é possível descansar agora")
 	var result := Rest.spend_hit_die(party[0], registry, _next_roller())
 	var slots := 0
+	var features: Array[String] = []
 	for c in party:
 		slots += Spellcasting.short_rest(c, registry)
-	if result["ok"] or slots > 0:
+		features.append_array(ClassFeatures.short_rest(c, registry))
+	if result["ok"] or slots > 0 or not features.is_empty():
 		clock += SHORT_REST_HOURS
 		var healed := int(result.get("healed", 0))
-		_log("Descanso curto: %s recupera %d PV%s." % [party[0].name, healed,
-				" e %d espaço(s) de magia" % slots if slots > 0 else ""])
+		_log("Descanso curto: %s recupera %d PV%s%s." % [party[0].name, healed,
+				" e %d espaço(s) de magia" % slots if slots > 0 else "",
+				"; recarrega %s" % ", ".join(features) if not features.is_empty() else ""])
 		return {"ok": true, "error": "", "healed": healed, "slots": slots}
 	return result
 

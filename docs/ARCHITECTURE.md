@@ -111,6 +111,16 @@
 | Efeitos como dicionários no `Combatant` com regra de expiração (`turn_start`, `turn_end`, `concentration`) | Duração "até o próximo turno" e concentração sem temporizadores |
 | Efeitos visuais por estilo (`SpellVfx`), desenhados por código e aguardados pela cena | Sem assets novos; resultado já resolvido antes da animação |
 
+### Fase 6.6 (entrega 1)
+
+| Decisão | Motivo |
+|---|---|
+| Escolhas como dados genéricos (`CharacterChoices`: especificação -> `CharacterData.choices`) a partir do campo `grants` das características | Um formato para talentos, estilos, maestria, subclasse, invocações...; UI única (`ChoicesPanel`) na criação e na tecla L |
+| Padrões automáticos para toda escolha nova (fill_defaults); validação só recusa valores inválidos | Subir de nível nunca trava; saves antigos migram sem perguntas |
+| Recursos em dados (valores por nível + recarga) e `ClassFeatures` para máximo/gasto/descanso | Tabelas do SRD sem código; descansos tratam todas as classes |
+| Características como dados completos (1–20) com `implemented`; comportamento ligado por id no motor | Ficha mostra tudo desde já, sem afirmar que algo funciona antes de funcionar |
+| Movimento casa a casa no `CombatManager` | Ataques de oportunidade no ponto exato em que o inimigo sai do alcance |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,

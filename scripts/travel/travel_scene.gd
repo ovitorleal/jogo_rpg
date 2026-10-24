@@ -197,7 +197,11 @@ func _refresh() -> void:
 	_arrive_button.visible = arrived
 	_arrive_button.disabled = _busy or _event_open
 	var can_heal := Rest.hit_dice_left(leader) > 0 and leader.current_hp < sheet.max_hp
-	_short_rest_button.disabled = blocked or not (can_heal or Spellcasting.short_rest_would_restore(leader, Content.registry))
+	var recharges := false
+	for resource in ClassFeatures.definitions(leader, Content.registry):
+		if ClassFeatures.recharge(leader, Content.registry, resource) in ["short", "short_one"] and leader.resource_spent(resource["id"]) > 0:
+			recharges = true
+	_short_rest_button.disabled = blocked or not (can_heal or recharges or Spellcasting.short_rest_would_restore(leader, Content.registry))
 	_long_rest_button.disabled = blocked or _inventory.count(Inventory.RATIONS) < _party.size()
 
 

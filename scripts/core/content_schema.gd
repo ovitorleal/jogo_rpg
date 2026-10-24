@@ -34,7 +34,9 @@ static func validate(entry: Dictionary, schema: Dictionary, context: String,
 			if spec.get("required", true):
 				errors.append("%s: campo obrigatório ausente" % where)
 			elif spec.has("default"):
-				normalized[field] = spec["default"]
+				var default_value: Variant = spec["default"]
+				normalized[field] = default_value.duplicate(true) if default_value is Array or default_value is Dictionary \
+						else default_value
 			continue
 		var result := _validate_value(entry[field], spec, where, pending_refs)
 		errors.append_array(result[1])

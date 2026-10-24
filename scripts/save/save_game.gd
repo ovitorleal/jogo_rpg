@@ -150,6 +150,8 @@ static func validate(data: Dictionary, registry: ContentRegistry) -> Dictionary:
 			# Saves anteriores às magias (esquema 3): o conjurador recebe as magias padrão da classe.
 			if c.cantrips.is_empty() and c.prepared_spells.is_empty():
 				Spellcasting.fill_defaults(c, registry)
+			# Saves anteriores às escolhas (esquema 4): talentos, maestria e subclasse recebem o padrão.
+			CharacterChoices.fill_defaults(c, registry)
 			var problems := CharacterFactory.validate(c, registry)
 			if not problems.is_empty():
 				errors.append("%s: %s" % [c.name, "; ".join(problems)])

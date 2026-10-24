@@ -9,13 +9,29 @@ extends RefCounted
 
 const FEET_PER_SQUARE := 5
 const MELEE_REACH_FEET := 5
+## Propriedades de Maestria (SRD 5.2.1), usadas por quem tem a característica Maestria em Armas.
+const MASTERY_NAMES := {
+	"cleave": "Trespassar", "graze": "Raspar", "nick": "Talhar", "push": "Empurrar", "sap": "Enfraquecer",
+	"slow": "Lentidão", "topple": "Derrubar", "vex": "Atormentar",
+}
+const MASTERY_DESCRIPTIONS := {
+	"cleave": "Ao acertar, ataca outra criatura a até 1,5 m do alvo (sem somar o modificador ao dano); uma vez por turno.",
+	"graze": "Ao errar, causa dano igual ao modificador de atributo do ataque.",
+	"nick": "O ataque extra da propriedade Leve faz parte da ação de Ataque, não da ação bônus; uma vez por turno.",
+	"push": "Ao acertar, empurra o alvo até 3 m (Grande ou menor).",
+	"sap": "Ao acertar, o alvo tem desvantagem no próximo ataque antes do início do seu próximo turno.",
+	"slow": "Ao acertar e causar dano, reduz o deslocamento do alvo em 3 m até o início do seu próximo turno.",
+	"topple": "Ao acertar, o alvo faz teste de Constituição (CD 8 + modificador + proficiência) ou fica Caído.",
+	"vex": "Ao acertar e causar dano, você tem vantagem no próximo ataque contra o alvo até o fim do seu próximo turno.",
+}
 
 
 ## Retorna { rolls, natural, bonus, total, target_ac, advantage, hit, critical }.
+## critical_from: menor d20 que é Acerto Crítico (20; 19 ou 18 com Crítico Aprimorado/Superior).
 static func roll_attack(roller: DiceRoller, attack_bonus: int, target_ac: int,
-		advantage: D20Test.Advantage = D20Test.Advantage.NONE) -> Dictionary:
+		advantage: D20Test.Advantage = D20Test.Advantage.NONE, critical_from: int = 20) -> Dictionary:
 	var test := D20Test.roll(roller, attack_bonus, target_ac, advantage)
-	var critical := test.natural == 20
+	var critical := test.natural >= critical_from
 	var hit := critical or (test.natural != 1 and test.total >= target_ac)
 	return {
 		"rolls": test.rolls,
@@ -59,7 +75,8 @@ static func grid_distance_feet(a: Vector2i, b: Vector2i) -> int:
 ## Proficiência entra no ataque se a classe tiver treinamento com a arma.
 ## Versátil usa o dano de duas mãos quando não há escudo.
 ## Retorna { id, name, attack_type, ability, proficient, attack_bonus, damage, damage_type,
-##           reach, range_normal, range_long } ou várias entradas (arremesso gera uma extra).
+##           reach, range_normal, range_long, weapon_id, mastery, properties, two_handed,
+##           ability_modifier } ou várias entradas (arremesso gera uma extra).
 static func weapon_attacks(sheet: CharacterSheet, weapon: Dictionary) -> Array[Dictionary]:
 	var results: Array[Dictionary] = []
 	var properties: Array = weapon.get("properties", [])
@@ -72,8 +89,10 @@ static func weapon_attacks(sheet: CharacterSheet, weapon: Dictionary) -> Array[D
 	var proficient := is_proficient_with(sheet.class_entry.get("weapon_training", []), weapon)
 	var bonus: int = sheet.modifiers[ability] + (sheet.proficiency_bonus if proficient else 0)
 	var damage := DiceExpression.parse(str(weapon["damage"]))
+	var two_hands := "two_handed" in properties
 	if "versatile" in properties and sheet.shield.is_empty() and not str(weapon.get("versatile_damage", "")).is_empty():
 		damage = DiceExpression.parse(str(weapon["versatile_damage"]))
+		two_hands = true
 	damage.bonus += sheet.modifiers[ability]
 	var base := {
 		"id": str(weapon["id"]),
@@ -87,6 +106,11 @@ static func weapon_attacks(sheet: CharacterSheet, weapon: Dictionary) -> Array[D
 		"reach": 0 if ranged else MELEE_REACH_FEET,
 		"range_normal": int(weapon.get("range_normal", 0)) if ranged else 0,
 		"range_long": int(weapon.get("range_long", 0)) if ranged else 0,
+		"weapon_id": str(weapon["id"]),
+		"mastery": str(weapon.get("mastery", "")),
+		"properties": properties.duplicate(),
+		"two_handed": two_hands and not ranged,
+		"ability_modifier": int(sheet.modifiers[ability]),
 	}
 	results.append(base)
 	if not ranged and "thrown" in properties:
@@ -101,6 +125,7 @@ static func weapon_attacks(sheet: CharacterSheet, weapon: Dictionary) -> Array[D
 		var one_hand := DiceExpression.parse(str(weapon["damage"]))
 		one_hand.bonus += sheet.modifiers[ability]
 		thrown["damage"] = str(one_hand)
+		thrown["two_handed"] = false
 		results.append(thrown)
 	return results
 
@@ -120,7 +145,29 @@ static func unarmed_strike(sheet: CharacterSheet) -> Dictionary:
 		"reach": MELEE_REACH_FEET,
 		"range_normal": 0,
 		"range_long": 0,
+		"weapon_id": "",
+		"mastery": "",
+		"properties": [],
+		"two_handed": false,
+		"ability_modifier": strength,
+		"unarmed": "damage",
 	}
+
+
+## Opções Agarrar e Empurrar do Ataque Desarmado: teste de resistência de Força ou Destreza
+## (o alvo escolhe; aqui, o maior) contra CD 8 + Força + proficiência.
+static func unarmed_options(sheet: CharacterSheet) -> Array[Dictionary]:
+	var dc := 8 + int(sheet.modifiers[Ability.STRENGTH]) + sheet.proficiency_bonus
+	var result: Array[Dictionary] = []
+	for option: Array in [["grapple", "Agarrar"], ["shove", "Empurrar (derrubar)"]]:
+		result.append({
+			"id": "attack.unarmed_%s" % option[0], "name": "Desarmado: %s" % option[1], "attack_type": "melee",
+			"ability": Ability.STRENGTH, "proficient": true, "attack_bonus": 0, "damage": "0",
+			"damage_type": "bludgeoning", "reach": MELEE_REACH_FEET, "range_normal": 0, "range_long": 0,
+			"weapon_id": "", "mastery": "", "properties": [], "two_handed": false,
+			"ability_modifier": int(sheet.modifiers[Ability.STRENGTH]), "unarmed": option[0], "save_dc": dc,
+		})
+	return result
 
 
 static func is_proficient_with(training: Array, weapon: Dictionary) -> bool:

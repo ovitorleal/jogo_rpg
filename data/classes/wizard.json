@@ -63,14 +63,92 @@
 					"id": "feature.arcane_recovery",
 					"name": "Recuperação Arcana",
 					"level": 1,
-					"description": "Recupera alguns espaços de magia ao terminar um descanso curto.",
+					"description": "No descanso curto, recupera espaços somando até metade do nível (arredondado para cima, nenhum de 6º+); uma vez por descanso longo.",
 					"implemented": false
 				},
 				{
 					"id": "feature.scholar",
 					"name": "Erudito",
 					"level": 2,
-					"description": "Especialização em uma perícia de conhecimento.",
+					"description": "Especialização em Arcanismo, História, Investigação, Medicina, Natureza ou Religião (se proficiente).",
+					"implemented": true,
+					"grants": "expertise",
+					"skill_filter": [
+						"arcana",
+						"history",
+						"investigation",
+						"medicine",
+						"nature",
+						"religion"
+					]
+				},
+				{
+					"id": "feature.wizard_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_wizard_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_wizard_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_wizard_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_wizard_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.memorize_spell",
+					"name": "Memorizar Magia",
+					"level": 5,
+					"description": "No descanso curto, troca uma magia preparada por outra do grimório.",
+					"implemented": false
+				},
+				{
+					"id": "feature.spell_mastery",
+					"name": "Maestria em Magia",
+					"level": 18,
+					"description": "Uma magia de 1º e uma de 2º círculo sempre preparadas e conjuradas sem espaço no círculo mínimo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_wizard",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Recordação de Magias é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.signature_spells",
+					"name": "Magias Assinatura",
+					"level": 20,
+					"description": "Duas magias de 3º círculo sempre preparadas, cada uma conjurada uma vez sem espaço por descanso curto.",
 					"implemented": false
 				}
 			],
@@ -119,6 +197,35 @@
 				23,
 				24,
 				25
+			],
+			"resources": [
+				{
+					"id": "arcane_recovery",
+					"name": "Recuperação Arcana",
+					"values": [
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
 			]
 		}
 	]

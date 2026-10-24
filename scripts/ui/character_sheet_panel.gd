@@ -106,6 +106,10 @@ static func format_sheet(sheet: CharacterSheet) -> String:
 			out.append("Preparadas: %s" % spell_names.call(caster.prepared_spells))
 		out.append("")
 
+	var resources := ClassFeatures.summary(sheet.character, Content.registry)
+	if not resources.is_empty():
+		out.append("[b]Recursos[/b]  %s" % resources)
+		out.append("")
 	out.append("[b]Características[/b]")
 	for feature in sheet.features:
 		out.append("- %s%s" % [feature["name"], "" if feature["implemented"] else " [color=#8597b8](ainda não implementada)[/color]"])

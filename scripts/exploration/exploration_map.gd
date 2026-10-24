@@ -69,6 +69,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed(&"journal"):
 		get_viewport().set_input_as_handled()
 		toggle_journal()
+	elif event.is_action_pressed(&"level_choices"):
+		get_viewport().set_input_as_handled()
+		toggle_choices()
 	elif event.is_action_pressed(&"ui_cancel") and _hud.is_overlay_open():
 		get_viewport().set_input_as_handled()
 		close_overlays()
@@ -178,6 +181,10 @@ func toggle_inventory() -> void:
 	_toggle_overlay("inventory")
 
 
+func toggle_choices() -> void:
+	_toggle_overlay("choices")
+
+
 func toggle_journal() -> void:
 	_toggle_overlay("journal")
 
@@ -191,7 +198,7 @@ func close_overlays() -> void:
 ## Ficha, inventário e diário: um por vez; a mesma tecla fecha.
 func _toggle_overlay(kind: String) -> void:
 	var open := {"sheet": _hud.is_sheet_open(), "inventory": _hud.inventory_panel.visible,
-			"journal": _hud.journal_panel.visible}
+			"journal": _hud.journal_panel.visible, "choices": _hud.choices_overlay.visible}
 	if open[kind]:
 		close_overlays()
 		return
@@ -212,6 +219,10 @@ func _toggle_overlay(kind: String) -> void:
 				_hud.inventory_panel.changed.connect(_player.refresh_appearance)
 		"journal":
 			_hud.show_journal(QuestManager.log, Content.registry)
+		"choices":
+			_hud.show_choices(leader, Content.registry)
+			if not _hud.choices_panel.changed.is_connected(_on_choices_changed):
+				_hud.choices_panel.changed.connect(_on_choices_changed)
 
 
 # --- Diálogo ------------------------------------------------------------------
@@ -270,6 +281,15 @@ func _show_dialogue_node() -> void:
 	if not _dialogue_notes.is_empty():
 		text = "%s\n[%s]" % [text, " · ".join(_dialogue_notes)]
 	_hud.show_dialogue(_dialogue.speaker(), portrait, text, options)
+
+
+## Escolhas mudaram (talento, estilo...): PV máximos podem mudar e o progresso é salvo.
+func _on_choices_changed() -> void:
+	var leader: CharacterData = PartyManager.get_leader()
+	if leader != null:
+		leader.current_hp = mini(leader.current_hp, CharacterSheet.build(leader, Content.registry).max_hp)
+	_player.refresh_appearance()
+	SaveManager.request_autosave("escolhas")
 
 
 ## Retrato do líder conforme a aparência escolhida.

@@ -59,28 +59,137 @@
 					"id": "feature.druidic",
 					"name": "Druídico",
 					"level": 1,
-					"description": "Conhece a língua secreta dos druidas.",
+					"description": "Conhece a língua secreta dos druidas e sempre tem Falar com Animais preparada.",
 					"implemented": false
 				},
 				{
 					"id": "feature.primal_order",
 					"name": "Ordem Primal",
 					"level": 1,
-					"description": "Escolhe ser Mágico (truque extra e conhecimento) ou Guardião (armas marciais e armadura média).",
-					"implemented": false
+					"description": "Escolhe um papel sagrado.",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "primal_order.magician",
+							"name": "Mago",
+							"description": "Um truque extra de druida e bônus igual à Sabedoria (mínimo +1) em testes de Inteligência (Arcanismo ou Natureza)."
+						},
+						{
+							"id": "primal_order.warden",
+							"name": "Guardião",
+							"description": "Proficiência com armas marciais e treinamento com armadura média."
+						}
+					]
 				},
 				{
 					"id": "feature.wild_shape",
 					"name": "Forma Selvagem",
 					"level": 2,
-					"description": "Assume a forma de um animal por um tempo.",
+					"description": "Ação bônus: assume a forma de uma fera conhecida (ND 1/4 sem voo; 1/2 no 4; 1 com voo no 8), ganhando PV temporários iguais ao nível. Usos pela tabela; recupera um no descanso curto.",
 					"implemented": false
 				},
 				{
 					"id": "feature.wild_companion",
 					"name": "Companheiro Selvagem",
 					"level": 2,
-					"description": "Invoca um espírito animal como familiar.",
+					"description": "Gasta um espaço ou uso de Forma Selvagem para conjurar Encontrar Familiar sem componentes.",
+					"implemented": false
+				},
+				{
+					"id": "feature.druid_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_druid_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_druid_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_druid_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_druid_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.wild_resurgence",
+					"name": "Ressurgimento Selvagem",
+					"level": 5,
+					"description": "Sem usos de Forma Selvagem, gasta um espaço para ganhar um; uma vez por descanso longo troca um uso por um espaço de 1º círculo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.elemental_fury",
+					"name": "Fúria Elemental",
+					"level": 7,
+					"description": "Escolhe uma opção.",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "elemental_fury.potent_spellcasting",
+							"name": "Conjuração Potente",
+							"description": "Soma a Sabedoria ao dano dos truques de druida."
+						},
+						{
+							"id": "elemental_fury.primal_strike",
+							"name": "Golpe Primal",
+							"description": "Uma vez por turno, +1d8 de dano de frio, fogo, elétrico ou trovejante ao acertar com arma ou forma de fera."
+						}
+					]
+				},
+				{
+					"id": "feature.improved_elemental_fury",
+					"name": "Fúria Elemental Aprimorada",
+					"level": 15,
+					"description": "Conjuração Potente: +90 m de alcance em truques de 3 m ou mais; Golpe Primal vira 2d8.",
+					"implemented": false
+				},
+				{
+					"id": "feature.beast_spells",
+					"name": "Magias de Fera",
+					"level": 18,
+					"description": "Pode conjurar magias em Forma Selvagem (exceto com componente material de custo).",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_druid",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Viagem Dimensional é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.archdruid",
+					"name": "Arquidruida",
+					"level": 20,
+					"description": "Recupera um uso de Forma Selvagem ao rolar iniciativa sem usos; converte usos em espaço de magia (2 círculos por uso) uma vez por descanso longo; envelhece devagar.",
 					"implemented": false
 				}
 			],
@@ -129,6 +238,35 @@
 				20,
 				21,
 				22
+			],
+			"resources": [
+				{
+					"id": "wild_shape",
+					"name": "Forma Selvagem",
+					"values": [
+						"0",
+						"2",
+						"2",
+						"2",
+						"2",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"4",
+						"4",
+						"4",
+						"4"
+					],
+					"recharge": "short_one"
+				}
 			]
 		}
 	]
