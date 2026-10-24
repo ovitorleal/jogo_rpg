@@ -14,6 +14,11 @@ script = ExtResource("1_script")
 [node name="Terrain" parent="." instance=ExtResource("2_terrain")]
 unique_name_in_owner = true
 
+[node name="Entrances" type="Node2D" parent="."]
+
+[node name="Entrance_east" type="Marker2D" parent="Entrances"]
+position = Vector2(856, 282)
+
 [node name="Objects" type="Node2D" parent="."]
 y_sort_enabled = true
 
@@ -22,6 +27,12 @@ y_sort_enabled = true
 [node name="WelcomeSign" parent="Objects" instance=ExtResource("3_sign")]
 position = Vector2(536, 252)
 message_text = "A placa diz: \"Bem-vindo, viajante. Cuidado com o lobo da mata a sudeste e com o goblin que vigia a ruína a sudoeste.\""
+
+[node name="EastRoadSign" parent="Objects" instance=ExtResource("3_sign")]
+position = Vector2(872, 250)
+prompt_text = "Ler placa"
+message_text = "A placa diz: \"Estrada do Leste — Bosque do Riacho, meio dia de caminhada pela Floresta Sussurrante.\" Partir agora?"
+action = "travel:route.east_road"
 
 [node name="WolfEncounter" parent="Objects" instance=ExtResource("6_trigger")]
 position = Vector2(712, 344)

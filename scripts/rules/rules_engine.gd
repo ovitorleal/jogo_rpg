@@ -88,6 +88,17 @@ static func max_hit_points(level: int, hit_die: int, constitution_score: int, bo
 	return total
 
 
+## Descanso curto: gasta um Dado de Vida e recupera dado + Con (mínimo 0 por dado).
+## Retorna os PV recuperados (antes de limitar ao máximo; quem chama limita).
+static func spend_hit_die(roller: DiceRoller, hit_die: int, constitution_score: int) -> int:
+	return maxi(0, roller.roll_die(hit_die) + Ability.modifier(constitution_score))
+
+
+## Total de Dados de Vida = nível do personagem.
+static func hit_dice_total(level: int) -> int:
+	return clampi(level, MIN_LEVEL, MAX_LEVEL)
+
+
 static func initiative_bonus(dexterity_score: int) -> int:
 	return Ability.modifier(dexterity_score)
 

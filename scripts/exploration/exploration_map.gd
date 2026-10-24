@@ -7,6 +7,10 @@ extends Node2D
 const NO_CHARACTER_MESSAGE := "Nenhum personagem no grupo. Use \"Novo jogo\" no menu para criar um."
 const NO_CHARACTER_COMBAT_MESSAGE := "Algo se move entre as sombras... mas não há ninguém no grupo para lutar."
 const PLAYER_PORTRAIT := preload("res://assets/portraits/hero_portrait.png")
+const CONFIRM_HINT := "[E] Confirmar · [Esc] Cancelar"
+
+## Ação aguardando confirmação (texto do Interactable.action).
+var _pending_action: String = ""
 
 @onready var _ground: TileMapLayer = %Terrain.get_node("Ground")
 @onready var _player: Player = %Player
@@ -15,8 +19,12 @@ const PLAYER_PORTRAIT := preload("res://assets/portraits/hero_portrait.png")
 
 func _ready() -> void:
 	var back: Variant = ExplorationManager.take_return_position(scene_file_path)
+	var entrance := ExplorationManager.take_entrance(scene_file_path)
 	if back is Vector2:
 		_player.global_position = back
+		_player.reset_physics_interpolation()
+	elif not entrance.is_empty() and has_node("Entrances/%s" % entrance):
+		_player.global_position = (get_node("Entrances/%s" % entrance) as Node2D).global_position
 		_player.reset_physics_interpolation()
 	_configure_camera_limits()
 	_player.interaction_target_changed.connect(_on_interaction_target_changed)
@@ -40,6 +48,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed(&"ui_cancel") and _hud.is_sheet_open():
 		get_viewport().set_input_as_handled()
 		toggle_character_sheet()
+	elif event.is_action_pressed(&"ui_cancel") and _hud.is_message_open():
+		get_viewport().set_input_as_handled()
+		cancel_message()
 	elif event.is_action_pressed(&"interact"):
 		get_viewport().set_input_as_handled()
 		handle_interact()
@@ -51,11 +62,23 @@ func handle_interact() -> void:
 	if _hud.is_sheet_open():
 		return
 	if _hud.is_message_open():
+		var action := _pending_action
+		_pending_action = ""
 		_hud.hide_message()
 		_player.input_enabled = true
 		_on_interaction_target_changed(_player.get_interaction_target())
+		if not action.is_empty():
+			_execute_action(action)
 		return
 	_player.try_interact()
+
+
+## Fecha a mensagem sem executar a ação pendente.
+func cancel_message() -> void:
+	_pending_action = ""
+	_hud.hide_message()
+	_player.input_enabled = true
+	_on_interaction_target_changed(_player.get_interaction_target())
 
 
 ## Abre ou fecha a ficha do líder do grupo. Não abre por cima de uma mensagem.
@@ -102,6 +125,14 @@ func _on_interaction_target_changed(target: Interactable) -> void:
 func _on_interacted(source: Interactable) -> void:
 	if source.message_text.is_empty():
 		return
+	if not source.action.is_empty():
+		_pending_action = source.action
+		_player.input_enabled = false
+		_hud.hide_prompt()
+		var leader: CharacterData = PartyManager.get_leader()
+		_hud.show_message(source.message_text, leader.name if leader != null else "",
+				PLAYER_PORTRAIT if leader != null else null, CONFIRM_HINT)
+		return
 	if source.speaker_name.is_empty() and source.speaker_portrait == null:
 		_show_player_line(source.message_text)
 	else:
@@ -119,6 +150,22 @@ func _show_player_line(text: String) -> void:
 		_hud.show_message(text)
 	else:
 		_hud.show_message(text, leader.name, PLAYER_PORTRAIT)
+
+
+func _execute_action(action: String) -> void:
+	if not PartyManager.has_party():
+		_show_player_line(NO_CHARACTER_MESSAGE)
+		return
+	if action.begins_with("travel:"):
+		_player.input_enabled = false
+		ExplorationManager.begin_travel.call_deferred(action.trim_prefix("travel:"))
+	elif action == "rest_long":
+		var healed := 0
+		for c in PartyManager.members:
+			healed += Rest.long_rest(c, Content.registry)
+		_show_player_line("Você descansa junto à fogueira até o amanhecer. PV e Dados de Vida restaurados (+%d PV)." % healed)
+	else:
+		push_error("Ação desconhecida: %s" % action)
 
 
 func _on_encounter_triggered(trigger: EncounterTrigger) -> void:

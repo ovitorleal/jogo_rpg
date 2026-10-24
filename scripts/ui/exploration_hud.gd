@@ -12,6 +12,9 @@ const INTERACT_KEY_HINT := "[E]"
 @onready var _portrait: TextureRect = %Portrait
 @onready var _sheet_panel: CharacterSheetPanel = %SheetPanel
 @onready var _sheet_hint: Label = %SheetHint
+@onready var _hint_label: Label = %HintLabel
+
+const DEFAULT_HINT := "[E] Continuar"
 
 
 func _ready() -> void:
@@ -35,8 +38,10 @@ func is_prompt_visible() -> bool:
 
 ## Mostra uma fala. Com retrato, ele aparece em destaque à esquerda; sem nome nem retrato,
 ## a caixa vira uma mensagem simples do sistema.
-func show_message(text: String, speaker_name: String = "", portrait: Texture2D = null) -> void:
+func show_message(text: String, speaker_name: String = "", portrait: Texture2D = null,
+		hint: String = DEFAULT_HINT) -> void:
 	_message_label.text = text
+	_hint_label.text = hint
 	_speaker_label.text = speaker_name
 	_speaker_label.visible = not speaker_name.is_empty()
 	_portrait.texture = portrait

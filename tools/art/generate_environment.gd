@@ -19,6 +19,7 @@ const OUT_PINE := "res://assets/environments/pine.png"
 const OUT_BUSH := "res://assets/environments/bush.png"
 const OUT_ROCK := "res://assets/environments/rock.png"
 const OUT_SIGN := "res://assets/environments/sign.png"
+const OUT_CAMPFIRE := "res://assets/environments/campfire_sheet.png"
 
 ## Posição no atlas: terra/areia em blocos 4x4 a partir de (0,1) e (4,1);
 ## água: 16 máscaras × 3 quadros de animação, a partir de (0,5), 12 colunas por linha.
@@ -54,6 +55,7 @@ func _initialize() -> void:
 	ok = ok and _save(_bush(), OUT_BUSH)
 	ok = ok and _save(_rock(), OUT_ROCK)
 	ok = ok and _save(_sign(), OUT_SIGN)
+	ok = ok and _save(_campfire_sheet(), OUT_CAMPFIRE)
 	quit(0 if ok else 1)
 
 
@@ -311,6 +313,35 @@ func _rock() -> Image:
 	c.outline()
 	c.shadow(8, 14.5, 7, 1.5)
 	return c.image
+
+
+## Fogueira 16x16 em 3 quadros (chama tremulando), lado a lado: 48x16.
+func _campfire_sheet() -> Image:
+	var sheet := Image.create_empty(48, 16, false, Image.FORMAT_RGBA8)
+	for frame in 3:
+		var c := PixelCanvas.new(16, 16)
+		var wood := PixelCanvas.ramp("#3a2214", "#6a3e22", "#9a6232")
+		var logs := c.new_mask()
+		c.mask_line(logs, Vector2(3, 14), Vector2(12, 11), 2)
+		c.mask_line(logs, Vector2(3, 11), Vector2(12, 14), 2)
+		c.paint_part(logs, wood)
+		var stones := c.new_mask()
+		for s: Vector2i in [Vector2i(1, 13), Vector2i(13, 13), Vector2i(7, 15)]:
+			c.mask_rect(stones, s.x, s.y, 2, 2)
+		c.paint_part(stones, PixelCanvas.ramp(STONE[0], STONE[1], STONE[3]))
+		var flame := c.new_mask()
+		var sway: int = [0, 1, -1][frame]
+		c.mask_ellipse(flame, 7.5 + sway * 0.5, 9.5, 3.5, 3.5)
+		c.mask_ellipse(flame, 7.5 + sway, 6.5, 2.2, 3.0)
+		c.mask_rect(flame, 7 + sway, 2 + frame % 2, 1, 3)
+		c.paint_part(flame, PixelCanvas.ramp("#c83a1a", "#f08a24", "#ffe27a"), 1, 1)
+		var core := c.new_mask()
+		c.mask_ellipse(core, 7.5 + sway * 0.5, 10.0, 1.6, 1.8)
+		c.paint_part(core, PixelCanvas.ramp("#ffd04a", "#fff2a0", "#ffffff"))
+		c.outline(0.5)
+		c.shadow(8, 15, 6, 1)
+		sheet.blit_rect(c.image, Rect2i(0, 0, 16, 16), Vector2i(frame * 16, 0))
+	return sheet
 
 
 func _sign() -> Image:

@@ -1,7 +1,8 @@
 extends SceneTree
 ## Monta o TileSet do terreno e o mapa de teste (terreno, muros e objetos de cenário).
 ## Pré-requisito: generate_environment.gd + --import.
-## Uso: godot --headless --path . --script res://tools/art/build_overworld.gd [-- --force]
+## Uso: godot --headless --path . --script res://tools/art/build_overworld.gd [-- --force] [--layout forest_brook]
+## Layouts: "test_map" (padrão, Clareira da Encruzilhada) e "forest_brook" (Bosque do Riacho).
 ##
 ## O terreno é definido nos VÉRTICES da grade (grama, terra, areia, água); cada tile escolhe a
 ## transição pelos 4 cantos (marching squares), o que dá bordas suaves e orgânicas.
@@ -10,12 +11,14 @@ extends SceneTree
 const ENV := preload("res://tools/art/generate_environment.gd")
 
 const TILESET_PATH := "res://assets/tilesets/overworld_tileset.tres"
-const TERRAIN_SCENE := "res://scenes/world/test_map_terrain.tscn"
-const PROPS_SCENE := "res://scenes/world/test_map_props.tscn"
 const TEXTURE_PATH := "res://assets/tilesets/overworld_tiles.png"
 
-const MAP := Vector2i(60, 34)
-const SEED := 20261024
+const LAYOUTS := {
+	"test_map": {"size": Vector2i(60, 34), "seed": 20261024,
+			"terrain": "res://scenes/world/test_map_terrain.tscn", "props": "res://scenes/world/test_map_props.tscn"},
+	"forest_brook": {"size": Vector2i(44, 26), "seed": 20261025,
+			"terrain": "res://scenes/world/forest_brook_terrain.tscn", "props": "res://scenes/world/forest_brook_props.tscn"},
+}
 
 enum V { GRASS, DIRT, SAND, WATER }
 
@@ -30,18 +33,34 @@ const PROP_SCENES := {
 	"rock": "res://scenes/world/props/rock.tscn",
 }
 
-## Áreas sem objetos (em tiles): início/placa, encontros e interior da ruína.
-const CLEAR: Array[Rect2i] = [Rect2i(25, 11, 12, 12), Rect2i(41, 18, 7, 7), Rect2i(10, 22, 9, 7)]
+## Áreas sem objetos (em tiles) por layout.
+const CLEAR := {
+	"test_map": [Rect2i(25, 11, 12, 12), Rect2i(41, 18, 7, 7), Rect2i(10, 22, 9, 7), Rect2i(51, 13, 9, 7)],
+	"forest_brook": [Rect2i(0, 10, 6, 7), Rect2i(23, 7, 11, 10)],
+}
 const RUIN := Rect2i(10, 23, 9, 6)
 const GROVE := Rect2i(39, 20, 16, 11)
 
+var MAP := Vector2i(60, 34)
+var _layout := "test_map"
 var _rng := RandomNumberGenerator.new()
 var _vertices: Array = []
 var _blocked := {}
 
 
 func _initialize() -> void:
-	var force := OS.get_cmdline_user_args().has("--force")
+	var args := OS.get_cmdline_user_args()
+	var force := args.has("--force")
+	var layout_index := args.find("--layout")
+	if layout_index >= 0 and layout_index + 1 < args.size():
+		_layout = args[layout_index + 1]
+	if not LAYOUTS.has(_layout):
+		push_error("Layout desconhecido: %s" % _layout)
+		quit(1)
+		return
+	MAP = LAYOUTS[_layout]["size"]
+	var TERRAIN_SCENE: String = LAYOUTS[_layout]["terrain"]
+	var PROPS_SCENE: String = LAYOUTS[_layout]["props"]
 	for path in [TILESET_PATH, TERRAIN_SCENE, PROPS_SCENE]:
 		if FileAccess.file_exists(path) and not force:
 			push_error("%s já existe. Use '-- --force' para sobrescrever (edições manuais serão perdidas)." % path)
@@ -58,7 +77,7 @@ func _initialize() -> void:
 	print("Gerado: %s" % TILESET_PATH)
 	var tile_set: TileSet = ResourceLoader.load(TILESET_PATH, "", ResourceLoader.CACHE_MODE_REPLACE)
 
-	_rng.seed = SEED
+	_rng.seed = int(LAYOUTS[_layout]["seed"])
 	_build_vertices()
 	var terrain := Node2D.new()
 	terrain.name = "Terrain"
@@ -79,10 +98,10 @@ func _initialize() -> void:
 			if wall != Vector2i(-1, -1):
 				walls.set_cell(Vector2i(x, y), 0, wall)
 				_blocked[Vector2i(x, y)] = true
-	if not _pack(terrain, TERRAIN_SCENE):
+	if not _pack(terrain, LAYOUTS[_layout]["terrain"]):
 		quit(1)
 		return
-	if not _pack(_build_props(), PROPS_SCENE):
+	if not _pack(_build_props(), LAYOUTS[_layout]["props"]):
 		quit(1)
 		return
 	quit(0)
@@ -161,6 +180,8 @@ func _build_vertices() -> void:
 
 
 func _vertex(x: int, y: int) -> int:
+	if _layout == "forest_brook":
+		return _vertex_forest(x, y)
 	var lake := Vector2((x - 12.5) / 7.0, (y - 7.0) / 5.0)
 	var water := Vector2((x - 12.5) / 4.8, (y - 7.0) / 3.0)
 	if water.length() <= 1.0:
@@ -176,6 +197,23 @@ func _vertex(x: int, y: int) -> int:
 		return V.DIRT
 	# Chão de terra batida dentro da ruína.
 	if x >= 11 and x <= 18 and y >= 24 and y <= 28:
+		return V.DIRT
+	return V.GRASS
+
+
+## Bosque do Riacho: trilha do oeste até o acampamento; riacho com margens de areia a leste.
+func _vertex_forest(x: int, y: int) -> int:
+	var brook_x := 37.0 + sin(y * 0.35) * 1.6
+	var d := absf(x - brook_x)
+	if d <= 1.1:
+		return V.WATER
+	if d <= 2.4:
+		return V.SAND
+	var camp := Vector2(x - 28.0, (y - 12.0) * 1.2)
+	if camp.length() <= 3.6:
+		return V.DIRT
+	var trail_y := 13.0 + sin(x * 0.3) * 0.9
+	if x <= 26 and absf(y - trail_y) <= 1.1:
 		return V.DIRT
 	return V.GRASS
 
@@ -208,6 +246,8 @@ func _ground_tile(x: int, y: int) -> Vector2i:
 func _wall_tile(x: int, y: int) -> Vector2i:
 	if x == 0 or y == 0 or x == MAP.x - 1 or y == MAP.y - 1:
 		return BLOCKER
+	if _layout != "test_map":
+		return Vector2i(-1, -1)
 	if RUIN.has_point(Vector2i(x, y)):
 		var edge := x == RUIN.position.x or x == RUIN.end.x - 1 or y == RUIN.end.y - 1
 		# Ruína: muro em U aberto ao norte, com um vão na parede leste.
@@ -219,7 +259,7 @@ func _wall_tile(x: int, y: int) -> Vector2i:
 func _is_open_grass(cell: Vector2i) -> bool:
 	if _blocked.has(cell):
 		return false
-	for rect in CLEAR:
+	for rect: Rect2i in CLEAR[_layout]:
 		if rect.has_point(cell):
 			return false
 	for dy in 2:
@@ -247,6 +287,11 @@ func _build_props() -> Node2D:
 		_add_prop(root, "pine", Vector2(6, y))
 		_add_prop(root, "pine", Vector2(MAP.x * 16 - 6, y))
 		y += 22
+	if _layout == "forest_brook":
+		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["tree", "pine", "tree"], 46, 2)
+		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["bush"], 14, 1)
+		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["rock"], 8, 1)
+		return root
 	# Bosque a sudeste, árvores espalhadas, pedras e arbustos.
 	_scatter(root, taken, GROVE, ["tree", "tree", "pine"], 16, 2)
 	_scatter(root, taken, Rect2i(2, 13, 22, 8), ["tree", "pine"], 5, 3)

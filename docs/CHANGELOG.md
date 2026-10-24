@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.4.0] — 2026-10-24 — Fase 4
+
+### Adicionado
+- Conteúdo: tipos `map`, `region`, `route`, `event` validados; Floresta Sussurrante, Estrada do Leste (ida e volta),
+  5 eventos (descoberta, NPC, perigo) e 2 encontros novos (dois lobos à noite, batedor goblin de dia).
+- `EncounterDirector`, `TravelSystem` (serializável, reproduzível com semente) e tela de viagem com `RouteStrip`.
+- `Rest` (descanso curto com Dados de Vida e descanso longo); fogueira no mapa.
+- Mapa novo Bosque do Riacho (layout `forest_brook` no `build_overworld.gd`); entradas `Entrances/*`.
+- Placas de estrada com ação `travel:<rota>` e confirmação ([E] confirmar / [Esc] cancelar).
+- Suprimentos do grupo (`PartyManager.supplies`, 6 rações iniciais).
+- 25 testes novos (total 146).
+
+### Alterado
+- `CharacterData` esquema 2 (`hit_dice_spent`) com migração automática do esquema 1.
+- `Interactable` ganhou `action`; HUD aceita dica personalizada na caixa de fala.
+- Combate iniciado na viagem retorna para a viagem.
+
 ## [0.3.1] — 2026-10-24 — Reforma visual
 
 ### Adicionado

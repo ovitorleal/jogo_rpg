@@ -58,6 +58,17 @@
 | Objetos de cenário como cenas (`scenes/world/props/`) dentro do nó `Objects` com y-sort | Personagem passa atrás das árvores; colisão só na base |
 | Combate: `CombatToken` por combatente; a cena "toca" os eventos do `CombatManager` em sequência | Animação nunca decide resultado; com `animations_enabled = false` o combate é idêntico |
 
+### Fase 4
+
+| Decisão | Motivo |
+|---|---|
+| `TravelSystem` e `EncounterDirector` são `RefCounted` puros; viagem serializável (`to_dict`) | Estado sobrevive à troca de cena para o combate; pronto para o salvamento da Fase 6 |
+| Sorteios da viagem usam roladores derivados de (semente, contador) | Mesma semente = mesma viagem; nada depende da ordem de cenas |
+| Mapas, rotas, regiões e eventos em JSON validado (referências cruzadas, CD obrigatória em testes) | Conteúdo novo sem código |
+| `Interactable.action` (`travel:<rota>`, `rest_long`) com confirmação no HUD; o mapa executa | Componente continua sem lógica; ações destrutivas/longas pedem confirmação |
+| Entradas de mapa como `Marker2D` em `Entrances/` | Chegada de viagem posiciona o jogador sem coordenadas no código |
+| `CharacterData` esquema 2 (`hit_dice_spent`) com `migrate()` | Primeira migração de dados salvos, testada |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,
@@ -90,6 +101,12 @@ Persistência e Ferramentas. Estado atual:
 **Apresentação compartilhada** (`scripts/presentation/`)
 - `SpriteLibrary`: animações `idle/walk/attack_<direção>` a partir das folhas de sprites.
 
+**Sistemas de jogo — viagem e encontros** (`scripts/travel/`, `scripts/encounters/`)
+- `EncounterDirector`: filtra a tabela da região (dia/noite, únicos, último acontecimento, orçamento de XP) e sorteia por peso.
+- `TravelSystem`: trechos, relógio, rações, eventos com escolhas e testes de perícia, combate pendente, descansos, chegada.
+- `travel_scene` + `RouteStrip`: faixa ilustrada com o herói andando de marco em marco, painel de eventos, ações.
+- `Rest` (`scripts/characters/`): Dados de Vida e descanso longo.
+
 **Sistemas de jogo — exploração** (`scripts/exploration/`)
 - Autoload `ExplorationManager`: retorno ao mapa, gatilhos resolvidos/desarmados, último resultado.
 - `EncounterTrigger` (Area2D): inicia um encontro (`data/encounters/`); some após vitória; após fuga, só rearma ao sair da área.
@@ -106,8 +123,10 @@ Persistência e Ferramentas. Estado atual:
 
 Fluxo: Título → Criação → `PartyManager.start_new_party()` → Mapa de teste → [C] Ficha / [E] falas com retrato →
 área de encontro → Combate → vitória/fuga: volta ao mapa na mesma posição (PV e XP mantidos) · derrota: título.
+Placa de estrada → (confirmar) → Viagem → trecho: nada / evento / combate (→ Combate → volta à Viagem) → chegada →
+outro mapa na entrada da rota.
 
-Módulos ainda não criados: `EncounterDirector`, `TravelSystem`,
+Módulos ainda não criados:
 `InventorySystem`, `QuestManager`, `DialogueSystem`, `SaveManager`, `AssetRegistry`, `AudioManager`, `SettingsManager`.
 
 ## Testes

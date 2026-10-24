@@ -1,0 +1,21 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "map.clearing",
+			"name": "Clareira da Encruzilhada",
+			"description": "Campo aberto onde duas estradas se cruzam, perto de um lago e de uma ruína.",
+			"source": "original",
+			"scene": "res://scenes/world/test_map.tscn",
+			"region_id": "region.whispering_forest"
+		},
+		{
+			"id": "map.forest_brook",
+			"name": "Bosque do Riacho",
+			"description": "Recanto sombreado da floresta, cortado por um riacho, com um acampamento antigo.",
+			"source": "original",
+			"scene": "res://scenes/world/forest_brook.tscn",
+			"region_id": "region.whispering_forest"
+		}
+	]
+}

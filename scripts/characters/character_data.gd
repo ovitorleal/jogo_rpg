@@ -4,7 +4,7 @@ extends RefCounted
 ## recalculados. Valores derivados (CA, PV máximos, bônus) ficam em CharacterSheet.
 ## Serializa para Dictionary compatível com JSON, com versão de esquema.
 
-const SCHEMA_VERSION := 1
+const SCHEMA_VERSION := 2
 const MAX_NAME_LENGTH := 32
 
 var id: String = ""
@@ -25,6 +25,8 @@ var armor_id: String = ""
 var shield_id: String = ""
 var weapon_ids: Array[String] = []
 var current_hp: int = 0
+## Dados de Vida gastos em descansos curtos (recuperados no descanso longo). Desde o esquema 2.
+var hit_dice_spent: int = 0
 
 
 func ability_score(ability: StringName) -> int:
@@ -51,17 +53,19 @@ func to_dict() -> Dictionary:
 		"shield_id": shield_id,
 		"weapon_ids": weapon_ids.duplicate(),
 		"current_hp": current_hp,
+		"hit_dice_spent": hit_dice_spent,
 	}
 
 
 ## Reconstrói a partir de um Dictionary (ex.: JSON carregado). Valida estrutura e tipos;
 ## a validade das escolhas em relação ao conteúdo é checada por CharacterFactory.validate.
 ## Retorna [CharacterData ou null, erros].
-static func from_dict(data: Dictionary) -> Array:
+static func from_dict(source: Dictionary) -> Array:
 	var errors: Array[String] = []
+	var data := migrate(source)
 	var version := int(data.get("schema_version", -1))
 	if version != SCHEMA_VERSION:
-		return [null, ["Versão de esquema do personagem não suportada: %s" % str(data.get("schema_version"))]]
+		return [null, ["Versão de esquema do personagem não suportada: %s" % str(source.get("schema_version"))]]
 	var c := CharacterData.new()
 	c.id = _read_string(data, "id", errors)
 	c.name = _read_string(data, "name", errors)
@@ -80,6 +84,7 @@ static func from_dict(data: Dictionary) -> Array:
 	c.shield_id = _read_string(data, "shield_id", errors)
 	c.weapon_ids.assign(_read_array(data, "weapon_ids", errors).map(func(v: Variant) -> String: return str(v)))
 	c.current_hp = _read_int(data, "current_hp", errors)
+	c.hit_dice_spent = _read_int(data, "hit_dice_spent", errors)
 	var known := c.to_dict().keys()
 	for key: Variant in data:
 		if not key in known:
@@ -87,6 +92,17 @@ static func from_dict(data: Dictionary) -> Array:
 	if not errors.is_empty():
 		return [null, errors]
 	return [c, errors]
+
+
+## Atualiza dados de versões anteriores para a atual, sem alterar o original.
+## v1 -> v2: adiciona hit_dice_spent = 0.
+static func migrate(data: Dictionary) -> Dictionary:
+	var result := data.duplicate(true)
+	var version := int(result.get("schema_version", -1))
+	if version == 1:
+		result["hit_dice_spent"] = 0
+		result["schema_version"] = 2
+	return result
 
 
 static func _scores_to_json(scores: Dictionary) -> Dictionary:

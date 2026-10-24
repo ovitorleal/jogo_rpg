@@ -1,0 +1,140 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "event.berry_bushes",
+			"name": "Arbustos de frutas",
+			"description": "Frutas silvestres à beira da trilha.",
+			"source": "original",
+			"kind": "discovery",
+			"text": "Arbustos carregados de frutinhas vermelhas crescem à beira da trilha. Algumas parecem comestíveis... outras, nem tanto.",
+			"choices": [
+				{
+					"id": "forage",
+					"label": "Colher com cuidado (Sobrevivência, CD 10)",
+					"skill": "survival",
+					"dc": 10,
+					"success_text": "Você separa as frutas boas e enche a sacola: +1 ração.",
+					"failure_text": "Você colhe as erradas e passa mal por um tempo.",
+					"success_rations": 1,
+					"failure_damage": "1d4",
+					"failure_damage_type": "poison"
+				},
+				{
+					"id": "leave",
+					"label": "Seguir em frente",
+					"success_text": "Melhor não arriscar. Você segue viagem."
+				}
+			]
+		},
+		{
+			"id": "event.fallen_tree",
+			"name": "Árvore caída",
+			"description": "Um tronco enorme bloqueia a trilha.",
+			"source": "original",
+			"kind": "hazard",
+			"text": "Um tronco enorme, derrubado pela última tempestade, bloqueia a trilha. Dá para escalar por cima ou abrir caminho pelo mato.",
+			"choices": [
+				{
+					"id": "climb",
+					"label": "Escalar o tronco (Atletismo, CD 12)",
+					"skill": "athletics",
+					"dc": 12,
+					"success_text": "Você escala o tronco sem dificuldade e segue adiante.",
+					"failure_text": "O musgo escorrega, você cai do outro lado e se machuca.",
+					"failure_damage": "1d6"
+				},
+				{
+					"id": "detour",
+					"label": "Dar a volta pelo mato (gasta tempo e comida)",
+					"success_text": "O desvio é longo, mas seguro. Você come algo no caminho: -1 ração.",
+					"success_rations": -1
+				}
+			]
+		},
+		{
+			"id": "event.peddler",
+			"name": "Mascate na trilha",
+			"description": "Um vendedor ambulante com uma mula carregada.",
+			"source": "original",
+			"kind": "npc",
+			"speaker_name": "Tobias, o mascate",
+			"text": "Bom dia, viajante! Estrada perigosa para andar sozinho, hein? Tenho pão e queijo, se aceitar ouvir umas histórias em troca.",
+			"choices": [
+				{
+					"id": "listen",
+					"label": "Ouvir as histórias com atenção (Intuição, CD 10)",
+					"skill": "insight",
+					"dc": 10,
+					"success_text": "Entre exageros, Tobias conta onde os lobos costumam caçar. Ele agradece a companhia: +2 rações e +25 XP.",
+					"failure_text": "Você se distrai e perde o fio da conversa. Tobias dá de ombros e segue com a mula.",
+					"success_rations": 2,
+					"success_xp": 25
+				},
+				{
+					"id": "decline",
+					"label": "Agradecer e seguir",
+					"success_text": "Tobias acena e deseja boa viagem."
+				}
+			]
+		},
+		{
+			"id": "event.abandoned_camp",
+			"name": "Acampamento abandonado",
+			"description": "Restos de uma fogueira e uma mochila esquecida.",
+			"source": "original",
+			"kind": "discovery",
+			"text": "Você encontra uma fogueira apagada e uma mochila rasgada pendurada num galho. Algo andou revirando o lugar.",
+			"choices": [
+				{
+					"id": "search",
+					"label": "Revistar o acampamento (Investigação, CD 11)",
+					"skill": "investigation",
+					"dc": 11,
+					"success_text": "No fundo da mochila há provisões intactas e um bilhete sobre goblins na região: +2 rações e +25 XP.",
+					"failure_text": "Você revira tudo, mas só encontra restos. O tempo perdido pesa na sacola: -1 ração.",
+					"success_rations": 2,
+					"success_xp": 25,
+					"failure_rations": -1
+				},
+				{
+					"id": "rest_here",
+					"label": "Aproveitar a fogueira para recuperar o fôlego",
+					"success_text": "Você reacende a fogueira e descansa um pouco.",
+					"success_heal": "1d6"
+				}
+			]
+		},
+		{
+			"id": "event.lost_child",
+			"name": "Criança perdida",
+			"description": "Uma criança chora perto da trilha.",
+			"source": "original",
+			"kind": "npc",
+			"speaker_name": "Lia",
+			"text": "Eu me perdi procurando cogumelos... minha mãe disse para nunca sair da trilha. Você me ajuda a voltar?",
+			"choices": [
+				{
+					"id": "guide",
+					"label": "Encontrar o caminho de volta (Sobrevivência, CD 12)",
+					"skill": "survival",
+					"dc": 12,
+					"success_text": "Você segue as pegadas até a casa da família, que agradece com comida: +1 ração e +50 XP.",
+					"failure_text": "Vocês andam em círculos até que um lenhador encontra a menina. Você chega exausto.",
+					"success_rations": 1,
+					"success_xp": 50,
+					"failure_damage": "1d4"
+				},
+				{
+					"id": "calm",
+					"label": "Acalmá-la e indicar a estrada (Persuasão, CD 10)",
+					"skill": "persuasion",
+					"dc": 10,
+					"success_text": "Ela respira fundo, reconhece a estrada e corre para casa: +25 XP.",
+					"failure_text": "Ela chora mais alto e foge para o mato. Você segue viagem preocupado.",
+					"success_xp": 25
+				}
+			]
+		}
+	]
+}

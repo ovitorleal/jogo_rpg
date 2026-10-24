@@ -4,11 +4,17 @@ extends Node
 
 signal party_changed
 
+## Rações com que um grupo novo começa.
+const STARTING_RATIONS := 6
+
 var members: Array[CharacterData] = []
+## Suprimentos do grupo (o inventário completo vem na Fase 5).
+var supplies: Dictionary = {"rations": STARTING_RATIONS}
 
 
 func start_new_party(leader: CharacterData) -> void:
 	members = [leader]
+	supplies = {"rations": STARTING_RATIONS}
 	party_changed.emit()
 
 
@@ -22,4 +28,5 @@ func has_party() -> bool:
 
 func clear() -> void:
 	members.clear()
+	supplies = {"rations": STARTING_RATIONS}
 	party_changed.emit()
