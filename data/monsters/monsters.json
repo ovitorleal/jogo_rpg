@@ -41,7 +41,7 @@
 					"implemented": false
 				}
 			],
-			"sprite": "res://assets/enemies/placeholder_wolf.png"
+			"sprite": "res://assets/enemies/wolf_sheet.png"
 		},
 		{
 			"id": "monster.goblin_warrior",
@@ -87,7 +87,7 @@
 					"implemented": false
 				}
 			],
-			"sprite": "res://assets/enemies/placeholder_goblin.png"
+			"sprite": "res://assets/enemies/goblin_sheet.png"
 		}
 	]
 }

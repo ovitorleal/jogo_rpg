@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b781f1ib6dwvw"
-path="res://.godot/imported/placeholder_tiles.png-c0f5b0b12f4381af96c6e665cd0aa67c.ctex"
+uid="uid://badv5hsrptivd"
+path="res://.godot/imported/hero_portrait.png-cd27f56eb36b0f4ae4aba0749c93f804.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/tilesets/placeholder_tiles.png"
-dest_files=["res://.godot/imported/placeholder_tiles.png-c0f5b0b12f4381af96c6e665cd0aa67c.ctex"]
+source_file="res://assets/portraits/hero_portrait.png"
+dest_files=["res://.godot/imported/hero_portrait.png-cd27f56eb36b0f4ae4aba0749c93f804.ctex"]
 
 [params]
 

@@ -12,6 +12,19 @@
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
 
+## Reforma visual — resultado (2026-10-24)
+
+Pedido do desenvolvedor antes da Fase 4: personagens animados e visual 2D mais bonito (direção 16 bits).
+
+- Herói e goblin com 4 direções (parado, caminhada com pernas e braços alternando, ataque com rastro); lobo com
+  caminhada e bote; retrato redesenhado. Tudo original, gerado por código (`tools/art/`).
+- Terreno com transições suaves (terra, areia, água animada), moldura de floresta, árvores, pinheiros, arbustos e
+  pedras com sombra; ruína com muro de topo e face e chão de terra batida.
+- Exploração: personagem anda e se vira nas 4 direções. Combate: fichas andam entre casas, investem ao atacar,
+  alvo pisca e treme, números de dano sobem, barra de PV desce no acerto, quem cai tomba.
+- Verificado com sonda visual em janela real (capturas do mapa, da fala com retrato e de cada etapa do ataque);
+  testes 121/121.
+
 ## Fase 3 — resultado
 
 Critério: "um combate completo pode ser iniciado, resolvido e encerrado sem quebrar o estado do jogo". Atendido.

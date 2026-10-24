@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cdjfg5xrqqjto"
-path="res://.godot/imported/placeholder_goblin.png-07597858deab93ddc03c1b765f1e6f97.ctex"
+uid="uid://bvt1ei7g2i7go"
+path="res://.godot/imported/overworld_tiles.png-f8a3920b9412081e544e794270c7a2e9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/enemies/placeholder_goblin.png"
-dest_files=["res://.godot/imported/placeholder_goblin.png-07597858deab93ddc03c1b765f1e6f97.ctex"]
+source_file="res://assets/tilesets/overworld_tiles.png"
+dest_files=["res://.godot/imported/overworld_tiles.png-f8a3920b9412081e544e794270c7a2e9.ctex"]
 
 [params]
 

@@ -15,5 +15,4 @@ script = ExtResource("1_script")
 position = Vector2(0, -6)
 shape = SubResource("RectangleShape2D_zone")
 
-[node name="Marker" type="Sprite2D" parent="."]
-offset = Vector2(0, -11)
+[node name="Marker" type="AnimatedSprite2D" parent="."]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhy03mmricua2"
-path="res://.godot/imported/placeholder_hero_portrait.png-b8cbbfad161742023dc3cd388f6bc578.ctex"
+uid="uid://c6wkhwy7lxf2x"
+path="res://.godot/imported/wolf_sheet.png-e40346e8ab6c6b9b327f430dbc4ecbb3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/portraits/placeholder_hero_portrait.png"
-dest_files=["res://.godot/imported/placeholder_hero_portrait.png-b8cbbfad161742023dc3cd388f6bc578.ctex"]
+source_file="res://assets/enemies/wolf_sheet.png"
+dest_files=["res://.godot/imported/wolf_sheet.png-e40346e8ab6c6b9b327f430dbc4ecbb3.ctex"]
 
 [params]
 

@@ -1,12 +1,15 @@
 # Bíblia visual
 
-**Estado:** provisória (Fase 1). Todos os valores podem mudar após os primeiros sprites de referência aprovados.
+**Estado:** direção 16 bits definida (2026-10-24). Assets atuais são originais, gerados por código
+(`tools/art/`), com `approval_status: in_review` no catálogo até aprovação do desenvolvedor.
 Ao mudar algo aqui, revisar os assets existentes e o catálogo (`assets/asset_catalog.json`).
 
 ## Direção artística
 
-Pixel art de fantasia medieval, leitura clara em baixa resolução, silhuetas distintas, sem mistura com ilustração realista.
-Um único estilo para todas as regiões, salvo justificativa documentada aqui.
+Pixel art de fantasia medieval no espírito dos RPGs e aventuras **16 bits**: cores saturadas e alegres,
+contorno escuro seletivo, volume com sombreamento em 3 tons e animações expressivas.
+A referência é a *categoria* de estilo (16 bits colorido), não um jogo específico: não copiar personagens,
+cenários, paletas exatas ou composições de obras existentes (incluindo jogos citados como inspiração).
 
 ## Escala e resolução
 
@@ -14,50 +17,64 @@ Um único estilo para todas as regiões, salvo justificativa documentada aqui.
 |---|---|
 | Resolução interna | 640×360 (escala 2× para 1280×720) |
 | Grade de tiles | 16×16 px |
-| Quadro de personagem | 32×32 px; figura de ~14×24 px, pés na linha 26–27 |
-| Pivô | Nos pés (origem do nó no chão), para y-sort correto |
-| Colisão de personagem | Retângulo 10×6 nos pés |
-| Objetos de cenário pequenos | 16×16, base na última linha |
+| Quadro de personagem/criatura | 32×32 px; pés na linha 29 (offset do sprite = (0, −13)) |
+| Árvores | 32×48 px; pivô na base do tronco (linha 44) |
+| Objetos pequenos | 16×16 px; pivô na linha 14–15 |
+| Casa do combate | 32×32 px (2×2 tiles) |
+| Retrato | 32×32 px, exibido em 2× (64×64) |
+| Colisão de personagem / objetos | Retângulo nos pés/base (10×6, 12×6) |
 
-**Decisão pendente:** manter 32×32 ou migrar para 48×48 nos personagens.
+**Decisão pendente:** manter 32×32 ou migrar personagens para 48×48.
 
-## Paleta provisória
+## Técnica
 
-| Uso | Cores (hex) |
+- **Sombreamento em 3 tons** por parte do corpo/objeto (escuro, base, claro). Luz do alto à esquerda:
+  bordas superiores/esquerdas clareiam, inferiores/direitas escurecem (`PixelCanvas.paint_part`).
+- **Contorno seletivo**: o contorno é uma versão bem escura da cor vizinha, misturada com `#1a1020`
+  (`PixelCanvas.outline`); nunca preto puro.
+- **Sombra no chão**: elipse roxo-escura com ~28% de opacidade sob personagens e objetos.
+- **Terreno**: definido nos vértices da grade; cada tile escolhe a transição pelos 4 cantos (marching
+  squares) com borda orgânica e realce na fronteira (grama clara, terra escura, espuma na água).
+- **Água animada**: 3 quadros a 3 fps.
+- **Texto**: nunca dentro de imagens; sempre controles de UI do Godot.
+- **Filtro**: Nearest em todo o projeto; sem mipmaps em 2D.
+
+## Paleta
+
+| Uso | Rampa (escuro → claro) |
 |---|---|
-| Contorno / fundo de UI | `#1a1423` |
-| Texto claro de UI | `#e6e1d3` |
-| Destaque frio de UI | `#8597b8` |
-| Grama | `#4a7a3a` `#3f6b32` `#5a8c45` |
-| Terra/caminho | `#9c7b52` `#8a6a45` `#b08e62` |
-| Areia | `#d8c48a` `#c8b47a` `#e4d29e` |
-| Água | `#3a6ea5` `#305e92` `#5a8cc0` |
-| Pedra | `#6b6b78` `#4a4a55` `#85859a` |
-| Folhagem escura | `#2f5a2a` `#1f3a1c` |
-| Madeira | `#9c7b52` `#6b4a2e` `#3d2b1f` |
-| Pele / cabelo / armadura / capa (herói) | `#e0b48a` `#6b3e26` `#5a6b8c` `#8c2f39` |
+| Contorno base | `#1a1020` |
+| Grama | `#3f7a34` `#4f9a3e` `#62b04a` `#7ccc5a` |
+| Terra | `#7a5232` `#9c6c40` `#b88652` `#d2a46a` |
+| Areia | `#b89a5c` `#d8bc7a` `#ecd496` `#fae8b4` |
+| Água | `#1e4a8c` `#2a64b0` `#3c82d0` `#8cc8f2`, espuma `#e6f6ff` |
+| Pedra | `#4a4a5c` `#6e6e84` `#9090a6` `#b8b8cc` |
+| Folhagem | `#1e4a24` `#2f7a34` `#58b046` (pinheiro `#163a2a` `#245e3c` `#3e8a50`) |
+| Herói: pele / cabelo | `#b8694a` `#f0ac84` `#ffd6b4` / `#4a2416` `#8a4424` `#c87442` |
+| Herói: túnica / capa | `#22386e` `#3a66bc` `#6ea2f2` / `#6e1a28` `#b42e3c` `#ea5c5c` |
+| Metal / ouro | `#5c6a84` `#b4c4da` `#f2f8ff` / `#86560e` `#d09c2c` `#ffe27a` |
+| Goblin: pele | `#2e5a1c` `#62a034` `#a6dc5e` |
+| Lobo: pelo | `#3e3e50` `#7e7e94` `#c4c4d6` |
+| UI: fundo / texto / destaque | `#1a1423` / `#e6e1d3` / `#8597b8`, nomes `#e0b48a` |
 
-Paletas por região: a definir quando a segunda região existir.
+## Animação
 
-## Regras gerais
+Folhas de 9 colunas × N linhas, quadros 32×32 (`SpriteLibrary`):
 
-- **Contorno:** escuro (`#1a1423`) em personagens e objetos; tiles de terreno sem contorno.
-- **Iluminação:** luz vindo do alto à esquerda; realce no topo-esquerda, sombra embaixo-direita.
-- **Sombras:** elipse/linha preta com 30% de opacidade sob personagens e objetos.
-- **Perspectiva:** top-down com leve projeção frontal (vemos frente e topo).
-- **Transparência:** PNG RGBA; fundo 100% transparente; sem semitransparência fora de sombras e efeitos.
-- **Texto:** nunca dentro de imagens; sempre controles de UI do Godot.
-- **Filtro:** Nearest em todo o projeto; sem mipmaps em 2D.
+| Ação | Colunas | Quadros | FPS | Laço |
+|---|---|---|---|---|
+| Parado (respiração) | 0–1 | 2 | 2,5 | sim |
+| Caminhada (pernas alternadas, braços opostos, corpo sobe 1 px) | 2–5 | 4 | 8 | sim |
+| Ataque (preparação, golpe com rastro, recuperação) | 6–8 | 3 | 10 | não |
 
-## Animação (a definir na produção dos sprites definitivos)
-
-Convenção prevista: 4 direções (baixo, cima, esquerda, direita); idle 2 quadros a 4 fps; walk 4 quadros a 8 fps.
-Hoje o herói tem um único quadro, espelhado horizontalmente conforme a direção.
+Humanoides: linhas baixo, esquerda, direita, cima. Quadrúpedes: esquerda, direita.
+Esquerda é o espelho da direita. No combate, ataque = animação + investida de 7 px; dano = piscar em
+vermelho + tremor + número subindo; queda = tombar e acinzentar (inimigo morto some).
 
 ## Nomes de arquivo
 
-`assets/<categoria>/<nome>.png` em `snake_case`; provisórios com prefixo `placeholder_`.
-O `asset_id` segue `<categoria_singular>.<nome>` (ex.: `character.placeholder_hero`).
+`assets/<categoria>/<nome>.png` em `snake_case`; folhas animadas com sufixo `_sheet`.
+O `asset_id` segue `<categoria_singular>.<nome>` (ex.: `character.hero`).
 
 ## Restrições de conteúdo
 

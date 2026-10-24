@@ -4,7 +4,11 @@ extends Control
 ## Clique numa casa azul para mover; clique num inimigo marcado para atacar com o ataque escolhido.
 
 ## Pausa entre ações dos inimigos, só para leitura; não altera resultados. 0 nos testes.
-@export var ai_delay: float = 0.45
+@export var ai_delay: float = 0.3
+## Animações de movimento, ataque, dano e queda. Desligadas nos testes; não alteram resultados.
+@export var animations_enabled: bool = true
+## Segundos por casa ao andar.
+const STEP_TIME := 0.11
 
 var manager := CombatManager.new()
 var encounter: Dictionary = {}
@@ -57,7 +61,10 @@ func _ready() -> void:
 		_show_setup_error(error)
 		return
 	_add_log(encounter.get("intro_text", ""))
-	_add_events(manager.start())
+	_board.sync_tokens()
+	_busy = true
+	await _present(manager.start())
+	_busy = false
 	_refresh()
 	_run_enemy_turns()
 
@@ -139,7 +146,10 @@ func _after_command(result: Dictionary) -> void:
 	if not result["ok"]:
 		_status.text = result["error"]
 		return
-	_add_events(result["events"])
+	_busy = true
+	_refresh()
+	await _present(result["events"])
+	_busy = false
 	_refresh()
 	_run_enemy_turns()
 
@@ -152,11 +162,52 @@ func _run_enemy_turns() -> void:
 		_refresh()
 		if ai_delay > 0.0:
 			await get_tree().create_timer(ai_delay).timeout
-		_add_events(manager.run_enemy_turn())
+		await _present(manager.run_enemy_turn())
 	_busy = false
 	_refresh()
 	if manager.state == CombatManager.State.FINISHED:
 		_show_result()
+
+
+## Mostra os eventos em ordem: registro e, se ligadas, animações. O estado já foi resolvido
+## pelo CombatManager; aqui só se apresenta o que aconteceu.
+func _present(events: Array) -> void:
+	for event: Dictionary in events:
+		_add_log(CombatLog.describe(event, manager))
+		if animations_enabled and is_inside_tree():
+			await _animate(event)
+	_board.sync_tokens(not animations_enabled)
+	_board.refresh()
+
+
+func _animate(event: Dictionary) -> void:
+	match str(event.get("type", "")):
+		"move":
+			var token := _board.token_for(manager.get_combatant(event["actor"]))
+			var from: Vector2i = event["from"]
+			var to: Vector2i = event["to"]
+			var steps := maxi(absi(to.x - from.x), absi(to.y - from.y))
+			await token.walk_to(_board.cell_feet(to), STEP_TIME * steps)
+		"attack":
+			var attacker := _board.token_for(manager.get_combatant(event["actor"]))
+			var target_unit := manager.get_combatant(event["target"])
+			var target := _board.token_for(target_unit)
+			await attacker.attack_towards(target.position)
+			var roll: Dictionary = event["roll"]
+			if roll["hit"]:
+				target.hurt(int(event["target_hp"]))
+				if roll["critical"]:
+					_board.float_text("CRÍTICO! %d" % event["damage"], target.position, Color8(255, 226, 90), true)
+				else:
+					_board.float_text(str(event["damage"]), target.position, Color8(255, 240, 230))
+			else:
+				_board.float_text("Errou", target.position, Color8(190, 200, 230))
+			await get_tree().create_timer(0.2).timeout
+		"down":
+			var unit := manager.get_combatant(event["actor"])
+			await _board.token_for(unit).fall(bool(event["dead"]))
+		"turn_start":
+			_refresh_highlights_only()
 
 
 func _show_result() -> void:
@@ -222,14 +273,8 @@ func _refresh() -> void:
 	var party_turn := manager.is_party_turn() and not _busy
 	_refresh_attack_options(actor if party_turn else null)
 
-	_board.reachable = manager.reachable_cells(actor) if party_turn else {}
-	_board.targets.clear()
-	if party_turn:
-		var attack := actor.get_attack(_selected_attack_id)
-		for unit in manager.combatants:
-			if manager.attack_error(actor, unit, attack).is_empty():
-				_board.targets.append(unit)
-	_board.refresh()
+	_refresh_highlights(actor, party_turn)
+	_board.sync_tokens(not _busy)
 
 	var lines := PackedStringArray()
 	for unit in manager.turn_order:
@@ -249,6 +294,23 @@ func _refresh() -> void:
 				"disponível" if manager.action_available else "usada"]
 	elif actor != null:
 		_status.text = "Turno de %s..." % actor.name
+
+
+func _refresh_highlights(actor: Combatant, party_turn: bool) -> void:
+	_board.reachable = manager.reachable_cells(actor) if party_turn else {}
+	_board.targets.clear()
+	if party_turn:
+		var attack := actor.get_attack(_selected_attack_id)
+		for unit in manager.combatants:
+			if manager.attack_error(actor, unit, attack).is_empty():
+				_board.targets.append(unit)
+	_board.refresh()
+
+
+func _refresh_highlights_only() -> void:
+	_board.reachable = {}
+	_board.targets.clear()
+	_board.refresh()
 
 
 func _refresh_attack_options(actor: Combatant) -> void:

@@ -9,6 +9,7 @@ var _map: ExplorationMap
 var _player: Player
 var _hud: ExplorationHud
 var _ground: TileMapLayer
+var _walls: TileMapLayer
 
 
 func _setup() -> void:
@@ -16,7 +17,8 @@ func _setup() -> void:
 	tree.root.add_child(_map)
 	_player = _map.get_node("%Player")
 	_hud = _map.get_node("%Hud")
-	_ground = _map.get_node("%Ground")
+	_ground = _map.get_node("%Terrain/Ground")
+	_walls = _map.get_node("%Terrain/Walls")
 	await _physics_frames(2)
 
 
@@ -80,10 +82,12 @@ func test_wall_blocks_movement() -> void:
 
 func test_water_blocks_movement() -> void:
 	await _setup()
-	# Areia ao sul do lago (lago ocupa tiles x 8..15, y 5..9).
-	await _teleport(Vector2(11 * TILE + 8, 10 * TILE + 14))
-	await _hold(&"move_up", 40)
-	assert_true(_player.global_position.y >= 10 * TILE, "Água deve impedir a passagem (y = %.1f)" % _player.global_position.y)
+	# Areia ao sul do lago (centro do lago no tile (12, 7)); subir deve parar na margem.
+	var start := Vector2(12 * TILE + 8, 11 * TILE + 8)
+	await _teleport(start)
+	await _hold(&"move_up", 60)
+	assert_true(start.y - _player.global_position.y > 4.0, "Andou até a margem")
+	assert_true(_player.global_position.y > 8 * TILE, "Água impede a passagem (y = %.1f)" % _player.global_position.y)
 	await _teardown()
 
 
@@ -234,5 +238,8 @@ func test_character_sheet_without_party_shows_message() -> void:
 
 
 func _is_blocking(cell: Vector2i) -> bool:
-	var data := _ground.get_cell_tile_data(cell)
-	return data != null and data.get_collision_polygons_count(0) > 0
+	for layer in [_ground, _walls]:
+		var data := (layer as TileMapLayer).get_cell_tile_data(cell)
+		if data != null and data.get_collision_polygons_count(0) > 0:
+			return true
+	return false

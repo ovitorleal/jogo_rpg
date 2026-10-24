@@ -11,17 +11,20 @@ signal triggered(source: EncounterTrigger)
 @export var encounter_id: String = ""
 ## Id estável deste gatilho no mapa (para lembrar que já foi resolvido).
 @export var trigger_id: String = ""
-## Imagem do inimigo mostrada no mapa, como pista do perigo.
-@export var marker_texture: Texture2D
+## Folha de sprites do inimigo mostrado no mapa, como pista do perigo.
+@export_file("*.png") var marker_sheet: String = ""
+@export var marker_facing: String = "left"
 
 var armed: bool = true
 
 
 func _ready() -> void:
 	add_to_group(GROUP)
-	var marker := get_node_or_null("Marker") as Sprite2D
-	if marker != null:
-		marker.texture = marker_texture
+	var marker := get_node_or_null("Marker") as AnimatedSprite2D
+	if marker != null and not marker_sheet.is_empty():
+		marker.sprite_frames = SpriteLibrary.frames_for(marker_sheet)
+		marker.offset = SpriteLibrary.FEET_OFFSET
+		marker.play(SpriteLibrary.animation_name(marker.sprite_frames, "idle", marker_facing))
 	if ExplorationManager.is_resolved(trigger_id):
 		queue_free()
 		return

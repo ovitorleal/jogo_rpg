@@ -2,13 +2,13 @@ class_name ExplorationMap
 extends Node2D
 ## Controlador de um mapa de exploração: limites da câmera, aviso de interação,
 ## falas com retrato, ficha do personagem e início/retorno de encontros.
-## Espera os nós únicos %Ground, %Player e %Hud.
+## Espera os nós únicos %Terrain (com a camada Ground), %Player e %Hud.
 
 const NO_CHARACTER_MESSAGE := "Nenhum personagem no grupo. Use \"Novo jogo\" no menu para criar um."
 const NO_CHARACTER_COMBAT_MESSAGE := "Algo se move entre as sombras... mas não há ninguém no grupo para lutar."
-const PLAYER_PORTRAIT := preload("res://assets/portraits/placeholder_hero_portrait.png")
+const PLAYER_PORTRAIT := preload("res://assets/portraits/hero_portrait.png")
 
-@onready var _ground: TileMapLayer = %Ground
+@onready var _ground: TileMapLayer = %Terrain.get_node("Ground")
 @onready var _player: Player = %Player
 @onready var _hud: ExplorationHud = %Hud
 

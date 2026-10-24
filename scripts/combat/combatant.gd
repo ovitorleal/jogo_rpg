@@ -5,7 +5,7 @@ extends RefCounted
 
 enum Team { PARTY, ENEMY }
 
-const HERO_SPRITE := "res://assets/characters/placeholder_hero.png"
+const HERO_SPRITE := "res://assets/characters/hero_sheet.png"
 
 var id: String = ""
 var name: String = ""
