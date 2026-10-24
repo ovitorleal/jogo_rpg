@@ -112,8 +112,7 @@ func test_dialogue_and_quest_validation() -> void:
 			quest["objectives"][0]["target"] = "encounter.inexistente"
 	var check := ContentRegistry.new()
 	assert_true(not check.load_from_dictionaries(data), "Dados quebrados reprovam")
-	var errors := "
-".join(check.errors)
+	var errors := "\n".join(check.errors)
 	assert_true(errors.contains("nó inexistente 'nao_existe'"), "Próximo nó inexistente")
 	assert_true(errors.contains("ação desconhecida"), "Ação desconhecida")
 	assert_true(errors.contains("missão inexistente 'quest.inexistente'"), "Condição com missão inexistente")

@@ -19,6 +19,7 @@ signal dialogue_choice(index: int)
 
 var inventory_panel: InventoryPanel
 var journal_panel: JournalPanel
+var pause_menu: PauseMenu
 
 const DEFAULT_HINT := "[E] Continuar"
 
@@ -26,6 +27,14 @@ const DEFAULT_HINT := "[E] Continuar"
 func _ready() -> void:
 	inventory_panel = _overlay(InventoryPanel.new(), "InventoryPanel")
 	journal_panel = _overlay(JournalPanel.new(), "JournalPanel")
+	pause_menu = _overlay(PauseMenu.new(), "PauseMenu")
+	pause_menu.set_anchors_preset(Control.PRESET_CENTER)
+	pause_menu.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	pause_menu.grow_vertical = Control.GROW_DIRECTION_BOTH
+	pause_menu.offset_left = 0
+	pause_menu.offset_top = 0
+	pause_menu.offset_right = 0
+	pause_menu.offset_bottom = 0
 	hide_prompt()
 	hide_message()
 	hide_sheet()
@@ -144,6 +153,12 @@ func show_journal(quests: QuestLog, registry: ContentRegistry) -> void:
 	_show_overlay_hint("[J] ou [Esc] fechar diário")
 
 
+func show_pause_menu(status: String) -> void:
+	hide_overlays()
+	pause_menu.open(status)
+	_show_overlay_hint("[Esc] voltar ao jogo")
+
+
 func _show_overlay_hint(text: String) -> void:
 	_sheet_hint.text = text
 	_sheet_hint.visible = true
@@ -159,13 +174,14 @@ func is_sheet_open() -> bool:
 
 
 func is_overlay_open() -> bool:
-	return _sheet_panel.visible or inventory_panel.visible or journal_panel.visible
+	return _sheet_panel.visible or inventory_panel.visible or journal_panel.visible or pause_menu.visible
 
 
 func hide_overlays() -> void:
 	hide_sheet()
 	inventory_panel.visible = false
 	journal_panel.visible = false
+	pause_menu.visible = false
 
 
 func get_sheet_text() -> String:

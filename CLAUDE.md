@@ -37,6 +37,9 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
   Nos testes use `roller_override` para dados determinísticos.
 - Missões e diálogos: dados em `data/quests/` e `data/dialogues/`; progresso só via `QuestManager.notify*`.
   Inventário do grupo em `PartyManager.inventory`; equipamento em uso fica no `CharacterData`.
+- Salvamento: só via `SaveManager` (um slot; `request_autosave` em pontos seguros, `save_now` manual). Estado novo que
+  precise persistir entra em `SaveGame.capture/validate/apply` (com migração se mudar o esquema). Cenas que permitem
+  salvar expõem `save_blocker()`. Nos testes o executor já usa `user://test_save` e desliga o autosave.
 - O executor de testes reprova erros de script em tempo de execução (Logger); não use `push_error` para "falhas esperadas" que
   devam reprovar — use asserções.
 - Mapas novos: layout em `tools/art/build_overworld.gd` (`--layout <nome>`), cena com `%Terrain`, `Entrances/`, `Objects`.

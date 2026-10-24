@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.6.0] — 2026-10-24 — Fase 6
+
+### Adicionado
+- Salvamento local com um slot (`SaveGame`, autoload `SaveManager`): esquema versionado com migração, soma SHA-256,
+  validação completa, gravação segura (temporário + cópia de recuperação) e recuperação de arquivo danificado.
+- Autosave agrupado em pontos seguros (mapa, combate resolvido, missão, conversa, descanso, equipamento, viagem).
+- Indicador discreto "Salvando… / Jogo salvo / Falha ao salvar" em qualquer tela.
+- Menu do mapa (Esc): Continuar jogo, Salvar agora, Voltar ao título.
+- Título: "Continuar" com resumo do salvamento, aviso de armazenamento não permanente e confirmação de novo jogo.
+- 8 testes novos (total 186).
+
+### Verificado
+- Build Web: o salvamento persiste ao recarregar a página e ao fechar/reabrir a aba.
+
 ## [0.5.2] — 2026-10-24 — Arte dos personagens em alta resolução
 
 ### Alterado

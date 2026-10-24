@@ -90,6 +90,18 @@
 | Personagens em alta resolução (`PixelCanvas` com fator k = 2) exibidos com escala 0,5 via `SpriteLibrary.attach` | Mais detalhe e curvas suaves sem mudar tamanhos do mundo, colisões nem combate |
 | Referência de arte do responsável fora do build (`docs/art_reference/.gdignore`) | Imagem gerada com IA serve de guia, não de asset |
 
+### Fase 6
+
+| Decisão | Motivo |
+|---|---|
+| `SaveGame` puro (sem arquivos) + autoload `SaveManager` (arquivos, autosave, indicador) | Formato e validação testáveis sem disco |
+| Arquivo = `{format, checksum, body}` com `body` em texto e SHA-256 do texto | Detecta corte/alteração; números do JSON não voltam idênticos, o texto sim |
+| Validação completa antes de gravar e antes de aplicar (`CharacterData.from_dict` + `CharacterFactory.validate`, inventário, missões, mapa, rota) | Nunca gravar nem carregar estado incoerente |
+| Temporário conferido → cópia de recuperação → principal relido; leitura com fallback | Gravação interrompida não perde o progresso |
+| Autosave por pedidos agrupados, gravado só quando a cena diz que está consistente (`save_blocker()`) | Sem gravar a cada quadro nem no meio de conversa/combate |
+| Viagem com combate pendente não é salva | Ao carregar, a tela de viagem não teria como retomar o combate |
+| Executor de testes usa `user://test_save` e desliga autosave/indicador | Testes nunca tocam no salvamento do jogador |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,
