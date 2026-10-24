@@ -23,6 +23,10 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 - Todo asset novo entra em `assets/asset_catalog.json` com origem e licença; escala e paleta em `docs/ART_BIBLE.md`.
 - Placeholders e mapa de teste: ver `docs/ASSET_PIPELINE.md` (`build_test_map.gd --force` apaga edições do editor).
 - Exploração: `Interactable` não decide efeitos; o `ExplorationMap` decide. Detalhes em `docs/ARCHITECTURE.md`.
+- Combate: estado só muda via `CombatManager.submit()`/`run_enemy_turn()`; a cena só exibe eventos. Nos testes,
+  `ExplorationManager.scene_changes_enabled = false` e `ai_delay = 0`; sempre restaurar no fim do teste.
+- Nunca trocar de cena dentro de callback de física (use `call_deferred`).
+- O painel do navegador é compartilhado com o desenvolvedor: avisar antes de testar nele.
 - No navegador, eventos de teclado sintéticos precisam ser despachados no `<canvas>`, não no `window`.
 - Versionar arquivos `.uid` e `.import`; não versionar `.godot/` nem `exports/`.
 - Nunca afirmar que teste/exportação funcionou sem executar.

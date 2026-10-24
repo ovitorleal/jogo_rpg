@@ -77,6 +77,50 @@ const TYPES := {
 			"origin_feat": {"type": "object_array", "fields": FEATURE_FIELDS, "min_length": 1, "max_length": 1},
 		},
 	},
+	"monster": {
+		"dir": "monsters",
+		"prefix": "monster.",
+		"fields": {
+			"size": {"type": "string", "enum": ["tiny", "small", "medium", "large", "huge"]},
+			"creature_type": {"type": "string"},
+			"armor_class": {"type": "int", "min": 1, "max": 30},
+			"hit_points": {"type": "int", "min": 1, "max": 999},
+			"hit_dice": {"type": "string", "dice": true},
+			"speed": {"type": "int", "min": 0, "max": 120},
+			"ability_scores": {"type": "array", "of": "int", "min": 1, "max": 30, "min_length": 6, "max_length": 6,
+					"allow_duplicates": true},
+			"challenge_rating": {"type": "string", "enum": ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5"]},
+			"xp": {"type": "int", "min": 0},
+			"damage_resistances": {"type": "array", "of": "string", "ref": "damage_type"},
+			"attacks": {"type": "object_array", "min_length": 1, "fields": {
+				"id": {"type": "string"},
+				"name": {"type": "string"},
+				"attack_type": {"type": "string", "enum": ["melee", "ranged"]},
+				"attack_bonus": {"type": "int", "min": -5, "max": 20},
+				"damage": {"type": "string", "dice": true},
+				"damage_type": {"type": "string", "ref": "damage_type"},
+				"reach": {"type": "int", "min": 0, "required": false, "default": 5},
+				"range_normal": {"type": "int", "min": 0, "required": false, "default": 0},
+				"range_long": {"type": "int", "min": 0, "required": false, "default": 0},
+			}},
+			"traits": {"type": "object_array", "fields": FEATURE_FIELDS},
+			"sprite": {"type": "string"},
+		},
+	},
+	"encounter": {
+		"dir": "encounters",
+		"prefix": "encounter.",
+		"fields": {
+			"enemies": {"type": "object_array", "min_length": 1, "fields": {
+				"monster_id": {"type": "string", "ref": "monster"},
+				"count": {"type": "int", "min": 1, "max": 8},
+			}},
+			"flee_allowed": {"type": "bool"},
+			"arena_width": {"type": "int", "min": 6, "max": 16},
+			"arena_height": {"type": "int", "min": 4, "max": 10},
+			"intro_text": {"type": "string"},
+		},
+	},
 	"item": {
 		"dir": "items",
 		"prefix": "item.",
@@ -260,6 +304,25 @@ func _check_consistency() -> void:
 			errors.append("%s: extra_skill_choices maior que o número de opções" % id)
 		if not options.is_empty() and int(species.get("extra_skill_choices", 0)) == 0:
 			errors.append("%s: extra_skill_options sem extra_skill_choices" % id)
+	for id in ids("monster"):
+		var monster := get_entry("monster", id)
+		if monster.has("hit_dice") and DiceExpression.parse(str(monster["hit_dice"])).is_valid:
+			var dice := DiceExpression.parse(str(monster["hit_dice"]))
+			var hp := int(monster.get("hit_points", 0))
+			if hp < dice.minimum() or hp > dice.maximum():
+				errors.append("%s: hit_points %d fora do intervalo de %s" % [id, hp, monster["hit_dice"]])
+		if monster.has("sprite") and not ResourceLoader.exists(str(monster["sprite"])):
+			errors.append("%s: sprite inexistente '%s'" % [id, monster["sprite"]])
+		for attack: Dictionary in monster.get("attacks", []):
+			if attack.get("attack_type") == "ranged" and int(attack.get("range_normal", 0)) <= 0:
+				errors.append("%s: ataque à distância '%s' sem range_normal" % [id, attack.get("id")])
+	for id in ids("encounter"):
+		var encounter := get_entry("encounter", id)
+		var total := 0
+		for group: Dictionary in encounter.get("enemies", []):
+			total += int(group.get("count", 0))
+		if encounter.has("arena_width") and total > int(encounter["arena_height"]):
+			errors.append("%s: %d inimigos não cabem na coluna inicial da arena" % [id, total])
 	for id in ids("item"):
 		var item := get_entry("item", id)
 		if item.get("item_type") != "weapon":

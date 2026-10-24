@@ -4,13 +4,26 @@
 |---|---|---|
 | 0 | Fundação técnica | Concluída (2026-10-23) |
 | 1 | Primeiro mapa | Concluída (2026-10-23) |
-| 2 | Modelo de personagens | **Concluída** (2026-10-23) |
-| 3 | Combate | Próxima |
-| 4 | Viagens e encontros | — |
+| 2 | Modelo de personagens | Concluída (2026-10-23) |
+| 3 | Combate | **Concluída** (2026-10-24) |
+| 4 | Viagens e encontros | Próxima |
 | 5 | Progressão e conteúdo | — |
 | 6 | Salvamento e integração | — |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
+
+## Fase 3 — resultado
+
+Critério: "um combate completo pode ser iniciado, resolvido e encerrado sem quebrar o estado do jogo". Atendido.
+
+- Regras de ataque, dano, críticos, resistência, armas (proficiência, acuidade, versátil, arremesso) e desvantagem à distância.
+- `CombatManager` com estados explícitos, comandos validados e IA determinística; Lobo e Goblin Guerreiro do SRD.
+- Cena de combate em grade (clique para mover/atacar), ordem de iniciativa, registro com as rolagens, vitória/derrota/fuga.
+- Dois encontros no mapa de teste (lobo a sudeste, goblin na ruína); retorno ao mapa na mesma posição com PV e XP.
+- Falas com retrato do personagem em destaque e nome (pedido do desenvolvedor), começando pela placa.
+- Testes: 121/121 (37 novos), incluindo 60 combates completos simulados com sementes diferentes.
+- Bug encontrado no navegador e corrigido: troca de cena dentro do callback de física do gatilho; confirmado com
+  sonda de troca de cena real.
 
 ## Conteúdo pós-Fase 2 — todas as classes e espécies (2026-10-23)
 
@@ -60,9 +73,16 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 - Biblioteca de testes: manter o executor próprio ou adotar GUT/gdUnit4 (ambos MIT).
 - Mais classes/espécies/antecedentes do SRD no MVP, ou manter os dois de cada até o vertical slice.
 
+## Pendências do combate
+
+- Testes de morte, condições, reações (ataques de oportunidade), ações bônus, Esquivar/Disparada/Desengajar.
+- Companheiros com IA (o grupo ainda tem só o líder).
+- Descanso para recuperar PV; sem ele, os PV perdidos ficam até um novo jogo.
+- Animações de ataque/dano (hoje o registro e as barras de PV mostram o resultado).
+
 ## Próxima tarefa concreta
 
-Fase 3 (combate), primeira fatia: `scripts/combat/` com `CombatManager` (estado explícito: preparação → iniciativa → turnos →
-fim), ordem de iniciativa com desempate determinístico, ataque corpo a corpo e à distância (bônus de ataque com proficiência em
-armas, Força/Destreza e acuidade, 20 natural = crítico, 1 natural = erro), dano com dados de crítico dobrados, PV e morte/derrota
-simplificada; um monstro do SRD em `data/monsters/`; testes de regras antes da cena de combate.
+Fase 4 (viagens e encontros): `data/regions/` com uma região e uma rota; `TravelSystem` com trechos, tempo e recursos;
+`EncounterDirector` escolhendo encontros por região, nível do grupo e histórico (com semente); eventos sem combate
+(descoberta, NPC, perigo ambiental); transição viagem → combate → continuação. Considerar descanso curto/longo junto,
+para a viagem ter recuperação de PV.

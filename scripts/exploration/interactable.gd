@@ -11,6 +11,10 @@ signal interacted(source: Interactable)
 @export var prompt_text: String = "Interagir"
 ## Mensagem exibida ao interagir. Vazio = nenhuma mensagem.
 @export_multiline var message_text: String = ""
+## Quem fala. Vazio = o personagem do jogador (ex.: lendo uma placa em voz alta).
+@export var speaker_name: String = ""
+## Retrato de quem fala. Vazio com speaker_name vazio = retrato do personagem do jogador.
+@export var speaker_portrait: Texture2D
 @export var enabled: bool = true
 
 

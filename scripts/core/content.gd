@@ -10,9 +10,10 @@ func _ready() -> void:
 		for problem in registry.errors:
 			push_error("[Content] %s" % problem)
 	else:
-		print("[Content] conteúdo carregado: %d classes, %d espécies, %d antecedentes, %d itens" % [
+		print("[Content] conteúdo carregado: %d classes, %d espécies, %d antecedentes, %d itens, %d monstros, %d encontros" % [
 				registry.ids("class").size(), registry.ids("species").size(),
-				registry.ids("background").size(), registry.ids("item").size()])
+				registry.ids("background").size(), registry.ids("item").size(),
+				registry.ids("monster").size(), registry.ids("encounter").size()])
 
 
 func is_valid() -> bool:

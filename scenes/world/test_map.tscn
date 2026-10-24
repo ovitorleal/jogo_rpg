@@ -1,10 +1,13 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/world/test_map_ground.tscn" id="2_ground"]
 [ext_resource type="PackedScene" path="res://scenes/world/sign.tscn" id="3_sign"]
 [ext_resource type="PackedScene" path="res://scenes/characters/player.tscn" id="4_player"]
 [ext_resource type="PackedScene" path="res://scenes/ui/exploration_hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/world/encounter_trigger.tscn" id="6_trigger"]
+[ext_resource type="Texture2D" path="res://assets/enemies/placeholder_wolf.png" id="7_wolf"]
+[ext_resource type="Texture2D" path="res://assets/enemies/placeholder_goblin.png" id="8_goblin"]
 
 [node name="TestMap" type="Node2D"]
 script = ExtResource("1_script")
@@ -17,7 +20,19 @@ y_sort_enabled = true
 
 [node name="WelcomeSign" parent="Objects" instance=ExtResource("3_sign")]
 position = Vector2(536, 252)
-message_text = "Bem-vindo, viajante. Este é um mapa de teste: a estrada ainda não leva a lugar algum, mas um dia levará."
+message_text = "A placa diz: \"Bem-vindo, viajante. Cuidado com o lobo da mata a sudeste e com o goblin que vigia a ruína a sudoeste.\""
+
+[node name="WolfEncounter" parent="Objects" instance=ExtResource("6_trigger")]
+position = Vector2(712, 344)
+encounter_id = "encounter.lone_wolf"
+trigger_id = "test_map.lone_wolf"
+marker_texture = ExtResource("7_wolf")
+
+[node name="GoblinEncounter" parent="Objects" instance=ExtResource("6_trigger")]
+position = Vector2(232, 408)
+encounter_id = "encounter.ruin_goblin"
+trigger_id = "test_map.ruin_goblin"
+marker_texture = ExtResource("8_goblin")
 
 [node name="Player" parent="Objects" instance=ExtResource("4_player")]
 unique_name_in_owner = true

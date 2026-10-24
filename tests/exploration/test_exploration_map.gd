@@ -166,6 +166,36 @@ func test_map_border_is_closed_and_spawn_is_walkable() -> void:
 	await _teardown()
 
 
+func test_sign_line_shows_player_portrait_and_name() -> void:
+	var party: Node = tree.root.get_node("PartyManager")
+	var factory_tests: Object = load("res://tests/characters/test_character_factory.gd").new()
+	var registry: ContentRegistry = tree.root.get_node("Content").registry
+	var hero: CharacterData = CharacterFactory.create(factory_tests.fighter_choices(), registry)[0]
+	party.start_new_party(hero)
+	await _setup()
+	var sign: Interactable = _map.get_node("Objects/WelcomeSign")
+	await _teleport(sign.global_position + Vector2(0, 14))
+	_map.handle_interact()
+	assert_true(_hud.is_message_open(), "Fala abre")
+	assert_eq(_hud.get_speaker_name(), hero.name, "Nome do personagem em destaque")
+	assert_true(_hud.get_portrait() != null, "Retrato do personagem ao lado da fala")
+	assert_true(_hud.get_message_text().contains("A placa diz"), "Personagem lê a placa em voz alta")
+	_map.handle_interact()
+	party.clear()
+	await _teardown()
+
+
+func test_line_without_party_has_no_portrait() -> void:
+	tree.root.get_node("PartyManager").clear()
+	await _setup()
+	var sign: Interactable = _map.get_node("Objects/WelcomeSign")
+	await _teleport(sign.global_position + Vector2(0, 14))
+	_map.handle_interact()
+	assert_true(_hud.is_message_open(), "Mensagem abre mesmo sem grupo")
+	assert_true(_hud.get_portrait() == null and _hud.get_speaker_name().is_empty(), "Sem grupo: mensagem simples")
+	await _teardown()
+
+
 func test_character_sheet_toggle() -> void:
 	var party: Node = tree.root.get_node("PartyManager")
 	var factory_tests: Object = load("res://tests/characters/test_character_factory.gd").new()

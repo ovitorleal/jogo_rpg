@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=5 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/exploration_hud.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/ui/character_sheet_panel.tscn" id="2_sheet"]
@@ -14,6 +14,14 @@ corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_portrait"]
+bg_color = Color(0.169, 0.137, 0.251, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.878, 0.706, 0.541, 1)
 
 [node name="Hud" type="CanvasLayer"]
 script = ExtResource("1_script")
@@ -87,24 +95,48 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 16.0
-offset_top = -88.0
+offset_top = -96.0
 offset_right = -16.0
-offset_bottom = -12.0
+offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_message")
 
 [node name="Margin" type="MarginContainer" parent="MessagePanel"]
 layout_mode = 2
-theme_override_constants/margin_left = 10
+theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 6
 
-[node name="Content" type="VBoxContainer" parent="MessagePanel/Margin"]
+[node name="Row" type="HBoxContainer" parent="MessagePanel/Margin"]
 layout_mode = 2
+theme_override_constants/separation = 10
 
-[node name="MessageLabel" type="Label" parent="MessagePanel/Margin/Content"]
+[node name="PortraitFrame" type="PanelContainer" parent="MessagePanel/Margin/Row"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_portrait")
+
+[node name="Portrait" type="TextureRect" parent="MessagePanel/Margin/Row/PortraitFrame"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Content" type="VBoxContainer" parent="MessagePanel/Margin/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SpeakerLabel" type="Label" parent="MessagePanel/Margin/Row/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
+theme_override_font_sizes/font_size = 10
+
+[node name="MessageLabel" type="Label" parent="MessagePanel/Margin/Row/Content"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
@@ -112,7 +144,7 @@ theme_override_colors/font_color = Color(0.902, 0.882, 0.827, 1)
 theme_override_font_sizes/font_size = 10
 autowrap_mode = 3
 
-[node name="HintLabel" type="Label" parent="MessagePanel/Margin/Content"]
+[node name="HintLabel" type="Label" parent="MessagePanel/Margin/Row/Content"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.522, 0.592, 0.722, 1)
 theme_override_font_sizes/font_size = 8

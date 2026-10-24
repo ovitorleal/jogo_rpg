@@ -1,0 +1,93 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "monster.wolf",
+			"name": "Lobo",
+			"description": "Predador ágil que caça em bando e derruba as presas.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"creature_type": "fera",
+			"armor_class": 12,
+			"hit_points": 11,
+			"hit_dice": "2d8+2",
+			"speed": 40,
+			"ability_scores": [14, 15, 12, 3, 12, 6],
+			"challenge_rating": "1/4",
+			"xp": 50,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.wolf_bite",
+					"name": "Mordida",
+					"attack_type": "melee",
+					"attack_bonus": 4,
+					"damage": "1d6+2",
+					"damage_type": "piercing",
+					"reach": 5
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.pack_tactics",
+					"name": "Táticas de Matilha",
+					"description": "Vantagem no ataque se um aliado estiver a até 1,5 m do alvo.",
+					"implemented": true
+				},
+				{
+					"id": "trait.wolf_bite_prone",
+					"name": "Derrubar",
+					"description": "A mordida deixa o alvo caído.",
+					"implemented": false
+				}
+			],
+			"sprite": "res://assets/enemies/placeholder_wolf.png"
+		},
+		{
+			"id": "monster.goblin_warrior",
+			"name": "Goblin Guerreiro",
+			"description": "Pequeno combatente astuto que ataca e recua rapidamente.",
+			"source": "SRD 5.2.1",
+			"size": "small",
+			"creature_type": "feérico",
+			"armor_class": 15,
+			"hit_points": 10,
+			"hit_dice": "3d6",
+			"speed": 30,
+			"ability_scores": [8, 15, 10, 10, 8, 8],
+			"challenge_rating": "1/4",
+			"xp": 50,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.goblin_scimitar",
+					"name": "Cimitarra",
+					"attack_type": "melee",
+					"attack_bonus": 4,
+					"damage": "1d6+2",
+					"damage_type": "slashing",
+					"reach": 5
+				},
+				{
+					"id": "attack.goblin_shortbow",
+					"name": "Arco Curto",
+					"attack_type": "ranged",
+					"attack_bonus": 4,
+					"damage": "1d6+2",
+					"damage_type": "piercing",
+					"range_normal": 80,
+					"range_long": 320
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.nimble_escape",
+					"name": "Fuga Ágil",
+					"description": "Pode Desengajar ou Esconder-se com uma ação bônus.",
+					"implemented": false
+				}
+			],
+			"sprite": "res://assets/enemies/placeholder_goblin.png"
+		}
+	]
+}
