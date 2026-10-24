@@ -20,6 +20,8 @@ signal dialogue_choice(index: int)
 var inventory_panel: InventoryPanel
 var journal_panel: JournalPanel
 var pause_menu: PauseMenu
+var choices_overlay: PanelContainer
+var choices_panel: ChoicesPanel
 
 const DEFAULT_HINT := "[E] Continuar"
 
@@ -27,6 +29,7 @@ const DEFAULT_HINT := "[E] Continuar"
 func _ready() -> void:
 	inventory_panel = _overlay(InventoryPanel.new(), "InventoryPanel")
 	journal_panel = _overlay(JournalPanel.new(), "JournalPanel")
+	choices_overlay = _overlay(_build_choices_overlay(), "ChoicesOverlay")
 	pause_menu = _overlay(PauseMenu.new(), "PauseMenu")
 	pause_menu.set_anchors_preset(Control.PRESET_CENTER)
 	pause_menu.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -153,6 +156,43 @@ func show_journal(quests: QuestLog, registry: ContentRegistry) -> void:
 	_show_overlay_hint("[J] ou [Esc] fechar diário")
 
 
+func _build_choices_overlay() -> PanelContainer:
+	var panel := PanelContainer.new()
+	var small := Theme.new()
+	small.default_font_size = 9
+	panel.theme = small
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.102, 0.078, 0.137, 0.97)
+	style.border_color = Color(0.878, 0.706, 0.541)
+	style.set_border_width_all(1)
+	panel.add_theme_stylebox_override("panel", style)
+	var margin := MarginContainer.new()
+	for side in ["left", "top", "right", "bottom"]:
+		margin.add_theme_constant_override("margin_%s" % side, 10)
+	panel.add_child(margin)
+	var column := VBoxContainer.new()
+	margin.add_child(column)
+	var title := Label.new()
+	title.text = "Escolhas de nível e talentos"
+	title.add_theme_font_size_override("font_size", 12)
+	column.add_child(title)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	column.add_child(scroll)
+	choices_panel = ChoicesPanel.new()
+	choices_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(choices_panel)
+	return panel
+
+
+func show_choices(character: CharacterData, registry: ContentRegistry) -> void:
+	hide_overlays()
+	choices_panel.show_choices(character, registry)
+	choices_overlay.visible = true
+	_show_overlay_hint("[L] ou [Esc] fechar · as escolhas valem na hora")
+
+
 func show_pause_menu(status: String) -> void:
 	hide_overlays()
 	pause_menu.open(status)
@@ -174,7 +214,7 @@ func is_sheet_open() -> bool:
 
 
 func is_overlay_open() -> bool:
-	return _sheet_panel.visible or inventory_panel.visible or journal_panel.visible or pause_menu.visible
+	return _sheet_panel.visible or inventory_panel.visible or journal_panel.visible or pause_menu.visible 			or choices_overlay.visible
 
 
 func hide_overlays() -> void:
@@ -182,6 +222,7 @@ func hide_overlays() -> void:
 	inventory_panel.visible = false
 	journal_panel.visible = false
 	pause_menu.visible = false
+	choices_overlay.visible = false
 
 
 func get_sheet_text() -> String:

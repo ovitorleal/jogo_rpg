@@ -56,38 +56,259 @@
 					"id": "feature.fighting_style",
 					"name": "Estilo de Luta",
 					"level": 1,
-					"description": "Escolha um talento de estilo de luta.",
-					"implemented": false
+					"description": "Ganha um talento de Estilo de Luta.",
+					"implemented": true,
+					"grants": "fighting_style"
 				},
 				{
 					"id": "feature.second_wind",
 					"name": "Retomar o Fôlego",
 					"level": 1,
-					"description": "Recupera pontos de vida com uma ação bônus, algumas vezes por descanso.",
-					"implemented": false
+					"description": "Ação bônus: recupera 1d10 + nível de guerreiro em PV. Usos pela tabela; recupera um no descanso curto.",
+					"implemented": true
 				},
 				{
 					"id": "feature.weapon_mastery",
 					"name": "Maestria em Armas",
 					"level": 1,
-					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
-					"implemented": false
+					"description": "Usa as propriedades de maestria de armas à escolha (troca uma após descanso longo).",
+					"implemented": true,
+					"grants": "weapon_mastery"
 				},
 				{
 					"id": "feature.action_surge",
 					"name": "Surto de Ação",
 					"level": 2,
-					"description": "Uma ação extra no turno, uma vez por descanso.",
-					"implemented": false
+					"description": "No seu turno, faz uma ação adicional (exceto Magia). Uma vez por descanso curto (duas a partir do 17, no máximo uma por turno).",
+					"implemented": true
 				},
 				{
 					"id": "feature.tactical_mind",
 					"name": "Mente Tática",
 					"level": 2,
-					"description": "Gasta Retomar o Fôlego para melhorar um teste de atributo que falhou.",
-					"implemented": false
+					"description": "Ao falhar num teste de atributo, gasta Retomar o Fôlego para somar 1d10 (não gasta se continuar falhando).",
+					"implemented": true
+				},
+				{
+					"id": "feature.fighter_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_fighter_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_fighter_6",
+					"name": "Aumento no Valor de Atributo",
+					"level": 6,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_fighter_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_fighter_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_fighter_14",
+					"name": "Aumento no Valor de Atributo",
+					"level": 14,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_fighter_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.extra_attack",
+					"name": "Ataque Extra",
+					"level": 5,
+					"description": "Ataca duas vezes ao usar a ação de Ataque.",
+					"implemented": true
+				},
+				{
+					"id": "feature.tactical_shift",
+					"name": "Deslocamento Tático",
+					"level": 5,
+					"description": "Ao usar Retomar o Fôlego, move até metade do deslocamento sem provocar ataques de oportunidade.",
+					"implemented": true
+				},
+				{
+					"id": "feature.indomitable",
+					"name": "Indomável",
+					"level": 9,
+					"description": "Ao falhar num teste de resistência, refaz com bônus igual ao nível de guerreiro. Usos: 1 (2 no 13, 3 no 17) por descanso longo.",
+					"implemented": true
+				},
+				{
+					"id": "feature.tactical_master",
+					"name": "Mestre Tático",
+					"level": 9,
+					"description": "Ao atacar com arma de maestria conhecida, pode trocar a propriedade por Empurrar, Enfraquecer ou Lentidão.",
+					"implemented": true
+				},
+				{
+					"id": "feature.two_extra_attacks",
+					"name": "Dois Ataques Extras",
+					"level": 11,
+					"description": "Ataca três vezes ao usar a ação de Ataque.",
+					"implemented": true
+				},
+				{
+					"id": "feature.studied_attacks",
+					"name": "Ataques Estudados",
+					"level": 13,
+					"description": "Ao errar um ataque, tem vantagem no próximo contra a mesma criatura até o fim do próximo turno.",
+					"implemented": true
+				},
+				{
+					"id": "feature.epic_boon_fighter",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Proeza em Combate é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.three_extra_attacks",
+					"name": "Três Ataques Extras",
+					"level": 20,
+					"description": "Ataca quatro vezes ao usar a ação de Ataque.",
+					"implemented": true
 				}
-			]
+			],
+			"resources": [
+				{
+					"id": "second_wind",
+					"name": "Retomar o Fôlego",
+					"values": [
+						"2",
+						"2",
+						"2",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4"
+					],
+					"recharge": "short_one"
+				},
+				{
+					"id": "action_surge",
+					"name": "Surto de Ação",
+					"values": [
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"2",
+						"2",
+						"2",
+						"2"
+					],
+					"recharge": "short"
+				},
+				{
+					"id": "indomitable",
+					"name": "Indomável",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"2",
+						"2",
+						"2",
+						"2",
+						"3",
+						"3",
+						"3",
+						"3"
+					],
+					"recharge": "long"
+				}
+			],
+			"weapon_mastery_counts": [
+				3,
+				3,
+				3,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				5,
+				5,
+				5,
+				5,
+				5,
+				5,
+				6,
+				6,
+				6,
+				6,
+				6
+			],
+			"weapon_mastery_rule": "proficient"
 		}
 	]
 }

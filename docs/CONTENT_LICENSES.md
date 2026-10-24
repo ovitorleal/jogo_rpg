@@ -15,6 +15,12 @@ Campos: nome · fonte · autor/titular · licença · URL · data de obtenção 
 Assets originais do projeto estão em `assets/asset_catalog.json` com `source_type` e `license: project`.
 A licença do conteúdo próprio ainda não foi escolhida (decisão pendente do responsável).
 
+## Classes, subclasses, antecedentes e talentos
+
+Características dos níveis 1–20 das 12 classes, as 12 subclasses, os 4 antecedentes e os 17 talentos vêm do SRD 5.2.1
+(CC BY 4.0), lido do PDF oficial (`SRD_CC_v5.2.1.pdf`, D&D Beyond, obtido em 2026-10-24; não incluído no repositório).
+Nomes traduzidos e descrições resumidas com texto próprio.
+
 ## Magias
 
 As 16 magias de `data/spells/spells.json` vêm do SRD 5.2.1 (CC BY 4.0, mesma linha da tabela acima): mecânica

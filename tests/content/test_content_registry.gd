@@ -44,7 +44,7 @@ func test_real_content_loads_without_errors() -> void:
 	assert_eq(registry.ids("species"), ["species.dragonborn", "species.dwarf", "species.elf", "species.gnome",
 			"species.goliath", "species.halfling", "species.human", "species.orc", "species.tiefling"] as Array[String],
 			"As 9 espécies do SRD 5.2.1")
-	assert_eq(registry.ids("background"), ["background.criminal", "background.soldier"] as Array[String], "Antecedentes")
+	assert_eq(registry.ids("background"), ["background.acolyte", "background.criminal", "background.sage", "background.soldier"] as Array[String], "Os 4 antecedentes do SRD")
 	assert_true(registry.has("item", "item.chain_mail"), "Itens carregados")
 
 

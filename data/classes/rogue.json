@@ -56,38 +56,253 @@
 					"id": "feature.expertise",
 					"name": "Especialização",
 					"level": 1,
-					"description": "Dobra o bônus de proficiência em duas perícias proficientes.",
+					"description": "Especialização em duas perícias proficientes (escolhidas na criação).",
 					"implemented": true
 				},
 				{
 					"id": "feature.sneak_attack",
 					"name": "Ataque Furtivo",
 					"level": 1,
-					"description": "Causa dano extra uma vez por turno quando tem vantagem ou um aliado próximo do alvo.",
-					"implemented": false
+					"description": "Uma vez por turno, dano extra (1d6 a 10d6) ao acertar com arma de Acuidade ou à distância com vantagem, ou com aliado adjacente ao alvo e sem desvantagem.",
+					"implemented": true
 				},
 				{
 					"id": "feature.thieves_cant",
 					"name": "Gíria de Ladrão",
 					"level": 1,
-					"description": "Conhece uma linguagem secreta de sinais e códigos.",
+					"description": "Conhece a Gíria de Ladrão e outro idioma.",
 					"implemented": false
 				},
 				{
 					"id": "feature.weapon_mastery",
 					"name": "Maestria em Armas",
 					"level": 1,
-					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
-					"implemented": false
+					"description": "Usa as propriedades de maestria de duas armas leves ou de acuidade (troca após descanso longo).",
+					"implemented": true,
+					"grants": "weapon_mastery"
 				},
 				{
 					"id": "feature.cunning_action",
 					"name": "Ação Astuta",
 					"level": 2,
-					"description": "Disparar, Desengajar ou Esconder como ação bônus.",
-					"implemented": false
+					"description": "Disparada, Desengajar ou Esconder como ação bônus.",
+					"implemented": true
+				},
+				{
+					"id": "feature.rogue_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.steady_aim",
+					"name": "Mira Firme",
+					"level": 3,
+					"description": "Ação bônus sem ter se movido: vantagem no próximo ataque do turno; deslocamento 0 até o fim do turno.",
+					"implemented": true
+				},
+				{
+					"id": "feature.asi_rogue_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_rogue_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_rogue_10",
+					"name": "Aumento no Valor de Atributo",
+					"level": 10,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_rogue_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_rogue_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.cunning_strike",
+					"name": "Golpe Astuto",
+					"level": 5,
+					"description": "Ao causar Ataque Furtivo, troca dados por efeitos: Veneno (1d6, Constituição ou Envenenado), Rasteira (1d6, Destreza ou Caído) ou Retirada (1d6, move metade sem ataques de oportunidade). CD 8 + Destreza + proficiência.",
+					"implemented": true
+				},
+				{
+					"id": "feature.uncanny_dodge",
+					"name": "Esquiva Sobrenatural",
+					"level": 5,
+					"description": "Reação: reduz à metade o dano de um ataque que o acertar.",
+					"implemented": true
+				},
+				{
+					"id": "feature.expertise_rogue_6",
+					"name": "Especialização",
+					"level": 6,
+					"description": "Especialização em mais duas perícias proficientes.",
+					"implemented": true,
+					"grants": "expertise",
+					"count": 2
+				},
+				{
+					"id": "feature.evasion_rogue",
+					"name": "Evasão",
+					"level": 7,
+					"description": "Em testes de Destreza para metade do dano: nenhum dano com sucesso e metade com falha (exceto Incapacitado).",
+					"implemented": true
+				},
+				{
+					"id": "feature.reliable_talent",
+					"name": "Talento Confiável",
+					"level": 7,
+					"description": "Em testes de perícia proficiente, um d20 de 9 ou menos vale 10.",
+					"implemented": true
+				},
+				{
+					"id": "feature.improved_cunning_strike",
+					"name": "Golpe Astuto Aprimorado",
+					"level": 11,
+					"description": "Até dois efeitos de Golpe Astuto por Ataque Furtivo.",
+					"implemented": true
+				},
+				{
+					"id": "feature.devious_strikes",
+					"name": "Golpes Ardilosos",
+					"level": 14,
+					"description": "Novos efeitos: Atordoar (2d6), Nocaute (6d6, Inconsciente) e Ofuscar (3d6, Cego até o fim do próximo turno).",
+					"implemented": true
+				},
+				{
+					"id": "feature.slippery_mind",
+					"name": "Mente Escorregadia",
+					"level": 15,
+					"description": "Proficiência em testes de resistência de Sabedoria e Carisma.",
+					"implemented": true
+				},
+				{
+					"id": "feature.elusive",
+					"name": "Elusivo",
+					"level": 18,
+					"description": "Nenhum ataque tem vantagem contra você, salvo se estiver Incapacitado.",
+					"implemented": true
+				},
+				{
+					"id": "feature.epic_boon_rogue",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva do Espírito Noturno é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.stroke_of_luck",
+					"name": "Golpe de Sorte",
+					"level": 20,
+					"description": "Ao falhar num Teste de d20, transforma a rolagem em 20; uma vez por descanso curto.",
+					"implemented": true
 				}
-			]
+			],
+			"resources": [
+				{
+					"id": "sneak_attack",
+					"name": "Ataque Furtivo",
+					"values": [
+						"1d6",
+						"1d6",
+						"2d6",
+						"2d6",
+						"3d6",
+						"3d6",
+						"4d6",
+						"4d6",
+						"5d6",
+						"5d6",
+						"6d6",
+						"6d6",
+						"7d6",
+						"7d6",
+						"8d6",
+						"8d6",
+						"9d6",
+						"9d6",
+						"10d6",
+						"10d6"
+					],
+					"recharge": "none"
+				},
+				{
+					"id": "stroke_of_luck",
+					"name": "Golpe de Sorte",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1"
+					],
+					"recharge": "short"
+				}
+			],
+			"weapon_mastery_counts": [
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2,
+				2
+			],
+			"weapon_mastery_rule": "finesse_or_light"
 		}
 	]
 }

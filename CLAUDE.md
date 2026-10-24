@@ -37,6 +37,8 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
   Nos testes use `roller_override` para dados determinísticos.
 - Missões e diálogos: dados em `data/quests/` e `data/dialogues/`; progresso só via `QuestManager.notify*`.
   Inventário do grupo em `PartyManager.inventory`; equipamento em uso fica no `CharacterData`.
+- Características/talentos: dados em `data/classes`, `data/subclasses`, `data/feats` (campo `grants` gera escolhas em
+  `CharacterChoices`; recursos em `ClassFeatures`). Ao ligar uma característica no motor, mude `implemented` para true.
 - Magias: regras em `Spellcasting` (`scripts/rules/`), dados em `data/spells/` (efeito e estilo visual por magia),
   resolução no `CombatManager` (comando `cast`); efeitos visuais em `SpellVfx`. Classes de regras não usam autoloads.
 - Salvamento: só via `SaveManager` (um slot; `request_autosave` em pontos seguros, `save_now` manual). Estado novo que

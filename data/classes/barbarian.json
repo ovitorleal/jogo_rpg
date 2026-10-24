@@ -57,38 +57,251 @@
 					"id": "feature.rage",
 					"name": "Fúria",
 					"level": 1,
-					"description": "Entra em fúria com uma ação bônus: dano extra, resistência a dano físico e vantagem em testes de Força.",
-					"implemented": false
+					"description": "Ação bônus sem armadura pesada: resistência a dano contundente, perfurante e cortante, bônus de dano em ataques de Força e vantagem em testes de Força; não conjura nem mantém concentração. Dura até o fim do próximo turno e é prolongada atacando, forçando um teste ou com ação bônus.",
+					"implemented": true
 				},
 				{
 					"id": "feature.unarmored_defense_barbarian",
 					"name": "Defesa sem Armadura",
 					"level": 1,
-					"description": "Sem armadura, a CA é 10 + Destreza + Constituição (escudo permitido).",
+					"description": "Sem armadura, CA = 10 + Destreza + Constituição (pode usar escudo).",
 					"implemented": true
 				},
 				{
 					"id": "feature.weapon_mastery",
 					"name": "Maestria em Armas",
 					"level": 1,
-					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
-					"implemented": false
+					"description": "Usa as propriedades de maestria de armas corpo a corpo à escolha (troca uma após descanso longo).",
+					"implemented": true,
+					"grants": "weapon_mastery"
 				},
 				{
 					"id": "feature.danger_sense",
 					"name": "Sentido de Perigo",
 					"level": 2,
-					"description": "Vantagem em resistências de Destreza contra efeitos que pode ver.",
-					"implemented": false
+					"description": "Vantagem em testes de resistência de Destreza, salvo Incapacitado.",
+					"implemented": true
 				},
 				{
 					"id": "feature.reckless_attack",
 					"name": "Ataque Imprudente",
 					"level": 2,
-					"description": "Ataca com vantagem, mas os inimigos também ganham vantagem contra você.",
-					"implemented": false
+					"description": "No primeiro ataque do turno, pode atacar imprudentemente: vantagem nos ataques de Força até o próximo turno, mas ataques contra você também têm vantagem.",
+					"implemented": true
+				},
+				{
+					"id": "feature.barbarian_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.primal_knowledge",
+					"name": "Conhecimento Primal",
+					"level": 3,
+					"description": "Proficiência em outra perícia da lista do Bárbaro; em Fúria, Acrobacia, Furtividade, Intimidação, Percepção e Sobrevivência podem usar Força.",
+					"implemented": true,
+					"grants": "skill"
+				},
+				{
+					"id": "feature.asi_barbarian_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_barbarian_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_barbarian_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_barbarian_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.extra_attack",
+					"name": "Ataque Extra",
+					"level": 5,
+					"description": "Ataca duas vezes ao usar a ação de Ataque.",
+					"implemented": true
+				},
+				{
+					"id": "feature.fast_movement",
+					"name": "Movimento Rápido",
+					"level": 5,
+					"description": "+3 m de deslocamento sem armadura pesada.",
+					"implemented": true
+				},
+				{
+					"id": "feature.feral_instinct",
+					"name": "Instinto Feral",
+					"level": 7,
+					"description": "Vantagem nas jogadas de iniciativa.",
+					"implemented": true
+				},
+				{
+					"id": "feature.instinctive_pounce",
+					"name": "Bote Instintivo",
+					"level": 7,
+					"description": "Ao entrar em Fúria, pode mover até metade do deslocamento.",
+					"implemented": true
+				},
+				{
+					"id": "feature.brutal_strike",
+					"name": "Golpe Brutal",
+					"level": 9,
+					"description": "Com Ataque Imprudente, abre mão da vantagem em um ataque de Força: se acertar, +1d10 de dano e um efeito (Golpe Forte: empurra 4,5 m; Golpe Jarrete: -4,5 m de deslocamento).",
+					"implemented": true
+				},
+				{
+					"id": "feature.relentless_rage",
+					"name": "Fúria Implacável",
+					"level": 11,
+					"description": "Ao cair a 0 PV em Fúria, teste de Constituição CD 10 (+5 a cada uso) para ficar com PV igual ao dobro do nível.",
+					"implemented": true
+				},
+				{
+					"id": "feature.improved_brutal_strike_13",
+					"name": "Golpe Brutal Aprimorado",
+					"level": 13,
+					"description": "Novos efeitos: Golpe Atordoante (desvantagem no próximo teste de resistência e sem ataques de oportunidade) e Golpe Despedaçador (+5 no próximo ataque de outra criatura contra o alvo).",
+					"implemented": true
+				},
+				{
+					"id": "feature.persistent_rage",
+					"name": "Fúria Persistente",
+					"level": 15,
+					"description": "Ao rolar iniciativa, recupera todos os usos de Fúria (uma vez por descanso longo); a Fúria dura 10 minutos sem precisar ser prolongada.",
+					"implemented": true
+				},
+				{
+					"id": "feature.improved_brutal_strike_17",
+					"name": "Golpe Brutal Aprimorado",
+					"level": 17,
+					"description": "O dano extra do Golpe Brutal vira 2d10 e você pode usar dois efeitos diferentes.",
+					"implemented": true
+				},
+				{
+					"id": "feature.indomitable_might",
+					"name": "Poder Indomável",
+					"level": 18,
+					"description": "Se o total de um teste de Força for menor que seu valor de Força, usa o valor.",
+					"implemented": true
+				},
+				{
+					"id": "feature.epic_boon_barbarian",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Ofensiva Irresistível é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.primal_champion",
+					"name": "Campeão Primal",
+					"level": 20,
+					"description": "Força e Constituição +4 (máximo 25).",
+					"implemented": true
 				}
-			]
+			],
+			"resources": [
+				{
+					"id": "rage",
+					"name": "Fúria",
+					"values": [
+						"2",
+						"2",
+						"3",
+						"3",
+						"3",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"4",
+						"5",
+						"5",
+						"5",
+						"5",
+						"5",
+						"6",
+						"6",
+						"6",
+						"6"
+					],
+					"recharge": "short_one"
+				},
+				{
+					"id": "rage_damage",
+					"name": "Dano da Fúria",
+					"values": [
+						"+2",
+						"+2",
+						"+2",
+						"+2",
+						"+2",
+						"+2",
+						"+2",
+						"+2",
+						"+3",
+						"+3",
+						"+3",
+						"+3",
+						"+3",
+						"+3",
+						"+3",
+						"+4",
+						"+4",
+						"+4",
+						"+4",
+						"+4"
+					],
+					"recharge": "none"
+				}
+			],
+			"weapon_mastery_counts": [
+				2,
+				2,
+				2,
+				3,
+				3,
+				3,
+				3,
+				3,
+				3,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4
+			],
+			"weapon_mastery_rule": "melee"
 		}
 	]
 }

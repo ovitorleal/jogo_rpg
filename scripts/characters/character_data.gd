@@ -4,7 +4,7 @@ extends RefCounted
 ## recalculados. Valores derivados (CA, PV máximos, bônus) ficam em CharacterSheet.
 ## Serializa para Dictionary compatível com JSON, com versão de esquema.
 
-const SCHEMA_VERSION := 4
+const SCHEMA_VERSION := 5
 const MAX_NAME_LENGTH := 32
 
 var id: String = ""
@@ -35,10 +35,36 @@ var appearance: Dictionary = {}
 var cantrips: Array[String] = []
 var prepared_spells: Array[String] = []
 var spell_slots_spent: Array[int] = []
+## Desde o esquema 5: subclasse (nível 3+), escolhas de criação e de nível (chave -> valores; ver
+## CharacterChoices), usos gastos de recursos de classe/talento (id -> quantidade) e nível de Exaustão.
+var subclass_id: String = ""
+var choices: Dictionary = {}
+var resources_spent: Dictionary = {}
+var exhaustion: int = 0
 
 
+## Valor do atributo: base + antecedente + aumentos escolhidos (talentos, "<chave>.abilities").
+## O limite (20, ou 30 nas Dádivas Épicas) é validado por CharacterChoices.
 func ability_score(ability: StringName) -> int:
-	return int(base_scores.get(ability, 0)) + int(background_increases.get(ability, 0))
+	var total := int(base_scores.get(ability, 0)) + int(background_increases.get(ability, 0))
+	for key: String in choices:
+		if key.ends_with(".abilities"):
+			for value: Variant in choices[key]:
+				if StringName(value) == ability:
+					total += 1
+	return total
+
+
+## Valores escolhidos para uma chave ([] se não houver).
+func choice(key: String) -> Array[String]:
+	var result: Array[String] = []
+	for value: Variant in choices.get(key, []):
+		result.append(str(value))
+	return result
+
+
+func resource_spent(resource_id: String) -> int:
+	return int(resources_spent.get(resource_id, 0))
 
 
 func to_dict() -> Dictionary:
@@ -66,6 +92,10 @@ func to_dict() -> Dictionary:
 		"cantrips": cantrips.duplicate(),
 		"prepared_spells": prepared_spells.duplicate(),
 		"spell_slots_spent": spell_slots_spent.duplicate(),
+		"subclass_id": subclass_id,
+		"choices": choices.duplicate(true),
+		"resources_spent": resources_spent.duplicate(),
+		"exhaustion": exhaustion,
 	}
 
 
@@ -110,6 +140,22 @@ static func from_dict(source: Dictionary) -> Array:
 			c.spell_slots_spent.append(int(value))
 		else:
 			errors.append("Espaço de magia gasto inválido")
+	c.subclass_id = _read_string(data, "subclass_id", errors)
+	if data.get("choices") is Dictionary:
+		for key: Variant in data["choices"]:
+			var values: Variant = data["choices"][key]
+			if values is Array:
+				c.choices[str(key)] = Array(values).map(func(v: Variant) -> String: return str(v))
+			else:
+				errors.append("Escolha '%s' não é uma lista" % str(key))
+	else:
+		errors.append("Campo 'choices' ausente ou não é objeto")
+	if data.get("resources_spent") is Dictionary:
+		for key: Variant in data["resources_spent"]:
+			c.resources_spent[str(key)] = int(data["resources_spent"][key])
+	else:
+		errors.append("Campo 'resources_spent' ausente ou não é objeto")
+	c.exhaustion = _read_int(data, "exhaustion", errors)
 	var known := c.to_dict().keys()
 	for key: Variant in data:
 		if not key in known:
@@ -122,6 +168,7 @@ static func from_dict(source: Dictionary) -> Array:
 ## Atualiza dados de versões anteriores para a atual, sem alterar o original.
 ## v1 -> v2: adiciona hit_dice_spent = 0. v2 -> v3: adiciona appearance = {} (padrão da espécie).
 ## v3 -> v4: adiciona truques/magias preparadas vazios (completados por Spellcasting.fill_defaults ao carregar).
+## v4 -> v5: sem subclasse, escolhas e recursos vazios (completados por CharacterChoices.fill_defaults).
 static func migrate(data: Dictionary) -> Dictionary:
 	var result := data.duplicate(true)
 	var version := int(result.get("schema_version", -1))
@@ -136,7 +183,13 @@ static func migrate(data: Dictionary) -> Dictionary:
 		result["prepared_spells"] = []
 		result["spell_slots_spent"] = []
 		version = 4
-	if int(result.get("schema_version", -1)) in [1, 2, 3]:
+	if version == 4:
+		result["subclass_id"] = ""
+		result["choices"] = {}
+		result["resources_spent"] = {}
+		result["exhaustion"] = 0
+		version = 5
+	if int(result.get("schema_version", -1)) in [1, 2, 3, 4]:
 		result["schema_version"] = version
 	return result
 

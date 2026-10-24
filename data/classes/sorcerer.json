@@ -55,21 +55,166 @@
 					"id": "feature.innate_sorcery",
 					"name": "Feitiçaria Inata",
 					"level": 1,
-					"description": "Libera a magia interior por um tempo, fortalecendo as próprias magias.",
+					"description": "Ação bônus por 1 minuto: CD das magias de feiticeiro +1 e vantagem nos ataques dessas magias. Dois usos por descanso longo.",
 					"implemented": false
 				},
 				{
 					"id": "feature.font_of_magic",
 					"name": "Fonte de Magia",
 					"level": 2,
-					"description": "Pontos de feitiçaria trocáveis por espaços de magia.",
+					"description": "Pontos de Feitiçaria iguais ao nível: converte espaços em pontos e pontos em espaços (até 5º círculo).",
 					"implemented": false
 				},
 				{
 					"id": "feature.metamagic",
 					"name": "Metamagia",
 					"level": 2,
-					"description": "Modifica magias gastando pontos de feitiçaria.",
+					"description": "Aprende opções de Metamagia (2, mais 2 no 10 e no 17).",
+					"implemented": false,
+					"grants": "metamagic",
+					"count": 2,
+					"options": [
+						{
+							"id": "metamagic.careful",
+							"name": "Magia Cuidadosa (1)",
+							"description": "Criaturas escolhidas (até o Carisma) passam automaticamente no teste e não sofrem dano de metade."
+						},
+						{
+							"id": "metamagic.distant",
+							"name": "Magia Distante (1)",
+							"description": "Dobra o alcance (toque vira 9 m)."
+						},
+						{
+							"id": "metamagic.empowered",
+							"name": "Magia Potencializada (1)",
+							"description": "Rola de novo dados de dano (até o Carisma)."
+						},
+						{
+							"id": "metamagic.extended",
+							"name": "Magia Estendida (1)",
+							"description": "Dobra a duração; vantagem nos testes de concentração."
+						},
+						{
+							"id": "metamagic.heightened",
+							"name": "Magia Elevada (2)",
+							"description": "Um alvo tem desvantagem nos testes contra a magia."
+						},
+						{
+							"id": "metamagic.quickened",
+							"name": "Magia Acelerada (2)",
+							"description": "Magia de ação vira ação bônus (sem outra magia de 1º+ no turno)."
+						},
+						{
+							"id": "metamagic.seeking",
+							"name": "Magia Buscadora (1)",
+							"description": "Ao errar o ataque de magia, rola o d20 de novo."
+						},
+						{
+							"id": "metamagic.subtle",
+							"name": "Magia Sutil (1)",
+							"description": "Conjura sem componentes verbais, somáticos ou materiais comuns."
+						},
+						{
+							"id": "metamagic.transmuted",
+							"name": "Magia Transmutada (1)",
+							"description": "Troca o tipo de dano entre ácido, frio, fogo, elétrico, veneno e trovejante."
+						},
+						{
+							"id": "metamagic.twinned",
+							"name": "Magia Gêmea (1)",
+							"description": "Aumenta em 1 o círculo efetivo para atingir um alvo a mais."
+						}
+					],
+					"count_by_level": [
+						0,
+						2,
+						2,
+						2,
+						2,
+						2,
+						2,
+						2,
+						2,
+						4,
+						4,
+						4,
+						4,
+						4,
+						4,
+						4,
+						6,
+						6,
+						6,
+						6
+					]
+				},
+				{
+					"id": "feature.sorcerer_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_sorcerer_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_sorcerer_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_sorcerer_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_sorcerer_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.sorcerous_restoration",
+					"name": "Restauração Feiticeira",
+					"level": 5,
+					"description": "No descanso curto, recupera Pontos de Feitiçaria até metade do nível; uma vez por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.sorcery_incarnate",
+					"name": "Feitiçaria Encarnada",
+					"level": 7,
+					"description": "Sem usos de Feitiçaria Inata, ativa gastando 2 pontos; com ela ativa, até duas Metamagias por magia.",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_sorcerer",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva da Viagem Dimensional é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.arcane_apotheosis",
+					"name": "Apoteose Arcana",
+					"level": 20,
+					"description": "Com Feitiçaria Inata ativa, uma Metamagia por turno sem custo.",
 					"implemented": false
 				}
 			],
@@ -118,6 +263,89 @@
 				20,
 				21,
 				22
+			],
+			"resources": [
+				{
+					"id": "sorcery_points",
+					"name": "Pontos de Feitiçaria",
+					"values": [
+						"0",
+						"2",
+						"3",
+						"4",
+						"5",
+						"6",
+						"7",
+						"8",
+						"9",
+						"10",
+						"11",
+						"12",
+						"13",
+						"14",
+						"15",
+						"16",
+						"17",
+						"18",
+						"19",
+						"20"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "innate_sorcery",
+					"name": "Feitiçaria Inata",
+					"values": [
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2",
+						"2"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "sorcerous_restoration",
+					"name": "Restauração Feiticeira",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
 			]
 		}
 	]

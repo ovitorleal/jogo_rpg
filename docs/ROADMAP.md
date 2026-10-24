@@ -9,11 +9,33 @@
 | 4 | Viagens e encontros | Concluída (2026-10-24) |
 | 5 | Progressão e conteúdo | Concluída (2026-10-24) |
 | 6 | Salvamento e integração | Concluída (2026-10-24) |
-| 6.5 | Magias e efeitos visuais | **Concluída** (2026-10-24) |
+| 6.5 | Magias e efeitos visuais | Concluída (2026-10-24) |
+| 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | **Em andamento** — entregas 1 e 2 de 6 |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
+
+## Fase 6.6 — características completas (pedido do responsável)
+
+Escopo escolhido: níveis 1 a 20 das 12 classes, as 12 subclasses do SRD, os 4 antecedentes e os 17 talentos.
+Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumidas com texto próprio.
+
+| Entrega | Conteúdo | Estado |
+|---|---|---|
+| 1 | Motor: escolhas, recursos, ações padrão, oportunidade, condições, Maestria, talentos, antecedentes; dados de todas as características | **Concluída** (0.6.6) |
+| 2 | Marciais: Bárbaro (Berserker), Guerreiro (Campeão), Ladino (Ladrão), Monge (Mão Aberta) | **Concluída** (0.6.7) |
+| 3 | Meio-conjuradores: Paladino (Devoção), Patrulheiro (Caçador) | Próxima |
+| 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | — |
+| 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | — |
+| 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | — |
+
+## Fase 6.6, entrega 2 — resultado (2026-10-24)
+
+- Bárbaro, Guerreiro, Ladino e Monge com as subclasses do SRD funcionando dos níveis 1 a 20 (exceto características
+  de exploração listadas nas Adaptações de `RULES_POLICY.md`).
+- Verificado em janela real: menu "Ações ▾" com as seções Classe e Opções; Fúria com aura; Rajada de Golpes.
+- 226 testes passando.
 
 ## Fase 6.5 — resultado (2026-10-24)
 
@@ -173,6 +195,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 7 (vertical slice): uma aventura curta completa e polida com começo, meio e fim — arco de história, mapa e
-encontros melhorados (incluindo um inimigo que use magias), dificuldade ajustada, polimento da interface, desempenho e
-verificação do build Web.
+Fase 6.6, entrega 3: Paladino (Devoção) e Patrulheiro (Caçador), níveis 1–20 — Cura pelas Mãos, Golpe Divino,
+Canalizar Divindade, Auras, Inimigo Favorito/Marca do Caçador, Presa do Caçador, Defesa e Ataques Múltiplos — com as
+magias sempre preparadas que já existirem e testes por característica.

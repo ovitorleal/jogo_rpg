@@ -56,14 +56,123 @@
 					"id": "feature.divine_order",
 					"name": "Ordem Divina",
 					"level": 1,
-					"description": "Escolhe ser Protetor (armas marciais e armadura pesada) ou Taumaturgo (truque extra e conhecimento).",
-					"implemented": false
+					"description": "Escolhe um papel sagrado.",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "divine_order.protector",
+							"name": "Protetor",
+							"description": "Proficiência com armas marciais e treinamento com armadura pesada."
+						},
+						{
+							"id": "divine_order.thaumaturge",
+							"name": "Taumaturgo",
+							"description": "Um truque extra de clérigo e bônus igual à Sabedoria (mínimo +1) em testes de Inteligência (Arcanismo ou Religião)."
+						}
+					]
 				},
 				{
 					"id": "feature.channel_divinity",
 					"name": "Canalizar Divindade",
 					"level": 2,
-					"description": "Canaliza energia divina para efeitos especiais algumas vezes por descanso.",
+					"description": "Canaliza energia divina: Centelha Divina (cura ou dano de 1d8 + Sabedoria, mais 1d8 nos níveis 7, 13 e 18) ou Expulsar Mortos-Vivos. Usos pela tabela; recupera um no descanso curto.",
+					"implemented": false
+				},
+				{
+					"id": "feature.cleric_subclass",
+					"name": "Subclasse",
+					"level": 3,
+					"description": "Escolhe uma subclasse, que concede características em certos níveis.",
+					"implemented": true,
+					"grants": "subclass"
+				},
+				{
+					"id": "feature.asi_cleric_4",
+					"name": "Aumento no Valor de Atributo",
+					"level": 4,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_cleric_8",
+					"name": "Aumento no Valor de Atributo",
+					"level": 8,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_cleric_12",
+					"name": "Aumento no Valor de Atributo",
+					"level": 12,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.asi_cleric_16",
+					"name": "Aumento no Valor de Atributo",
+					"level": 16,
+					"description": "Ganha o talento Aumento no Valor de Atributo ou outro talento para o qual se qualifique.",
+					"implemented": true,
+					"grants": "feat"
+				},
+				{
+					"id": "feature.sear_undead",
+					"name": "Queimar Mortos-Vivos",
+					"level": 5,
+					"description": "Expulsar Mortos-Vivos causa dano radiante (d8 igual à Sabedoria) a quem falhar.",
+					"implemented": false
+				},
+				{
+					"id": "feature.blessed_strikes",
+					"name": "Golpes Abençoados",
+					"level": 7,
+					"description": "Escolhe uma opção.",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "blessed_strikes.divine_strike",
+							"name": "Golpe Divino",
+							"description": "Uma vez por turno, +1d8 de dano necrótico ou radiante ao acertar com arma."
+						},
+						{
+							"id": "blessed_strikes.potent_spellcasting",
+							"name": "Conjuração Potente",
+							"description": "Soma a Sabedoria ao dano dos truques de clérigo."
+						}
+					]
+				},
+				{
+					"id": "feature.divine_intervention",
+					"name": "Intervenção Divina",
+					"level": 10,
+					"description": "Ação de Magia: conjura qualquer magia de clérigo de até 5º círculo sem espaço; uma vez por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.improved_blessed_strikes",
+					"name": "Golpes Abençoados Aprimorados",
+					"level": 14,
+					"description": "Golpe Divino vira 2d8; Conjuração Potente concede PV temporários iguais ao dobro da Sabedoria ao causar dano com truque.",
+					"implemented": false
+				},
+				{
+					"id": "feature.epic_boon_cleric",
+					"name": "Dádiva Épica",
+					"level": 19,
+					"description": "Ganha um talento de Dádiva Épica ou outro talento para o qual se qualifique (Dádiva do Destino é recomendada).",
+					"implemented": true,
+					"grants": "epic_boon"
+				},
+				{
+					"id": "feature.greater_divine_intervention",
+					"name": "Intervenção Divina Maior",
+					"level": 20,
+					"description": "A Intervenção Divina pode conjurar Desejo (depois, só após 2d4 descansos longos).",
 					"implemented": false
 				}
 			],
@@ -112,6 +221,62 @@
 				20,
 				21,
 				22
+			],
+			"resources": [
+				{
+					"id": "channel_divinity",
+					"name": "Canalizar Divindade",
+					"values": [
+						"0",
+						"2",
+						"2",
+						"2",
+						"2",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"3",
+						"4",
+						"4",
+						"4"
+					],
+					"recharge": "short_one"
+				},
+				{
+					"id": "divine_intervention",
+					"name": "Intervenção Divina",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
 			]
 		}
 	]

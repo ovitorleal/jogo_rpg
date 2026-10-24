@@ -1,0 +1,895 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "subclass.berserker",
+			"name": "Caminho do Berserker",
+			"description": "Canaliza a Fúria em violência desenfreada.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.barbarian",
+			"features": [
+				{
+					"id": "feature.frenzy",
+					"name": "Frenesi",
+					"level": 3,
+					"description": "Com Ataque Imprudente em Fúria, o primeiro alvo atingido no turno com ataque de Força sofre dano extra: d6 igual ao bônus de dano da Fúria.",
+					"implemented": true
+				},
+				{
+					"id": "feature.mindless_rage",
+					"name": "Fúria Irracional",
+					"level": 6,
+					"description": "Imune a Enfeitiçado e Amedrontado em Fúria; entrar em Fúria encerra essas condições.",
+					"implemented": true
+				},
+				{
+					"id": "feature.retaliation",
+					"name": "Retaliação",
+					"level": 10,
+					"description": "Ao sofrer dano de criatura a até 1,5 m, usa a reação para um ataque corpo a corpo contra ela.",
+					"implemented": true
+				},
+				{
+					"id": "feature.intimidating_presence",
+					"name": "Presença Intimidadora",
+					"level": 14,
+					"description": "Ação bônus: criaturas escolhidas a até 9 m testam Sabedoria (CD 8 + Força + proficiência) ou ficam Amedrontadas por 1 minuto (repetem no fim de cada turno). Uma vez por descanso longo, ou gastando uma Fúria.",
+					"implemented": true
+				}
+			],
+			"resources": [
+				{
+					"id": "intimidating_presence",
+					"name": "Presença Intimidadora",
+					"values": [
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
+			]
+		},
+		{
+			"id": "subclass.lore",
+			"name": "Colégio do Conhecimento",
+			"description": "Coleciona saberes e segredos de todas as tradições.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.bard",
+			"features": [
+				{
+					"id": "feature.bonus_proficiencies_lore",
+					"name": "Proficiências Adicionais",
+					"level": 3,
+					"description": "Proficiência em três perícias à escolha.",
+					"implemented": true,
+					"grants": "skill",
+					"count": 3
+				},
+				{
+					"id": "feature.cutting_words",
+					"name": "Palavras Cortantes",
+					"level": 3,
+					"description": "Reação: gasta Inspiração de Bardo para subtrair o dado de uma jogada de dano, teste de atributo ou ataque bem-sucedido de criatura a até 18 m.",
+					"implemented": false
+				},
+				{
+					"id": "feature.magical_discoveries",
+					"name": "Descobertas Mágicas",
+					"level": 6,
+					"description": "Aprende duas magias das listas de Clérigo, Druida ou Mago, sempre preparadas.",
+					"implemented": false
+				},
+				{
+					"id": "feature.peerless_skill",
+					"name": "Perícia Inigualável",
+					"level": 14,
+					"description": "Ao falhar num teste de atributo ou ataque, gasta Inspiração de Bardo e soma o dado (não gasta se continuar falhando).",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "subclass.life",
+			"name": "Domínio da Vida",
+			"description": "Dedicado à energia positiva que sustenta a vida.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.cleric",
+			"features": [
+				{
+					"id": "feature.disciple_of_life",
+					"name": "Discípulo da Vida",
+					"level": 3,
+					"description": "Magias com espaço que curam restauram 2 + o círculo do espaço a mais.",
+					"implemented": false
+				},
+				{
+					"id": "feature.life_domain_spells",
+					"name": "Magias do Domínio da Vida",
+					"level": 3,
+					"description": "Sempre preparadas: Auxílio, Bênção, Curar Ferimentos, Restauração Menor (3); Palavra Curativa em Massa, Reviver (5); Aura de Vida, Proteção contra a Morte (7); Restauração Maior, Curar Ferimentos em Massa (9).",
+					"implemented": false
+				},
+				{
+					"id": "feature.preserve_life",
+					"name": "Preservar a Vida",
+					"level": 3,
+					"description": "Canalizar Divindade: restaura PV iguais a 5 x nível entre criaturas Sangrando a até 9 m (até metade do máximo de cada uma).",
+					"implemented": false
+				},
+				{
+					"id": "feature.blessed_healer",
+					"name": "Curandeiro Abençoado",
+					"level": 6,
+					"description": "Ao curar outros com espaço de magia, recupera 2 + o círculo do espaço.",
+					"implemented": false
+				},
+				{
+					"id": "feature.supreme_healing",
+					"name": "Cura Suprema",
+					"level": 17,
+					"description": "Dados de cura de magias e Canalizar Divindade usam o valor máximo.",
+					"implemented": false
+				}
+			],
+			"always_prepared": [
+				{
+					"level": 3,
+					"spells": [
+						"spell.bless",
+						"spell.cure_wounds"
+					]
+				}
+			]
+		},
+		{
+			"id": "subclass.land",
+			"name": "Círculo da Terra",
+			"description": "Guardiões do saber antigo ligado a uma paisagem.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.druid",
+			"features": [
+				{
+					"id": "feature.land_type",
+					"name": "Tipo de Terra",
+					"level": 3,
+					"description": "Escolhe a terra que define as Magias do Círculo e a resistência da Proteção da Natureza.",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "land.arid",
+							"name": "Árida",
+							"description": "Borrar, Mãos Flamejantes, Raio de Fogo; Bola de Fogo; Praga; Muralha de Pedra. Resistência a fogo."
+						},
+						{
+							"id": "land.polar",
+							"name": "Polar",
+							"description": "Nuvem de Névoa, Imobilizar Pessoa, Raio de Gelo; Tempestade de Granizo; Tempestade de Gelo; Cone de Frio. Resistência a frio."
+						},
+						{
+							"id": "land.temperate",
+							"name": "Temperada",
+							"description": "Passo Nebuloso, Toque Chocante, Sono; Relâmpago; Liberdade de Movimento; Caminhar em Árvores. Resistência a elétrico."
+						},
+						{
+							"id": "land.tropical",
+							"name": "Tropical",
+							"description": "Respingo Ácido, Raio Nauseante, Teia; Nuvem Fétida; Metamorfose; Praga de Insetos. Resistência a veneno."
+						}
+					]
+				},
+				{
+					"id": "feature.circle_of_the_land_spells",
+					"name": "Magias do Círculo da Terra",
+					"level": 3,
+					"description": "Tem preparadas as magias da terra escolhida para o seu nível de druida.",
+					"implemented": false
+				},
+				{
+					"id": "feature.lands_aid",
+					"name": "Auxílio da Terra",
+					"level": 3,
+					"description": "Ação de Magia gastando Forma Selvagem: esfera de 3 m a até 18 m; criaturas escolhidas testam Constituição contra 2d6 necrótico (metade com sucesso) e uma criatura recupera 2d6 PV (3d6 no 10, 4d6 no 14).",
+					"implemented": false
+				},
+				{
+					"id": "feature.natural_recovery",
+					"name": "Recuperação Natural",
+					"level": 6,
+					"description": "Uma magia do Círculo sem espaço por descanso longo; no descanso curto, recupera espaços somando até metade do nível (arredondado para cima).",
+					"implemented": false
+				},
+				{
+					"id": "feature.natures_ward",
+					"name": "Proteção da Natureza",
+					"level": 10,
+					"description": "Imune a Envenenado e resistente ao tipo de dano da terra escolhida.",
+					"implemented": false
+				},
+				{
+					"id": "feature.natures_sanctuary",
+					"name": "Santuário da Natureza",
+					"level": 14,
+					"description": "Gasta Forma Selvagem: cubo de 4,5 m de árvores espectrais por 1 minuto; você e aliados ganham meia cobertura e a resistência da Proteção da Natureza.",
+					"implemented": false
+				}
+			],
+			"resources": [
+				{
+					"id": "natural_recovery",
+					"name": "Recuperação Natural",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
+			]
+		},
+		{
+			"id": "subclass.champion",
+			"name": "Campeão",
+			"description": "Busca a perfeição física em combate.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.fighter",
+			"features": [
+				{
+					"id": "feature.improved_critical",
+					"name": "Crítico Aprimorado",
+					"level": 3,
+					"description": "Ataques com armas e desarmados são críticos com 19 ou 20.",
+					"implemented": true
+				},
+				{
+					"id": "feature.remarkable_athlete",
+					"name": "Atleta Notável",
+					"level": 3,
+					"description": "Vantagem em iniciativa e Força (Atletismo); após um crítico, move até metade do deslocamento sem provocar ataques de oportunidade.",
+					"implemented": true
+				},
+				{
+					"id": "feature.additional_fighting_style",
+					"name": "Estilo de Luta Adicional",
+					"level": 7,
+					"description": "Ganha outro talento de Estilo de Luta.",
+					"implemented": true,
+					"grants": "fighting_style"
+				},
+				{
+					"id": "feature.heroic_warrior",
+					"name": "Guerreiro Heroico",
+					"level": 10,
+					"description": "Em combate, ganha Inspiração Heroica no início do turno se não a tiver.",
+					"implemented": true
+				},
+				{
+					"id": "feature.superior_critical",
+					"name": "Crítico Superior",
+					"level": 15,
+					"description": "Críticos com 18 a 20.",
+					"implemented": true
+				},
+				{
+					"id": "feature.survivor",
+					"name": "Sobrevivente",
+					"level": 18,
+					"description": "Vantagem em testes contra a morte; no início do turno, Sangrando com 1+ PV, recupera 5 + Constituição.",
+					"implemented": true
+				}
+			]
+		},
+		{
+			"id": "subclass.open_hand",
+			"name": "Guerreiro da Mão Aberta",
+			"description": "Mestre das artes marciais desarmadas.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.monk",
+			"features": [
+				{
+					"id": "feature.open_hand_technique",
+					"name": "Técnica da Mão Aberta",
+					"level": 3,
+					"description": "Acertos da Rajada de Golpes impõem um efeito: Atordoar (sem ataques de oportunidade), Empurrar (Força ou 4,5 m) ou Derrubar (Destreza ou Caído).",
+					"implemented": true
+				},
+				{
+					"id": "feature.wholeness_of_body",
+					"name": "Plenitude do Corpo",
+					"level": 6,
+					"description": "Ação bônus: recupera dado de Artes Marciais + Sabedoria PV; usos = Sabedoria por descanso longo.",
+					"implemented": true
+				},
+				{
+					"id": "feature.fleet_step",
+					"name": "Passo Veloz",
+					"level": 11,
+					"description": "Após outra ação bônus, pode usar Passo do Vento em seguida.",
+					"implemented": true
+				},
+				{
+					"id": "feature.quivering_palm",
+					"name": "Palma Trêmula",
+					"level": 17,
+					"description": "Ao acertar desarmado, 4 Foco iniciam vibrações; depois, encerra para teste de Constituição contra 10d12 de energia (metade com sucesso).",
+					"implemented": true
+				}
+			],
+			"resources": [
+				{
+					"id": "wholeness_of_body",
+					"name": "Plenitude do Corpo",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis",
+						"wis"
+					],
+					"recharge": "long"
+				}
+			]
+		},
+		{
+			"id": "subclass.devotion",
+			"name": "Juramento de Devoção",
+			"description": "Segue os ideais de justiça, virtude e ordem.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.paladin",
+			"features": [
+				{
+					"id": "feature.devotion_spells",
+					"name": "Magias do Juramento de Devoção",
+					"level": 3,
+					"description": "Sempre preparadas: Proteção contra o Bem e o Mal, Escudo da Fé (3); Auxílio, Zona da Verdade (5); Sinal de Esperança, Dissipar Magia (9); Liberdade de Movimento, Guardião da Fé (13); Comunhão, Coluna de Chamas (17).",
+					"implemented": false
+				},
+				{
+					"id": "feature.sacred_weapon",
+					"name": "Arma Sagrada",
+					"level": 3,
+					"description": "Na ação de Ataque, gasta Canalizar Divindade: por 10 minutos soma o Carisma (mínimo +1) aos ataques com uma arma corpo a corpo, que pode causar dano radiante.",
+					"implemented": false
+				},
+				{
+					"id": "feature.aura_of_devotion",
+					"name": "Aura de Devoção",
+					"level": 7,
+					"description": "Você e aliados na Aura de Proteção são imunes a Enfeitiçado.",
+					"implemented": false
+				},
+				{
+					"id": "feature.smite_of_protection",
+					"name": "Golpe de Proteção",
+					"level": 15,
+					"description": "Ao conjurar Golpe Divino, você e aliados na aura têm meia cobertura até o seu próximo turno.",
+					"implemented": false
+				},
+				{
+					"id": "feature.holy_nimbus",
+					"name": "Nimbo Sagrado",
+					"level": 20,
+					"description": "Ação bônus por 10 minutos: vantagem em testes contra corruptores e mortos-vivos, inimigos que começam o turno na aura sofrem Carisma + proficiência de dano radiante; uma vez por descanso longo.",
+					"implemented": false
+				}
+			],
+			"resources": [
+				{
+					"id": "holy_nimbus",
+					"name": "Nimbo Sagrado",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1"
+					],
+					"recharge": "long"
+				}
+			],
+			"always_prepared": [
+				{
+					"level": 3,
+					"spells": [
+						"spell.shield_of_faith"
+					]
+				}
+			]
+		},
+		{
+			"id": "subclass.hunter",
+			"name": "Caçador",
+			"description": "Protege a civilização dos terrores da natureza.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.ranger",
+			"features": [
+				{
+					"id": "feature.hunters_lore",
+					"name": "Saber do Caçador",
+					"level": 3,
+					"description": "Sabe as imunidades, resistências e vulnerabilidades da criatura marcada pela Marca do Caçador.",
+					"implemented": false
+				},
+				{
+					"id": "feature.hunters_prey",
+					"name": "Presa do Caçador",
+					"level": 3,
+					"description": "Escolhe uma opção (pode trocar após descanso).",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "hunters_prey.colossus_slayer",
+							"name": "Matador de Colossos",
+							"description": "Uma vez por turno, +1d8 de dano com arma contra criatura que não está com PV máximos."
+						},
+						{
+							"id": "hunters_prey.horde_breaker",
+							"name": "Quebrador de Hordas",
+							"description": "Uma vez por turno, ataque extra com a mesma arma contra outra criatura a até 1,5 m do alvo original."
+						}
+					]
+				},
+				{
+					"id": "feature.defensive_tactics",
+					"name": "Táticas Defensivas",
+					"level": 7,
+					"description": "Escolhe uma opção (pode trocar após descanso).",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "defensive_tactics.escape_the_horde",
+							"name": "Escapar da Horda",
+							"description": "Ataques de oportunidade contra você têm desvantagem."
+						},
+						{
+							"id": "defensive_tactics.multiattack_defense",
+							"name": "Defesa contra Ataques Múltiplos",
+							"description": "Quem o acerta tem desvantagem nos demais ataques contra você no turno."
+						}
+					]
+				},
+				{
+					"id": "feature.superior_hunters_prey",
+					"name": "Presa do Caçador Superior",
+					"level": 11,
+					"description": "Uma vez por turno, o dano extra da Marca do Caçador também atinge outra criatura a até 9 m.",
+					"implemented": false
+				},
+				{
+					"id": "feature.superior_hunters_defense",
+					"name": "Defesa do Caçador Superior",
+					"level": 15,
+					"description": "Reação ao sofrer dano: resistência a esse tipo de dano até o fim do turno.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "subclass.thief",
+			"name": "Ladrão",
+			"description": "Furtividade, agilidade e mãos rápidas.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.rogue",
+			"features": [
+				{
+					"id": "feature.fast_hands",
+					"name": "Mãos Rápidas",
+					"level": 3,
+					"description": "Ação bônus: Prestidigitação (abrir fechadura, desarmar armadilha, bater carteira) ou usar um objeto/item mágico.",
+					"implemented": false
+				},
+				{
+					"id": "feature.second_story_work",
+					"name": "Trabalho no Segundo Andar",
+					"level": 3,
+					"description": "Deslocamento de escalada igual ao normal; salto usa a Destreza.",
+					"implemented": false
+				},
+				{
+					"id": "feature.supreme_sneak",
+					"name": "Furtividade Suprema",
+					"level": 9,
+					"description": "Golpe Astuto Ataque Furtivo (1d6): escondido, o ataque não revela você se terminar o turno com cobertura.",
+					"implemented": false
+				},
+				{
+					"id": "feature.use_magic_device",
+					"name": "Usar Dispositivo Mágico",
+					"level": 13,
+					"description": "Sintoniza até quatro itens; chance de não gastar cargas; usa qualquer pergaminho de magia.",
+					"implemented": false
+				},
+				{
+					"id": "feature.thiefs_reflexes",
+					"name": "Reflexos de Ladrão",
+					"level": 17,
+					"description": "Na primeira rodada de combate, tem dois turnos (o segundo na iniciativa - 10).",
+					"implemented": true
+				}
+			]
+		},
+		{
+			"id": "subclass.draconic",
+			"name": "Feitiçaria Dracônica",
+			"description": "Magia herdada de um dragão.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.sorcerer",
+			"features": [
+				{
+					"id": "feature.draconic_resilience",
+					"name": "Resiliência Dracônica",
+					"level": 3,
+					"description": "+3 PV máximos (+1 por nível seguinte); sem armadura, CA = 10 + Destreza + Carisma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.draconic_spells",
+					"name": "Magias Dracônicas",
+					"level": 3,
+					"description": "Sempre preparadas: Alterar-se, Orbe Cromático, Comando, Sopro do Dragão (3); Medo, Voo (5); Olho Arcano, Enfeitiçar Monstro (7); Lenda, Invocar Dragão (9).",
+					"implemented": false
+				},
+				{
+					"id": "feature.elemental_affinity",
+					"name": "Afinidade Elemental",
+					"level": 6,
+					"description": "Escolhe um tipo de dano: resistência e soma o Carisma a uma jogada de dano de magias desse tipo.",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "elemental_affinity.acid",
+							"name": "Ácido",
+							"description": ""
+						},
+						{
+							"id": "elemental_affinity.cold",
+							"name": "Frio",
+							"description": ""
+						},
+						{
+							"id": "elemental_affinity.fire",
+							"name": "Fogo",
+							"description": ""
+						},
+						{
+							"id": "elemental_affinity.lightning",
+							"name": "Elétrico",
+							"description": ""
+						},
+						{
+							"id": "elemental_affinity.poison",
+							"name": "Veneno",
+							"description": ""
+						}
+					]
+				},
+				{
+					"id": "feature.dragon_wings",
+					"name": "Asas de Dragão",
+					"level": 14,
+					"description": "Ação bônus: deslocamento de voo de 18 m por 1 hora; uma vez por descanso longo (ou 3 pontos de feitiçaria).",
+					"implemented": false
+				},
+				{
+					"id": "feature.dragon_companion",
+					"name": "Companheiro Dracônico",
+					"level": 18,
+					"description": "Conjura Invocar Dragão sem componente material e uma vez sem espaço por descanso longo.",
+					"implemented": false
+				}
+			],
+			"resources": [
+				{
+					"id": "dragon_wings",
+					"name": "Asas de Dragão",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
+			]
+		},
+		{
+			"id": "subclass.fiend",
+			"name": "Patrono Corruptor",
+			"description": "Pacto com um poder dos planos inferiores.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.warlock",
+			"features": [
+				{
+					"id": "feature.dark_ones_blessing",
+					"name": "Bênção do Obscuro",
+					"level": 3,
+					"description": "Ao reduzir um inimigo a 0 PV (ou alguém fazê-lo a até 3 m), ganha PV temporários iguais a Carisma + nível.",
+					"implemented": false
+				},
+				{
+					"id": "feature.fiend_spells",
+					"name": "Magias do Corruptor",
+					"level": 3,
+					"description": "Sempre preparadas: Mãos Flamejantes, Comando (3); Raio Ardente, Sugestão (5); Bola de Fogo, Nuvem Fétida (7); Escudo de Fogo, Muralha de Fogo (9); Missão, Praga de Insetos (11).",
+					"implemented": false
+				},
+				{
+					"id": "feature.dark_ones_own_luck",
+					"name": "Sorte do Obscuro",
+					"level": 6,
+					"description": "Soma 1d10 a um teste de atributo ou de resistência; usos = Carisma por descanso longo.",
+					"implemented": false
+				},
+				{
+					"id": "feature.fiendish_resilience",
+					"name": "Resiliência Corruptora",
+					"level": 10,
+					"description": "Escolhe um tipo de dano (exceto energia) após cada descanso: resistência a ele.",
+					"implemented": false,
+					"grants": "option",
+					"options": [
+						{
+							"id": "fiendish_resilience.acid",
+							"name": "Ácido",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.bludgeoning",
+							"name": "Contundente",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.cold",
+							"name": "Frio",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.fire",
+							"name": "Fogo",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.lightning",
+							"name": "Elétrico",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.necrotic",
+							"name": "Necrótico",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.piercing",
+							"name": "Perfurante",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.poison",
+							"name": "Veneno",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.psychic",
+							"name": "Psíquico",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.radiant",
+							"name": "Radiante",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.slashing",
+							"name": "Cortante",
+							"description": ""
+						},
+						{
+							"id": "fiendish_resilience.thunder",
+							"name": "Trovejante",
+							"description": ""
+						}
+					]
+				},
+				{
+					"id": "feature.hurl_through_hell",
+					"name": "Arremessar pelo Inferno",
+					"level": 14,
+					"description": "Uma vez por turno ao acertar: teste de Carisma ou 8d10 psíquico e Incapacitado até o fim do seu próximo turno; uma vez por descanso longo (ou gastando espaço de pacto).",
+					"implemented": false
+				}
+			],
+			"resources": [
+				{
+					"id": "dark_ones_own_luck",
+					"name": "Sorte do Obscuro",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha",
+						"cha"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "hurl_through_hell",
+					"name": "Arremessar pelo Inferno",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
+			],
+			"always_prepared": [
+				{
+					"level": 3,
+					"spells": [
+						"spell.burning_hands"
+					]
+				}
+			]
+		},
+		{
+			"id": "subclass.evoker",
+			"name": "Evocador",
+			"description": "Especialista em magias de efeitos elementais.",
+			"source": "SRD 5.2.1",
+			"class_id": "class.wizard",
+			"features": [
+				{
+					"id": "feature.evocation_savant",
+					"name": "Sábio da Evocação",
+					"level": 3,
+					"description": "Duas magias de evocação de até 2º círculo grátis no grimório (e uma a cada novo círculo).",
+					"implemented": false
+				},
+				{
+					"id": "feature.potent_cantrip",
+					"name": "Truque Potente",
+					"level": 3,
+					"description": "Truques que erram ou que o alvo resiste ainda causam metade do dano (sem efeitos extras).",
+					"implemented": false
+				},
+				{
+					"id": "feature.sculpt_spells",
+					"name": "Esculpir Magias",
+					"level": 6,
+					"description": "Em evocações, escolhe 1 + círculo criaturas que passam automaticamente e não sofrem dano de metade.",
+					"implemented": false
+				},
+				{
+					"id": "feature.empowered_evocation",
+					"name": "Evocação Fortalecida",
+					"level": 10,
+					"description": "Soma a Inteligência a uma jogada de dano das evocações de mago.",
+					"implemented": false
+				},
+				{
+					"id": "feature.overchannel",
+					"name": "Sobrecarga",
+					"level": 14,
+					"description": "Magia de mago de 1º a 5º que cause dano pode causar o dano máximo; depois do primeiro uso, sofre 2d12 necrótico por círculo (cumulativo).",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

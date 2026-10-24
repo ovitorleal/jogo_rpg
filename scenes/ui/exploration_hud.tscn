@@ -35,7 +35,7 @@ theme_override_colors/font_color = Color(0.902, 0.882, 0.827, 0.8)
 theme_override_colors/font_outline_color = Color(0.102, 0.078, 0.137, 1)
 theme_override_constants/outline_size = 3
 theme_override_font_sizes/font_size = 8
-text = "[C] Ficha · [I] Inventário · [J] Diário · [Esc] Menu"
+text = "[C] Ficha · [I] Inventário · [J] Diário · [L] Escolhas · [Esc] Menu"
 
 [node name="SheetPanel" parent="." instance=ExtResource("2_sheet")]
 unique_name_in_owner = true

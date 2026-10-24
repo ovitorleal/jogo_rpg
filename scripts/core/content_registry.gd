@@ -10,12 +10,40 @@ const DATA_ROOT := "res://data"
 
 const ABILITIES := ["str", "dex", "con", "int", "wis", "cha"]
 
+## Escolhas que uma característica pode conceder (ver CharacterChoices).
+const GRANTS := ["", "fighting_style", "feat", "epic_boon", "subclass", "weapon_mastery", "expertise", "skill",
+		"invocation", "metamagic", "option"]
+
 const FEATURE_FIELDS := {
 	"id": {"type": "string"},
 	"name": {"type": "string"},
 	"level": {"type": "int", "min": 1, "max": 20, "required": false, "default": 1},
 	"description": {"type": "string"},
 	"implemented": {"type": "bool"},
+	## Escolha concedida ao ganhar a característica e quantas opções escolher.
+	"grants": {"type": "string", "enum": GRANTS, "required": false, "default": ""},
+	"count": {"type": "int", "min": 0, "max": 10, "required": false, "default": 1},
+	## Quantidade por nível de classe (1..20), quando muda com o nível (ex.: Invocações Místicas).
+	"count_by_level": {"type": "array", "of": "int", "min": 0, "max": 20, "allow_duplicates": true,
+			"required": false, "default": []},
+	## Perícias permitidas em grants = "expertise"/"skill" (vazio = qualquer uma aplicável).
+	"skill_filter": {"type": "array", "of": "string", "ref": "skill", "required": false, "default": []},
+	## Opções de grants = "option" (ex.: Ordem Divina: Protetor ou Taumaturgo).
+	"options": {"type": "object_array", "required": false, "default": [], "fields": {
+		"id": {"type": "string"},
+		"name": {"type": "string"},
+		"description": {"type": "string"},
+	}},
+}
+
+## Recursos de classe: valores por nível (1..20) — número, dados ("1d6"), "cha"/"wis" (modificador,
+## mínimo 1) ou "5x" (5 x nível) — e recarga: short (tudo no curto), short_one (um uso no curto,
+## tudo no longo), long, none (só tabela, ex.: dano da Fúria).
+const RESOURCE_FIELDS := {
+	"id": {"type": "string"},
+	"name": {"type": "string"},
+	"values": {"type": "array", "of": "string", "allow_duplicates": true, "min_length": 20, "max_length": 20},
+	"recharge": {"type": "string", "enum": ["short", "short_one", "long", "none"]},
 }
 
 const COMMON_FIELDS := {
@@ -72,6 +100,13 @@ const TYPES := {
 					"required": false, "default": []},
 			"prepared_spells": {"type": "array", "of": "int", "min": 0, "max": 30, "allow_duplicates": true,
 					"required": false, "default": []},
+			## Maestria em Armas: quantas armas por nível (1..20) e quais armas podem ser escolhidas.
+			"weapon_mastery_counts": {"type": "array", "of": "int", "min": 0, "max": 10, "allow_duplicates": true,
+					"required": false, "default": []},
+			"weapon_mastery_rule": {"type": "string", "enum": ["", "melee", "proficient", "finesse_or_light"],
+					"required": false, "default": ""},
+			## Recursos com usos (Fúria, Inspiração, Foco...): valores por nível (1..20) e recarga.
+			"resources": {"type": "object_array", "required": false, "default": [], "fields": RESOURCE_FIELDS},
 		},
 	},
 	"spell": {
@@ -112,7 +147,39 @@ const TYPES := {
 			"ability_options": {"type": "array", "of": "string", "ref": "ability", "min_length": 3, "max_length": 3},
 			"skill_proficiencies": {"type": "array", "of": "string", "ref": "skill", "min_length": 2, "max_length": 2},
 			"tool_proficiency": {"type": "string"},
-			"origin_feat": {"type": "object_array", "fields": FEATURE_FIELDS, "min_length": 1, "max_length": 1},
+			"feat_id": {"type": "string", "ref": "feat"},
+			## Lista de magias do Iniciado em Magia concedido pelo antecedente ("" se outro talento).
+			"feat_spell_list": {"type": "string", "enum": ["", "class.cleric", "class.druid", "class.wizard"],
+					"required": false, "default": ""},
+		},
+	},
+	"feat": {
+		"dir": "feats",
+		"prefix": "feat.",
+		"fields": {
+			"category": {"type": "string", "enum": ["origin", "general", "fighting_style", "epic_boon"]},
+			"prerequisite_level": {"type": "int", "min": 1, "max": 20, "required": false, "default": 1},
+			"prerequisite_ability": {"type": "string", "enum": ["", "str_or_dex_13"], "required": false, "default": ""},
+			"requires_feature": {"type": "string", "enum": ["", "spellcasting"], "required": false, "default": ""},
+			"repeatable": {"type": "bool", "required": false, "default": false},
+			"ability_choices": {"type": "array", "of": "string", "ref": "ability", "required": false, "default": []},
+			"ability_points": {"type": "int", "min": 0, "max": 2, "required": false, "default": 0},
+			"ability_max": {"type": "int", "min": 20, "max": 30, "required": false, "default": 20},
+			"implemented": {"type": "bool"},
+		},
+	},
+	"subclass": {
+		"dir": "subclasses",
+		"prefix": "subclass.",
+		"fields": {
+			"class_id": {"type": "string", "ref": "class"},
+			"features": {"type": "object_array", "fields": FEATURE_FIELDS},
+			"resources": {"type": "object_array", "required": false, "default": [], "fields": RESOURCE_FIELDS},
+			## Magias sempre preparadas por nível de classe (Domínio, Juramento, Patrono...).
+			"always_prepared": {"type": "object_array", "required": false, "default": [], "fields": {
+				"level": {"type": "int", "min": 1, "max": 20},
+				"spells": {"type": "array", "of": "string"},
+			}},
 		},
 	},
 	"monster": {

@@ -33,6 +33,8 @@ var _species_skills: Array[StringName] = []
 var _expertise: Array[StringName] = []
 var _cantrips: Array[String] = []
 var _prepared: Array[String] = []
+## Escolhas de talentos/características (CharacterChoices), editadas pelo ChoicesPanel.
+var _choices: Dictionary = {}
 var _character: CharacterData = null
 var _refresh_queued := false
 ## Aparência completa escolhida (todas as categorias e índices de cor).
@@ -59,6 +61,7 @@ var _species_skills_box: VBoxContainer
 var _expertise_box: VBoxContainer
 var _spells_section: Control
 var _spells_box: VBoxContainer
+var _choices_panel: ChoicesPanel
 var _look_options: Dictionary = {}
 var _look_rows: Dictionary = {}
 var _swatch_boxes: Dictionary = {}
@@ -110,6 +113,7 @@ func build_choices() -> Dictionary:
 		"expertise": _expertise.duplicate(),
 		"cantrips": _cantrips.duplicate(),
 		"prepared_spells": _prepared.duplicate(),
+		"choices": _choices.duplicate(true),
 		"appearance": _look.duplicate(),
 	}
 
@@ -241,6 +245,11 @@ func _build_form() -> void:
 	_form.add_child(_species_skills_box)
 	_expertise_box = VBoxContainer.new()
 	_form.add_child(_expertise_box)
+
+	_add_section("Talentos e escolhas")
+	_choices_panel = ChoicesPanel.new()
+	_choices_panel.changed.connect(_on_choices_changed)
+	_form.add_child(_choices_panel)
 
 	_add_section("Magias")
 	_spells_section = _form.get_child(_form.get_child_count() - 1)
@@ -420,6 +429,9 @@ func _refresh() -> void:
 	else:
 		_preview.show_errors("Ajuste as escolhas para continuar:", result[1])
 	_start_button.disabled = _character == null
+	if _character != null:
+		_choices = _character.choices.duplicate(true)
+		_choices_panel.show_choices(_character, _registry)
 	_update_look_preview()
 
 
@@ -603,6 +615,12 @@ func _add_spell_group(title: String, options: Array[String], chosen: Array[Strin
 		check.disabled = not id in chosen and chosen.size() >= count
 		check.toggled.connect(_on_spell_toggled.bind(chosen, id))
 		grid.add_child(check)
+
+
+func _on_choices_changed() -> void:
+	if _character != null:
+		_choices = _character.choices.duplicate(true)
+	_queue_refresh()
 
 
 func _on_spell_toggled(pressed: bool, chosen: Array[String], spell_id: String) -> void:
