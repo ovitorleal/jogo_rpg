@@ -1,7 +1,9 @@
 class_name ExplorationMap
 extends Node2D
-## Controlador de um mapa de exploração: limites da câmera, aviso de interação
-## e mensagens. Espera os nós únicos %Ground, %Player e %Hud.
+## Controlador de um mapa de exploração: limites da câmera, aviso de interação,
+## mensagens e ficha do personagem. Espera os nós únicos %Ground, %Player e %Hud.
+
+const NO_CHARACTER_MESSAGE := "Nenhum personagem no grupo. Use \"Novo jogo\" no menu para criar um."
 
 @onready var _ground: TileMapLayer = %Ground
 @onready var _player: Player = %Player
@@ -18,19 +20,46 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(&"interact"):
+	if event.is_action_pressed(&"character_sheet"):
+		get_viewport().set_input_as_handled()
+		toggle_character_sheet()
+	elif event.is_action_pressed(&"ui_cancel") and _hud.is_sheet_open():
+		get_viewport().set_input_as_handled()
+		toggle_character_sheet()
+	elif event.is_action_pressed(&"interact"):
 		get_viewport().set_input_as_handled()
 		handle_interact()
 
 
 ## Fecha a mensagem aberta ou, se não houver, aciona o objeto próximo ao jogador.
+## Com a ficha aberta, não faz nada.
 func handle_interact() -> void:
+	if _hud.is_sheet_open():
+		return
 	if _hud.is_message_open():
 		_hud.hide_message()
 		_player.input_enabled = true
 		_on_interaction_target_changed(_player.get_interaction_target())
 		return
 	_player.try_interact()
+
+
+## Abre ou fecha a ficha do líder do grupo. Não abre por cima de uma mensagem.
+func toggle_character_sheet() -> void:
+	if _hud.is_sheet_open():
+		_hud.hide_sheet()
+		_player.input_enabled = true
+		_on_interaction_target_changed(_player.get_interaction_target())
+		return
+	if _hud.is_message_open():
+		return
+	var leader: CharacterData = PartyManager.get_leader()
+	_player.input_enabled = false
+	_hud.hide_prompt()
+	if leader == null:
+		_hud.show_message(NO_CHARACTER_MESSAGE)
+		return
+	_hud.show_sheet(CharacterSheet.build(leader, Content.registry))
 
 
 ## Área do mapa em pixels, a partir dos tiles usados.
@@ -50,7 +79,7 @@ func _configure_camera_limits() -> void:
 
 
 func _on_interaction_target_changed(target: Interactable) -> void:
-	if target == null or _hud.is_message_open():
+	if target == null or _hud.is_message_open() or _hud.is_sheet_open():
 		_hud.hide_prompt()
 	else:
 		_hud.show_prompt(target.prompt_text)

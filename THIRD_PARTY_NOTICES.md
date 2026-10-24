@@ -1,5 +1,14 @@
 # Avisos de terceiros
 
+## System Reference Document 5.2
+
+O jogo usa regras e conteúdo do SRD 5.2.1 (ver `docs/RULES_POLICY.md`). Atribuição exibida no jogo em
+Tela de título → Créditos:
+
+> This work includes material from the System Reference Document 5.2 ("SRD 5.2") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.
+
+Este projeto não é um produto oficial de Dungeons & Dragons e não é afiliado à Wizards of the Coast.
+
 ## Godot Engine
 
 O build distribuído inclui o motor Godot Engine.
@@ -30,11 +39,5 @@ OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWA
 ```
 
 O Godot inclui componentes de terceiros (bibliotecas e a fonte padrão do tema) com licenças próprias,
-listados em `COPYRIGHT.txt` do repositório do Godot. **Pendente:** incluir esses avisos numa tela de
-créditos do jogo antes da publicação (Fase 8).
-
-## System Reference Document 5.2
-
-Ainda **não** utilizado (nenhuma regra implementada). Quando for, incluir no jogo e aqui:
-
-> This work includes material from the System Reference Document 5.2 ("SRD 5.2") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode.
+listados em `COPYRIGHT.txt` do repositório do Godot. A tela de Créditos menciona isso; **pendente** antes da
+publicação (Fase 8): incluir o texto completo desses avisos no jogo ou junto ao build.

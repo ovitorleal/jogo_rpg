@@ -1,7 +1,19 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://assets/characters/placeholder_hero.png" id="2_hero"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_credits"]
+bg_color = Color(0.102, 0.078, 0.137, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.522, 0.592, 0.722, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -44,7 +56,7 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.522, 0.592, 0.722, 1)
 theme_override_font_sizes/font_size = 12
-text = "Protótipo — Fase 1"
+text = "Protótipo — Fase 2"
 horizontal_alignment = 1
 
 [node name="HeroSprite" type="TextureRect" parent="Center/Menu"]
@@ -69,6 +81,13 @@ layout_mode = 2
 size_flags_horizontal = 4
 disabled = true
 text = "Continuar"
+
+[node name="CreditsButton" type="Button" parent="Center/Menu"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(160, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Créditos"
 
 [node name="QuitButton" type="Button" parent="Center/Menu"]
 unique_name_in_owner = true
@@ -102,3 +121,43 @@ grow_vertical = 0
 theme_override_colors/font_color = Color(0.4, 0.4, 0.45, 1)
 theme_override_font_sizes/font_size = 8
 horizontal_alignment = 2
+
+[node name="CreditsPanel" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 30.0
+offset_right = -40.0
+offset_bottom = -30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_credits")
+
+[node name="Margin" type="MarginContainer" parent="CreditsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="CreditsPanel/Margin"]
+layout_mode = 2
+
+[node name="CreditsText" type="RichTextLabel" parent="CreditsPanel/Margin/Content"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 8
+theme_override_font_sizes/bold_font_size = 8
+bbcode_enabled = true
+
+[node name="CloseCreditsButton" type="Button" parent="CreditsPanel/Margin/Content"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Fechar"

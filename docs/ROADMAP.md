@@ -3,26 +3,32 @@
 | Fase | Descrição | Estado |
 |---|---|---|
 | 0 | Fundação técnica | Concluída (2026-10-23) |
-| 1 | Primeiro mapa | **Concluída** (2026-10-23) |
-| 2 | Modelo de personagens | Próxima |
-| 3 | Combate | — |
+| 1 | Primeiro mapa | Concluída (2026-10-23) |
+| 2 | Modelo de personagens | **Concluída** (2026-10-23) |
+| 3 | Combate | Próxima |
 | 4 | Viagens e encontros | — |
 | 5 | Progressão e conteúdo | — |
 | 6 | Salvamento e integração | — |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
 
+## Fase 2 — resultado
+
+Critério: "o personagem pode ser criado, consultado e salvo sem inconsistências conhecidas". Atendido, com o salvamento
+limitado à serialização validada (gravação/leitura de arquivo testada; o `SaveManager` com slot e autosave é a Fase 6).
+
+- Motor de regras SRD 5.2.1 em `scripts/rules/` (lista completa em `docs/RULES_POLICY.md`).
+- Conteúdo em JSON validado: 2 classes, 2 espécies, 2 antecedentes, 11 itens; diagnósticos com arquivo, id e campo.
+- Criação de personagem com prévia ao vivo; ficha no mapa com a tecla C; personagem mantido entre cenas.
+- Créditos com a atribuição CC BY 4.0 do SRD, aviso de produto não oficial e aviso do Godot.
+- Testes: 73/73 passando (55 novos). Dois bugs reais encontrados pelos próprios testes e corrigidos:
+  CA de armadura pesada aplicava Destreza negativa; `versatile_damage` vazio explícito era rejeitado.
+- Navegador (build Web): conteúdo carregado do `.pck`, criação (troca de classe, perícias, limite de escolhas, erros na prévia),
+  início da aventura, ficha no mapa (abre com C, fecha com Esc), créditos. Sem erros no console.
+
 ## Fase 1 — resultado
 
-Critério: "o personagem pode andar pelo mapa, colidir com obstáculos e interagir com pelo menos um objeto". Atendido.
-
-- Mapa de teste de 60×34 tiles: estradas, lago, ruína, rochas, arbustos. Muros, água, rochas e arbustos têm colisão.
-- Personagem com movimento em 8 direções (WASD/setas), câmera com suavização limitada às bordas do mapa.
-- Placa interativa: aviso "[E] Ler placa", mensagem com bloqueio de movimento, fechamento com E/Espaço/Enter.
-- "Novo jogo" abre o mapa de teste.
-- Testes: 18/18 passando (9 novos de exploração usando a física real do motor). Checagem de mutação: sem a máscara de
-  colisão o jogador atravessa o muro (x = −25), confirmando que o teste de colisão detecta a regressão.
-- Navegador (build Web, Chromium): título → mapa, movimento com câmera, aviso e mensagem da placa, sem erros no console.
+- Mapa de teste 60×34 com colisões; movimento em 8 direções; câmera limitada; placa interativa. 18 testes na época.
 
 ## Fase 0 — resultado
 
@@ -32,11 +38,13 @@ Critério: "o personagem pode andar pelo mapa, colidir com obstáculos e interag
 ## Problemas conhecidos
 
 - O projeto está dentro do OneDrive: `.godot/` e `exports/` (ignorados pelo Git, não pelo OneDrive) são sincronizados.
-  Considerar mover o repositório ou excluir essas pastas da sincronização.
-- Observado uma vez no navegador: a tela de título passou para o mapa sem input visível logo após abrir o painel do navegador.
-  Não reproduzido em três recargas seguintes (mais de 12 s parado). Provável clique de foco no botão central; monitorar.
+- Avanço da tela de título sem input, observado duas vezes no painel de navegador do Claude logo após o painel mudar de
+  largura. Com instrumentação de eventos, três carregamentos não registraram nenhum evento de entrada nem avanço. O painel
+  roda a ~2 quadros/s quando fora de foco, o que atrasa a tela em relação ao estado real; provável clique entregue durante o
+  redimensionamento do painel. Verificar num navegador comum antes da Fase 8.
 - Não há como voltar do mapa para o título (sem menu de pausa ainda).
 - Herói tem um único quadro (sem animação de caminhada).
+- Fontes pequenas (8–9 px na resolução interna, 16–18 px na tela em 1280×720): legíveis, mas revisar na direção de UI.
 - Persistência de `user://` na Web ainda não verificada (Fase 6).
 
 ## Decisões pendentes (responsável do projeto)
@@ -45,9 +53,11 @@ Critério: "o personagem pode andar pelo mapa, colidir com obstáculos e interag
 - Licença do código e dos assets próprios (`LICENSE` ainda não criado).
 - Escala dos personagens: 32×32 (atual) ou 48×48.
 - Biblioteca de testes: manter o executor próprio ou adotar GUT/gdUnit4 (ambos MIT).
+- Mais classes/espécies/antecedentes do SRD no MVP, ou manter os dois de cada até o vertical slice.
 
 ## Próxima tarefa concreta
 
-Fase 2: criar `scripts/rules/` com atributos e modificadores (SRD 5.2.1), proficiência por nível, testes de atributo/perícia/resistência
-com vantagem/desvantagem e dado com semente configurável; modelo de dados de personagem serializável; testes em `tests/rules/`.
-Ficha e criação básica de personagem vêm depois do motor de regras estar testado.
+Fase 3 (combate), primeira fatia: `scripts/combat/` com `CombatManager` (estado explícito: preparação → iniciativa → turnos →
+fim), ordem de iniciativa com desempate determinístico, ataque corpo a corpo e à distância (bônus de ataque com proficiência em
+armas, Força/Destreza e acuidade, 20 natural = crítico, 1 natural = erro), dano com dados de crítico dobrados, PV e morte/derrota
+simplificada; um monstro do SRD em `data/monsters/`; testes de regras antes da cena de combate.
