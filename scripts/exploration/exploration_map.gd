@@ -11,6 +11,9 @@ const CONFIRM_HINT := "[E] Confirmar · [Esc] Cancelar"
 
 ## Ação aguardando confirmação (texto do Interactable.action).
 var _pending_action: String = ""
+## Conversa em andamento (null fora de diálogo) e avisos acumulados durante ela.
+var _dialogue: DialogueRunner = null
+var _dialogue_notes: Array[String] = []
 
 @onready var _ground: TileMapLayer = %Terrain.get_node("Ground")
 @onready var _player: Player = %Player
@@ -36,18 +39,35 @@ func _ready() -> void:
 		var trigger := node as EncounterTrigger
 		if trigger != null and is_ancestor_of(trigger) and not trigger.is_queued_for_deletion():
 			trigger.triggered.connect(_on_encounter_triggered)
+	_hud.dialogue_choice.connect(choose_dialogue_option)
+	var notes: Array[String] = []
 	var message := ExplorationManager.take_return_message()
 	if not message.is_empty():
-		_show_player_line(message)
+		notes.append(message)
+	notes.append_array(QuestManager.take_pending_messages())
+	var map_id := _map_id()
+	if not map_id.is_empty():
+		notes.append_array(QuestManager.notify("reach_map", map_id))
+	if not notes.is_empty():
+		_show_player_line("\n".join(notes))
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"character_sheet"):
 		get_viewport().set_input_as_handled()
 		toggle_character_sheet()
-	elif event.is_action_pressed(&"ui_cancel") and _hud.is_sheet_open():
+	elif event.is_action_pressed(&"inventory"):
 		get_viewport().set_input_as_handled()
-		toggle_character_sheet()
+		toggle_inventory()
+	elif event.is_action_pressed(&"journal"):
+		get_viewport().set_input_as_handled()
+		toggle_journal()
+	elif event.is_action_pressed(&"ui_cancel") and _hud.is_overlay_open():
+		get_viewport().set_input_as_handled()
+		close_overlays()
+	elif event.is_action_pressed(&"ui_cancel") and _dialogue != null:
+		get_viewport().set_input_as_handled()
+		end_dialogue()
 	elif event.is_action_pressed(&"ui_cancel") and _hud.is_message_open():
 		get_viewport().set_input_as_handled()
 		cancel_message()
@@ -59,7 +79,12 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Fecha a mensagem aberta ou, se não houver, aciona o objeto próximo ao jogador.
 ## Com a ficha aberta, não faz nada.
 func handle_interact() -> void:
-	if _hud.is_sheet_open():
+	if _hud.is_overlay_open():
+		return
+	if _dialogue != null:
+		# Nó sem escolhas: E encerra; com escolhas, o jogador escolhe pelos botões.
+		if _dialogue.choices().is_empty():
+			end_dialogue()
 		return
 	if _hud.is_message_open():
 		var action := _pending_action
@@ -83,20 +108,109 @@ func cancel_message() -> void:
 
 ## Abre ou fecha a ficha do líder do grupo. Não abre por cima de uma mensagem.
 func toggle_character_sheet() -> void:
-	if _hud.is_sheet_open():
-		_hud.hide_sheet()
-		_player.input_enabled = true
-		_on_interaction_target_changed(_player.get_interaction_target())
+	_toggle_overlay("sheet")
+
+
+func toggle_inventory() -> void:
+	_toggle_overlay("inventory")
+
+
+func toggle_journal() -> void:
+	_toggle_overlay("journal")
+
+
+func close_overlays() -> void:
+	_hud.hide_overlays()
+	_player.input_enabled = true
+	_on_interaction_target_changed(_player.get_interaction_target())
+
+
+## Ficha, inventário e diário: um por vez; a mesma tecla fecha.
+func _toggle_overlay(kind: String) -> void:
+	var open := {"sheet": _hud.is_sheet_open(), "inventory": _hud.inventory_panel.visible,
+			"journal": _hud.journal_panel.visible}
+	if open[kind]:
+		close_overlays()
 		return
 	if _hud.is_message_open():
 		return
 	var leader: CharacterData = PartyManager.get_leader()
 	_player.input_enabled = false
 	_hud.hide_prompt()
-	if leader == null:
+	if leader == null and kind != "journal":
 		_hud.show_message(NO_CHARACTER_MESSAGE)
 		return
-	_hud.show_sheet(CharacterSheet.build(leader, Content.registry))
+	match kind:
+		"sheet":
+			_hud.show_sheet(CharacterSheet.build(leader, Content.registry))
+		"inventory":
+			_hud.show_inventory(PartyManager.inventory, leader, Content.registry)
+		"journal":
+			_hud.show_journal(QuestManager.log, Content.registry)
+
+
+# --- Diálogo ------------------------------------------------------------------
+
+func start_dialogue(dialogue_id: String) -> void:
+	var entry := Content.registry.get_entry("dialogue", dialogue_id)
+	if entry.is_empty() or not PartyManager.has_party():
+		_show_player_line(NO_CHARACTER_MESSAGE if not PartyManager.has_party() else "...")
+		return
+	_dialogue = DialogueRunner.new()
+	_dialogue_notes.clear()
+	_dialogue.begin(entry, QuestManager.log, PartyManager.members, PartyManager.inventory, Content.registry)
+	_player.input_enabled = false
+	_hud.hide_prompt()
+	_show_dialogue_node()
+
+
+func choose_dialogue_option(index: int) -> void:
+	if _dialogue == null:
+		return
+	var result := _dialogue.choose(index)
+	if not result["ok"]:
+		return
+	_dialogue_notes.append_array(result["lines"])
+	if _dialogue.finished:
+		end_dialogue()
+	else:
+		_show_dialogue_node()
+
+
+func end_dialogue() -> void:
+	_dialogue = null
+	_hud.hide_message()
+	_player.input_enabled = true
+	if not _dialogue_notes.is_empty():
+		var notes := "\n".join(_dialogue_notes)
+		_dialogue_notes.clear()
+		_hud.show_message(notes)
+		_player.input_enabled = false
+		return
+	_on_interaction_target_changed(_player.get_interaction_target())
+
+
+func is_in_dialogue() -> bool:
+	return _dialogue != null
+
+
+func _show_dialogue_node() -> void:
+	var portrait_path := str(_dialogue.dialogue.get("portrait", ""))
+	var portrait: Texture2D = load(portrait_path) if not portrait_path.is_empty() else null
+	var options: Array[String] = []
+	for choice in _dialogue.choices():
+		options.append(choice["text"])
+	var text: String = _dialogue.node["text"]
+	if not _dialogue_notes.is_empty():
+		text = "%s\n[%s]" % [text, " · ".join(_dialogue_notes)]
+	_hud.show_dialogue(_dialogue.speaker(), portrait, text, options)
+
+
+func _map_id() -> String:
+	for id in Content.registry.ids("map"):
+		if Content.registry.get_entry("map", id).get("scene") == scene_file_path:
+			return id
+	return ""
 
 
 ## Área do mapa em pixels, a partir dos tiles usados.
@@ -116,13 +230,16 @@ func _configure_camera_limits() -> void:
 
 
 func _on_interaction_target_changed(target: Interactable) -> void:
-	if target == null or _hud.is_message_open() or _hud.is_sheet_open():
+	if target == null or _hud.is_message_open() or _hud.is_overlay_open():
 		_hud.hide_prompt()
 	else:
 		_hud.show_prompt(target.prompt_text)
 
 
 func _on_interacted(source: Interactable) -> void:
+	if source.action.begins_with("talk:"):
+		start_dialogue(source.action.trim_prefix("talk:"))
+		return
 	if source.message_text.is_empty():
 		return
 	if not source.action.is_empty():

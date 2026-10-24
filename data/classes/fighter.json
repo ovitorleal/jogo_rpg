@@ -7,18 +7,50 @@
 			"description": "Especialista em armas e armaduras, treinado para resistir e vencer pelo combate.",
 			"source": "SRD 5.2.1",
 			"hit_die": 10,
-			"primary_abilities": ["str", "dex"],
-			"saving_throws": ["str", "con"],
+			"primary_abilities": [
+				"str",
+				"dex"
+			],
+			"saving_throws": [
+				"str",
+				"con"
+			],
 			"skill_choice_count": 2,
-			"skill_options": ["acrobatics", "animal_handling", "athletics", "history", "insight",
-				"intimidation", "persuasion", "perception", "survival"],
+			"skill_options": [
+				"acrobatics",
+				"animal_handling",
+				"athletics",
+				"history",
+				"insight",
+				"intimidation",
+				"persuasion",
+				"perception",
+				"survival"
+			],
 			"expertise_choices": 0,
-			"armor_training": ["light", "medium", "heavy", "shield"],
-			"weapon_training": ["simple", "martial"],
-			"suggested_scores": [15, 13, 14, 8, 12, 10],
+			"armor_training": [
+				"light",
+				"medium",
+				"heavy",
+				"shield"
+			],
+			"weapon_training": [
+				"simple",
+				"martial"
+			],
+			"suggested_scores": [
+				15,
+				13,
+				14,
+				8,
+				12,
+				10
+			],
 			"starting_armor": "item.chain_mail",
 			"starting_shield": true,
-			"starting_weapons": ["item.longsword"],
+			"starting_weapons": [
+				"item.longsword"
+			],
 			"features": [
 				{
 					"id": "feature.fighting_style",
@@ -39,6 +71,20 @@
 					"name": "Maestria em Armas",
 					"level": 1,
 					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.action_surge",
+					"name": "Surto de Ação",
+					"level": 2,
+					"description": "Uma ação extra no turno, uma vez por descanso.",
+					"implemented": false
+				},
+				{
+					"id": "feature.tactical_mind",
+					"name": "Mente Tática",
+					"level": 2,
+					"description": "Gasta Retomar o Fôlego para melhorar um teste de atributo que falhou.",
 					"implemented": false
 				}
 			]

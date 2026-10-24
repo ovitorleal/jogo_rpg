@@ -7,18 +7,50 @@
 			"description": "Caçador das fronteiras que mistura perícia marcial e magia da natureza.",
 			"source": "SRD 5.2.1",
 			"hit_die": 10,
-			"primary_abilities": ["dex", "wis"],
-			"saving_throws": ["str", "dex"],
+			"primary_abilities": [
+				"dex",
+				"wis"
+			],
+			"saving_throws": [
+				"str",
+				"dex"
+			],
 			"skill_choice_count": 3,
-			"skill_options": ["animal_handling", "athletics", "insight", "investigation", "nature", "perception",
-				"stealth", "survival"],
+			"skill_options": [
+				"animal_handling",
+				"athletics",
+				"insight",
+				"investigation",
+				"nature",
+				"perception",
+				"stealth",
+				"survival"
+			],
 			"expertise_choices": 0,
-			"armor_training": ["light", "medium", "shield"],
-			"weapon_training": ["simple", "martial"],
-			"suggested_scores": [12, 15, 13, 8, 14, 10],
+			"armor_training": [
+				"light",
+				"medium",
+				"shield"
+			],
+			"weapon_training": [
+				"simple",
+				"martial"
+			],
+			"suggested_scores": [
+				12,
+				15,
+				13,
+				8,
+				14,
+				10
+			],
 			"starting_armor": "item.studded_leather_armor",
 			"starting_shield": false,
-			"starting_weapons": ["item.scimitar", "item.shortsword", "item.longbow"],
+			"starting_weapons": [
+				"item.scimitar",
+				"item.shortsword",
+				"item.longbow"
+			],
 			"features": [
 				{
 					"id": "feature.spellcasting_ranger",
@@ -39,6 +71,20 @@
 					"name": "Maestria em Armas",
 					"level": 1,
 					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.deft_explorer",
+					"name": "Explorador Hábil",
+					"level": 2,
+					"description": "Especialização em uma perícia e idiomas extras.",
+					"implemented": false
+				},
+				{
+					"id": "feature.fighting_style_ranger",
+					"name": "Estilo de Luta",
+					"level": 2,
+					"description": "Escolha um talento de estilo de luta.",
 					"implemented": false
 				}
 			]

@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.5.0] — 2026-10-24 — Fase 5
+
+### Adicionado
+- `Progression` (tabela de XP do SRD, subida de nível com PV e características); características de nível 2 das 12 classes.
+- `Inventory` (pilhas, ouro, equipar/trocar/remover, consumíveis, recompensas, serialização); Poção de Cura e Rações.
+- Ação bônus no combate e comando `use_item` (poção); botão "Poção" na cena de combate; recompensas dos encontros goblins.
+- Missões (`QuestLog`, autoload `QuestManager`, `data/quests/`) e diálogos em dados (`DialogueRunner`, `data/dialogues/`).
+- Guarda Amara (NPC com sprite e retrato) e duas missões encadeadas.
+- Telas de Inventário (I) e Diário (J); escolhas de diálogo na caixa de fala.
+- Ícones de itens; teste que carrega todos os scripts e cenas.
+- 24 testes novos (total 170).
+
+### Alterado
+- Rações saíram de `PartyManager.supplies` e passaram ao inventário (`PartyManager.inventory`).
+- XP concedido em combate, eventos e missões passa pela progressão (pode subir de nível).
+- Executor de testes reprova scripts que não compilam e erros de script em tempo de execução.
+
+### Corrigido
+- Teste da tela de viagem que interrompia por erro de script e contava como aprovado.
+- Foco adiado em botão de diálogo já removido.
+
 ## [0.4.0] — 2026-10-24 — Fase 4
 
 ### Adicionado

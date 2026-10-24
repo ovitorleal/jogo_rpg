@@ -69,6 +69,17 @@
 | Entradas de mapa como `Marker2D` em `Entrances/` | Chegada de viagem posiciona o jogador sem coordenadas no código |
 | `CharacterData` esquema 2 (`hit_dice_spent`) com `migrate()` | Primeira migração de dados salvos, testada |
 
+### Fase 5
+
+| Decisão | Motivo |
+|---|---|
+| `Inventory` do grupo (pilhas + ouro) separado do equipamento em `CharacterData` | Equipar move itens entre os dois; save simples |
+| `QuestLog` e `DialogueRunner` puros e serializáveis; autoload `QuestManager` | Testáveis sem cena; prontos para o salvamento |
+| Diálogos em dados com condições/ações declarativas (`quest_ready:<id>`, `start_quest:<id>`...) validadas no carregamento | Conteúdo narrativo sem código e sem referências quebradas |
+| Objetivos avançam por notificações (`defeat_encounter`, `reach_map`); avisos de outras cenas ficam pendentes | Combate e viagem não conhecem missões |
+| Executor de testes reprova scripts que não compilam e erros de script durante um teste (`Logger`) | Antes, um erro em tempo de execução podia passar como teste aprovado |
+| Teste que carrega todos os scripts e cenas | Nenhum script quebrado passa sem ser carregado por algum teste |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,
@@ -106,6 +117,14 @@ Persistência e Ferramentas. Estado atual:
 - `TravelSystem`: trechos, relógio, rações, eventos com escolhas e testes de perícia, combate pendente, descansos, chegada.
 - `travel_scene` + `RouteStrip`: faixa ilustrada com o herói andando de marco em marco, painel de eventos, ações.
 - `Rest` (`scripts/characters/`): Dados de Vida e descanso longo.
+
+**Sistemas de jogo — progressão, inventário, missões e diálogo**
+- `Progression` (`scripts/characters/`): XP, níveis, PV e características novas.
+- `Inventory` (`scripts/inventory/`): pilhas, ouro, recompensas, equipar/desequipar, consumíveis, serialização.
+- `QuestLog` + autoload `QuestManager` (`scripts/quests/`): estado das missões, objetivos, recompensas.
+- `DialogueRunner` (`scripts/dialogue/`): nós, condições, escolhas e ações de diálogo.
+- `Npc` (`scripts/exploration/npc.gd`): Interactable com sprite; ação `talk:<diálogo>`.
+- UI: `InventoryPanel` (I), `JournalPanel` (J), escolhas de diálogo na caixa de fala do HUD.
 
 **Sistemas de jogo — exploração** (`scripts/exploration/`)
 - Autoload `ExplorationManager`: retorno ao mapa, gatilhos resolvidos/desarmados, último resultado.

@@ -5,11 +5,25 @@ extends SceneTree
 
 const TEST_ROOT := "res://tests"
 
+
+## Captura erros de script em tempo de execução: um teste interrompido por erro reprova,
+## mesmo sem nenhuma asserção falhar. Erros comuns (push_error) não reprovam.
+class ScriptErrorCatcher extends Logger:
+	var errors: Array[String] = []
+
+	func _log_error(_function: String, file: String, line: int, code: String, rationale: String,
+			_editor_notify: bool, error_type: int, _script_backtraces: Array[ScriptBacktrace]) -> void:
+		if error_type == ERROR_TYPE_SCRIPT:
+			errors.append("%s (%s:%d)" % [rationale if not rationale.is_empty() else code, file.get_file(), line])
+
+
 var _passed: int = 0
 var _failed: int = 0
+var _catcher := ScriptErrorCatcher.new()
 
 
 func _initialize() -> void:
+	OS.add_logger(_catcher)
 	var files: Array[String] = []
 	_collect_test_files(TEST_ROOT, files)
 	files.sort()
@@ -29,9 +43,9 @@ func _collect_test_files(dir_path: String, out: Array[String]) -> void:
 
 func _run_file(path: String) -> void:
 	var script: GDScript = load(path)
-	if script == null:
+	if script == null or not script.can_instantiate():
 		_failed += 1
-		print("FALHA  %s: não foi possível carregar o script" % path)
+		print("FALHA  %s: o script não compila (veja o erro acima)" % path)
 		return
 	print("\n%s" % path)
 	for method in script.get_script_method_list():
@@ -40,8 +54,11 @@ func _run_file(path: String) -> void:
 			continue
 		var test_case: Object = script.new()
 		test_case.set("tree", self)
+		_catcher.errors.clear()
 		await test_case.call(method_name)
 		var failures: Array[String] = test_case.get("failures")
+		for error in _catcher.errors:
+			failures.append("Erro de script durante o teste: %s" % error)
 		if failures.is_empty():
 			_passed += 1
 			print("  ok     %s" % method_name)

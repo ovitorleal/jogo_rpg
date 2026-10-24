@@ -401,6 +401,8 @@ func _on_start_pressed() -> void:
 	if _character == null:
 		return
 	PartyManager.start_new_party(_character)
+	QuestManager.reset()
+	ExplorationManager.reset()
 	var err := get_tree().change_scene_to_file(START_SCENE)
 	if err != OK:
 		push_error("Falha ao carregar %s: %s" % [START_SCENE, error_string(err)])

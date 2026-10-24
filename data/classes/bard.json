@@ -7,19 +7,55 @@
 			"description": "Artista que tece magia através da música, da palavra e da inspiração.",
 			"source": "SRD 5.2.1",
 			"hit_die": 8,
-			"primary_abilities": ["cha"],
-			"saving_throws": ["dex", "cha"],
+			"primary_abilities": [
+				"cha"
+			],
+			"saving_throws": [
+				"dex",
+				"cha"
+			],
 			"skill_choice_count": 3,
-			"skill_options": ["acrobatics", "animal_handling", "arcana", "athletics", "deception", "history",
-				"insight", "intimidation", "investigation", "medicine", "nature", "perception", "performance",
-				"persuasion", "religion", "sleight_of_hand", "stealth", "survival"],
+			"skill_options": [
+				"acrobatics",
+				"animal_handling",
+				"arcana",
+				"athletics",
+				"deception",
+				"history",
+				"insight",
+				"intimidation",
+				"investigation",
+				"medicine",
+				"nature",
+				"perception",
+				"performance",
+				"persuasion",
+				"religion",
+				"sleight_of_hand",
+				"stealth",
+				"survival"
+			],
 			"expertise_choices": 0,
-			"armor_training": ["light"],
-			"weapon_training": ["simple"],
-			"suggested_scores": [8, 14, 12, 13, 10, 15],
+			"armor_training": [
+				"light"
+			],
+			"weapon_training": [
+				"simple"
+			],
+			"suggested_scores": [
+				8,
+				14,
+				12,
+				13,
+				10,
+				15
+			],
 			"starting_armor": "item.leather_armor",
 			"starting_shield": false,
-			"starting_weapons": ["item.dagger", "item.dagger"],
+			"starting_weapons": [
+				"item.dagger",
+				"item.dagger"
+			],
 			"features": [
 				{
 					"id": "feature.bardic_inspiration",
@@ -33,6 +69,20 @@
 					"name": "Conjuração",
 					"level": 1,
 					"description": "Conjura magias de bardo usando Carisma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.expertise_bard",
+					"name": "Especialização",
+					"level": 2,
+					"description": "Dobra o bônus de proficiência em duas perícias.",
+					"implemented": false
+				},
+				{
+					"id": "feature.jack_of_all_trades",
+					"name": "Pau para Toda Obra",
+					"level": 2,
+					"description": "Soma metade da proficiência em testes de perícia sem proficiência.",
 					"implemented": false
 				}
 			]

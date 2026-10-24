@@ -136,6 +136,13 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 text = "Encerrar turno"
 
+[node name="PotionButton" type="Button" parent="Margin/Layout/Actions"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+tooltip_text = "Beber uma Poção de Cura (ação bônus): 2d4+2 PV"
+text = "Poção"
+
 [node name="FleeButton" type="Button" parent="Margin/Layout/Actions"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 0)

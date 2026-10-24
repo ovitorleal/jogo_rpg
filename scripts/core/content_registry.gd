@@ -119,6 +119,11 @@ const TYPES := {
 			"arena_width": {"type": "int", "min": 6, "max": 16},
 			"arena_height": {"type": "int", "min": 4, "max": 10},
 			"intro_text": {"type": "string"},
+			"reward_gold": {"type": "int", "min": 0, "max": 1000, "required": false, "default": 0},
+			"reward_items": {"type": "object_array", "required": false, "default": [], "fields": {
+				"item_id": {"type": "string", "ref": "item"},
+				"count": {"type": "int", "min": 1, "max": 20},
+			}},
 		},
 	},
 	"map": {
@@ -182,11 +187,53 @@ const TYPES := {
 			}},
 		},
 	},
+	"quest": {
+		"dir": "quests",
+		"prefix": "quest.",
+		"fields": {
+			"giver": {"type": "string"},
+			"objectives": {"type": "object_array", "min_length": 1, "fields": {
+				"id": {"type": "string"},
+				"text": {"type": "string"},
+				"type": {"type": "string", "enum": ["defeat_encounter", "reach_map"]},
+				"target": {"type": "string"},
+			}},
+			"reward_xp": {"type": "int", "min": 0, "max": 10000},
+			"reward_gold": {"type": "int", "min": 0, "max": 10000},
+			"reward_items": {"type": "object_array", "required": false, "default": [], "fields": {
+				"item_id": {"type": "string", "ref": "item"},
+				"count": {"type": "int", "min": 1, "max": 20},
+			}},
+		},
+	},
+	"dialogue": {
+		"dir": "dialogues",
+		"prefix": "dialogue.",
+		"fields": {
+			"speaker": {"type": "string"},
+			"portrait": {"type": "string", "required": false, "default": ""},
+			## Primeira entrada cuja condição é verdadeira define o nó inicial.
+			"entries": {"type": "object_array", "min_length": 1, "fields": {
+				"condition": {"type": "string", "required": false, "default": ""},
+				"node": {"type": "string"},
+			}},
+			"nodes": {"type": "object_array", "min_length": 1, "fields": {
+				"id": {"type": "string"},
+				"text": {"type": "string"},
+				"choices": {"type": "object_array", "required": false, "default": [], "fields": {
+					"text": {"type": "string"},
+					"next": {"type": "string", "required": false, "default": ""},
+					"condition": {"type": "string", "required": false, "default": ""},
+					"action": {"type": "string", "required": false, "default": ""},
+				}},
+			}},
+		},
+	},
 	"item": {
 		"dir": "items",
 		"prefix": "item.",
 		"fields": {
-			"item_type": {"type": "string", "enum": ["armor", "shield", "weapon"]},
+			"item_type": {"type": "string", "enum": ["armor", "shield", "weapon", "consumable", "gear"]},
 			"weight_lb": {"type": "number", "min": 0},
 			"cost_gp": {"type": "number", "min": 0},
 		},
@@ -202,6 +249,12 @@ const TYPES := {
 			"shield": {
 				"ac_bonus": {"type": "int", "min": 1, "max": 5},
 			},
+			"consumable": {
+				"effect": {"type": "string", "enum": ["heal"]},
+				"effect_dice": {"type": "string", "dice": true},
+				"use_time": {"type": "string", "enum": ["action", "bonus_action"]},
+			},
+			"gear": {},
 			"weapon": {
 				"weapon_category": {"type": "string", "enum": ["simple", "martial"]},
 				"attack_type": {"type": "string", "enum": ["melee", "ranged"]},
@@ -338,6 +391,40 @@ func _check_references(pending_refs: Array[Dictionary]) -> void:
 			errors.append("%s: '%s' deveria ser do tipo %s" % [ref["where"], ref["id"], ref["item_type"]])
 
 
+const DIALOGUE_CONDITIONS: Array[String] = ["quest_available", "quest_active", "quest_ready", "quest_completed"]
+const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest"]
+
+
+## Diálogos: nós referenciados existem, condições e ações conhecidas apontam para missões existentes.
+func _check_dialogue(id: String, dialogue: Dictionary) -> void:
+	var node_ids := {}
+	for node: Dictionary in dialogue.get("nodes", []):
+		node_ids[node.get("id")] = true
+	if not str(dialogue.get("portrait", "")).is_empty() and not ResourceLoader.exists(dialogue["portrait"]):
+		errors.append("%s: retrato inexistente '%s'" % [id, dialogue["portrait"]])
+	for entry: Dictionary in dialogue.get("entries", []):
+		if not node_ids.has(entry.get("node")):
+			errors.append("%s: entrada aponta para nó inexistente '%s'" % [id, entry.get("node")])
+		_check_rule(id, str(entry.get("condition", "")), DIALOGUE_CONDITIONS, "condição")
+	for node: Dictionary in dialogue.get("nodes", []):
+		for choice: Dictionary in node.get("choices", []):
+			var next := str(choice.get("next", ""))
+			if not next.is_empty() and not node_ids.has(next):
+				errors.append("%s.%s: escolha aponta para nó inexistente '%s'" % [id, node.get("id"), next])
+			_check_rule(id, str(choice.get("condition", "")), DIALOGUE_CONDITIONS, "condição")
+			_check_rule(id, str(choice.get("action", "")), DIALOGUE_ACTIONS, "ação")
+
+
+func _check_rule(id: String, rule: String, allowed: Array[String], label: String) -> void:
+	if rule.is_empty():
+		return
+	var parts := rule.split(":", true, 1)
+	if parts.size() != 2 or not parts[0] in allowed:
+		errors.append("%s: %s desconhecida '%s'" % [id, label, rule])
+	elif not has("quest", parts[1]):
+		errors.append("%s: %s com missão inexistente '%s'" % [id, label, parts[1]])
+
+
 ## Regras entre campos que o esquema sozinho não expressa.
 func _check_consistency() -> void:
 	for id in ids("class"):
@@ -406,6 +493,13 @@ func _check_consistency() -> void:
 				errors.append("%s.%s: teste de perícia sem CD" % [id, choice.get("id")])
 			if has_check and str(choice.get("failure_text", "")).is_empty():
 				errors.append("%s.%s: teste de perícia sem failure_text" % [id, choice.get("id")])
+	for id in ids("quest"):
+		for objective: Dictionary in get_entry("quest", id).get("objectives", []):
+			var target_type := "encounter" if objective.get("type") == "defeat_encounter" else "map"
+			if not has(target_type, str(objective.get("target", ""))):
+				errors.append("%s.%s: %s inexistente '%s'" % [id, objective.get("id"), target_type, objective.get("target")])
+	for id in ids("dialogue"):
+		_check_dialogue(id, get_entry("dialogue", id))
 	for id in ids("item"):
 		var item := get_entry("item", id)
 		if item.get("item_type") != "weapon":

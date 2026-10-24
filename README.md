@@ -3,9 +3,9 @@
 RPG 2D de fantasia (nome provisório) feito em **Godot 4.7.2** com GDScript tipado, para navegador desktop.
 Especificação completa: [PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md](PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md).
 
-**Estado atual:** Fase 4 concluída (viagens, encontros e descanso) — veja [docs/ROADMAP.md](docs/ROADMAP.md).
+**Estado atual:** Fase 5 concluída (progressão, inventário, missões e diálogo) — veja [docs/ROADMAP.md](docs/ROADMAP.md).
 
-**Controles:** WASD ou setas para andar · E, Espaço ou Enter para interagir · C para a ficha (Esc fecha) · no combate: clique numa casa azul para mover e num inimigo marcado para atacar.
+**Controles:** WASD ou setas para andar · E, Espaço ou Enter para interagir · C ficha · I inventário · J diário (Esc fecha) · no combate: clique numa casa azul para mover e num inimigo marcado para atacar.
 
 ## Requisitos
 

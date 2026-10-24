@@ -7,18 +7,53 @@
 			"description": "Campeão de um juramento sagrado que combina armas e magia divina.",
 			"source": "SRD 5.2.1",
 			"hit_die": 10,
-			"primary_abilities": ["str", "cha"],
-			"saving_throws": ["wis", "cha"],
+			"primary_abilities": [
+				"str",
+				"cha"
+			],
+			"saving_throws": [
+				"wis",
+				"cha"
+			],
 			"skill_choice_count": 2,
-			"skill_options": ["athletics", "insight", "intimidation", "medicine", "persuasion", "religion"],
+			"skill_options": [
+				"athletics",
+				"insight",
+				"intimidation",
+				"medicine",
+				"persuasion",
+				"religion"
+			],
 			"expertise_choices": 0,
-			"armor_training": ["light", "medium", "heavy", "shield"],
-			"weapon_training": ["simple", "martial"],
-			"suggested_scores": [15, 10, 13, 8, 12, 14],
+			"armor_training": [
+				"light",
+				"medium",
+				"heavy",
+				"shield"
+			],
+			"weapon_training": [
+				"simple",
+				"martial"
+			],
+			"suggested_scores": [
+				15,
+				10,
+				13,
+				8,
+				12,
+				14
+			],
 			"starting_armor": "item.chain_mail",
 			"starting_shield": true,
-			"starting_weapons": ["item.longsword", "item.javelin", "item.javelin", "item.javelin",
-				"item.javelin", "item.javelin", "item.javelin"],
+			"starting_weapons": [
+				"item.longsword",
+				"item.javelin",
+				"item.javelin",
+				"item.javelin",
+				"item.javelin",
+				"item.javelin",
+				"item.javelin"
+			],
 			"features": [
 				{
 					"id": "feature.lay_on_hands",
@@ -39,6 +74,20 @@
 					"name": "Maestria em Armas",
 					"level": 1,
 					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.fighting_style_paladin",
+					"name": "Estilo de Luta",
+					"level": 2,
+					"description": "Escolha um talento de estilo de luta.",
+					"implemented": false
+				},
+				{
+					"id": "feature.paladins_smite",
+					"name": "Golpe do Paladino",
+					"level": 2,
+					"description": "Sempre tem a magia de golpe divino preparada.",
 					"implemented": false
 				}
 			]

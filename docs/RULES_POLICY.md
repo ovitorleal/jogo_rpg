@@ -60,6 +60,17 @@
 | Testes de perícia em eventos de viagem usam a ficha do líder (com desvantagem de armadura em Furtividade) | `TravelSystem.choose_option` | |
 | Dano de perigos aplica resistências da espécie (ex.: veneno no Anão) | `TravelSystem.choose_option` | |
 
+### Progressão e itens (Fase 5)
+
+| Regra | Onde | Notas |
+|---|---|---|
+| Tabela de XP por nível (300, 900, 2.700, 6.500... 355.000) | `Progression.XP_FOR_LEVEL` | |
+| Ao subir de nível: PV máximos pela média fixa + Con; PV atuais sobem o mesmo; Dados de Vida = nível; proficiência recalculada | `Progression.level_up` | Personagem a 0 PV não se levanta ao subir |
+| Nível não pode passar do permitido pela experiência | `CharacterFactory.validate` | |
+| Poção de Cura: 2d4+2 PV; beber é **ação bônus** | `Inventory.use`, `CombatManager._do_use_item` | Regra de 2024 |
+| Uma ação bônus por turno | `CombatManager.bonus_action_available` | Por enquanto só poções usam a ação bônus |
+| Rações (1 dia) como item do SRD | `data/items/supplies.json` | |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
@@ -72,6 +83,7 @@
 - Armas: Adaga, Azagaia, Bordão, Clava, Foice, Lança, Maça, Machadinha, Arco Curto (simples); Cimitarra, Espada Curta,
   Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
 - Monstros: Lobo e Goblin Guerreiro (CA, PV, dados de vida, deslocamento, atributos, ataques, ND e XP).
+- Itens: Poção de Cura e Rações (1 dia); características de nível 2 das 12 classes (registradas, sem efeito ainda).
 - Descrições são resumos próprios em português; nomes de regras traduzidos livremente.
 
 ## Adaptações
@@ -90,6 +102,9 @@
 | Perigos de eventos nunca reduzem abaixo de 1 PV | Evitar derrota fora do combate no MVP |
 | Orçamento de encontros: 100 XP × nível × membros (combates acima disso não são sorteados) | Heurística original do projeto (não é tabela do SRD) |
 | Fogueira do mapa concede descanso longo sem custo | Ponto seguro de recuperação do protótipo |
+| Equipar armadura/escudo exige o treinamento da classe (sem a regra de usar armadura sem treinamento) | Evitar estados que o combate ainda não penaliza |
+| No máximo 6 armas equipadas por personagem; sem regras de mãos/sacar | Simplificação até existir o sistema de mãos |
+| Recompensas de encontro/missão em PO e itens definidos nos dados | Conteúdo original |
 
 ## Pendências
 

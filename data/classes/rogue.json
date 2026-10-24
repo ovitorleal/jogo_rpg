@@ -7,18 +7,50 @@
 			"description": "Age com precisão e astúcia, explorando as fraquezas dos inimigos.",
 			"source": "SRD 5.2.1",
 			"hit_die": 8,
-			"primary_abilities": ["dex"],
-			"saving_throws": ["dex", "int"],
+			"primary_abilities": [
+				"dex"
+			],
+			"saving_throws": [
+				"dex",
+				"int"
+			],
 			"skill_choice_count": 4,
-			"skill_options": ["acrobatics", "athletics", "deception", "insight", "intimidation",
-				"investigation", "perception", "persuasion", "sleight_of_hand", "stealth"],
+			"skill_options": [
+				"acrobatics",
+				"athletics",
+				"deception",
+				"insight",
+				"intimidation",
+				"investigation",
+				"perception",
+				"persuasion",
+				"sleight_of_hand",
+				"stealth"
+			],
 			"expertise_choices": 2,
-			"armor_training": ["light"],
-			"weapon_training": ["simple", "martial_finesse_or_light"],
-			"suggested_scores": [8, 15, 14, 12, 13, 10],
+			"armor_training": [
+				"light"
+			],
+			"weapon_training": [
+				"simple",
+				"martial_finesse_or_light"
+			],
+			"suggested_scores": [
+				8,
+				15,
+				14,
+				12,
+				13,
+				10
+			],
 			"starting_armor": "item.leather_armor",
 			"starting_shield": false,
-			"starting_weapons": ["item.shortsword", "item.dagger", "item.dagger", "item.shortbow"],
+			"starting_weapons": [
+				"item.shortsword",
+				"item.dagger",
+				"item.dagger",
+				"item.shortbow"
+			],
 			"features": [
 				{
 					"id": "feature.expertise",
@@ -46,6 +78,13 @@
 					"name": "Maestria em Armas",
 					"level": 1,
 					"description": "Usa as propriedades de maestria de alguns tipos de arma.",
+					"implemented": false
+				},
+				{
+					"id": "feature.cunning_action",
+					"name": "Ação Astuta",
+					"level": 2,
+					"description": "Disparar, Desengajar ou Esconder como ação bônus.",
 					"implemented": false
 				}
 			]

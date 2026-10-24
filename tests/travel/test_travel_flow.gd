@@ -131,7 +131,7 @@ func test_travel_scene_buttons_and_status() -> void:
 	assert_true(status.contains("PV 5/12") and status.contains("Rações 6") and status.contains("Dados de Vida 1/1"), "Status: %s" % status)
 	assert_true(not (scene.get_node("%ShortRestButton") as Button).disabled, "Descanso curto disponível")
 	scene.long_rest()
-	assert_eq([hero.current_hp, int(party.supplies["rations"])], [12, 5], "Acampar: PV cheios, -1 ração")
+	assert_eq([hero.current_hp, party.inventory.count(Inventory.RATIONS)], [12, 5], "Acampar: PV cheios, -1 ração")
 	assert_true((scene.get_node("%ShortRestButton") as Button).disabled, "Com PV cheios, sem descanso curto")
 	await _close(scene)
 	_end()

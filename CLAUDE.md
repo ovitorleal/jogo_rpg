@@ -32,6 +32,10 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 - Nunca trocar de cena dentro de callback de física (use `call_deferred`).
 - Viagem: estado só muda via `TravelSystem`; a tela guarda o estado em `ExplorationManager.store_travel()`.
   Nos testes use `roller_override` para dados determinísticos.
+- Missões e diálogos: dados em `data/quests/` e `data/dialogues/`; progresso só via `QuestManager.notify*`.
+  Inventário do grupo em `PartyManager.inventory`; equipamento em uso fica no `CharacterData`.
+- O executor de testes reprova erros de script em tempo de execução (Logger); não use `push_error` para "falhas esperadas" que
+  devam reprovar — use asserções.
 - Mapas novos: layout em `tools/art/build_overworld.gd` (`--layout <nome>`), cena com `%Terrain`, `Entrances/`, `Objects`.
 - O painel do navegador é compartilhado com o desenvolvedor: avisar antes de testar nele.
 - No navegador, eventos de teclado sintéticos precisam ser despachados no `<canvas>`, não no `window`.
