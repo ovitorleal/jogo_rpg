@@ -14,10 +14,14 @@ const MOVE_FILL := Color(0.55, 0.75, 1.0, 0.30)
 const MOVE_LINE := Color(0.75, 0.88, 1.0, 0.55)
 const TARGET_LINE := Color8(255, 90, 70)
 const CURRENT_LINE := Color8(255, 226, 110)
+const AIM_FILL := Color(1.0, 0.55, 0.2, 0.28)
+const AIM_LINE := Color8(255, 150, 70)
 
 var manager: CombatManager
 var reachable: Dictionary = {}
 var targets: Array[Combatant] = []
+## Casas para escolher a direção de uma magia de área (cone/cubo).
+var aim_cells: Array[Vector2i] = []
 
 var _tokens := {}
 var _tiles: Texture2D
@@ -119,6 +123,10 @@ func _draw() -> void:
 		var rect := Rect2(cell_to_local(cell) + Vector2(2, 2), Vector2(CELL - 4, CELL - 4))
 		draw_rect(rect, MOVE_FILL)
 		draw_rect(rect, MOVE_LINE, false, 1.0)
+	for cell in aim_cells:
+		var aim_rect := Rect2(cell_to_local(cell) + Vector2(3, 3), Vector2(CELL - 6, CELL - 6))
+		draw_rect(aim_rect, AIM_FILL)
+		_draw_dashed_rect(aim_rect, AIM_LINE)
 	var current := manager.current()
 	if current != null:
 		var origin := cell_to_local(current.position)

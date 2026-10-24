@@ -65,6 +65,44 @@ const TYPES := {
 			"starting_weapons": {"type": "array", "of": "string", "ref": "item", "ref_item_type": "weapon",
 					"allow_duplicates": true},
 			"features": {"type": "object_array", "fields": FEATURE_FIELDS},
+			## Conjuração (SRD 5.2.1): atributo, tipo de progressão de espaços e quantidades por nível (1..20).
+			"spellcasting_ability": {"type": "string", "enum": ["", "int", "wis", "cha"], "required": false, "default": ""},
+			"spellcasting_type": {"type": "string", "enum": ["", "full", "half", "pact"], "required": false, "default": ""},
+			"cantrips_known": {"type": "array", "of": "int", "min": 0, "max": 10, "allow_duplicates": true,
+					"required": false, "default": []},
+			"prepared_spells": {"type": "array", "of": "int", "min": 0, "max": 30, "allow_duplicates": true,
+					"required": false, "default": []},
+		},
+	},
+	"spell": {
+		"dir": "spells",
+		"prefix": "spell.",
+		"fields": {
+			"level": {"type": "int", "min": 0, "max": 9},
+			"school": {"type": "string", "enum": ["abjuration", "conjuration", "divination", "enchantment", "evocation",
+					"illusion", "necromancy", "transmutation"]},
+			"classes": {"type": "array", "of": "string", "ref": "class", "min_length": 1},
+			"casting_time": {"type": "string", "enum": ["action", "bonus_action"]},
+			## 0 = pessoal (área a partir do conjurador), 5 = toque.
+			"range_feet": {"type": "int", "min": 0, "max": 300},
+			"target": {"type": "string", "enum": ["enemy", "ally", "cone", "cube"]},
+			"area_feet": {"type": "int", "min": 0, "max": 60, "required": false, "default": 0},
+			"max_targets": {"type": "int", "min": 1, "max": 6, "required": false, "default": 1},
+			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff"]},
+			"save_ability": {"type": "string", "enum": ["", "str", "dex", "con", "int", "wis", "cha"], "required": false, "default": ""},
+			"half_on_save": {"type": "bool", "required": false, "default": false},
+			"damage": {"type": "string", "dice": true, "required": false, "default": ""},
+			"damage_type": {"type": "string", "enum": ["", "acid", "bludgeoning", "cold", "fire", "force", "lightning",
+					"necrotic", "piercing", "poison", "psychic", "radiant", "slashing", "thunder"], "required": false, "default": ""},
+			"heal": {"type": "string", "dice": true, "required": false, "default": ""},
+			"darts": {"type": "int", "min": 0, "max": 10, "required": false, "default": 0},
+			"upcast_dice": {"type": "string", "dice": true, "required": false, "default": ""},
+			"effect": {"type": "string", "enum": ["", "slowed", "mocked", "guided", "pushed", "ac_bonus", "blessed", "marked"],
+					"required": false, "default": ""},
+			"effect_value": {"type": "string", "required": false, "default": ""},
+			"concentration": {"type": "bool", "required": false, "default": false},
+			"vfx": {"type": "string", "enum": ["bolt", "ray", "darts", "pillar", "cone", "wave", "heal", "aura", "mark", "mock", "spray"]},
+			"color": {"type": "string"},
 		},
 	},
 	"background": {
@@ -517,6 +555,28 @@ func _check_consistency() -> void:
 				errors.append("%s.%s: %s inexistente '%s'" % [id, objective.get("id"), target_type, objective.get("target")])
 	for id in ids("dialogue"):
 		_check_dialogue(id, get_entry("dialogue", id))
+	for id in ids("spell"):
+		var spell := get_entry("spell", id)
+		if not Color.html_is_valid(str(spell["color"])):
+			errors.append("%s: cor inválida" % id)
+		if spell["resolution"] in ["spell_attack", "save", "auto"] and (str(spell["damage"]).is_empty() or str(spell["damage_type"]).is_empty()):
+			errors.append("%s: magia de dano sem dano/tipo" % id)
+		if spell["resolution"] == "save" and str(spell["save_ability"]).is_empty():
+			errors.append("%s: magia com teste de resistência sem atributo" % id)
+		if spell["resolution"] == "heal" and str(spell["heal"]).is_empty():
+			errors.append("%s: magia de cura sem dados de cura" % id)
+		if spell["resolution"] == "buff" and str(spell["effect"]).is_empty():
+			errors.append("%s: magia de efeito sem efeito" % id)
+		for class_id: String in spell["classes"]:
+			if has("class", class_id) and str(get_entry("class", class_id).get("spellcasting_type", "")).is_empty():
+				errors.append("%s: classe %s não conjura magias" % [id, class_id])
+	for id in ids("class"):
+		var entry := get_entry("class", id)
+		if not str(entry.get("spellcasting_type", "")).is_empty():
+			if str(entry["spellcasting_ability"]).is_empty():
+				errors.append("%s: conjurador sem atributo de conjuração" % id)
+			if entry["cantrips_known"].size() != 20 or entry["prepared_spells"].size() != 20:
+				errors.append("%s: tabelas de conjuração devem ter 20 níveis" % id)
 	for id in ids("appearance"):
 		var profile := get_entry("appearance", id)
 		for category: String in CharacterPainter.PARTS:

@@ -18,6 +18,21 @@ var dexterity_score: int = 10
 var speed_feet: int = 30
 var position := Vector2i.ZERO
 var attacks: Array[Dictionary] = []
+## Magias que o personagem pode conjurar (truques + preparadas): {id, name, level, entry}.
+var spells: Array[Dictionary] = []
+## CD, bônus de ataque e modificador de conjuração (personagens conjuradores).
+var spell_dc: int = 0
+var spell_attack: int = 0
+var spell_modifier: int = 0
+var character_level: int = 1
+## Bônus de teste de resistência por atributo (StringName -> int).
+var save_bonuses: Dictionary = {}
+## Efeitos ativos: {kind, source, spell, value, damage_type, on, actor, count}.
+## on = "turn_start" / "turn_end" (expira no início/fim do turno de actor, após count ocorrências),
+## "concentration" (dura enquanto source mantiver a concentração) ou "use" (some ao ser usado).
+var effects: Array[Dictionary] = []
+## Magia em concentração: {} ou {"spell_id", "name"}.
+var concentration: Dictionary = {}
 var resistances: Array = []
 var trait_ids: Array[String] = []
 var sprite_path: String = ""
@@ -40,6 +55,33 @@ func is_hostile_to(other: Combatant) -> bool:
 
 func has_trait(trait_id: String) -> bool:
 	return trait_id in trait_ids
+
+
+func get_spell(spell_id: String) -> Dictionary:
+	for spell in spells:
+		if spell["id"] == spell_id:
+			return spell
+	return {}
+
+
+func effects_of(kind: String) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for effect in effects:
+		if effect["kind"] == kind:
+			result.append(effect)
+	return result
+
+
+## CA com bônus de efeitos (ex.: Escudo da Fé).
+func effective_ac() -> int:
+	var bonus := 0
+	for effect in effects_of("ac_bonus"):
+		bonus += int(effect["value"])
+	return armor_class + bonus
+
+
+func save_bonus(ability: StringName) -> int:
+	return int(save_bonuses.get(ability, 0))
 
 
 func get_attack(attack_id: String) -> Dictionary:
@@ -74,6 +116,17 @@ static func from_character(c: CharacterData, registry: ContentRegistry) -> Comba
 		seen[weapon["id"]] = true
 		unit.attacks.append_array(Attack.weapon_attacks(sheet, weapon))
 	unit.attacks.append(Attack.unarmed_strike(sheet))
+	unit.character_level = c.level
+	for ability: StringName in Ability.ALL:
+		unit.save_bonuses[ability] = sheet.saving_throw_bonus(ability)
+	if Spellcasting.is_caster(sheet.class_entry):
+		unit.spell_dc = Spellcasting.save_dc(sheet)
+		unit.spell_attack = Spellcasting.attack_bonus(sheet)
+		unit.spell_modifier = Spellcasting.ability_modifier(sheet)
+		for spell_id in c.cantrips + c.prepared_spells:
+			var entry := registry.get_entry("spell", spell_id)
+			if not entry.is_empty():
+				unit.spells.append({"id": spell_id, "name": entry["name"], "level": int(entry["level"]), "entry": entry})
 	return unit
 
 
@@ -92,6 +145,9 @@ static func from_monster(entry: Dictionary, index: int, total_of_kind: int) -> C
 	unit.resistances = entry.get("damage_resistances", []).duplicate()
 	unit.sprite_path = str(entry.get("sprite", ""))
 	unit.xp = int(entry.get("xp", 0))
+	# Monstros sem proficiência em resistências: modificador do atributo (como goblin e lobo no SRD).
+	for i in Ability.ALL.size():
+		unit.save_bonuses[Ability.ALL[i]] = Ability.modifier(int(entry["ability_scores"][i]))
 	for t: Dictionary in entry.get("traits", []):
 		if t.get("implemented", false):
 			unit.trait_ids.append(str(t["id"]))

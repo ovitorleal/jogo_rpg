@@ -177,9 +177,15 @@ func short_rest(party: Array[CharacterData], registry: ContentRegistry) -> Dicti
 	if not pending.is_empty():
 		return _fail("Não é possível descansar agora")
 	var result := Rest.spend_hit_die(party[0], registry, _next_roller())
-	if result["ok"]:
+	var slots := 0
+	for c in party:
+		slots += Spellcasting.short_rest(c, registry)
+	if result["ok"] or slots > 0:
 		clock += SHORT_REST_HOURS
-		_log("Descanso curto: %s recupera %d PV." % [party[0].name, result["healed"]])
+		var healed := int(result.get("healed", 0))
+		_log("Descanso curto: %s recupera %d PV%s." % [party[0].name, healed,
+				" e %d espaço(s) de magia" % slots if slots > 0 else ""])
+		return {"ok": true, "error": "", "healed": healed, "slots": slots}
 	return result
 
 

@@ -46,7 +46,10 @@ static func level_up(c: CharacterData, registry: ContentRegistry) -> Dictionary:
 	for feature: Dictionary in after.class_entry.get("features", []) + after.species.get("traits", []):
 		if int(feature.get("level", 1)) == c.level:
 			features.append(feature)
-	return {"level": c.level, "hp_gained": gained, "features": features}
+	# Adaptação: truques e magias novas da subida de nível são escolhidas automaticamente.
+	var spells := Spellcasting.fill_defaults(c, registry)
+	var spell_names: Array = spells.map(func(id: String) -> String: return registry.get_entry("spell", id).get("name", id))
+	return {"level": c.level, "hp_gained": gained, "features": features, "spells": spells, "spell_names": spell_names}
 
 
 ## Texto curto para avisos de subida de nível.
@@ -55,4 +58,7 @@ static func describe(c: CharacterData, up: Dictionary) -> String:
 	var names: Array = up["features"].map(func(f: Dictionary) -> String: return f["name"])
 	if not names.is_empty():
 		text += " Novas características: %s." % ", ".join(names)
+	var spell_names: Array = up.get("spell_names", [])
+	if not spell_names.is_empty():
+		text += " Novas magias: %s." % ", ".join(spell_names)
 	return text

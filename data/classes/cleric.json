@@ -50,7 +50,7 @@
 					"name": "Conjuração",
 					"level": 1,
 					"description": "Conjura magias de clérigo usando Sabedoria.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.divine_order",
@@ -66,6 +66,52 @@
 					"description": "Canaliza energia divina para efeitos especiais algumas vezes por descanso.",
 					"implemented": false
 				}
+			],
+			"spellcasting_ability": "wis",
+			"spellcasting_type": "full",
+			"cantrips_known": [
+				3,
+				3,
+				3,
+				4,
+				4,
+				4,
+				4,
+				4,
+				4,
+				5,
+				5,
+				5,
+				5,
+				5,
+				5,
+				5,
+				5,
+				5,
+				5,
+				5
+			],
+			"prepared_spells": [
+				4,
+				5,
+				6,
+				7,
+				9,
+				10,
+				11,
+				12,
+				14,
+				15,
+				16,
+				16,
+				17,
+				17,
+				18,
+				18,
+				19,
+				20,
+				21,
+				22
 			]
 		}
 	]

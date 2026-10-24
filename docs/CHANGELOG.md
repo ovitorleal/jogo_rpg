@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.6.5] — 2026-10-24 — Fase 6.5: magias e efeitos visuais
+
+### Adicionado
+- Conjuração do SRD 5.2.1 (`Spellcasting`): CD e ataque mágico, espaços por nível (completos, meio-conjuradores e
+  Magia de Pacto), truques e magias preparadas por classe, círculo superior, escala de truques, descansos.
+- 16 magias (`data/spells/`, tipo de conteúdo `spell`) para as 8 classes conjuradoras: ataque mágico, resistência,
+  dano automático, áreas (cone e cubo), cura, empurrão e efeitos (lentidão, zombaria, raio guiador, +CA, Bênção, marcas).
+- Combate: comando `cast`, um único espaço gasto por turno, concentração com teste de Constituição, efeitos com
+  duração por turno; magias no menu de ações com alvos marcados e direção de área em laranja.
+- Efeitos visuais das magias (`SpellVfx`), desenhados por código: projétil com rastro, feixe, dardos, pilar de luz,
+  névoa venenosa, ondas de zombaria, cone de chamas, onda de choque, cura, aura e runa de marca.
+- Criação de personagem: seção "Magias" (truques e preparadas); ficha mostra CD, ataque, espaços e magias.
+- `CharacterData` esquema 4 (truques, preparadas, espaços gastos); saves antigos recebem as magias padrão.
+- 12 testes novos (total 198).
+
+### Alterado
+- Paladino, Patrulheiro e Bruxo: conjuração marcada como implementada; descanso curto recupera espaços de pacto.
+- Subida de nível prepara magias novas automaticamente e avisa quais são.
+
 ## [0.6.0] — 2026-10-24 — Fase 6
 
 ### Adicionado

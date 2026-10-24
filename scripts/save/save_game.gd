@@ -147,6 +147,9 @@ static func validate(data: Dictionary, registry: ContentRegistry) -> Dictionary:
 			if c == null:
 				errors.append("personagem inválido: %s" % "; ".join(result[1]))
 				continue
+			# Saves anteriores às magias (esquema 3): o conjurador recebe as magias padrão da classe.
+			if c.cantrips.is_empty() and c.prepared_spells.is_empty():
+				Spellcasting.fill_defaults(c, registry)
 			var problems := CharacterFactory.validate(c, registry)
 			if not problems.is_empty():
 				errors.append("%s: %s" % [c.name, "; ".join(problems)])

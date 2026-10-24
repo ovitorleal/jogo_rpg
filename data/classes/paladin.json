@@ -67,7 +67,7 @@
 					"name": "Conjuração",
 					"level": 1,
 					"description": "Conjura magias de paladino usando Carisma.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.weapon_mastery",
@@ -90,6 +90,52 @@
 					"description": "Sempre tem a magia de golpe divino preparada.",
 					"implemented": false
 				}
+			],
+			"spellcasting_ability": "cha",
+			"spellcasting_type": "half",
+			"cantrips_known": [
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				0
+			],
+			"prepared_spells": [
+				2,
+				3,
+				4,
+				5,
+				6,
+				6,
+				7,
+				7,
+				9,
+				9,
+				10,
+				10,
+				11,
+				11,
+				12,
+				12,
+				14,
+				14,
+				15,
+				15
 			]
 		}
 	]

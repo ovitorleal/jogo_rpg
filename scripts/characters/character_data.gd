@@ -4,7 +4,7 @@ extends RefCounted
 ## recalculados. Valores derivados (CA, PV máximos, bônus) ficam em CharacterSheet.
 ## Serializa para Dictionary compatível com JSON, com versão de esquema.
 
-const SCHEMA_VERSION := 3
+const SCHEMA_VERSION := 4
 const MAX_NAME_LENGTH := 32
 
 var id: String = ""
@@ -30,6 +30,11 @@ var hit_dice_spent: int = 0
 ## Escolhas de aparência (corpo, cabelo, chifres...). Campos ausentes usam o padrão da espécie.
 ## Desde o esquema 3.
 var appearance: Dictionary = {}
+## Conjuração (desde o esquema 4): truques conhecidos, magias preparadas (ids "spell.*") e
+## espaços de magia gastos por círculo (índice 0 = 1º círculo).
+var cantrips: Array[String] = []
+var prepared_spells: Array[String] = []
+var spell_slots_spent: Array[int] = []
 
 
 func ability_score(ability: StringName) -> int:
@@ -58,6 +63,9 @@ func to_dict() -> Dictionary:
 		"current_hp": current_hp,
 		"hit_dice_spent": hit_dice_spent,
 		"appearance": appearance.duplicate(),
+		"cantrips": cantrips.duplicate(),
+		"prepared_spells": prepared_spells.duplicate(),
+		"spell_slots_spent": spell_slots_spent.duplicate(),
 	}
 
 
@@ -95,6 +103,13 @@ static func from_dict(source: Dictionary) -> Array:
 			c.appearance[str(key)] = int(value) if value is float and is_equal_approx(value, roundf(value)) else value
 	else:
 		errors.append("Campo 'appearance' ausente ou não é objeto")
+	c.cantrips.assign(_read_array(data, "cantrips", errors).map(func(v: Variant) -> String: return str(v)))
+	c.prepared_spells.assign(_read_array(data, "prepared_spells", errors).map(func(v: Variant) -> String: return str(v)))
+	for value: Variant in _read_array(data, "spell_slots_spent", errors):
+		if value is int or value is float:
+			c.spell_slots_spent.append(int(value))
+		else:
+			errors.append("Espaço de magia gasto inválido")
 	var known := c.to_dict().keys()
 	for key: Variant in data:
 		if not key in known:
@@ -106,6 +121,7 @@ static func from_dict(source: Dictionary) -> Array:
 
 ## Atualiza dados de versões anteriores para a atual, sem alterar o original.
 ## v1 -> v2: adiciona hit_dice_spent = 0. v2 -> v3: adiciona appearance = {} (padrão da espécie).
+## v3 -> v4: adiciona truques/magias preparadas vazios (completados por Spellcasting.fill_defaults ao carregar).
 static func migrate(data: Dictionary) -> Dictionary:
 	var result := data.duplicate(true)
 	var version := int(result.get("schema_version", -1))
@@ -115,7 +131,12 @@ static func migrate(data: Dictionary) -> Dictionary:
 	if version == 2:
 		result["appearance"] = {}
 		version = 3
-	if int(result.get("schema_version", -1)) in [1, 2]:
+	if version == 3:
+		result["cantrips"] = []
+		result["prepared_spells"] = []
+		result["spell_slots_spent"] = []
+		version = 4
+	if int(result.get("schema_version", -1)) in [1, 2, 3]:
 		result["schema_version"] = version
 	return result
 

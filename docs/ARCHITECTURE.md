@@ -102,6 +102,15 @@
 | Viagem com combate pendente não é salva | Ao carregar, a tela de viagem não teria como retomar o combate |
 | Executor de testes usa `user://test_save` e desliga autosave/indicador | Testes nunca tocam no salvamento do jogador |
 
+### Fase 6.5
+
+| Decisão | Motivo |
+|---|---|
+| Regras de conjuração em `Spellcasting` (puro) e resolução das magias dentro do `CombatManager` | Regras fora da UI; estado de combate só muda via `submit()` |
+| Magias em dados (`spell`): alvo, resolução (ataque, resistência, automático, cura, efeito), dados, efeito, concentração, estilo visual | Magias novas sem código, desde que usem resoluções e efeitos existentes |
+| Efeitos como dicionários no `Combatant` com regra de expiração (`turn_start`, `turn_end`, `concentration`) | Duração "até o próximo turno" e concentração sem temporizadores |
+| Efeitos visuais por estilo (`SpellVfx`), desenhados por código e aguardados pela cena | Sem assets novos; resultado já resolvido antes da animação |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,

@@ -15,6 +15,12 @@ Campos: nome · fonte · autor/titular · licença · URL · data de obtenção 
 Assets originais do projeto estão em `assets/asset_catalog.json` com `source_type` e `license: project`.
 A licença do conteúdo próprio ainda não foi escolhida (decisão pendente do responsável).
 
+## Magias
+
+As 16 magias de `data/spells/spells.json` vêm do SRD 5.2.1 (CC BY 4.0, mesma linha da tabela acima): mecânica
+reimplementada em código e descrições resumidas com texto próprio. Os efeitos visuais são originais, desenhados por código
+(`scripts/combat/spell_vfx.gd`).
+
 ## Referências (fora do build)
 
 | Conteúdo | Origem | Uso |
