@@ -145,6 +145,8 @@ func _toggle_overlay(kind: String) -> void:
 			_hud.show_sheet(CharacterSheet.build(leader, Content.registry))
 		"inventory":
 			_hud.show_inventory(PartyManager.inventory, leader, Content.registry)
+			if not _hud.inventory_panel.changed.is_connected(_player.refresh_appearance):
+				_hud.inventory_panel.changed.connect(_player.refresh_appearance)
 		"journal":
 			_hud.show_journal(QuestManager.log, Content.registry)
 
@@ -206,6 +208,16 @@ func _show_dialogue_node() -> void:
 	_hud.show_dialogue(_dialogue.speaker(), portrait, text, options)
 
 
+## Retrato do líder conforme a aparência escolhida.
+func _leader_portrait() -> Texture2D:
+	var leader: CharacterData = PartyManager.get_leader()
+	if leader == null:
+		return null
+	if not Content.registry.has("species", leader.species_id):
+		return PLAYER_PORTRAIT
+	return Appearance.portrait_texture(leader, Content.registry)
+
+
 func _map_id() -> String:
 	for id in Content.registry.ids("map"):
 		if Content.registry.get_entry("map", id).get("scene") == scene_file_path:
@@ -248,7 +260,7 @@ func _on_interacted(source: Interactable) -> void:
 		_hud.hide_prompt()
 		var leader: CharacterData = PartyManager.get_leader()
 		_hud.show_message(source.message_text, leader.name if leader != null else "",
-				PLAYER_PORTRAIT if leader != null else null, CONFIRM_HINT)
+				_leader_portrait(), CONFIRM_HINT)
 		return
 	if source.speaker_name.is_empty() and source.speaker_portrait == null:
 		_show_player_line(source.message_text)
@@ -266,7 +278,7 @@ func _show_player_line(text: String) -> void:
 	if leader == null:
 		_hud.show_message(text)
 	else:
-		_hud.show_message(text, leader.name, PLAYER_PORTRAIT)
+		_hud.show_message(text, leader.name, _leader_portrait())
 
 
 func _execute_action(action: String) -> void:

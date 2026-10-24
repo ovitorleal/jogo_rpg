@@ -27,6 +27,8 @@ static func create(choices: Dictionary, registry: ContentRegistry) -> Array:
 	c.class_skills = _to_names(choices.get("class_skills", []))
 	c.species_skills = _to_names(choices.get("species_skills", []))
 	c.expertise = _to_names(choices.get("expertise", []))
+	var look: Variant = choices.get("appearance", {})
+	c.appearance = (look as Dictionary).duplicate() if look is Dictionary else {}
 
 	var class_entry := registry.get_entry("class", c.class_id)
 	if not class_entry.is_empty():
@@ -97,6 +99,7 @@ static func validate(c: CharacterData, registry: ContentRegistry, check_hp: bool
 		errors.append("Especialização repetida")
 
 	errors.append_array(_validate_equipment(c, registry, class_entry))
+	errors.append_array(Appearance.validate(c, registry))
 
 	if check_hp and errors.is_empty():
 		var max_hp := CharacterSheet.build(c, registry).max_hp

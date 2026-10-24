@@ -9,8 +9,25 @@
 | 4 | Viagens e encontros | Concluída (2026-10-24) |
 | 5 | Progressão e conteúdo | **Concluída** (2026-10-24) |
 | 6 | Salvamento e integração | Próxima |
+
+Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
+
+## Arte dos personagens em alta resolução — resultado (2026-10-24)
+
+- Personagens, goblin, lobo e retratos redesenhados em 64×64 (exibidos com 32 px no mundo): contorno de 1 pixel real,
+  sombreamento em 5 tons com desvio de matiz, linhas internas, formas arredondadas e rosto pixel a pixel.
+- Tamanhos do mundo, colisões e combate não mudaram. Cenário continua em 1×.
+- Pendente: telas fora de 1280×720 com escala não inteira deixam pixels irregulares (avaliar escala inteira na Fase 8).
+
+## Aparência modular das espécies — resultado (2026-10-24)
+
+- Personagem desenhado por peças em tempo de execução (`CharacterPainter`), perfis por espécie em `data/appearance/`
+  e seção "Aparência" com prévia animada na criação. A escolha aparece no mapa, nas falas, no combate e na viagem.
+- Aasimar ficou de fora (não está no SRD 5.2.1). Referência visual do responsável guardada em `docs/art_reference/`.
+- Pendente: mais peças (tatuagens faciais, cicatrizes variadas, armaduras por classe), aparência de companheiros,
+  refinar o focinho do draconato visto de frente.
 
 ## Fase 5 — resultado
 
@@ -104,7 +121,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
   do próprio desenvolvedor jogando no painel (confirmado com instrumentação: evento de mouse entrando na janela e menus abertos
   sem ação do agente). Ao testar no painel, o agente deve avisar antes para não haver interação simultânea.
 - Não há como voltar do mapa para o título (sem menu de pausa ainda).
-- Herói tem um único quadro (sem animação de caminhada).
 - Fontes pequenas (8–9 px na resolução interna, 16–18 px na tela em 1280×720): legíveis, mas revisar na direção de UI.
 - Persistência de `user://` na Web ainda não verificada (Fase 6).
 
@@ -112,7 +128,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 - Nome definitivo do jogo (hoje `PROJECT_NAME`).
 - Licença do código e dos assets próprios (`LICENSE` ainda não criado).
-- Escala dos personagens: 32×32 (atual) ou 48×48.
 - Biblioteca de testes: manter o executor próprio ou adotar GUT/gdUnit4 (ambos MIT).
 - Mais classes/espécies/antecedentes do SRD no MVP, ou manter os dois de cada até o vertical slice.
 

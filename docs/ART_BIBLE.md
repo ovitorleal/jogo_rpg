@@ -17,21 +17,34 @@ cenários, paletas exatas ou composições de obras existentes (incluindo jogos 
 |---|---|
 | Resolução interna | 640×360 (escala 2× para 1280×720) |
 | Grade de tiles | 16×16 px |
-| Quadro de personagem/criatura | 32×32 px; pés na linha 29 (offset do sprite = (0, −13)) |
+| Quadro de personagem/criatura | Ocupa 32×32 px no mundo; pés na linha 29. Personagens e criaturas são desenhados em **alta resolução** (64×64, 2 pixels reais por pixel lógico) e exibidos com escala 0,5 (`SpriteLibrary.attach`) |
 | Árvores | 32×48 px; pivô na base do tronco (linha 44) |
 | Objetos pequenos | 16×16 px; pivô na linha 14–15 |
 | Casa do combate | 32×32 px (2×2 tiles) |
-| Retrato | 32×32 px, exibido em 2× (64×64) |
+| Retrato | 64×64 px (alta resolução), exibido em 64×64 |
 | Colisão de personagem / objetos | Retângulo nos pés/base (10×6, 12×6) |
 
-**Decisão pendente:** manter 32×32 ou migrar personagens para 48×48.
+Personagens continuam com o tamanho de 32 px no mundo (2 tiles de altura); a alta resolução só aumenta o detalhe.
+Cenário (tiles, árvores, objetos) segue em 1×.
+
+## Personagens modulares
+
+Personagens jogáveis são pintados por `scripts/presentation/character_painter.gd` a partir da aparência escolhida
+(perfil da espécie em `data/appearance/`). Proporções: pernas 7 px e tronco 9 px no padrão; anões e pequeninos com
+pernas de 5 px, golias com tronco de 10 px; cabeça de raio 6 (5,5 em gnomos e pequeninos). Peças novas entram em
+`CharacterPainter.PARTS` (+ `NAMES` em português) e nos perfis das espécies que as usam.
 
 ## Técnica
 
-- **Sombreamento em 3 tons** por parte do corpo/objeto (escuro, base, claro). Luz do alto à esquerda:
-  bordas superiores/esquerdas clareiam, inferiores/direitas escurecem (`PixelCanvas.paint_part`).
+- **Sombreamento** por parte do corpo/objeto, luz do alto à esquerda: bordas superiores/esquerdas clareiam,
+  inferiores/direitas escurecem (`PixelCanvas.paint_part`). Em 1× são 3 tons; em alta resolução cada faixa ganha um
+  tom intermediário (5 tons) e as rampas desviam o matiz (sombra para o violeta, luz para o amarelo quente).
+- **Linhas internas** (alta resolução): onde uma parte encosta em outra já pintada (braço sobre o tronco, cabelo
+  sobre o rosto) a borda recebe 1 pixel real escuro — separação nítida sem engrossar o contorno.
+- **Formas arredondadas** (alta resolução): tronco, membros, capa e mechas usam retângulos de cantos redondos,
+  elipses e polígonos (`mask_round_rect`, `mask_polygon`); olhos, boca e brilhos são desenhados pixel a pixel.
 - **Contorno seletivo**: o contorno é uma versão bem escura da cor vizinha, misturada com `#1a1020`
-  (`PixelCanvas.outline`); nunca preto puro.
+  (`PixelCanvas.outline`); nunca preto puro. Em alta resolução tem 1 pixel real e é um pouco mais claro no lado iluminado.
 - **Sombra no chão**: elipse roxo-escura com ~28% de opacidade sob personagens e objetos.
 - **Terreno**: definido nos vértices da grade; cada tile escolhe a transição pelos 4 cantos (marching
   squares) com borda orgânica e realce na fronteira (grama clara, terra escura, espuma na água).
@@ -59,7 +72,7 @@ cenários, paletas exatas ou composições de obras existentes (incluindo jogos 
 
 ## Animação
 
-Folhas de 9 colunas × N linhas, quadros 32×32 (`SpriteLibrary`):
+Folhas de 9 colunas × N linhas, quadros 64×64 em alta resolução ou 32×32 (`SpriteLibrary` deduz pela largura):
 
 | Ação | Colunas | Quadros | FPS | Laço |
 |---|---|---|---|---|

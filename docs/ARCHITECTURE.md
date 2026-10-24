@@ -17,7 +17,7 @@
 
 | Decisão | Motivo |
 |---|---|
-| Tiles 16×16, personagens em quadros 32×32 | Escala provisória; ver `ART_BIBLE.md` |
+| Tiles 16×16, personagens ocupando 32×32 no mundo (desenhados em 64×64 desde 0.5.2) | Ver `ART_BIBLE.md` |
 | `CharacterBody2D` em modo *floating*, 8 direções, 80 px/s, vetor normalizado | Top-down sem gravidade; diagonal não é mais rápida |
 | Colisões só nos pés (retângulo 10×6) | Permite passar "atrás" de objetos com y-sort |
 | Camadas de física: 1 `world`, 2 `player`, 3 `interactable` | Detector de interação só enxerga objetos interativos |
@@ -79,6 +79,16 @@
 | Objetivos avançam por notificações (`defeat_encounter`, `reach_map`); avisos de outras cenas ficam pendentes | Combate e viagem não conhecem missões |
 | Executor de testes reprova scripts que não compilam e erros de script durante um teste (`Logger`) | Antes, um erro em tempo de execução podia passar como teste aprovado |
 | Teste que carrega todos os scripts e cenas | Nenhum script quebrado passa sem ser carregado por algum teste |
+
+### Aparência modular (0.5.1)
+
+| Decisão | Motivo |
+|---|---|
+| Sprites de personagem pintados em tempo de execução (`CharacterPainter` + `PixelCanvas`), com cache por aparência + equipamento | Combinações demais para pré-renderizar; mesma técnica e paleta da arte gerada por `tools/art/` |
+| Perfil por espécie em dados (`appearance`), validado contra `CharacterPainter.PARTS` | Opções de cada espécie sem código; nada de chifres em humano |
+| `CharacterData.appearance` guarda só índices e nomes de peças; ausentes usam o padrão da espécie | Save pequeno e estável; migração v2→v3 trivial |
+| Personagens em alta resolução (`PixelCanvas` com fator k = 2) exibidos com escala 0,5 via `SpriteLibrary.attach` | Mais detalhe e curvas suaves sem mudar tamanhos do mundo, colisões nem combate |
+| Referência de arte do responsável fora do build (`docs/art_reference/.gdignore`) | Imagem gerada com IA serve de guia, não de asset |
 
 ## Camadas
 

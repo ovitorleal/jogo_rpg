@@ -25,8 +25,8 @@
 			"category": "characters",
 			"file_path": "res://assets/characters/hero_sheet.png",
 			"dimensions": [
-				288,
-				128
+				576,
+				256
 			],
 			"format": "png",
 			"transparency": true,
@@ -37,15 +37,15 @@
 			"license": "project",
 			"prompt_reference": "",
 			"approval_status": "in_review",
-			"notes": "Folha 9x4 de quadros 32x32 (baixo, esquerda, direita, cima): parado 2 (2,5 fps), caminhada 4 (8 fps), ataque 3 (10 fps). Gerado por tools/art/generate_characters.gd."
+			"notes": "Folha 9x4 de quadros 64x64 (alta resolução, exibidos com 32 px) (baixo, esquerda, direita, cima): parado 2 (2,5 fps), caminhada 4 (8 fps), ataque 3 (10 fps). Gerado por tools/art/generate_characters.gd. Desenhado pelo CharacterPainter."
 		},
 		{
 			"asset_id": "enemy.goblin",
 			"category": "enemies",
 			"file_path": "res://assets/enemies/goblin_sheet.png",
 			"dimensions": [
-				288,
-				128
+				576,
+				256
 			],
 			"format": "png",
 			"transparency": true,
@@ -63,8 +63,8 @@
 			"category": "enemies",
 			"file_path": "res://assets/enemies/wolf_sheet.png",
 			"dimensions": [
-				288,
-				64
+				576,
+				128
 			],
 			"format": "png",
 			"transparency": true,
@@ -82,8 +82,8 @@
 			"category": "portraits",
 			"file_path": "res://assets/portraits/hero_portrait.png",
 			"dimensions": [
-				32,
-				32
+				64,
+				64
 			],
 			"format": "png",
 			"transparency": false,
@@ -234,8 +234,8 @@
 			"category": "characters",
 			"file_path": "res://assets/characters/npc_amara_sheet.png",
 			"dimensions": [
-				288,
-				128
+				576,
+				256
 			],
 			"format": "png",
 			"transparency": true,
@@ -246,15 +246,15 @@
 			"license": "project",
 			"prompt_reference": "",
 			"approval_status": "in_review",
-			"notes": "Guarda Amara: mesmo layout do herói (tools/art/generate_characters.gd)."
+			"notes": "Guarda Amara: mesmo layout do herói (tools/art/generate_characters.gd). Desenhado pelo CharacterPainter."
 		},
 		{
 			"asset_id": "portrait.amara",
 			"category": "portraits",
 			"file_path": "res://assets/portraits/amara_portrait.png",
 			"dimensions": [
-				32,
-				32
+				64,
+				64
 			],
 			"format": "png",
 			"transparency": false,

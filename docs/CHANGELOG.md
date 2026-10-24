@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.5.2] — 2026-10-24 — Arte dos personagens em alta resolução
+
+### Alterado
+- Personagens jogáveis, herói padrão, Guarda Amara, goblin, lobo e retratos desenhados em 64×64 (2 pixels reais por
+  pixel lógico) e exibidos no mesmo tamanho de antes: pixel art mais suave e nítida.
+- `PixelCanvas`: fator de resolução `k`; com k > 1, sombreamento em 5 tons, linhas internas entre partes, contorno de
+  1 pixel real, linhas com pincel redondo, `mask_round_rect` e `mask_polygon`. Com k = 1 o resultado é o mesmo de antes.
+- `CharacterPainter`: rampas com desvio de matiz; tronco, membros, capa, mechas e escudo arredondados; orelhas
+  pontudas em triângulo; chifres de carneiro em espiral; olhos, boca, sardas e marcas pixel a pixel.
+- `SpriteLibrary` deduz o tamanho do quadro pela largura da folha; `attach()` ajusta escala e offset dos pés.
+- `generate_characters.gd` usa o `CharacterPainter` para herói, Amara e goblin.
+- Pintura otimizada (distâncias por programação dinâmica, linhas por distância ao segmento): ~0,45 s por folha
+  64×64 no desktop. Na criação, a prévia é pintada uma direção por quadro e só quando a aparência muda.
+- Presas de orc nos cantos da boca (antes pareciam lágrimas).
+
+## [0.5.1] — 2026-10-24 — Aparência modular das espécies
+
+### Adicionado
+- `CharacterPainter`: desenha em tempo de execução a folha animada (9×4 quadros) e o retrato de cada personagem a partir
+  de peças: corpo (Masculino/Feminino), porte, 12 penteados, 8 barbas, orelhas, chifres/cristas, caudas, marcas
+  corporais, detalhes do rosto (sardas, presas, cicatriz...), acessórios, capa e cores de pele/escamas, cabelo, olhos,
+  roupa e capa; armadura, escudo e arma refletem o equipamento.
+- Tipo de conteúdo `appearance` (`data/appearance/`): perfil por espécie do SRD com opções, cores e proporções
+  (anões e pequeninos mais baixos, golias alto, draconato com focinho, escamas e cauda, tiefling com chifres e cauda).
+- `Appearance`: padrão da espécie, validação, sorteio e cache das texturas.
+- Seção "Aparência" na criação de personagem, com prévia animada que gira, retrato e botões Aleatório/Girar.
+- Folha de referência das espécies (gerada com IA pelo responsável) em `docs/art_reference/`, só como referência.
+- 8 testes novos (total 178).
+
+### Alterado
+- `CharacterData` esquema 3 (`appearance`); saves v1/v2 migram com a aparência padrão da espécie.
+- Jogador, combate, retrato de fala e faixa de viagem usam a aparência do líder; trocar equipamento atualiza o sprite.
+- `PixelCanvas` mudou de `tools/art/` para `scripts/presentation/` (usado também em tempo de execução).
+
 ## [0.5.0] — 2026-10-24 — Fase 5
 
 ### Adicionado

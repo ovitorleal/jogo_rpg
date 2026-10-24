@@ -17,7 +17,9 @@ godot --headless --path . --script res://tools/art/build_overworld.gd -- --force
 
 O passo 4 apaga edições manuais feitas no editor em `overworld_tileset.tres`, `test_map_terrain.tscn`
 e `test_map_props.tscn`. Depois de editar o mapa no editor, não rode o passo 4 novamente.
-`tools/art/pixel_canvas.gd` concentra as técnicas (partes com 3 tons, contorno seletivo, sombra).
+`scripts/presentation/pixel_canvas.gd` concentra as técnicas (partes sombreadas, contorno seletivo, sombra) e o fator de
+resolução `k` (1 no cenário, 2 nos personagens). `generate_characters.gd` desenha herói, Amara e goblin com o
+`CharacterPainter` e o lobo em alta resolução.
 
 ## Fluxo para assets definitivos (especificação, seção 14)
 

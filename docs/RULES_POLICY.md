@@ -90,6 +90,7 @@
 
 | Adaptação | Motivo |
 |---|---|
+| Aparência (corpo, chifres, cauda, escamas...) é só visual; não altera regras. Aasimar fora (não está no SRD 5.2.1) | O SRD define traços de espécie por regras, não por aparência |
 | Kit inicial simplificado: só armadura, escudo e armas da opção A de cada classe (o Guerreiro recebe Cota de Malha, Escudo e Espada Longa) | Pacotes, munição, focos, ferramentas e PO entram com o inventário (Fase 5) |
 | Humano e Tiefling sempre tamanho Médio | Escolha de tamanho ainda não exposta na criação |
 | Escolhas com efeito mecânico ainda não modeladas (Ancestral Dracônico, Legado Ínfero, Linhagens, Ordem Divina/Primal, Ancestral Gigante) | Registradas como características não implementadas; resistências que dependem delas ainda não aparecem na ficha |

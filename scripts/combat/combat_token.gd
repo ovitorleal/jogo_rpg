@@ -22,8 +22,8 @@ func setup(combatant: Combatant) -> void:
 	shown_hp = combatant.hp
 	facing = "right" if combatant.team == Combatant.Team.PARTY else "left"
 	_sprite = AnimatedSprite2D.new()
-	_sprite.sprite_frames = SpriteLibrary.frames_for(combatant.sprite_path)
-	_sprite.offset = SpriteLibrary.FEET_OFFSET
+	SpriteLibrary.attach(_sprite, SpriteLibrary.frames_for_texture(combatant.sprite_key, combatant.sprite_texture)
+			if combatant.sprite_texture != null else SpriteLibrary.frames_for(combatant.sprite_path))
 	add_child(_sprite)
 	play("idle")
 

@@ -6,6 +6,18 @@ const TITLE_SCENE := "res://scenes/menus/title_screen.tscn"
 const START_SCENE := "res://scenes/world/test_map.tscn"
 const DEFAULT_NAME := "Viajante"
 const LABEL_WIDTH := 92.0
+const LOOK_LABELS := {
+	"body": "Corpo", "build": "Porte", "hair_style": "Cabelo", "beard": "Barba", "ears": "Orelhas",
+	"horns": "Chifres", "tail": "Cauda", "marks": "Marcas", "face": "Rosto", "accessory": "Acessório",
+	"cloak": "Capa",
+}
+const SWATCH_LABELS := {
+	"skin": "Pele", "hair_color": "Cor do cabelo", "eye_color": "Olhos", "outfit": "Roupa", "cloak_color": "Cor da capa",
+}
+## Sequência da prévia animada: cada passo dura LOOK_STEP segundos; a direção gira a cada volta.
+const LOOK_SEQUENCE: Array[String] = ["idle", "walk", "walk", "attack"]
+const LOOK_STEP := 1.4
+const NO_GEAR := {"armor": "none", "shield": false, "weapon": "none"}
 
 var _registry: ContentRegistry
 var _species_id: String = ""
@@ -21,6 +33,13 @@ var _species_skills: Array[StringName] = []
 var _expertise: Array[StringName] = []
 var _character: CharacterData = null
 var _refresh_queued := false
+## Aparência completa escolhida (todas as categorias e índices de cor).
+var _look: Dictionary = {}
+var _look_rng := RandomNumberGenerator.new()
+var _look_step := 0
+var _look_direction := 0
+## Chave da aparência mostrada na prévia; a folha é pintada uma direção por quadro.
+var _look_key := ""
 
 var _name_edit: LineEdit
 var _species_option: OptionButton
@@ -36,6 +55,12 @@ var _background_skills_label: Label
 var _class_skills_box: VBoxContainer
 var _species_skills_box: VBoxContainer
 var _expertise_box: VBoxContainer
+var _look_options: Dictionary = {}
+var _look_rows: Dictionary = {}
+var _swatch_boxes: Dictionary = {}
+var _swatch_rows: Dictionary = {}
+var _look_sprite: AnimatedSprite2D
+var _look_portrait: TextureRect
 
 @onready var _form: VBoxContainer = %Form
 @onready var _preview: CharacterSheetPanel = %Preview
@@ -49,6 +74,8 @@ func _ready() -> void:
 	_species_id = _first_id("species")
 	_class_id = _first_id("class")
 	_background_id = _first_id("background")
+	_look = CharacterPainter.default_appearance(_profile())
+	_build_look_preview()
 	_apply_class_defaults()
 	_fix_choices(true)
 	_start_button.pressed.connect(_on_start_pressed)
@@ -77,6 +104,7 @@ func build_choices() -> Dictionary:
 		"class_skills": _class_skills.duplicate(),
 		"species_skills": _species_skills.duplicate(),
 		"expertise": _expertise.duplicate(),
+		"appearance": _look.duplicate(),
 	}
 
 
@@ -90,9 +118,38 @@ func set_character_name(text: String) -> void:
 	_refresh()
 
 
+func select_species(species_id: String) -> void:
+	_select_by_metadata(_species_option, species_id)
+	_on_species_selected(_species_option.selected)
+
+
 func select_class(class_id: String) -> void:
 	_select_by_metadata(_class_option, class_id)
 	_on_class_selected(_class_option.selected)
+
+
+## Aparência atual (cópia).
+func get_look() -> Dictionary:
+	return _look.duplicate()
+
+
+## Escolhe uma peça (ex.: "horns", "ram") ou índice de cor (ex.: "skin", 2).
+func set_look(key: String, value: Variant) -> void:
+	_look[key] = value
+	_queue_refresh()
+
+
+func randomize_look(seed_value: int = -1) -> void:
+	if seed_value >= 0:
+		_look_rng.seed = seed_value
+	else:
+		_look_rng.randomize()
+	_look = Appearance.random_look(_profile(), _look_rng)
+	_queue_refresh()
+
+
+func _profile() -> Dictionary:
+	return Appearance.profile_for(_species_id, _registry)
 
 
 func _class() -> Dictionary:
@@ -132,6 +189,19 @@ func _build_form() -> void:
 	_background_option.item_selected.connect(_on_background_selected)
 	_add_row("Antecedente", _background_option)
 
+	_add_section("Aparência")
+	for category: String in CharacterPainter.PARTS:
+		var option := OptionButton.new()
+		option.item_selected.connect(_on_look_selected.bind(category))
+		_look_options[category] = option
+		_look_rows[category] = _add_row(LOOK_LABELS[category], option)
+	for key: String in SWATCH_LABELS:
+		var box := HFlowContainer.new()
+		box.add_theme_constant_override("h_separation", 2)
+		box.add_theme_constant_override("v_separation", 2)
+		_swatch_boxes[key] = box
+		_swatch_rows[key] = _add_row(SWATCH_LABELS[key], box)
+
 	_add_section("Atributos (arranjo padrão: cada valor uma vez)")
 	for ability: StringName in Ability.ALL:
 		var option := OptionButton.new()
@@ -165,6 +235,46 @@ func _build_form() -> void:
 	_form.add_child(_species_skills_box)
 	_expertise_box = VBoxContainer.new()
 	_form.add_child(_expertise_box)
+
+
+## Coluna com o personagem animado, o retrato e os botões Aleatório/Girar.
+func _build_look_preview() -> void:
+	var panel := PanelContainer.new()
+	panel.custom_minimum_size.x = 104
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 4)
+	panel.add_child(column)
+	var holder := Control.new()
+	holder.custom_minimum_size = Vector2(96, 104)
+	holder.clip_contents = true
+	_look_sprite = AnimatedSprite2D.new()
+	_look_sprite.scale = Vector2(3, 3)
+	_look_sprite.position = Vector2(48, 96)
+	holder.add_child(_look_sprite)
+	column.add_child(holder)
+	_look_portrait = TextureRect.new()
+	_look_portrait.custom_minimum_size = Vector2(64, 64)
+	_look_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_look_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	column.add_child(_look_portrait)
+	var random_button := Button.new()
+	random_button.text = "Aleatório"
+	random_button.pressed.connect(func() -> void: randomize_look())
+	column.add_child(random_button)
+	var turn_button := Button.new()
+	turn_button.text = "Girar"
+	turn_button.pressed.connect(func() -> void:
+		_look_direction = (_look_direction + 1) % SpriteLibrary.FOUR_DIRECTIONS.size()
+		_look_step = 0
+		_play_look())
+	column.add_child(turn_button)
+	_preview.get_parent().add_child(panel)
+	_preview.get_parent().move_child(panel, _preview.get_index())
+	var timer := Timer.new()
+	timer.wait_time = LOOK_STEP
+	timer.timeout.connect(_on_look_tick)
+	add_child(timer)
+	timer.start()
 
 
 func _make_content_option(type_name: String) -> OptionButton:
@@ -229,6 +339,7 @@ func _fix_choices(fill: bool) -> void:
 			int(_class().get("skill_choice_count", 0)), fill)
 	_fill_from(_species_skills, CharacterFactory.species_skill_options(_species()),
 			_names(background_skills + _class_skills), int(_species().get("extra_skill_choices", 0)), fill)
+	_fix_look()
 	var proficient := _names(background_skills + _class_skills + _species_skills)
 	_fill_from(_expertise, proficient, [] as Array[StringName], int(_class().get("expertise_choices", 0)), fill)
 
@@ -244,6 +355,32 @@ func _fix_choices(fill: bool) -> void:
 			if ability != _plus_two:
 				_plus_one = ability
 				break
+
+
+## Troca peças e cores que a espécie atual não oferece pelo padrão dela.
+func _fix_look() -> void:
+	var profile := _profile()
+	var defaults := CharacterPainter.default_appearance(profile)
+	for category: String in CharacterPainter.PARTS:
+		if not _look.get(category) in profile.get(category, CharacterPainter.PARTS[category]):
+			_look[category] = defaults[category]
+	for key: String in SWATCH_LABELS:
+		if int(_look.get(key, -1)) < 0 or int(_look.get(key, -1)) >= _swatch_colors(key, profile).size():
+			_look[key] = 0
+
+
+func _swatch_colors(key: String, profile: Dictionary) -> Array:
+	match key:
+		"skin":
+			return profile.get("skin_tones", [])
+		"hair_color":
+			return profile.get("hair_colors", [])
+		"eye_color":
+			return CharacterPainter.EYE_COLORS
+		"outfit":
+			return CharacterPainter.OUTFIT_COLORS
+		_:
+			return CharacterPainter.CLOAK_COLORS
 
 
 func _names(values: Array) -> Array[StringName]:
@@ -271,9 +408,86 @@ func _refresh() -> void:
 	else:
 		_preview.show_errors("Ajuste as escolhas para continuar:", result[1])
 	_start_button.disabled = _character == null
+	_update_look_preview()
+
+
+func _update_look_preview() -> void:
+	var profile := _profile()
+	var gear: Dictionary = CharacterPainter.gear_for(_character, _registry) if _character != null else NO_GEAR
+	var key := Appearance.key_of(_look, profile, gear)
+	if key == _look_key:
+		return
+	_look_key = key
+	_look_portrait.texture = Appearance.portrait_for(_look, profile, gear)
+	var look := _look.duplicate()
+	var sheet := CharacterPainter.empty_sheet()
+	var texture: ImageTexture = null
+	var order: Array[int] = [_look_direction]
+	for row in CharacterPainter.DIRECTIONS.size():
+		if row != _look_direction:
+			order.append(row)
+	for row in order:
+		CharacterPainter.paint_row(sheet, look, profile, gear, row)
+		if texture == null:
+			texture = ImageTexture.create_from_image(sheet)
+			SpriteLibrary.attach(_look_sprite, SpriteLibrary.frames_for_texture(key, texture, false))
+			_play_look()
+		else:
+			texture.update(sheet)
+		await get_tree().process_frame
+		if _look_key != key or not is_inside_tree():
+			return
+
+
+func _play_look() -> void:
+	if _look_sprite.sprite_frames == null:
+		return
+	var direction: String = SpriteLibrary.FOUR_DIRECTIONS[_look_direction]
+	_look_sprite.play(SpriteLibrary.animation_name(_look_sprite.sprite_frames, LOOK_SEQUENCE[_look_step], direction))
+
+
+func _sync_look_widgets() -> void:
+	var profile := _profile()
+	for category: String in CharacterPainter.PARTS:
+		var option: OptionButton = _look_options[category]
+		var choices: Array = profile.get(category, CharacterPainter.PARTS[category])
+		option.clear()
+		for value: Variant in choices:
+			option.add_item(CharacterPainter.NAMES.get(value, str(value)))
+			option.set_item_metadata(option.item_count - 1, value)
+		_select_by_metadata(option, _look.get(category))
+		_look_rows[category].visible = choices.size() > 1
+	(_look_rows["horns"].get_child(0) as Label).text = "Crista" if profile.get("snout", false) else "Chifres"
+	(_swatch_rows["skin"].get_child(0) as Label).text = "Escamas" if profile.get("snout", false) else "Pele"
+	for key: String in SWATCH_LABELS:
+		var box: HFlowContainer = _swatch_boxes[key]
+		for child in box.get_children():
+			box.remove_child(child)
+			child.queue_free()
+		var colors := _swatch_colors(key, profile)
+		for i in colors.size():
+			box.add_child(_make_swatch(Color(colors[i]), i == int(_look.get(key, 0)), key, i))
+		_swatch_rows[key].visible = colors.size() > 1
+	_swatch_rows["cloak_color"].visible = _look.get("cloak") == "cape"
+	_swatch_rows["hair_color"].visible = _look.get("hair_style") != "bald" or _look.get("beard", "none") != "none"
+
+
+func _make_swatch(color: Color, selected: bool, key: String, index: int) -> Button:
+	var button := Button.new()
+	button.custom_minimum_size = Vector2(14, 14)
+	button.tooltip_text = "#%s" % color.to_html(false)
+	for state in ["normal", "hover", "pressed", "focus"]:
+		var style := StyleBoxFlat.new()
+		style.bg_color = color
+		style.set_border_width_all(2 if selected or state == "hover" else 1)
+		style.border_color = Color.WHITE if selected else (Color(0.8, 0.8, 0.8) if state == "hover" else Color(0.1, 0.08, 0.14))
+		button.add_theme_stylebox_override(state, style)
+	button.pressed.connect(set_look.bind(key, index))
+	return button
 
 
 func _sync_widgets() -> void:
+	_sync_look_widgets()
 	_select_by_metadata(_species_option, _species_id)
 	_select_by_metadata(_class_option, _class_id)
 	_select_by_metadata(_background_option, _background_id)
@@ -353,6 +567,18 @@ func _on_species_selected(index: int) -> void:
 	_species_id = _species_option.get_item_metadata(index)
 	_fix_choices(true)
 	_queue_refresh()
+
+
+func _on_look_selected(index: int, category: String) -> void:
+	set_look(category, _look_options[category].get_item_metadata(index))
+
+
+func _on_look_tick() -> void:
+	_look_step += 1
+	if _look_step >= LOOK_SEQUENCE.size():
+		_look_step = 0
+		_look_direction = (_look_direction + 1) % SpriteLibrary.FOUR_DIRECTIONS.size()
+	_play_look()
 
 
 func _on_class_selected(index: int) -> void:

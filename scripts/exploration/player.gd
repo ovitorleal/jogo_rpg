@@ -24,8 +24,18 @@ var _target: Interactable = null
 
 
 func _ready() -> void:
-	_sprite.sprite_frames = SpriteLibrary.frames_for(SHEET)
-	_sprite.offset = SpriteLibrary.FEET_OFFSET
+	refresh_appearance()
+
+
+## Usa a aparência do líder do grupo (ou o herói padrão sem grupo). Chamado de novo ao trocar equipamento.
+func refresh_appearance() -> void:
+	var leader: CharacterData = PartyManager.get_leader() if is_inside_tree() else null
+	if leader != null and Content.registry.has("species", leader.species_id):
+		SpriteLibrary.attach(_sprite, SpriteLibrary.frames_for_texture(Appearance.key_for(leader, Content.registry),
+				Appearance.sheet_texture(leader, Content.registry)))
+	else:
+		SpriteLibrary.attach(_sprite, SpriteLibrary.frames_for(SHEET))
+	_sprite.animation = &""
 	_play("idle")
 
 

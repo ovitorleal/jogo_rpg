@@ -4,7 +4,7 @@ extends RefCounted
 ## recalculados. Valores derivados (CA, PV máximos, bônus) ficam em CharacterSheet.
 ## Serializa para Dictionary compatível com JSON, com versão de esquema.
 
-const SCHEMA_VERSION := 2
+const SCHEMA_VERSION := 3
 const MAX_NAME_LENGTH := 32
 
 var id: String = ""
@@ -27,6 +27,9 @@ var weapon_ids: Array[String] = []
 var current_hp: int = 0
 ## Dados de Vida gastos em descansos curtos (recuperados no descanso longo). Desde o esquema 2.
 var hit_dice_spent: int = 0
+## Escolhas de aparência (corpo, cabelo, chifres...). Campos ausentes usam o padrão da espécie.
+## Desde o esquema 3.
+var appearance: Dictionary = {}
 
 
 func ability_score(ability: StringName) -> int:
@@ -54,6 +57,7 @@ func to_dict() -> Dictionary:
 		"weapon_ids": weapon_ids.duplicate(),
 		"current_hp": current_hp,
 		"hit_dice_spent": hit_dice_spent,
+		"appearance": appearance.duplicate(),
 	}
 
 
@@ -85,6 +89,12 @@ static func from_dict(source: Dictionary) -> Array:
 	c.weapon_ids.assign(_read_array(data, "weapon_ids", errors).map(func(v: Variant) -> String: return str(v)))
 	c.current_hp = _read_int(data, "current_hp", errors)
 	c.hit_dice_spent = _read_int(data, "hit_dice_spent", errors)
+	if data.get("appearance") is Dictionary:
+		for key: Variant in data["appearance"]:
+			var value: Variant = data["appearance"][key]
+			c.appearance[str(key)] = int(value) if value is float and is_equal_approx(value, roundf(value)) else value
+	else:
+		errors.append("Campo 'appearance' ausente ou não é objeto")
 	var known := c.to_dict().keys()
 	for key: Variant in data:
 		if not key in known:
@@ -95,13 +105,18 @@ static func from_dict(source: Dictionary) -> Array:
 
 
 ## Atualiza dados de versões anteriores para a atual, sem alterar o original.
-## v1 -> v2: adiciona hit_dice_spent = 0.
+## v1 -> v2: adiciona hit_dice_spent = 0. v2 -> v3: adiciona appearance = {} (padrão da espécie).
 static func migrate(data: Dictionary) -> Dictionary:
 	var result := data.duplicate(true)
 	var version := int(result.get("schema_version", -1))
 	if version == 1:
 		result["hit_dice_spent"] = 0
-		result["schema_version"] = 2
+		version = 2
+	if version == 2:
+		result["appearance"] = {}
+		version = 3
+	if int(result.get("schema_version", -1)) in [1, 2]:
+		result["schema_version"] = version
 	return result
 
 

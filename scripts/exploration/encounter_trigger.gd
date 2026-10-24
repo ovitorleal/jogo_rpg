@@ -22,8 +22,7 @@ func _ready() -> void:
 	add_to_group(GROUP)
 	var marker := get_node_or_null("Marker") as AnimatedSprite2D
 	if marker != null and not marker_sheet.is_empty():
-		marker.sprite_frames = SpriteLibrary.frames_for(marker_sheet)
-		marker.offset = SpriteLibrary.FEET_OFFSET
+		SpriteLibrary.attach(marker, SpriteLibrary.frames_for(marker_sheet))
 		marker.play(SpriteLibrary.animation_name(marker.sprite_frames, "idle", marker_facing))
 	if ExplorationManager.is_resolved(trigger_id):
 		queue_free()
