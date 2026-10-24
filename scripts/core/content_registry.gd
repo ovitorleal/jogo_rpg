@@ -229,6 +229,23 @@ const TYPES := {
 			}},
 		},
 	},
+	"appearance": {
+		"dir": "appearance",
+		"prefix": "appearance.",
+		"fields": {
+			"species_id": {"type": "string", "ref": "species"},
+			"skin_tones": {"type": "array", "of": "string", "min_length": 1},
+			"hair_colors": {"type": "array", "of": "string", "min_length": 1},
+			"horn_color": {"type": "string", "required": false, "default": "#d8ccb4"},
+			"snout": {"type": "bool", "required": false, "default": false},
+			"leg_length": {"type": "int", "min": 4, "max": 8, "required": false, "default": 7},
+			"torso_length": {"type": "int", "min": 6, "max": 11, "required": false, "default": 9},
+			"width": {"type": "int", "min": -1, "max": 2, "required": false, "default": 0},
+			"head_radius": {"type": "number", "min": 4.5, "max": 7.0, "required": false, "default": 6.0},
+			"body": {"type": "array", "of": "string", "min_length": 1}, "build": {"type": "array", "of": "string", "min_length": 1}, "hair_style": {"type": "array", "of": "string", "min_length": 1}, "beard": {"type": "array", "of": "string", "min_length": 1}, "ears": {"type": "array", "of": "string", "min_length": 1}, "horns": {"type": "array", "of": "string", "min_length": 1},
+			"tail": {"type": "array", "of": "string", "min_length": 1}, "marks": {"type": "array", "of": "string", "min_length": 1}, "face": {"type": "array", "of": "string", "min_length": 1}, "accessory": {"type": "array", "of": "string", "min_length": 1}, "cloak": {"type": "array", "of": "string", "min_length": 1},
+		},
+	},
 	"item": {
 		"dir": "items",
 		"prefix": "item.",
@@ -500,6 +517,21 @@ func _check_consistency() -> void:
 				errors.append("%s.%s: %s inexistente '%s'" % [id, objective.get("id"), target_type, objective.get("target")])
 	for id in ids("dialogue"):
 		_check_dialogue(id, get_entry("dialogue", id))
+	for id in ids("appearance"):
+		var profile := get_entry("appearance", id)
+		for category: String in CharacterPainter.PARTS:
+			for option: Variant in profile.get(category, []):
+				if not str(option) in CharacterPainter.PARTS[category]:
+					errors.append("%s.%s: peça desconhecida '%s'" % [id, category, option])
+		for key in ["skin_tones", "hair_colors"]:
+			for color: Variant in profile.get(key, []):
+				if not Color.html_is_valid(str(color)):
+					errors.append("%s.%s: cor inválida '%s'" % [id, key, color])
+		if profile.has("horn_color") and not Color.html_is_valid(str(profile["horn_color"])):
+			errors.append("%s: horn_color inválida" % id)
+	for species_id in ids("species"):
+		if not has("appearance", species_id.replace("species.", "appearance.")):
+			errors.append("%s: sem perfil de aparência (data/appearance/)" % species_id)
 	for id in ids("item"):
 		var item := get_entry("item", id)
 		if item.get("item_type") != "weapon":

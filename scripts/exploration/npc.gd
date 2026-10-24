@@ -11,6 +11,5 @@ func _ready() -> void:
 	super._ready()
 	var sprite := get_node_or_null("Sprite") as AnimatedSprite2D
 	if sprite != null and not sheet.is_empty():
-		sprite.sprite_frames = SpriteLibrary.frames_for(sheet)
-		sprite.offset = SpriteLibrary.FEET_OFFSET
+		SpriteLibrary.attach(sprite, SpriteLibrary.frames_for(sheet))
 		sprite.play(SpriteLibrary.animation_name(sprite.sprite_frames, "idle", facing))

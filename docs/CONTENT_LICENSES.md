@@ -15,6 +15,12 @@ Campos: nome · fonte · autor/titular · licença · URL · data de obtenção 
 Assets originais do projeto estão em `assets/asset_catalog.json` com `source_type` e `license: project`.
 A licença do conteúdo próprio ainda não foi escolhida (decisão pendente do responsável).
 
+## Referências (fora do build)
+
+| Conteúdo | Origem | Uso |
+|---|---|---|
+| `docs/art_reference/species_reference.webp` | Gerada com IA pelo responsável do projeto (2026-10-24) | Só referência de opções de aparência; não é importada nem exportada (`.gdignore`); nenhum pixel copiado para os sprites |
+
 ## SRD 5.2.1
 
 Em uso desde a Fase 2. Lista do que foi usado e das adaptações em [RULES_POLICY.md](RULES_POLICY.md).

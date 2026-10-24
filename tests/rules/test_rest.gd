@@ -53,13 +53,15 @@ func test_long_rest_restores_hp_and_hit_dice() -> void:
 func test_migration_from_schema_1() -> void:
 	var data := _fighter().to_dict()
 	data.erase("hit_dice_spent")
+	data.erase("appearance")
 	data["schema_version"] = 1
 	var result := CharacterData.from_dict(JSON.parse_string(JSON.stringify(data)))
 	var loaded: CharacterData = result[0]
 	assert_true(loaded != null, "Save da versão 1 carrega: %s" % str(result[1]))
 	if loaded != null:
 		assert_eq(loaded.hit_dice_spent, 0, "Migração define hit_dice_spent = 0")
-		assert_eq(loaded.to_dict()["schema_version"], 2, "Salvo de novo na versão atual")
+		assert_eq(loaded.to_dict()["schema_version"], CharacterData.SCHEMA_VERSION, "Salvo de novo na versão atual")
+		assert_eq(loaded.appearance, {}, "Migração define aparência padrão")
 		assert_eq(CharacterFactory.validate(loaded, _registry()), [] as Array[String], "Personagem migrado é válido")
 	assert_eq(int(data["schema_version"]), 1, "A migração não altera o dicionário original")
 

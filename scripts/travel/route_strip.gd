@@ -29,8 +29,12 @@ func _ready() -> void:
 	_tree = load(TREE)
 	_pine = load(PINE)
 	_hero = AnimatedSprite2D.new()
-	_hero.sprite_frames = SpriteLibrary.frames_for(SHEET)
-	_hero.offset = SpriteLibrary.FEET_OFFSET
+	var leader: CharacterData = PartyManager.get_leader()
+	if leader != null and Content.registry.has("species", leader.species_id):
+		SpriteLibrary.attach(_hero, SpriteLibrary.frames_for_texture(Appearance.key_for(leader, Content.registry),
+				Appearance.sheet_texture(leader, Content.registry)))
+	else:
+		SpriteLibrary.attach(_hero, SpriteLibrary.frames_for(SHEET))
 	add_child(_hero)
 	_hero.play(&"idle_right")
 	resized.connect(_place_hero)

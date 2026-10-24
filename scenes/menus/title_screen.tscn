@@ -5,7 +5,7 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hero"]
 atlas = ExtResource("2_hero")
-region = Rect2(0, 0, 32, 32)
+region = Rect2(0, 0, 64, 64)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_credits"]
 bg_color = Color(0.102, 0.078, 0.137, 1)

@@ -21,6 +21,9 @@ var attacks: Array[Dictionary] = []
 var resistances: Array = []
 var trait_ids: Array[String] = []
 var sprite_path: String = ""
+## Folha gerada pela aparência (personagens); tem prioridade sobre sprite_path.
+var sprite_texture: Texture2D = null
+var sprite_key: String = ""
 var xp: int = 0
 var initiative: int = 0
 ## Personagem de origem (null para monstros); recebe PV e XP ao fim do combate.
@@ -60,6 +63,9 @@ static func from_character(c: CharacterData, registry: ContentRegistry) -> Comba
 	unit.speed_feet = sheet.speed
 	unit.resistances = sheet.species.get("damage_resistances", []).duplicate()
 	unit.sprite_path = HERO_SPRITE
+	if registry.has("appearance", c.species_id.replace("species.", "appearance.")):
+		unit.sprite_texture = Appearance.sheet_texture(c, registry)
+		unit.sprite_key = Appearance.key_for(c, registry)
 	unit.character = c
 	var seen := {}
 	for weapon in sheet.weapons:
