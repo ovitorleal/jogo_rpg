@@ -9,6 +9,7 @@
 			"speaker": "Amara",
 			"portrait": "res://assets/portraits/amara_portrait.png",
 			"entries": [
+				{"condition": "objective_open:quest.goblin_chief#talk_amara", "node": "chief_info"},
 				{"condition": "quest_ready:quest.ruin_threat", "node": "ruin_report"},
 				{"condition": "quest_active:quest.ruin_threat", "node": "ruin_reminder"},
 				{"condition": "quest_available:quest.ruin_threat", "node": "greeting"},
@@ -18,6 +19,14 @@
 				{"condition": "", "node": "idle"}
 			],
 			"nodes": [
+				{
+					"id": "chief_info",
+					"text": "Ione mandou você atrás de Garra-Rubra? Ele acampa no Bosque do Riacho: siga a Estrada do Leste (placa a leste daqui). Ele golpeia duas vezes por turno, então chegue descansado. Se quiser treinar antes, um goblin tomou a ruína a sudoeste.",
+					"choices": [
+						{"text": "Obrigado(a), Amara.", "next": ""},
+						{"text": "Me fale da ruína.", "next": "greeting"}
+					]
+				},
 				{
 					"id": "greeting",
 					"text": "Alto lá, viajante. Sou Amara, guarda desta encruzilhada. Estrada tranquila não é... um goblin tomou a ruína a sudoeste e anda atacando quem passa.",

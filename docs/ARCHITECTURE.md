@@ -121,6 +121,14 @@
 | Características como dados completos (1–20) com `implemented`; comportamento ligado por id no motor | Ficha mostra tudo desde já, sem afirmar que algo funciona antes de funcionar |
 | Movimento casa a casa no `CombatManager` | Ataques de oportunidade no ponto exato em que o inimigo sai do alcance |
 
+### Fase 7
+
+| Decisão | Motivo |
+|---|---|
+| Missão principal marcada nos dados (`final: true`); ao concluí-la numa conversa, o mapa salva e abre a tela de conclusão | Fim da aventura definido pelo conteúdo, sem código por missão |
+| Objetivo atual calculado pelo `QuestLog.current_objective` e mostrado pelo HUD a cada chegada e conversa | O jogador sempre sabe o próximo passo |
+| Acontecimentos garantidos nas rotas (`scripted_events`) e eventos "uma vez" guardados no `ExplorationManager` e no salvamento | Encontros de história previsíveis sem repetir a cada viagem |
+
 ### Fase 6.6 (entregas 2 e 3)
 
 | Decisão | Motivo |

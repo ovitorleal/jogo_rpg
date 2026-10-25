@@ -89,6 +89,11 @@ func advance(party: Array[CharacterData], registry: ContentRegistry, inventory: 
 	var leader_level := party[0].level if not party.is_empty() else 1
 	var pick := EncounterDirector.choose(registry.get_entry("region", r["region_id"]), hour(), leader_level,
 			party.size(), history, resolved_once, registry, _next_roller())
+	# Acontecimento roteirizado da rota (uma vez por jogo): substitui o sorteio deste trecho.
+	for scripted: Dictionary in r.get("scripted_events", []):
+		if int(scripted["segment"]) == segments_done and not resolved_once.has(str(scripted["id"])):
+			pick = {"kind": scripted["kind"], "id": scripted["id"]}
+			resolved_once[str(scripted["id"])] = true
 	var result := {"ok": true, "error": "", "kind": pick["kind"], "id": pick["id"], "text": ""}
 	match pick["kind"]:
 		"quiet":

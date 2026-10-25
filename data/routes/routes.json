@@ -26,6 +26,39 @@
 			"segments": 4,
 			"hours_per_segment": 3,
 			"start_hour": 14
+		},
+		{
+			"id": "route.village_road",
+			"name": "Estrada da Vila",
+			"description": "Caminho entre os campos de Ribeira e a Clareira da Encruzilhada.",
+			"source": "original",
+			"from_map": "map.village",
+			"to_map": "map.clearing",
+			"to_entrance": "Entrance_west",
+			"region_id": "region.ribeira_fields",
+			"segments": 2,
+			"hours_per_segment": 2,
+			"start_hour": 8,
+			"scripted_events": [
+				{
+					"segment": 1,
+					"kind": "event",
+					"id": "event.lost_child"
+				}
+			]
+		},
+		{
+			"id": "route.village_road_back",
+			"name": "Estrada da Vila (volta)",
+			"description": "O caminho de volta da Clareira da Encruzilhada até a Vila de Ribeira.",
+			"source": "original",
+			"from_map": "map.clearing",
+			"to_map": "map.village",
+			"to_entrance": "Entrance_road",
+			"region_id": "region.ribeira_fields",
+			"segments": 2,
+			"hours_per_segment": 2,
+			"start_hour": 15
 		}
 	]
 }

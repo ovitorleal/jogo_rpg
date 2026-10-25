@@ -72,6 +72,29 @@
 			"arena_height": 8,
 			"intro_text": "Uma flecha passa zunindo: um batedor goblin bloqueia a trilha!",
 			"reward_gold": 5
+		},
+		{
+			"id": "encounter.goblin_chief",
+			"name": "Garra-Rubra",
+			"description": "O chefe goblin no velho acampamento do Bosque do Riacho.",
+			"source": "original",
+			"enemies": [
+				{
+					"monster_id": "monster.goblin_boss",
+					"count": 1
+				}
+			],
+			"flee_allowed": true,
+			"arena_width": 12,
+			"arena_height": 8,
+			"intro_text": "\"Mais um herói para a minha coleção de botas!\" Garra-Rubra ergue o escudo e avança.",
+			"reward_gold": 40,
+			"reward_items": [
+				{
+					"item_id": "item.potion_of_healing",
+					"count": 1
+				}
+			]
 		}
 	]
 }

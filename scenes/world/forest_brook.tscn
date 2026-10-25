@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/world/forest_brook_terrain.tscn" id="2_terrain"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/exploration_hud.tscn" id="5_hud"]
 [ext_resource type="PackedScene" path="res://scenes/world/forest_brook_props.tscn" id="6_props"]
 [ext_resource type="PackedScene" path="res://scenes/world/campfire.tscn" id="7_campfire"]
+[ext_resource type="PackedScene" path="res://scenes/world/encounter_trigger.tscn" id="8_trigger"]
 
 [node name="ForestBrook" type="Node2D"]
 script = ExtResource("1_script")
@@ -32,6 +33,12 @@ action = "travel:route.east_road_back"
 
 [node name="Campfire" parent="Objects" instance=ExtResource("7_campfire")]
 position = Vector2(448, 204)
+
+[node name="ChiefEncounter" parent="Objects" instance=ExtResource("8_trigger")]
+position = Vector2(418, 208)
+encounter_id = "encounter.goblin_chief"
+trigger_id = "forest_brook.goblin_chief"
+marker_sheet = "res://assets/enemies/goblin_boss_sheet.png"
 
 [node name="Player" parent="Objects" instance=ExtResource("4_player")]
 unique_name_in_owner = true

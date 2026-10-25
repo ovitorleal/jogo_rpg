@@ -88,6 +88,59 @@
 				}
 			],
 			"sprite": "res://assets/enemies/goblin_sheet.png"
+		},
+		{
+			"id": "monster.goblin_boss",
+			"name": "Garra-Rubra",
+			"description": "Chefe goblin de capa vermelha, com camisão de malha e escudo; golpeia duas vezes por turno.",
+			"source": "SRD 5.2.1",
+			"size": "small",
+			"creature_type": "feérico",
+			"armor_class": 17,
+			"hit_points": 21,
+			"hit_dice": "6d6",
+			"speed": 30,
+			"multiattack": 2,
+			"ability_scores": [10, 15, 10, 10, 8, 10],
+			"challenge_rating": "1",
+			"xp": 200,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.goblin_boss_scimitar",
+					"name": "Cimitarra",
+					"attack_type": "melee",
+					"attack_bonus": 4,
+					"damage": "1d6+2",
+					"damage_type": "slashing",
+					"reach": 5
+				},
+				{
+					"id": "attack.goblin_boss_shortbow",
+					"name": "Arco Curto",
+					"attack_type": "ranged",
+					"attack_bonus": 4,
+					"damage": "1d6+2",
+					"damage_type": "piercing",
+					"range_normal": 80,
+					"range_long": 320
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.nimble_escape",
+					"name": "Fuga Ágil",
+					"description": "Pode Desengajar ou Esconder-se com uma ação bônus.",
+					"implemented": false
+				},
+				{
+					"id": "trait.redirect_attack",
+					"name": "Redirecionar Ataque",
+					"description": "Reação: troca de lugar com um aliado adjacente, que vira o alvo do ataque.",
+					"implemented": false
+				}
+			],
+			"sprite": "res://assets/enemies/goblin_boss_sheet.png"
 		}
 	]
 }

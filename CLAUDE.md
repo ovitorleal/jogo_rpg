@@ -36,6 +36,7 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 - Viagem: estado só muda via `TravelSystem`; a tela guarda o estado em `ExplorationManager.store_travel()`.
   Nos testes use `roller_override` para dados determinísticos.
 - Missões e diálogos: dados em `data/quests/` e `data/dialogues/`; progresso só via `QuestManager.notify*`.
+  A missão `final: true` fecha a aventura (tela de conclusão); roteiro da fatia em `docs/VERTICAL_SLICE.md`.
   Inventário do grupo em `PartyManager.inventory`; equipamento em uso fica no `CharacterData`.
 - Características/talentos: dados em `data/classes`, `data/subclasses`, `data/feats` (campo `grants` gera escolhas em
   `CharacterChoices`; recursos em `ClassFeatures`). Ao ligar uma característica no motor, mude `implemented` para true.

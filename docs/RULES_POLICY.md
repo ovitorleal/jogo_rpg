@@ -169,7 +169,7 @@ opções marcáveis pelo comando `option`.
 - Armaduras: Couro, Couro Batido, Camisão de Malha, Brunea, Cota de Malha, Escudo.
 - Armas: Adaga, Azagaia, Bordão, Clava, Foice, Lança, Maça, Machadinha, Arco Curto (simples); Cimitarra, Espada Curta,
   Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
-- Monstros: Lobo e Goblin Guerreiro (CA, PV, dados de vida, deslocamento, atributos, ataques, ND e XP).
+- Monstros: Garra-Rubra (Goblin Boss), Lobo e Goblin Guerreiro (CA, PV, dados de vida, deslocamento, atributos, ataques, ND e XP).
 - Feras para a Forma Selvagem (11), em `data/monsters/beasts.json`.
 - Magias (58): as 24 anteriores e 34 novas de 1º a 9º círculo (lista em `data/spells/spells.json`). Truques Raio de Fogo, Raio de Gelo, Spray Venenoso, Chama Sagrada, Rajada Mística, Zombaria Viciosa;
   1º círculo Mísseis Mágicos, Mãos Flamejantes, Onda Trovejante, Raio Guiador, Curar Ferimentos, Palavra Curativa,
@@ -228,6 +228,8 @@ opções marcáveis pelo comando `option`.
 | Auxílio dura o combate (o PV extra some depois); Aura de Vida dá resistência a quem está na aura ao conjurar e não reanima; Escudo de Fogo é sempre o quente; Revivificar só reanima aliados caídos no mesmo combate | Sem passagem de horas; testes de morte ainda não existem |
 | Magias de exploração, invocação, muralhas e transformação (Encontrar Montaria, Invocar Dragão, Muralha de Fogo/Pedra, Metamorfose, Lenda, Comunhão, Olho Arcano, Caminhar em Árvores, Nuvem de Névoa, Sugestão, Missão, Zona da Verdade, Alterar-se, Sopro do Dragão, Nuvem Fétida, Tempestade de Granizo, Guardião da Fé) não existem ainda; Montaria Fiel e Companheiro Dracônico seguem sem efeito | Precisam de sistemas novos (criaturas aliadas, terreno, exploração) |
 | Arcano Místico oferece só as magias de 6º a 9º círculo que existem (Círculo da Morte, Dedo da Morte, Palavra de Poder Atordoar, Palavra de Poder Matar) | Poucas magias de círculo alto cadastradas |
+| Garra-Rubra (chefe goblin) sem Fuga Ágil, Redirecionar Ataque e o dano extra com vantagem; enfrenta o grupo sozinho | Reações e ações bônus de monstros ainda não existem; dificuldade adequada ao nível 1–2 da demonstração |
+| Ione entrega 2 Poções de Cura ao aceitar a missão; a estalagem dá descanso longo de graça | Ritmo da demonstração |
 | Produzir Chama é uma ação de ataque mágico (sem a chama de luz como ação bônus); Lampejo Estelar não anula Invisível | Sem iluminação na grade |
 | Talentos/características com escolhas recebem padrões automáticos; o jogador troca na criação ou com a tecla L | Subir de nível nunca trava o jogo |
 | Truques/preparadas limitados ao que existe na lista da classe (ex.: Clérigo conhece 1 truque em vez de 3; Bruxo prepara só Maldição) | Ainda há poucas magias cadastradas |

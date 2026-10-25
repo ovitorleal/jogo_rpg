@@ -385,7 +385,10 @@ func run_enemy_turn() -> Array[Dictionary]:
 			var destination := _ai_destination(actor, target)
 			if destination != actor.position:
 				events.append_array(_do_move(actor, destination)["events"])
-			_ai_try_attack(actor, target, melee, ranged, events)
+			acted = _ai_try_attack(actor, target, melee, ranged, events)
+		# Ataques Múltiplos: segue atacando enquanto a ação de Ataque tiver golpes.
+		while acted and attacks_left > 0 and state == State.IN_PROGRESS and target.is_up():
+			acted = _ai_try_attack(actor, target, melee, ranged, events)
 	if state == State.IN_PROGRESS:
 		events.append_array(_end_turn())
 	events.append_array(_save_events)

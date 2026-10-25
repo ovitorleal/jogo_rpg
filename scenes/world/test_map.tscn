@@ -20,6 +20,9 @@ unique_name_in_owner = true
 [node name="Entrance_east" type="Marker2D" parent="Entrances"]
 position = Vector2(856, 282)
 
+[node name="Entrance_west" type="Marker2D" parent="Entrances"]
+position = Vector2(76, 282)
+
 [node name="Objects" type="Node2D" parent="."]
 y_sort_enabled = true
 
@@ -34,6 +37,12 @@ position = Vector2(872, 250)
 prompt_text = "Ler placa"
 message_text = "A placa diz: \"Estrada do Leste — Bosque do Riacho, meio dia de caminhada pela Floresta Sussurrante.\" Partir agora?"
 action = "travel:route.east_road"
+
+[node name="VillageRoadSign" parent="Objects" instance=ExtResource("3_sign")]
+position = Vector2(56, 254)
+prompt_text = "Ler placa"
+message_text = "A placa diz: \"Estrada da Vila — Vila de Ribeira, algumas horas a oeste.\" Voltar para a vila?"
+action = "travel:route.village_road_back"
 
 [node name="Amara" parent="Objects" instance=ExtResource("8_amara")]
 position = Vector2(470, 252)

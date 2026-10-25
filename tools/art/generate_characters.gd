@@ -19,6 +19,9 @@ const OUT_WOLF := "res://assets/enemies/wolf_sheet.png"
 const OUT_PORTRAIT := "res://assets/portraits/hero_portrait.png"
 const OUT_AMARA := "res://assets/characters/npc_amara_sheet.png"
 const OUT_AMARA_PORTRAIT := "res://assets/portraits/amara_portrait.png"
+const OUT_IONE := "res://assets/characters/npc_ione_sheet.png"
+const OUT_IONE_PORTRAIT := "res://assets/portraits/ione_portrait.png"
+const OUT_GOBLIN_BOSS := "res://assets/enemies/goblin_boss_sheet.png"
 
 const HERO_LOOK := {"body": "masculine", "hair_style": "short", "skin": 1, "hair_color": 0, "eye_color": 0,
 		"outfit": 0, "cloak": "cape", "cloak_color": 0}
@@ -26,6 +29,10 @@ const HERO_GEAR := {"armor": "none", "shield": false, "weapon": "sword"}
 const AMARA_LOOK := {"body": "feminine", "hair_style": "ponytail", "skin": 3, "hair_color": 2, "eye_color": 1,
 		"outfit": 2, "cloak": "cape", "cloak_color": 1}
 const AMARA_GEAR := {"armor": "light", "shield": false, "weapon": "spear"}
+## Ione, chefe da Vila de Ribeira: senhora de cabelo grisalho em coque, vestido verde e cajado.
+const IONE_LOOK := {"body": "feminine", "hair_style": "bun", "skin": 2, "hair_color": 6, "eye_color": 2,
+		"outfit": 2, "cloak": "cape", "cloak_color": 2}
+const IONE_GEAR := {"armor": "none", "shield": false, "weapon": "staff"}
 ## Goblin: perfil próprio (não é espécie jogável), baixo e magro, pele verde e orelhas longas.
 const GOBLIN_PROFILE := {
 	"id": "appearance.goblin", "skin_tones": ["#62a034"], "hair_colors": ["#2e5a1c"],
@@ -34,6 +41,10 @@ const GOBLIN_PROFILE := {
 const GOBLIN_LOOK := {"body": "masculine", "build": "slim", "hair_style": "bald", "ears": "pointed_long",
 		"face": "tusks_small", "eye_color": 6, "outfit": 4, "cloak": "none", "beard": "none"}
 const GOBLIN_GEAR := {"armor": "light", "shield": false, "weapon": "curved"}
+## Garra-Rubra, chefe goblin: camisão de malha, escudo e capa vermelha.
+const GOBLIN_BOSS_LOOK := {"body": "masculine", "build": "slim", "hair_style": "mohawk", "ears": "pointed_long",
+		"face": "tusks_small", "eye_color": 6, "outfit": 1, "cloak": "cape", "cloak_color": 0, "beard": "none"}
+const GOBLIN_BOSS_GEAR := {"armor": "medium", "shield": true, "weapon": "curved"}
 
 
 func _initialize() -> void:
@@ -47,6 +58,11 @@ func _initialize() -> void:
 	ok = ok and _save(CharacterPainter.paint_portrait(hero, human, HERO_GEAR), OUT_PORTRAIT)
 	ok = ok and _save(CharacterPainter.paint_sheet(amara, human, AMARA_GEAR), OUT_AMARA)
 	ok = ok and _save(CharacterPainter.paint_portrait(amara, human, AMARA_GEAR), OUT_AMARA_PORTRAIT)
+	var ione := _look(human, IONE_LOOK)
+	ok = ok and _save(CharacterPainter.paint_sheet(ione, human, IONE_GEAR), OUT_IONE)
+	ok = ok and _save(CharacterPainter.paint_portrait(ione, human, IONE_GEAR), OUT_IONE_PORTRAIT)
+	var boss := _look(GOBLIN_PROFILE, GOBLIN_BOSS_LOOK)
+	ok = ok and _save(CharacterPainter.paint_sheet(boss, GOBLIN_PROFILE, GOBLIN_BOSS_GEAR), OUT_GOBLIN_BOSS)
 	quit(0 if ok else 1)
 
 

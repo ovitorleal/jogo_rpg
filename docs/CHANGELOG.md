@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.7.0] — 2026-10-25 — Fase 7: fatia vertical "A Garra-Rubra"
+
+### Adicionado
+- Vila de Ribeira (novo mapa inicial) com Ione, a chefe da vila, estalagem para descanso longo, poço e placas.
+- Missão principal "A Garra-Rubra" (`final: true`): falar com Amara, derrotar o chefe goblin no Bosque do Riacho e
+  voltar a Ione; ao entregar, o jogo é salvo e aparece a tela de conclusão com o resumo do herói.
+- Garra-Rubra (chefe goblin do SRD 5.2.1), Estrada da Vila (ida e volta) e a região Campos de Ribeira.
+- Rotas com acontecimentos garantidos (`scripted_events`): a criança perdida no primeiro trecho da Estrada da Vila.
+- Objetivo atual sempre visível na exploração; texto de abertura no novo jogo.
+- Objetivo de missão "conversar com" (`talk`), condição de diálogo `objective_open` e ação `give_item`.
+- Arte gerada por código: casas de enxaimel (vermelha e azul), poço, Ione (folha e retrato) e Garra-Rubra.
+- `docs/VERTICAL_SLICE.md` com o roteiro e os itens da especificação.
+- 4 testes novos (total 268), incluindo a aventura de ponta a ponta.
+
+### Corrigido
+- Inimigos com Ataques Múltiplos (feras, chefe) atacavam só uma vez por turno.
+- Eventos de "uma vez" voltavam a cada viagem; agora valem para o jogo inteiro e entram no salvamento.
+
 ## [0.6.11] — 2026-10-25 — Fase 6.6, entrega 6: magias de círculo alto (fase concluída)
 
 ### Adicionado

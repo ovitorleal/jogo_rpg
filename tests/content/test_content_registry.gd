@@ -187,10 +187,10 @@ func test_species_skill_options_consistency() -> void:
 func test_monsters_and_encounters() -> void:
 	var registry := _real_registry()
 	assert_eq(registry.ids("monster"), ["monster.ape", "monster.black_bear", "monster.blood_hawk", "monster.brown_bear",
-			"monster.crocodile", "monster.dire_wolf", "monster.giant_spider", "monster.goblin_warrior", "monster.rat",
+			"monster.crocodile", "monster.dire_wolf", "monster.giant_spider", "monster.goblin_boss", "monster.goblin_warrior", "monster.rat",
 			"monster.riding_horse", "monster.spider", "monster.warhorse", "monster.wolf"] as Array[String],
 			"Monstros: inimigos e feras da Forma Selvagem")
-	assert_eq(registry.ids("encounter"), ["encounter.goblin_scout", "encounter.lone_wolf", "encounter.ruin_goblin",
+	assert_eq(registry.ids("encounter"), ["encounter.goblin_chief", "encounter.goblin_scout", "encounter.lone_wolf", "encounter.ruin_goblin",
 			"encounter.wolf_pair"] as Array[String], "Encontros")
 	var data := _valid_data()
 	_find(data, "monster", "monster.wolf")["hit_points"] = 40

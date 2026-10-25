@@ -23,9 +23,15 @@ Nomes traduzidos e descrições resumidas com texto próprio.
 
 ## Magias
 
-As 16 magias de `data/spells/spells.json` vêm do SRD 5.2.1 (CC BY 4.0, mesma linha da tabela acima): mecânica
+As 58 magias de `data/spells/spells.json` vêm do SRD 5.2.1 (CC BY 4.0, mesma linha da tabela acima): mecânica
 reimplementada em código e descrições resumidas com texto próprio. Os efeitos visuais são originais, desenhados por código
 (`scripts/combat/spell_vfx.gd`).
+
+## Monstros e aventura
+
+Lobo, Goblin Guerreiro, Garra-Rubra (Goblin Boss) e as 11 feras da Forma Selvagem (`data/monsters/`) vêm do SRD 5.2.1
+(CC BY 4.0), com nomes traduzidos e descrições próprias. A aventura "A Garra-Rubra" (Vila de Ribeira, Ione, Amara,
+diálogos, missões e eventos) é original do projeto.
 
 ## Referências (fora do build)
 

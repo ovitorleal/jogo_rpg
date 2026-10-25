@@ -9,12 +9,15 @@ const NO_CHARACTER_COMBAT_MESSAGE := "Algo se move entre as sombras... mas não 
 const PLAYER_PORTRAIT := preload("res://assets/portraits/hero_portrait.png")
 const CONFIRM_HINT := "[E] Confirmar · [Esc] Cancelar"
 const TITLE_SCENE := "res://scenes/menus/title_screen.tscn"
+const ENDING_SCENE := "res://scenes/menus/ending_screen.tscn"
 
 ## Ação aguardando confirmação (texto do Interactable.action).
 var _pending_action: String = ""
 ## Conversa em andamento (null fora de diálogo) e avisos acumulados durante ela.
 var _dialogue: DialogueRunner = null
 var _dialogue_notes: Array[String] = []
+## Recompensas da missão final, guardadas ao fim da conversa para a tela de conclusão.
+var _ending_rewards: Array[String] = []
 
 @onready var _ground: TileMapLayer = %Terrain.get_node("Ground")
 @onready var _player: Player = %Player
@@ -55,6 +58,7 @@ func _ready() -> void:
 		notes.append_array(QuestManager.notify("reach_map", map_id))
 	if not notes.is_empty():
 		_show_player_line("\n".join(notes))
+	refresh_objective()
 	# Ponto seguro: chegada ao mapa (troca de área, volta de combate, missão atualizada).
 	SaveManager.request_autosave("mapa")
 
@@ -235,6 +239,8 @@ func start_dialogue(dialogue_id: String) -> void:
 	_dialogue = DialogueRunner.new()
 	_dialogue_notes.clear()
 	_dialogue.begin(entry, QuestManager.log, PartyManager.members, PartyManager.inventory, Content.registry)
+	# Objetivo "conversar com": cumprido ao começar a conversa (depois de escolher a fala de abertura).
+	_dialogue_notes.append_array(QuestManager.notify("talk", dialogue_id))
 	_player.input_enabled = false
 	_hud.hide_prompt()
 	_show_dialogue_node()
@@ -254,7 +260,12 @@ func choose_dialogue_option(index: int) -> void:
 
 
 func end_dialogue() -> void:
+	var finished_final := _completed_final_quest()
 	_dialogue = null
+	refresh_objective()
+	if finished_final:
+		show_ending()
+		return
 	SaveManager.request_autosave("diálogo")
 	_hud.hide_message()
 	_player.input_enabled = true
@@ -265,6 +276,37 @@ func end_dialogue() -> void:
 		_player.input_enabled = false
 		return
 	_on_interaction_target_changed(_player.get_interaction_target())
+
+
+func _completed_final_quest() -> bool:
+	if _dialogue == null:
+		return false
+	_ending_rewards = _dialogue.reward_lines.duplicate()
+	for quest_id in _dialogue.completed:
+		if bool(Content.registry.get_entry("quest", quest_id).get("final", false)):
+			return true
+	return false
+
+
+## Fim da aventura: salva o jogo (a missão final já está concluída) e abre a tela de conclusão.
+func show_ending() -> void:
+	ExplorationManager.ending_lines = _ending_rewards.duplicate()
+	_dialogue_notes.clear()
+	_hud.hide_message()
+	SaveManager.save_now()
+	if ExplorationManager.scene_changes_enabled:
+		get_tree().change_scene_to_file.call_deferred(ENDING_SCENE)
+
+
+## Atualiza o objetivo mostrado no canto da tela.
+func refresh_objective() -> void:
+	if not PartyManager.has_party():
+		_hud.set_objective("")
+		return
+	var text := QuestManager.log.current_objective(Content.registry)
+	if text.is_empty() and QuestManager.log.status("quest.goblin_chief") == QuestLog.Status.NOT_STARTED:
+		text = "Fale com Ione, a chefe da vila, perto do poço de Ribeira"
+	_hud.set_objective(text)
 
 
 func is_in_dialogue() -> bool:

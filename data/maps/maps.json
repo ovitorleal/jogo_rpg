@@ -16,6 +16,14 @@
 			"source": "original",
 			"scene": "res://scenes/world/forest_brook.tscn",
 			"region_id": "region.whispering_forest"
+		},
+		{
+			"id": "map.village",
+			"name": "Vila de Ribeira",
+			"description": "Vila de lavradores à beira dos campos, com uma estalagem, um poço na praça e a estrada que leva à floresta.",
+			"source": "original",
+			"scene": "res://scenes/world/village.tscn",
+			"region_id": "region.ribeira_fields"
 		}
 	]
 }

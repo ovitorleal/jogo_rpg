@@ -20,6 +20,9 @@ const OUT_BUSH := "res://assets/environments/bush.png"
 const OUT_ROCK := "res://assets/environments/rock.png"
 const OUT_SIGN := "res://assets/environments/sign.png"
 const OUT_CAMPFIRE := "res://assets/environments/campfire_sheet.png"
+const OUT_HOUSE_RED := "res://assets/environments/house_red.png"
+const OUT_HOUSE_BLUE := "res://assets/environments/house_blue.png"
+const OUT_WELL := "res://assets/environments/well.png"
 const ICONS_DIR := "res://assets/icons"
 
 ## Posição no atlas: terra/areia em blocos 4x4 a partir de (0,1) e (4,1);
@@ -57,6 +60,9 @@ func _initialize() -> void:
 	ok = ok and _save(_rock(), OUT_ROCK)
 	ok = ok and _save(_sign(), OUT_SIGN)
 	ok = ok and _save(_campfire_sheet(), OUT_CAMPFIRE)
+	ok = ok and _save(_house(["#7a2a24", "#b8423a", "#e06a52"]), OUT_HOUSE_RED)
+	ok = ok and _save(_house(["#24406a", "#3a62a0", "#5c8ad0"]), OUT_HOUSE_BLUE)
+	ok = ok and _save(_well(), OUT_WELL)
 	for icon_name in ["potion", "rations", "coin", "weapon", "armor", "shield"]:
 		ok = ok and _save(_icon(icon_name), "%s/icon_%s.png" % [ICONS_DIR, icon_name])
 	quit(0 if ok else 1)
@@ -280,6 +286,80 @@ func _tree(pine: bool) -> Image:
 			c.set_px(x + 1, y, leaves[2] if lit else leaves[0].darkened(0.1))
 	c.outline()
 	c.shadow(16, 44.5, 11, 3, 0.3)
+	return c.image
+
+
+## Casa 48x48 (3 tiles de largura), pivô no meio da base (linha 45): parede de enxaimel, telhado de
+## telhas com chaminé, porta de madeira e duas janelas.
+func _house(roof_colors: Array) -> Image:
+	var c := PixelCanvas.new(48, 48)
+	var plaster := PixelCanvas.ramp("#b8a070", "#e2cc98", "#f6e8c0")
+	var wood := PixelCanvas.ramp("#3a2214", "#5a3820", "#8a5a32")
+	var roof := PixelCanvas.ramp(roof_colors[0], roof_colors[1], roof_colors[2])
+	var stone := PixelCanvas.ramp(STONE[0], STONE[1], STONE[2])
+	var walls := c.new_mask()
+	c.mask_rect(walls, 7, 24, 34, 21)
+	c.paint_part(walls, plaster, 1, 2)
+	var beams := c.new_mask()
+	for x in [7, 23, 40]:
+		c.mask_rect(beams, x, 24, 1, 21)
+	c.mask_rect(beams, 7, 33, 34, 1)
+	c.mask_rect(beams, 6, 44, 36, 1)
+	c.paint_part(beams, wood)
+	var chimney := c.new_mask()
+	c.mask_rect(chimney, 31, 3, 5, 10)
+	c.paint_part(chimney, stone, 1, 1)
+	var top := c.new_mask()
+	c.mask_polygon(top, PackedVector2Array([Vector2(2, 27), Vector2(12, 8), Vector2(36, 8), Vector2(46, 27)]))
+	c.paint_part(top, roof, 2, 3)
+	# Fileiras de telhas: linhas escuras com pequenos cortes alternados.
+	for row in range(11, 27, 4):
+		for x in range(3, 46):
+			if c.mask_get(top, x, row) and (x + row) % 7 != 0:
+				c.set_px(x, row, roof[0])
+	var door := c.new_mask()
+	c.mask_rect(door, 21, 34, 7, 11)
+	c.paint_part(door, wood, 1, 1)
+	c.set_px(26, 39, Color("#e6c45a"))
+	for wx in [11, 30]:
+		var frame := c.new_mask()
+		c.mask_rect(frame, wx, 28, 8, 7)
+		c.paint_part(frame, wood)
+		var glass := c.new_mask()
+		c.mask_rect(glass, wx + 1, 29, 6, 5)
+		c.paint_part(glass, PixelCanvas.ramp("#2a4a7a", "#5a8ac0", "#a8d4f2"), 1, 1)
+		c.set_px(wx + 4, 29, wood[1])
+		c.set_px(wx + 4, 33, wood[1])
+	c.outline()
+	c.shadow(24, 45.5, 22, 3, 0.3)
+	return c.image
+
+
+## Poço 32x32, pivô na base (linha 29): anel de pedra, água escura, postes e telhadinho.
+func _well() -> Image:
+	var c := PixelCanvas.new(32, 32)
+	var stone := PixelCanvas.ramp(STONE[0], STONE[1], STONE[3])
+	var wood := PixelCanvas.ramp("#3a2214", "#6a3e22", "#9a6232")
+	var posts := c.new_mask()
+	c.mask_rect(posts, 6, 7, 2, 15)
+	c.mask_rect(posts, 24, 7, 2, 15)
+	c.mask_rect(posts, 7, 10, 18, 1)
+	c.paint_part(posts, wood)
+	var ring := c.new_mask()
+	c.mask_ellipse(ring, 16, 25, 11, 4.5)
+	c.mask_rect(ring, 5, 19, 22, 6)
+	c.mask_ellipse(ring, 16, 19, 11, 3.5)
+	c.paint_part(ring, stone, 1, 2)
+	var water := c.new_mask()
+	c.mask_ellipse(water, 16, 19, 8, 2.2)
+	c.paint_part(water, PixelCanvas.ramp("#0e2a52", "#1e4a8c", "#3c82d0"), 1, 1)
+	for x in range(6, 27, 4):
+		c.set_px(x, 22, Color(STONE[0]))
+	var roof := c.new_mask()
+	c.mask_polygon(roof, PackedVector2Array([Vector2(3, 9), Vector2(16, 1), Vector2(29, 9)]))
+	c.paint_part(roof, PixelCanvas.ramp("#5a2a20", "#8a3e2a", "#b85a3a"), 1, 2)
+	c.outline()
+	c.shadow(16, 29.5, 12, 2, 0.3)
 	return c.image
 
 

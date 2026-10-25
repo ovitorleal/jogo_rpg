@@ -1,0 +1,35 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "quest.goblin_chief",
+			"name": "A Garra-Rubra",
+			"description": "Goblins comandados por Garra-Rubra atacam as carroças de Ribeira. Ione, a chefe da vila, pede que alguém dê um fim ao bando.",
+			"source": "original",
+			"giver": "Ione",
+			"final": true,
+			"objectives": [
+				{
+					"id": "talk_amara",
+					"text": "Falar com Amara na Clareira da Encruzilhada (Estrada da Vila, a leste)",
+					"type": "talk",
+					"target": "dialogue.amara"
+				},
+				{
+					"id": "defeat_chief",
+					"text": "Derrotar Garra-Rubra no acampamento do Bosque do Riacho",
+					"type": "defeat_encounter",
+					"target": "encounter.goblin_chief"
+				}
+			],
+			"reward_xp": 300,
+			"reward_gold": 50,
+			"reward_items": [
+				{
+					"item_id": "item.potion_of_healing",
+					"count": 2
+				}
+			]
+		}
+	]
+}

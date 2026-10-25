@@ -11,7 +11,7 @@
 | 6 | Salvamento e integração | Concluída (2026-10-24) |
 | 6.5 | Magias e efeitos visuais | Concluída (2026-10-24) |
 | 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | Concluída (2026-10-25) |
-| 7 | Vertical slice | — |
+| 7 | Vertical slice | Concluída (2026-10-25) |
 | 8 | Publicação | — |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
@@ -29,6 +29,18 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 | 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | **Concluída** (0.6.9) |
 | 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | **Concluída** (0.6.10) |
 | 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | **Concluída** (0.6.11) |
+
+## Fase 7 — resultado (2026-10-25)
+
+- Aventura "A Garra-Rubra", do novo jogo à tela de conclusão: Vila de Ribeira (Ione, estalagem), Estrada da Vila com
+  a criança perdida garantida, Clareira (Amara), Bosque do Riacho com o chefe Garra-Rubra e volta à vila.
+  Roteiro e itens da especificação em `docs/VERTICAL_SLICE.md`.
+- Objetivo atual sempre na tela; abertura ao começar; tela de conclusão com resumo, salvamento e "Continuar explorando".
+- Arte nova gerada por código: casas, poço, Ione e Garra-Rubra. Vila montada pelo `build_overworld.gd` (layout `village`).
+- Corrigido no caminho: a IA dos inimigos ignorava Ataques Múltiplos; acontecimentos "uma vez" valiam só por viagem.
+- Verificado em janela real: abertura, conversa, objetivo, Clareira, acampamento do chefe, combate e conclusão.
+- 268 testes passando.
+- Pendências: arte de feras sem sprite próprio, testes de morte, companheiros com IA, mais conteúdo além da fatia.
 
 ## Fase 6.6, entrega 6 — resultado (2026-10-25)
 
@@ -226,5 +238,5 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 7 (vertical slice): ler a seção da Fase 7 na especificação mestra e planejar a fatia jogável completa
-(conteúdo, ritmo, polimento e testes de ponta a ponta) antes de implementar.
+Fase 8 (publicação): exportar para Web, verificar os arquivos, testar a hospedagem gratuita escolhida, conferir
+licenças (`CONTENT_LICENSES.md`, catálogo de assets), preparar documentação e limitações, e publicar só depois de validar.

@@ -18,6 +18,20 @@
 				{"kind": "event", "id": "event.abandoned_camp", "weight": 8, "once": true},
 				{"kind": "event", "id": "event.lost_child", "weight": 6, "time": "day", "once": true}
 			]
+		},
+		{
+			"id": "region.ribeira_fields",
+			"name": "Campos de Ribeira",
+			"description": "Plantações e pastos entre a vila e a floresta. Quase sempre tranquilos, mas lobos famintos às vezes descem da mata.",
+			"source": "original",
+			"danger": 1,
+			"quiet_weight": 40,
+			"table": [
+				{"kind": "event", "id": "event.berry_bushes", "weight": 12, "time": "day"},
+				{"kind": "event", "id": "event.peddler", "weight": 10, "time": "day", "once": true},
+				{"kind": "event", "id": "event.fallen_tree", "weight": 8},
+				{"kind": "combat", "id": "encounter.lone_wolf", "weight": 6, "time": "any"}
+			]
 		}
 	]
 }
