@@ -62,7 +62,7 @@
 					"name": "Inspiração de Bardo",
 					"level": 1,
 					"description": "Ação bônus: uma criatura a até 18 m ganha um dado de Inspiração (d6, d8 no 5, d10 no 10, d12 no 15) para somar a um Teste de d20 que falhar. Usos = Carisma (mínimo 1) por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.spellcasting_bard",
@@ -132,14 +132,14 @@
 					"name": "Fonte de Inspiração",
 					"level": 5,
 					"description": "Recupera a Inspiração de Bardo no descanso curto; pode gastar um espaço de magia para recuperar um uso.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.countercharm",
 					"name": "Contraencanto",
 					"level": 7,
 					"description": "Reação: quando você ou alguém a até 9 m falha num teste contra Enfeitiçado ou Amedrontado, o teste é refeito com vantagem.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.expertise_bard_9",
@@ -155,14 +155,14 @@
 					"name": "Segredos Mágicos",
 					"level": 10,
 					"description": "Novas magias preparadas podem vir das listas de Bardo, Clérigo, Druida e Mago.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.superior_inspiration",
 					"name": "Inspiração Superior",
 					"level": 18,
 					"description": "Ao rolar iniciativa, recupera Inspiração de Bardo até ter dois usos.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.epic_boon_bard",

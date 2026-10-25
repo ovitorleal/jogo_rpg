@@ -64,7 +64,7 @@ func equip(c: CharacterData, item_id: String, registry: ContentRegistry) -> Dict
 	if count(item_id) <= 0:
 		return _fail("Item não está no inventário")
 	var item := registry.get_entry("item", item_id)
-	var training: Array = registry.get_entry("class", c.class_id).get("armor_training", [])
+	var training: Array = CharacterChoices.training(c, registry)["armor"]
 	match item.get("item_type"):
 		"armor":
 			if not item["armor_category"] in training:

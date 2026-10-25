@@ -12,7 +12,7 @@ const ABILITIES := ["str", "dex", "con", "int", "wis", "cha"]
 
 ## Escolhas que uma característica pode conceder (ver CharacterChoices).
 const GRANTS := ["", "fighting_style", "feat", "epic_boon", "subclass", "weapon_mastery", "expertise", "skill",
-		"invocation", "metamagic", "option"]
+		"invocation", "metamagic", "option", "wild_shape", "magical_discoveries"]
 
 const FEATURE_FIELDS := {
 	"id": {"type": "string"},
@@ -34,6 +34,10 @@ const FEATURE_FIELDS := {
 		"name": {"type": "string"},
 		"description": {"type": "string"},
 	}},
+	## Magias sempre preparadas pela característica (não contam no limite) e o recurso que permite
+	## conjurá-las sem espaço (ex.: Golpe do Paladino, Inimigo Favorito).
+	"spells": {"type": "array", "of": "string", "required": false, "default": []},
+	"free_resource": {"type": "string", "required": false, "default": ""},
 }
 
 ## Recursos de classe: valores por nível (1..20) — número, dados ("1d6"), "cha"/"wis" (modificador,
@@ -123,7 +127,8 @@ const TYPES := {
 			"target": {"type": "string", "enum": ["enemy", "ally", "cone", "cube"]},
 			"area_feet": {"type": "int", "min": 0, "max": 60, "required": false, "default": 0},
 			"max_targets": {"type": "int", "min": 1, "max": 6, "required": false, "default": 1},
-			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff"]},
+			## "smite" = dano extra conjurado logo após acertar (Golpe Divino), não pelo menu de magias.
+			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff", "smite"]},
 			"save_ability": {"type": "string", "enum": ["", "str", "dex", "con", "int", "wis", "cha"], "required": false, "default": ""},
 			"half_on_save": {"type": "bool", "required": false, "default": false},
 			"damage": {"type": "string", "dice": true, "required": false, "default": ""},
@@ -132,7 +137,8 @@ const TYPES := {
 			"heal": {"type": "string", "dice": true, "required": false, "default": ""},
 			"darts": {"type": "int", "min": 0, "max": 10, "required": false, "default": 0},
 			"upcast_dice": {"type": "string", "dice": true, "required": false, "default": ""},
-			"effect": {"type": "string", "enum": ["", "slowed", "mocked", "guided", "pushed", "ac_bonus", "blessed", "marked"],
+			"effect": {"type": "string", "enum": ["", "slowed", "mocked", "guided", "pushed", "ac_bonus", "blessed", "marked",
+					"warded", "no_reactions", "poisoned"],
 					"required": false, "default": ""},
 			"effect_value": {"type": "string", "required": false, "default": ""},
 			"concentration": {"type": "bool", "required": false, "default": false},
@@ -179,6 +185,10 @@ const TYPES := {
 			"always_prepared": {"type": "object_array", "required": false, "default": [], "fields": {
 				"level": {"type": "int", "min": 1, "max": 20},
 				"spells": {"type": "array", "of": "string"},
+				## Só com esta opção escolhida (ex.: tipo de terra do Círculo da Terra).
+				"option": {"type": "string", "required": false, "default": ""},
+				## Recurso que permite conjurar uma delas sem espaço (Recuperação Natural).
+				"free_resource": {"type": "string", "required": false, "default": ""},
 			}},
 		},
 	},
@@ -192,6 +202,9 @@ const TYPES := {
 			"hit_points": {"type": "int", "min": 1, "max": 999},
 			"hit_dice": {"type": "string", "dice": true},
 			"speed": {"type": "int", "min": 0, "max": 120},
+			"fly_speed": {"type": "int", "min": 0, "max": 120, "required": false, "default": 0},
+			## Ataques por ação de Ataque (Ataques Múltiplos do bloco); usado pela Forma Selvagem.
+			"multiattack": {"type": "int", "min": 1, "max": 4, "required": false, "default": 1},
 			"ability_scores": {"type": "array", "of": "int", "min": 1, "max": 30, "min_length": 6, "max_length": 6,
 					"allow_duplicates": true},
 			"challenge_rating": {"type": "string", "enum": ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5"]},
@@ -207,9 +220,18 @@ const TYPES := {
 				"reach": {"type": "int", "min": 0, "required": false, "default": 5},
 				"range_normal": {"type": "int", "min": 0, "required": false, "default": 0},
 				"range_long": {"type": "int", "min": 0, "required": false, "default": 0},
+				## Dano adicional do acerto (ex.: veneno da mordida da aranha).
+				"extra_damage": {"type": "string", "dice": true, "required": false, "default": ""},
+				"extra_damage_type": {"type": "string", "required": false, "default": ""},
+				## Condição imposta ao acertar (Caído, Agarrado) em alvos até o tamanho dado.
+				"on_hit_condition": {"type": "string", "enum": ["", "prone", "grappled"], "required": false, "default": ""},
+				"on_hit_max_size": {"type": "string", "enum": ["", "tiny", "small", "medium", "large", "huge"],
+						"required": false, "default": ""},
+				"escape_dc": {"type": "int", "min": 0, "max": 30, "required": false, "default": 0},
 			}},
 			"traits": {"type": "object_array", "fields": FEATURE_FIELDS},
-			"sprite": {"type": "string"},
+			## Folha de sprite ("" = sem arte própria; só formas da Forma Selvagem).
+			"sprite": {"type": "string", "required": false, "default": ""},
 		},
 	},
 	"encounter": {
@@ -581,7 +603,7 @@ func _check_consistency() -> void:
 			var hp := int(monster.get("hit_points", 0))
 			if hp < dice.minimum() or hp > dice.maximum():
 				errors.append("%s: hit_points %d fora do intervalo de %s" % [id, hp, monster["hit_dice"]])
-		if monster.has("sprite") and not ResourceLoader.exists(str(monster["sprite"])):
+		if not str(monster.get("sprite", "")).is_empty() and not ResourceLoader.exists(str(monster["sprite"])):
 			errors.append("%s: sprite inexistente '%s'" % [id, monster["sprite"]])
 		for attack: Dictionary in monster.get("attacks", []):
 			if attack.get("attack_type") == "ranged" and int(attack.get("range_normal", 0)) <= 0:

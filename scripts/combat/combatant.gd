@@ -48,6 +48,8 @@ var size: String = "medium"
 ## Valores de atributo (StringName -> int) e condições a que é imune.
 var scores: Dictionary = {}
 var condition_immunities: Array = []
+## Tipo de criatura dos monstros ("fera", "feérico", "morto-vivo"...); "" para personagens.
+var creature_type: String = ""
 ## Estado de características (Fúria prolongada, CD da Fúria Implacável...) e preferências do jogador
 ## (Golpe Atordoante ligado, efeitos do Golpe Astuto...). Ver CombatFeatures.
 var state: Dictionary = {}
@@ -126,6 +128,9 @@ func effective_ac() -> int:
 	var bonus := 0
 	for effect in effects_of("ac_bonus"):
 		bonus += int(effect["value"])
+	# Meia cobertura (Golpe de Proteção): +2 na CA.
+	if not effects_of("half_cover").is_empty():
+		bonus += 2
 	return armor_class + bonus
 
 
@@ -184,6 +189,10 @@ static func from_character(c: CharacterData, registry: ContentRegistry) -> Comba
 	unit.size = str(sheet.species.get("size", "medium"))
 	for feature in CharacterChoices.active_features(c, registry):
 		unit.feature_ids.append(str(feature["id"]))
+		# Opção escolhida (Presa do Caçador, Táticas Defensivas...) entra como característica própria.
+		if feature.get("grants") == "option":
+			for option_id in c.choice("option.%s" % feature["id"]):
+				unit.feature_ids.append(option_id)
 	unit.state["unarmored"] = sheet.armor.is_empty() and sheet.shield.is_empty()
 	# Artes Marciais (Monge): sem armadura e escudo, armas de monge e desarmado usam o maior entre
 	# Força e Destreza e o dado de Artes Marciais quando ele for maior que o dano da arma.
@@ -217,11 +226,32 @@ static func from_character(c: CharacterData, registry: ContentRegistry) -> Comba
 		unit.spell_dc = Spellcasting.save_dc(sheet)
 		unit.spell_attack = Spellcasting.attack_bonus(sheet)
 		unit.spell_modifier = Spellcasting.ability_modifier(sheet)
+		# Sempre preparadas primeiro, com o recurso de uso sem espaço (Golpe do Paladino, Inimigo Favorito).
+		for always in Spellcasting.always_prepared(c, registry):
+			var always_entry := registry.get_entry("spell", str(always["id"]))
+			if not always_entry.is_empty():
+				unit.spells.append({"id": always["id"], "name": always_entry["name"], "level": int(always_entry["level"]),
+						"entry": always_entry, "dc": unit.spell_dc, "attack": unit.spell_attack, "modifier": unit.spell_modifier,
+						"free": "res.%s" % always["free"] if not str(always["free"]).is_empty() else ""})
 		for spell_id in c.cantrips + c.prepared_spells:
 			var entry := registry.get_entry("spell", spell_id)
-			if not entry.is_empty():
+			if not entry.is_empty() and unit.get_spell(spell_id).is_empty():
 				unit.spells.append({"id": spell_id, "name": entry["name"], "level": int(entry["level"]), "entry": entry,
 						"dc": unit.spell_dc, "attack": unit.spell_attack, "modifier": unit.spell_modifier, "free": ""})
+	# Intervenção Divina (Clérigo 10): qualquer magia de clérigo até o 5º círculo, sem espaço, como ação de
+	# Magia, uma vez por descanso longo. Entra como entradas próprias no menu de magias.
+	if unit.has_feature("feature.divine_intervention"):
+		for spell_id in Spellcasting.class_spells("class.cleric", registry, 1, 5):
+			var divine := registry.get_entry("spell", spell_id)
+			unit.spells.append({"id": "intervention:%s" % spell_id, "name": divine["name"], "label": "Intervenção Divina: %s" % divine["name"],
+					"level": int(divine["level"]), "entry": divine, "dc": unit.spell_dc, "attack": unit.spell_attack,
+					"modifier": unit.spell_modifier, "free": "res.divine_intervention", "intervention": true})
+	# Proteção da Natureza (Círculo da Terra 10): imune a Envenenado e resistência pelo tipo de terra.
+	if unit.has_feature("feature.natures_ward"):
+		unit.condition_immunities.append("poisoned")
+		var ward: String = CombatFeatures.LAND_RESISTANCE.get(ClassFeatures.option(c, "feature.land_type"), "")
+		if not ward.is_empty() and not ward in unit.resistances:
+			unit.resistances.append(ward)
 	# Iniciado em Magia: atributo próprio; a magia de 1º círculo tem um uso gratuito por descanso longo.
 	for initiate in CharacterChoices.magic_initiates(c, registry):
 		var modifier: int = sheet.modifiers[StringName(initiate["ability"])]
@@ -252,6 +282,10 @@ static func from_monster(entry: Dictionary, index: int, total_of_kind: int) -> C
 	unit.sprite_path = str(entry.get("sprite", ""))
 	unit.xp = int(entry.get("xp", 0))
 	unit.size = str(entry.get("size", "medium"))
+	unit.creature_type = str(entry.get("creature_type", ""))
+	unit.speed_feet = maxi(unit.speed_feet, int(entry.get("fly_speed", 0)))
+	if int(entry.get("multiattack", 1)) > 1:
+		unit.state["multiattack"] = int(entry["multiattack"])
 	for i in Ability.ALL.size():
 		unit.modifiers[Ability.ALL[i]] = Ability.modifier(int(entry["ability_scores"][i]))
 		unit.scores[Ability.ALL[i]] = int(entry["ability_scores"][i])

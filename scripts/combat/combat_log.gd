@@ -27,6 +27,8 @@ static func describe(event: Dictionary, manager: CombatManager) -> String:
 			return "%s bebe %s e recupera %d PV (agora %d)." % [actor, event["item"], event["amount"], event["hp"]]
 		"cast":
 			var slot := "" if int(event["slot_level"]) == 0 else " (espaço de %dº círculo)" % event["slot_level"]
+			if bool(event.get("free", false)):
+				slot = " (uso sem espaço)"
 			return "[color=#c8a8ff]%s conjura %s%s.[/color]" % [actor, event["spell"], slot]
 		"spell_effect":
 			return _describe_spell(event, manager, actor)

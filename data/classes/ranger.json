@@ -64,7 +64,11 @@
 					"name": "Inimigo Favorito",
 					"level": 1,
 					"description": "Sempre tem Marca do Caçador preparada e a conjura sem espaço algumas vezes por descanso longo (tabela).",
-					"implemented": false
+					"implemented": true,
+					"spells": [
+						"spell.hunters_mark"
+					],
+					"free_resource": "favored_enemy"
 				},
 				{
 					"id": "feature.weapon_mastery",
@@ -158,35 +162,35 @@
 					"name": "Incansável",
 					"level": 10,
 					"description": "Ação de Magia: PV temporários de 1d8 + Sabedoria (usos = Sabedoria por descanso longo); descanso curto reduz a Exaustão.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.relentless_hunter",
 					"name": "Caçador Implacável",
 					"level": 13,
 					"description": "Dano não quebra a concentração na Marca do Caçador.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.natures_veil",
 					"name": "Véu da Natureza",
 					"level": 14,
 					"description": "Ação bônus: Invisível até o fim do próximo turno; usos = Sabedoria por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.precise_hunter",
 					"name": "Caçador Preciso",
 					"level": 17,
 					"description": "Vantagem nos ataques contra a criatura marcada pela Marca do Caçador.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.feral_senses",
 					"name": "Sentidos Ferais",
 					"level": 18,
 					"description": "Percepção às cegas a 9 m.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.epic_boon_ranger",
@@ -201,7 +205,7 @@
 					"name": "Matador de Inimigos",
 					"level": 20,
 					"description": "O dado de dano da Marca do Caçador vira d10.",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"spellcasting_ability": "wis",

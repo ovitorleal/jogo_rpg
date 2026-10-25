@@ -10,7 +10,7 @@
 | 5 | Progressão e conteúdo | Concluída (2026-10-24) |
 | 6 | Salvamento e integração | Concluída (2026-10-24) |
 | 6.5 | Magias e efeitos visuais | Concluída (2026-10-24) |
-| 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | **Em andamento** — entregas 1 e 2 de 6 |
+| 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | **Em andamento** — entregas 1 a 4 de 6 |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
 
@@ -25,10 +25,25 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 |---|---|---|
 | 1 | Motor: escolhas, recursos, ações padrão, oportunidade, condições, Maestria, talentos, antecedentes; dados de todas as características | **Concluída** (0.6.6) |
 | 2 | Marciais: Bárbaro (Berserker), Guerreiro (Campeão), Ladino (Ladrão), Monge (Mão Aberta) | **Concluída** (0.6.7) |
-| 3 | Meio-conjuradores: Paladino (Devoção), Patrulheiro (Caçador) | Próxima |
-| 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | — |
-| 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | — |
+| 3 | Meio-conjuradores: Paladino (Devoção), Patrulheiro (Caçador) | **Concluída** (0.6.8) |
+| 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | **Concluída** (0.6.9) |
+| 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | Próxima |
 | 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | — |
+
+## Fase 6.6, entrega 4 — resultado (2026-10-25)
+
+- Bardo (Conhecimento), Clérigo (Vida) e Druida (Terra) funcionando dos níveis 1 a 20, com Forma Selvagem em 11 feras;
+  exceções (Palavras da Criação, Desejo, Falar com Animais, Encontrar Familiar) em `RULES_POLICY.md`.
+- Verificado em janela real: menus do Clérigo, Druida e Bardo; druida vira lobo (sprite, PV temporários e "forma: Lobo").
+- 248 testes passando.
+
+## Fase 6.6, entrega 3 — resultado (2026-10-24)
+
+- Paladino (Devoção) e Patrulheiro (Caçador) funcionando dos níveis 1 a 20, com magias sempre preparadas e usos
+  sem espaço; exceções (Montaria Fiel, magias de 2º círculo+, Guerreiro Abençoado/Druídico) em `RULES_POLICY.md`.
+- Verificado em janela real: menu do Paladino (Cura pelas Mãos, Canalizar Divindade, opções do Golpe Divino), pilar de
+  luz do Golpe Divino, cura com efeito, Marca do Caçador com Saber do Caçador no registro.
+- 236 testes passando.
 
 ## Fase 6.6, entrega 2 — resultado (2026-10-24)
 
@@ -195,6 +210,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 6.6, entrega 3: Paladino (Devoção) e Patrulheiro (Caçador), níveis 1–20 — Cura pelas Mãos, Golpe Divino,
-Canalizar Divindade, Auras, Inimigo Favorito/Marca do Caçador, Presa do Caçador, Defesa e Ataques Múltiplos — com as
-magias sempre preparadas que já existirem e testes por característica.
+Fase 6.6, entrega 5: Feiticeiro (Dracônica), Bruxo (Corruptor) e Mago (Evocador), níveis 1–20 — Pontos de
+Feitiçaria e Metamagia, Invocações Místicas e Arcano Místico, Recuperação Arcana, Esculpir Magias e Sobrecarga —
+com testes por característica.

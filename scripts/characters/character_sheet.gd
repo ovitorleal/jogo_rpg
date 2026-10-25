@@ -28,6 +28,9 @@ var features: Array[Dictionary] = []
 var feat_ids: Array[String] = []
 ## Características ativas (classe + subclasse) até o nível atual.
 var feature_ids: Array[String] = []
+## Treinamento com armas e armaduras (classe + Ordem Divina/Primal).
+var weapon_training: Array = []
+var armor_training: Array = []
 
 
 static func build(c: CharacterData, registry: ContentRegistry) -> CharacterSheet:
@@ -42,6 +45,9 @@ static func build(c: CharacterData, registry: ContentRegistry) -> CharacterSheet
 		sheet.weapons.append(registry.get_entry("item", weapon_id))
 
 	sheet.proficiency_bonus = RulesEngine.proficiency_bonus(c.level)
+	var trained := CharacterChoices.training(c, registry)
+	sheet.weapon_training = trained["weapons"]
+	sheet.armor_training = trained["armor"]
 	for feature in CharacterChoices.active_features(c, registry):
 		sheet.feature_ids.append(str(feature["id"]))
 	for ability: StringName in Ability.ALL:
@@ -78,6 +84,10 @@ static func build(c: CharacterData, registry: ContentRegistry) -> CharacterSheet
 		if not proficient and "feature.jack_of_all_trades" in sheet.feature_ids:
 			@warning_ignore("integer_division")
 			skill_bonus_value += sheet.proficiency_bonus / 2
+		# Taumaturgo (Arcanismo/Religião) e Mago da Ordem Primal (Arcanismo/Natureza): +Sabedoria (mínimo +1).
+		if (skill in [&"arcana", &"religion"] and CharacterChoices.has_option(c, "divine_order.thaumaturge")) \
+				or (skill in [&"arcana", &"nature"] and CharacterChoices.has_option(c, "primal_order.magician")):
+			skill_bonus_value += maxi(1, sheet.modifiers[Ability.WISDOM])
 		sheet.skills[skill] = {
 			"bonus": skill_bonus_value,
 			"proficient": proficient,

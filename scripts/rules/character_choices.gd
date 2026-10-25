@@ -105,11 +105,91 @@ static func specs(c: CharacterData, registry: ContentRegistry) -> Array[Dictiona
 			"skill":
 				var pool: Array = feature.get("skill_filter", []) if not feature.get("skill_filter", []).is_empty() 						else class_entry.get("skill_options", [])
 				result.append(_spec(key, feature["name"], count, _skill_options(pool, c, registry, key)))
+			"wild_shape":
+				result.append(_spec(key, "Formas da Forma Selvagem", count, _wild_shape_options(c, registry)))
+			"magical_discoveries":
+				result.append(_spec(key, feature["name"], count, _discovery_options(c, registry)))
 			_:
 				result.append(_spec(key, feature["name"], count, _level_options(c, feature.get("options", []))))
 		if feature["grants"] in ["feat", "epic_boon", "fighting_style"] and not c.choice(key).is_empty():
 			result.append_array(_feat_specs(c, registry, key, c.choice(key)[0], "", ""))
 	return result
+
+
+## Feras que o druida pode aprender: ND até 1/4 (sem voo), 1/2 no nível 4 e 1 (com voo) no nível 8.
+static func _wild_shape_options(c: CharacterData, registry: ContentRegistry) -> Array:
+	var max_cr := 1.0 if c.level >= 8 else (0.5 if c.level >= 4 else 0.25)
+	var options: Array = []
+	for id in registry.ids("monster"):
+		var beast := registry.get_entry("monster", id)
+		if beast.get("creature_type") != "fera" or challenge_value(str(beast["challenge_rating"])) > max_cr:
+			continue
+		if int(beast.get("fly_speed", 0)) > 0 and c.level < 8:
+			continue
+		options.append({"id": id, "name": beast["name"], "description": "ND %s · CA %d · %d pés" % [beast["challenge_rating"],
+				beast["armor_class"], maxi(int(beast["speed"]), int(beast.get("fly_speed", 0)))]})
+	return options
+
+
+static func challenge_value(rating: String) -> float:
+	if "/" in rating:
+		var parts := rating.split("/")
+		return float(parts[0]) / float(parts[1])
+	return float(rating)
+
+
+## Descobertas Mágicas (Conhecimento 6): truques ou magias com espaço das listas de Clérigo, Druida ou Mago.
+static func _discovery_options(c: CharacterData, registry: ContentRegistry) -> Array:
+	var max_level := Spellcasting.max_slot_level(registry.get_entry("class", c.class_id), c.level)
+	var seen := {}
+	var options: Array = []
+	for class_id in ["class.cleric", "class.druid", "class.wizard"]:
+		for id in Spellcasting.class_spells(class_id, registry, 0, max_level):
+			if seen.has(id) or id in Spellcasting.class_spells(c.class_id, registry, 0, 9):
+				continue
+			seen[id] = true
+			var spell := registry.get_entry("spell", id)
+			options.append({"id": id, "name": spell["name"], "description": spell["description"]})
+	return options
+
+
+## Opção escolhida em qualquer característica do tipo "option" (Ordem Divina, tipo de terra...).
+static func has_option(c: CharacterData, option_id: String) -> bool:
+	for key: String in c.choices:
+		if key.begins_with("option.") and option_id in c.choices[key]:
+			return true
+	return false
+
+
+## Formas de fera conhecidas da Forma Selvagem (ids de monstros).
+static func wild_shape_forms(c: CharacterData) -> Array[String]:
+	return c.choice("wild_shape.feature.wild_shape")
+
+
+## Magias das Descobertas Mágicas (sempre preparadas).
+static func magical_discoveries(c: CharacterData) -> Array[String]:
+	return c.choice("magical_discoveries.feature.magical_discoveries")
+
+
+## Treinamento com armas e armaduras: o da classe mais Ordem Divina (Protetor: armas marciais e armadura
+## pesada) e Ordem Primal (Guardião: armas marciais e armadura média).
+static func training(c: CharacterData, registry: ContentRegistry) -> Dictionary:
+	var class_entry := registry.get_entry("class", c.class_id)
+	var weapons: Array = class_entry.get("weapon_training", []).duplicate()
+	var armor: Array = class_entry.get("armor_training", []).duplicate()
+	var extra: Array = []
+	if has_option(c, "divine_order.protector"):
+		extra = [["martial"], ["heavy"]]
+	elif has_option(c, "primal_order.warden"):
+		extra = [["martial"], ["medium"]]
+	if not extra.is_empty():
+		for item: String in extra[0]:
+			if not item in weapons:
+				weapons.append(item)
+		for item: String in extra[1]:
+			if not item in armor:
+				armor.append(item)
+	return {"weapons": weapons, "armor": armor}
 
 
 static func _filtered(options: Array, feature: Dictionary) -> Array:
@@ -256,7 +336,7 @@ static func _mastery_options(c: CharacterData, registry: ContentRegistry) -> Arr
 		if item.get("item_type") != "weapon" or str(item.get("mastery", "")).is_empty():
 			continue
 		var properties: Array = item.get("properties", [])
-		var proficient := Attack.is_proficient_with(class_entry.get("weapon_training", []), item)
+		var proficient := Attack.is_proficient_with(training(c, registry)["weapons"], item)
 		var allowed := proficient
 		match rule:
 			"melee":

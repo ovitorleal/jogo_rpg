@@ -89,7 +89,7 @@ func test_defaults_and_validation() -> void:
 	var wizard := _caster("class.wizard")
 	assert_eq(wizard.cantrips.size(), 3, "Mago começa com 3 truques")
 	assert_true("spell.fire_bolt" in wizard.cantrips, "Raio de Fogo entre os truques")
-	assert_eq(wizard.prepared_spells.size(), 3, "Preparadas limitadas às 3 magias de mago existentes")
+	assert_eq(wizard.prepared_spells.size(), 4, "Preparadas limitadas às 4 magias de mago existentes")
 	var combatant := Combatant.from_character(wizard, _registry())
 	var sheet := CharacterSheet.build(wizard, _registry())
 	assert_eq(combatant.spell_dc, 8 + sheet.modifiers[Ability.INTELLIGENCE] + sheet.proficiency_bonus, "CD = 8 + INT + proficiência")

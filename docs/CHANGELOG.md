@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.6.9] — 2026-10-25 — Fase 6.6, entrega 4: Bardo, Clérigo e Druida
+
+### Adicionado
+- Bardo e Colégio do Conhecimento (níveis 1–20): Inspiração de Bardo, Fonte de Inspiração, Contraencanto, Segredos
+  Mágicos, Inspiração Superior, Palavras Cortantes, Descobertas Mágicas e Perícia Inigualável.
+- Clérigo e Domínio da Vida: Ordem Divina, Centelha Divina, Expulsar e Queimar Mortos-Vivos, Golpes Abençoados,
+  Intervenção Divina, Discípulo da Vida, Preservar a Vida, Curandeiro Abençoado e Cura Suprema.
+- Druida e Círculo da Terra: Ordem Primal, Forma Selvagem com 11 feras do SRD (sprite do lobo na forma), Ressurgimento
+  Selvagem, Fúria Elemental, Magias de Fera, Arquidruida, magias do Círculo por tipo de terra, Auxílio da Terra,
+  Recuperação Natural, Proteção da Natureza e Santuário da Natureza.
+- Magias Lampejo Estelar, Produzir Chama, Toque Chocante e Raio Nauseante (22 no total).
+- Feras: Ataques Múltiplos, dano extra, Caído/Agarrado ao acertar e o traço Ágil.
+- Características com alvo aliado no menu "Ações ▾" (Inspiração de Bardo, Centelha Divina).
+- 12 testes novos (total 248).
+
+## [0.6.8] — 2026-10-24 — Fase 6.6, entrega 3: Paladino e Patrulheiro
+
+### Adicionado
+- Paladino e Juramento de Devoção (níveis 1–20): Cura pelas Mãos com Toque Restaurador, Golpe Divino (opção no
+  menu, uso gratuito do Golpe do Paladino), Sentido Divino, Aura de Proteção com Aura de Coragem e de Devoção,
+  Repudiar Inimigos, Golpes Radiantes, Arma Sagrada, Golpe de Proteção e Nimbo Sagrado.
+- Patrulheiro e Caçador: Inimigo Favorito (Marca do Caçador sem espaço), mover a marca quando o alvo cai,
+  Incansável, Caçador Implacável, Véu da Natureza, Caçador Preciso, Sentidos Ferais, Matador de Inimigos, Saber do
+  Caçador, Matador de Colossos, Quebrador de Hordas, Táticas Defensivas e Presa e Defesa do Caçador Superior.
+- Magias Golpe Divino e Proteção contra o Bem e o Mal (18 no total).
+- Magias sempre preparadas (características e subclasses), fora do limite de preparadas; ficha mostra a lista.
+- Monstros guardam o tipo de criatura (Golpe Divino, Proteção contra o Bem e o Mal, Sentido Divino).
+- 10 testes novos (total 236).
+
+### Corrigido
+- Linha de status e lista de ataques longas alargavam a tela de combate e cortavam a borda esquerda.
+- Registro dizia "espaço de 1º círculo" em conjurações sem espaço (Iniciado em Magia, Inimigo Favorito).
+- Inimigo que cai no início do próprio turno não age mais.
+
 ## [0.6.7] — 2026-10-24 — Fase 6.6, entrega 2: classes marciais
 
 ### Adicionado

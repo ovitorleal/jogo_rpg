@@ -86,7 +86,7 @@ static func weapon_attacks(sheet: CharacterSheet, weapon: Dictionary) -> Array[D
 	var ability := Ability.DEXTERITY if ranged else Ability.STRENGTH
 	if "finesse" in properties and dexterity > strength:
 		ability = Ability.DEXTERITY
-	var proficient := is_proficient_with(sheet.class_entry.get("weapon_training", []), weapon)
+	var proficient := is_proficient_with(sheet.weapon_training, weapon)
 	var bonus: int = sheet.modifiers[ability] + (sheet.proficiency_bonus if proficient else 0)
 	var damage := DiceExpression.parse(str(weapon["damage"]))
 	var two_hands := "two_handed" in properties
