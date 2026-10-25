@@ -773,6 +773,13 @@ static func incoming_attack_damage(m: CombatManager, target: Combatant, attacker
 static func on_damaged_by_attack(m: CombatManager, target: Combatant, attacker: Combatant, events: Array[Dictionary]) -> void:
 	if not target.is_up() or not attacker.is_up() or m.state != CombatManager.State.IN_PROGRESS:
 		return
+	# Escudo de Fogo (quente): quem o acerta a até 1,5 m sofre 2d8 de fogo.
+	if not target.effects_of("fire_shield").is_empty() and m._adjacent(target, attacker):
+		var burn := Attack.apply_damage_modifiers(roll(m, "2d8"), "fire", attacker.all_resistances())
+		m._apply_damage(attacker, burn, events, feature_event(target, "fire_shield", "Escudo de Fogo queima %s" % attacker.name,
+				{"target": attacker.id, "damage": burn, "damage_type": "fire"}))
+		if not attacker.is_up() or m.state != CombatManager.State.IN_PROGRESS:
+			return
 	if target.has_feature("feature.retaliation") and target.reaction_available and not target.is_incapacitated() \
 			and m._adjacent(target, attacker):
 		var melee := m._first_attack(target, "melee")
@@ -806,6 +813,10 @@ static func resistances(unit: Combatant) -> Array:
 				result.append(damage_type)
 	for effect in unit.effects_of("resist_type"):
 		result.append(str(effect["value"]))
+	if not unit.effects_of("fire_shield").is_empty():
+		result.append("cold")
+	if not unit.effects_of("necrotic_ward").is_empty():
+		result.append("necrotic")
 	return result
 
 
@@ -814,6 +825,13 @@ static func resistances(unit: Combatant) -> Array:
 ## Vantagens em testes de resistência: Sentido de Perigo (Destreza), Fúria (Força).
 static func save_advantage(unit: Combatant, ability: StringName) -> int:
 	var count := 0
+	# Vantagem dada pela própria magia (Enfeitiçar Monstro), consumida no teste.
+	if not unit.effects_of("save_edge").is_empty():
+		unit.effects = unit.effects.filter(func(e: Dictionary) -> bool: return e["kind"] != "save_edge")
+		count += 1
+	# Sinal de Esperança: vantagem em Sabedoria.
+	if ability == Ability.WISDOM and not unit.effects_of("hope").is_empty():
+		count += 1
 	if ability == Ability.DEXTERITY and unit.has_feature("feature.danger_sense") and not unit.is_incapacitated():
 		count += 1
 	if ability == Ability.STRENGTH and is_raging(unit):
@@ -856,6 +874,9 @@ static func save_bonus(m: CombatManager, unit: Combatant, ability: StringName) -
 ## Condição impedida: Aura de Coragem (Amedrontado) e Aura de Devoção (Enfeitiçado) na aura;
 ## Proteção contra o Bem e o Mal contra os tipos de criatura que ela contém.
 static func condition_blocked(m: CombatManager, target: Combatant, condition: String, source_id: String) -> bool:
+	# Liberdade de Movimento: nem Paralisado nem Contido.
+	if condition in ["paralyzed", "restrained"] and not target.effects_of("freedom").is_empty():
+		return true
 	if not condition in ["frightened", "charmed"]:
 		return false
 	var source := m.get_combatant(source_id)
@@ -1060,7 +1081,7 @@ static func _metamagic_fits(m: CombatManager, entry: Dictionary, id: String) -> 
 		"metamagic.transmuted":
 			return str(entry["damage_type"]) in TRANSMUTABLE and entry.get("damage_types", []).is_empty()
 		"metamagic.twinned":
-			return int(entry["level"]) > 0 and int(entry["max_targets"]) > 1
+			return int(entry["level"]) > 0 and (int(entry["max_targets"]) > 1 or bool(entry.get("upcast_targets", false)))
 	return false
 
 

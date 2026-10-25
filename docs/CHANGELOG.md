@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.11] — 2026-10-25 — Fase 6.6, entrega 6: magias de círculo alto (fase concluída)
+
+### Adicionado
+- 34 magias do SRD de 1º a 9º círculo para o combate, entre elas Bola de Fogo, Relâmpago, Raio Ardente, Imobilizar
+  Pessoa, Sono, Passo Nebuloso, Borrão, Teia, Auxílio, Restauração Menor e Maior, Revivificar, Palavra Curativa em
+  Massa, Sinal de Esperança, Dissipar Magia, Medo, Voo, Proteção contra a Morte, Liberdade de Movimento, Praga,
+  Tempestade de Gelo, Escudo de Fogo, Aura de Vida, Enfeitiçar Monstro, Cone de Frio, Coluna de Chamas, Curar
+  Ferimentos em Massa, Praga de Insetos, Círculo da Morte, Dedo da Morte e as Palavras de Poder (58 no total).
+- Áreas na grade: esfera num ponto ao alcance, linha, emanação e teletransporte, com mira em casas na tela.
+- Arcano Místico, Maestria em Magia, Magias Assinatura e Palavras da Criação.
+- 7 testes novos (total 264).
+
+### Corrigido
+- O registro quebrava em magias de teste quando o alvo era protegido (Esculpir Magias, Magia Cuidadosa) e não
+  descrevia magias de condição (Comando).
+
 ## [0.6.10] — 2026-10-25 — Fase 6.6, entrega 5: Feiticeiro, Bruxo e Mago
 
 ### Adicionado

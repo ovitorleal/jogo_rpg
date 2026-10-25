@@ -153,15 +153,33 @@ static func _describe_spell(event: Dictionary, manager: CombatManager, actor: St
 			var text := "%s: ataque mágico contra %s, %d %s = %d contra CA %d — " % [event["spell"], target, roll["natural"],
 					Ability.format_modifier(roll["bonus"]), roll["total"], roll["target_ac"]]
 			if not roll["hit"]:
+				if event.get("potent_cantrip", false):
+					return text + "erra, mas causa %d de dano %s (Truque Potente). PV de %s: %d." % [event["damage"], damage_name,
+							target, event["target_hp"]]
 				return text + "erra."
 			return text + "%s %d de dano %s%s. PV de %s: %d." % ["[color=#e6d65a]crítico![/color]" if roll["critical"] else "acerta",
 					event["damage"], damage_name, effect, target, event["target_hp"]]
-		"save":
+		"save", "condition_save":
+			if event.get("protected", false):
+				return "%s fica protegido(a) de %s." % [target, event["spell"]]
 			var save: Dictionary = event["save"]
 			var ability: String = Ability.NAMES.get(StringName(save["ability"]), save["ability"])
-			return "%s faz um teste de %s contra %s: %d %s = %d contra CD %d — %s; %d de dano %s%s. PV de %s: %d." % [target,
-					ability, event["spell"], save["natural"], Ability.format_modifier(save["modifier"]), save["total"], save["dc"],
-					"sucesso" if save["success"] else "falha", event["damage"], damage_name, effect, target, event["target_hp"]]
+			var text := "%s faz um teste de %s contra %s: %d %s = %d contra CD %d — %s" % [target, ability, event["spell"],
+					save["natural"], Ability.format_modifier(save["modifier"]), save["total"], save["dc"],
+					"sucesso" if save["success"] else "falha"]
+			if event["resolution"] == "condition_save":
+				return text + "%s." % effect
+			var second: Dictionary = event.get("second_damage", {})
+			var both := " (inclui %d de %s)" % [second["damage"], DAMAGE_TYPE_NAMES.get(second["damage_type"], second["damage_type"])] \
+					if not second.is_empty() else ""
+			return text + "; %d de dano %s%s%s. PV de %s: %d." % [event["damage"], damage_name, both, effect, target, event["target_hp"]]
+		"revive", "cleanse", "full_heal":
+			return "%s: %s%s. PV de %s: %d." % [event["spell"], target, effect, target, event["target_hp"]]
+		"power_word":
+			if int(event["damage"]) > 0:
+				return "%s: %s sofre %d de dano %s%s. PV de %s: %d." % [event["spell"], target, event["damage"], damage_name, effect,
+						target, event["target_hp"]]
+			return "%s: %s%s." % [event["spell"], target, effect]
 		"auto":
 			return "%d dardos atingem %s: %d de dano %s. PV de %s: %d." % [event["darts"], target, event["damage"], damage_name,
 					target, event["target_hp"]]

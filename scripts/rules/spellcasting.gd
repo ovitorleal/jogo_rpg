@@ -121,11 +121,23 @@ static func always_prepared(c: CharacterData, registry: ContentRegistry) -> Arra
 				if not seen.has(spell_id):
 					seen[spell_id] = true
 					result.append({"id": spell_id, "free": str(group.get("free_resource", ""))})
-	# Descobertas Mágicas (Colégio do Conhecimento 6).
-	for spell_id in CharacterChoices.magical_discoveries(c):
-		if not seen.has(spell_id):
-			seen[spell_id] = true
-			result.append({"id": spell_id, "free": ""})
+	# Descobertas Mágicas (Conhecimento 6), Arcano Místico (Bruxo 11: uma vez por descanso longo cada),
+	# Maestria em Magia (Mago 18: à vontade no círculo mínimo) e Magias Assinatura (Mago 20: uma vez por descanso curto).
+	var chosen: Array = [[CharacterChoices.magical_discoveries(c), ""]]
+	if ClassFeatures.has_feature(c, registry, "feature.mystic_arcanum"):
+		for spell_level: int in CharacterChoices.ARCANUM_LEVELS:
+			chosen.append([c.choice("arcanum.%d" % spell_level), "arcanum_%d" % spell_level])
+	if ClassFeatures.has_feature(c, registry, "feature.spell_mastery"):
+		chosen.append([c.choice("spell_mastery.1") + c.choice("spell_mastery.2"), "at_will"])
+	if ClassFeatures.has_feature(c, registry, "feature.signature_spells"):
+		var signature := c.choice("signature")
+		for i in signature.size():
+			chosen.append([[signature[i]], "signature_%d" % (i + 1)])
+	for group: Array in chosen:
+		for spell_id: String in group[0]:
+			if not seen.has(spell_id):
+				seen[spell_id] = true
+				result.append({"id": spell_id, "free": group[1]})
 	return result
 
 

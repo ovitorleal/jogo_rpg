@@ -177,7 +177,11 @@
 					"name": "Palavras da Criação",
 					"level": 20,
 					"description": "Sempre tem Palavra de Poder Curar e Palavra de Poder Matar preparadas; podem atingir um segundo alvo a até 3 m do primeiro.",
-					"implemented": false
+					"implemented": true,
+					"spells": [
+						"spell.power_word_heal",
+						"spell.power_word_kill"
+					]
 				}
 			],
 			"spellcasting_ability": "cha",

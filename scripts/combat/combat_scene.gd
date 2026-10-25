@@ -137,7 +137,7 @@ func click_cell(cell: Vector2i) -> Dictionary:
 	var spell_id := selected_spell_id()
 	if not spell_id.is_empty():
 		var entry: Dictionary = actor.get_spell(spell_id)["entry"]
-		if CombatManager.is_area_spell(entry):
+		if CombatManager.aims_at_cell(entry):
 			result = manager.submit({"type": "cast", "actor": actor.id, "spell_id": spell_id, "cell": cell})
 		elif occupant != null and (occupant.is_hostile_to(actor) == (entry["target"] == "enemy")):
 			result = manager.submit({"type": "cast", "actor": actor.id, "spell_id": spell_id, "target": occupant.id})
@@ -188,6 +188,30 @@ func _on_action_menu(id: int) -> void:
 		return
 	var entry: Array = STANDARD_ACTIONS[id]
 	press_standard_action(entry[0], entry[2])
+
+
+## Casas onde a magia pode mirar: direção (cone, cubo, linha), ponto ao alcance (esfera), casa livre
+## (teletransporte) ou o próprio conjurador (emanação, pessoal).
+func _spell_aim_cells(actor: Combatant, spell: Dictionary) -> Array[Vector2i]:
+	var entry: Dictionary = spell["entry"]
+	var cells: Array[Vector2i] = []
+	match str(entry["target"]):
+		"self", "emanation":
+			cells.append(actor.position)
+		"sphere", "point":
+			var reach := manager.spell_reach(actor, spell)
+			for y in manager.arena_size.y:
+				for x in manager.arena_size.x:
+					var cell := Vector2i(x, y)
+					if Attack.grid_distance_feet(actor.position, cell) <= reach \
+							and (entry["target"] == "sphere" or manager.combatant_at(cell) == null):
+						cells.append(cell)
+		_:
+			for offset in CombatManager.NEIGHBORS:
+				var cell: Vector2i = actor.position + offset
+				if cell.x >= 0 and cell.y >= 0 and cell.x < manager.arena_size.x and cell.y < manager.arena_size.y:
+					cells.append(cell)
+	return cells
 
 
 func _feature_target(feature_id: String) -> String:
@@ -572,12 +596,9 @@ func _refresh_highlights(actor: Combatant, party_turn: bool) -> void:
 		var spell_id := selected_spell_id()
 		if not spell_id.is_empty() and not actor.get_spell(spell_id).is_empty():
 			var entry: Dictionary = actor.get_spell(spell_id)["entry"]
-			if CombatManager.is_area_spell(entry):
+			if CombatManager.aims_at_cell(entry):
 				if manager.spell_error(actor, spell_id).is_empty():
-					for offset in CombatManager.NEIGHBORS:
-						var cell: Vector2i = actor.position + offset
-						if cell.x >= 0 and cell.y >= 0 and cell.x < manager.arena_size.x and cell.y < manager.arena_size.y:
-							_board.aim_cells.append(cell)
+					_board.aim_cells.append_array(_spell_aim_cells(actor, actor.get_spell(spell_id)))
 			else:
 				for unit in manager.combatants:
 					if manager.spell_target_error(actor, spell_id, unit).is_empty():
@@ -644,7 +665,17 @@ func _refresh_attack_options(actor: Combatant) -> void:
 			"smite":
 				detail = "+%s ao acertar" % entry["damage"]
 			"condition_save":
-				detail = "CD %d · %s" % [actor.spell_dc, "Caído" if entry["effect"] == "prone" else entry["effect"]]
+				detail = "CD %d · %s" % [actor.spell_dc, CombatManager.CONDITION_NAMES.get(str(entry["effect"]), "Caído")]
+			"revive":
+				detail = "revive com 1 PV"
+			"cleanse":
+				detail = "remove condição"
+			"full_heal":
+				detail = "cura total"
+			"teleport":
+				detail = "teletransporte"
+			"power_word":
+				detail = "até %d PV" % entry["hp_threshold"]
 			"buff":
 				match str(entry["effect"]):
 					"ac_bonus":

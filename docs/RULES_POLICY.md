@@ -145,6 +145,16 @@ opções marcáveis pelo comando `option`.
 | Mago | Recuperação Arcana (descanso curto: até metade do nível em círculos, nenhum de 6º+) | Evocador: Truque Potente (metade do dano ao errar ou quando o alvo resiste, sem efeitos), Esculpir Magias (1 + círculo aliados passam e não sofrem dano), Evocação Fortalecida (+Inteligência), Sobrecarga (dano máximo; nas próximas vezes 2d12 necrótico por círculo, +1d12 a cada uso) |
 | Magias | Comando ("Rasteje": Caído se falhar em Sabedoria), Orbe Cromático (3d8 do tipo a que o alvo não resiste) | 24 magias no total |
 
+### Magias de círculo alto (Fase 6.6, entrega 6)
+
+| Regra | Onde | Notas |
+|---|---|---|
+| Áreas: esfera num ponto ao alcance (Bola de Fogo, Coluna de Chamas, Tempestade de Gelo, Círculo da Morte...), linha a partir do conjurador (Relâmpago), cone de qualquer tamanho (Cone de Frio, Medo), emanação em volta do conjurador (Sinal de Esperança, Aura de Vida) e ponto livre (Passo Nebuloso) | `CombatManager.area_cells/_do_cast` | Casas a até o raio do centro (distância da grade); áreas de dano pegam aliados e o conjurador dentro da esfera |
+| Condições por magia com teste no fim do turno, fim ao sofrer dano, piora (Sono) e vantagem no teste (Enfeitiçar Monstro); duração por concentração | `CombatManager._apply_spell_effect/_repeat_end_of_turn_saves` | Imobilizar Pessoa só em humanoides |
+| Raios (Raio Ardente), dano duplo (Tempestade de Gelo, Coluna de Chamas), alvos a mais por círculo, Palavras de Poder (limite de PV), reviver, remover condição, cura total, teletransporte | `CombatManager._resolve_spell_on` | |
+| Efeitos: Auxílio (+PV), Borrão, Sinal de Esperança (vantagem em Sabedoria e cura máxima), Voo, Proteção contra a Morte, Liberdade de Movimento, Escudo de Fogo, Aura de Vida, Dissipar Magia | `_apply_spell_effect`, `CombatFeatures` | |
+| Arcano Místico (uma magia de 6º a 9º círculo cada, uma vez por descanso longo), Maestria em Magia (1º e 2º círculo à vontade), Magias Assinatura (duas de 3º, uma vez por descanso curto cada), Palavras da Criação (segundo alvo a até 3 m) | `CharacterChoices`, `Spellcasting.always_prepared` | |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
@@ -161,7 +171,7 @@ opções marcáveis pelo comando `option`.
   Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
 - Monstros: Lobo e Goblin Guerreiro (CA, PV, dados de vida, deslocamento, atributos, ataques, ND e XP).
 - Feras para a Forma Selvagem (11), em `data/monsters/beasts.json`.
-- Magias (24): truques Raio de Fogo, Raio de Gelo, Spray Venenoso, Chama Sagrada, Rajada Mística, Zombaria Viciosa;
+- Magias (58): as 24 anteriores e 34 novas de 1º a 9º círculo (lista em `data/spells/spells.json`). Truques Raio de Fogo, Raio de Gelo, Spray Venenoso, Chama Sagrada, Rajada Mística, Zombaria Viciosa;
   1º círculo Mísseis Mágicos, Mãos Flamejantes, Onda Trovejante, Raio Guiador, Curar Ferimentos, Palavra Curativa,
   Escudo da Fé, Bênção, Marca do Caçador, Maldição, Golpe Divino, Proteção contra o Bem e o Mal; truques Lampejo
   Estelar, Produzir Chama, Toque Chocante; 1º círculo Raio Nauseante, Comando, Orbe Cromático.
@@ -211,6 +221,13 @@ opções marcáveis pelo comando `option`.
 | Sorte do Obscuro só em testes de resistência, usada quando pode virar o resultado; Arremessar pelo Inferno não tira o alvo da grade (só o dano e Incapacitado) | Testes de atributo não existem no combate |
 | Comando só com a ordem "Rasteje" (Caído); Orbe Cromático não salta para outro alvo | Ordens de movimento dependem de IA própria |
 | Contatar Patrono, Arcano Místico, Companheiro Dracônico, Adepto de Rituais, Memorizar Magia, Maestria em Magia, Magias Assinatura e Sábio da Evocação sem efeito | Magias de 2º a 9º círculo chegam na entrega 6; rituais e grimório não são simulados |
+| Esferas, cilindros e o cubo da Teia viram casas a até o raio na grade (Teia: raio de 3 m); Praga de Insetos só causa o dano inicial; Teia não cria terreno difícil e o alvo escapa com teste de Força no fim do turno | Grade sem terreno difícil nem áreas persistentes |
+| Curas e efeitos de apoio em área pegam só aliados (até o máximo de alvos, os mais feridos primeiro) | Escolha de alvos dentro da área fica para depois |
+| Raio Ardente: todos os raios no mesmo alvo; se ele cair, os seguintes vão para o inimigo mais próximo | Mira por raio fica para depois |
+| Medo não faz soltar o que segura nem correr; Enfeitiçar Monstro faz o inimigo ignorar quem o enfeitiçou; Dissipar Magia encerra todos os efeitos de concentração no alvo | IA simples; sem objetos soltos na grade |
+| Auxílio dura o combate (o PV extra some depois); Aura de Vida dá resistência a quem está na aura ao conjurar e não reanima; Escudo de Fogo é sempre o quente; Revivificar só reanima aliados caídos no mesmo combate | Sem passagem de horas; testes de morte ainda não existem |
+| Magias de exploração, invocação, muralhas e transformação (Encontrar Montaria, Invocar Dragão, Muralha de Fogo/Pedra, Metamorfose, Lenda, Comunhão, Olho Arcano, Caminhar em Árvores, Nuvem de Névoa, Sugestão, Missão, Zona da Verdade, Alterar-se, Sopro do Dragão, Nuvem Fétida, Tempestade de Granizo, Guardião da Fé) não existem ainda; Montaria Fiel e Companheiro Dracônico seguem sem efeito | Precisam de sistemas novos (criaturas aliadas, terreno, exploração) |
+| Arcano Místico oferece só as magias de 6º a 9º círculo que existem (Círculo da Morte, Dedo da Morte, Palavra de Poder Atordoar, Palavra de Poder Matar) | Poucas magias de círculo alto cadastradas |
 | Produzir Chama é uma ação de ataque mágico (sem a chama de luz como ação bônus); Lampejo Estelar não anula Invisível | Sem iluminação na grade |
 | Talentos/características com escolhas recebem padrões automáticos; o jogador troca na criação ou com a tecla L | Subir de nível nunca trava o jogo |
 | Truques/preparadas limitados ao que existe na lista da classe (ex.: Clérigo conhece 1 truque em vez de 3; Bruxo prepara só Maldição) | Ainda há poucas magias cadastradas |
