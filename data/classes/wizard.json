@@ -134,7 +134,8 @@
 					"name": "Maestria em Magia",
 					"level": 18,
 					"description": "Uma magia de 1º e uma de 2º círculo sempre preparadas e conjuradas sem espaço no círculo mínimo.",
-					"implemented": false
+					"implemented": true,
+					"grants": "spell_mastery"
 				},
 				{
 					"id": "feature.epic_boon_wizard",
@@ -149,7 +150,8 @@
 					"name": "Magias Assinatura",
 					"level": 20,
 					"description": "Duas magias de 3º círculo sempre preparadas, cada uma conjurada uma vez sem espaço por descanso curto.",
-					"implemented": false
+					"implemented": true,
+					"grants": "signature_spells"
 				}
 			],
 			"spellcasting_ability": "int",
@@ -225,6 +227,60 @@
 						"1"
 					],
 					"recharge": "long"
+				},
+				{
+					"id": "signature_1",
+					"name": "Magia Assinatura 1",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1"
+					],
+					"recharge": "short"
+				},
+				{
+					"id": "signature_2",
+					"name": "Magia Assinatura 2",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1"
+					],
+					"recharge": "short"
 				}
 			]
 		}

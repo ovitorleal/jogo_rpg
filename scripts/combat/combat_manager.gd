@@ -331,6 +331,8 @@ func attack_advantage(actor: Combatant, target: Combatant, attack: Dictionary) -
 			advantage.append("alvo %s" % CONDITION_NAMES[condition].to_lower())
 	if target.has_condition("invisible") and not actor_blindsight and CombatFeatures.truesight(actor) < distance:
 		disadvantage.append("alvo invisível")
+	if not target.effects_of("blurred").is_empty() and not actor_blindsight and CombatFeatures.truesight(actor) < distance:
+		disadvantage.append("borrão")
 	if not target.effects_of("warded").is_empty() and actor.creature_type in CombatFeatures.WARD_TYPES:
 		disadvantage.append("proteção contra o bem e o mal")
 	if not target.effects_of("dodging").is_empty() and not target.is_incapacitated():
@@ -858,7 +860,8 @@ func effective_speed(unit: Combatant) -> int:
 	for condition: String in ["grappled", "restrained", "paralyzed", "stunned", "unconscious", "petrified"]:
 		if unit.has_condition(condition):
 			return 0
-	return maxi(0, unit.speed_feet - _slowed_feet(unit) - 5 * _exhaustion(unit))
+	var base := unit.speed_feet if unit.effects_of("flying").is_empty() else maxi(unit.speed_feet, 60)
+	return maxi(0, base - _slowed_feet(unit) - 5 * _exhaustion(unit))
 
 
 func _exhaustion(unit: Combatant) -> int:
@@ -876,6 +879,13 @@ func _repeat_end_of_turn_saves(unit: Combatant, events: Array[Dictionary]) -> vo
 				"natural": save.natural, "modifier": save.modifier, "total": save.total, "dc": save.dc, "success": save.success})
 		if save.success:
 			remove_condition(unit, str(effect["condition"]), events)
+		elif effect.has("escalate"):
+			# Sono: falhar de novo troca Incapacitado por Inconsciente, sem novos testes.
+			effect["condition"] = effect["escalate"]
+			effect["spell"] = CONDITION_NAMES[effect["escalate"]]
+			effect.erase("escalate")
+			effect.erase("save_ends")
+			events.append({"type": "condition", "actor": unit.id, "condition": effect["condition"], "source": effect["source"]})
 
 
 ## Ação para escapar de quem agarra: Atletismo (Força) ou Acrobacia (Destreza), o melhor, contra a CD.
@@ -1075,6 +1085,8 @@ func _free_cast_available(actor: Combatant, spell: Dictionary) -> bool:
 	var resource := str(spell.get("free", ""))
 	if resource.is_empty() or actor.character == null:
 		return false
+	if resource == "res.at_will":
+		return true
 	if resource.begins_with("res."):
 		return registry != null and ClassFeatures.remaining(actor.character, registry, resource.trim_prefix("res.")) > 0
 	return actor.character.resource_spent(resource) == 0
@@ -1082,6 +1094,8 @@ func _free_cast_available(actor: Combatant, spell: Dictionary) -> bool:
 
 func _spend_free_cast(actor: Combatant, spell: Dictionary) -> void:
 	var resource := str(spell["free"])
+	if resource == "res.at_will":
+		return
 	if resource.begins_with("res."):
 		ClassFeatures.spend(actor.character, resource.trim_prefix("res."))
 	else:
@@ -1094,17 +1108,27 @@ func spell_target_error(actor: Combatant, spell_id: String, target: Combatant) -
 	if not error.is_empty():
 		return error
 	var entry: Dictionary = actor.get_spell(spell_id)["entry"]
-	if is_area_spell(entry):
-		return "Escolha uma direção para a área"
+	if aims_at_cell(entry):
+		return "Escolha uma casa para a magia"
 	if target == null:
 		return "Alvo inválido"
-	if entry["target"] == "enemy":
-		if not target.is_up() or not target.is_hostile_to(actor):
-			return "Escolha um inimigo"
-	elif target.is_hostile_to(actor):
-		return "Escolha um aliado"
-	elif not target.is_up() and entry["resolution"] != "heal":
-		return "Aliado caído"
+	match str(entry["target"]):
+		"enemy":
+			if not target.is_up() or not target.is_hostile_to(actor):
+				return "Escolha um inimigo"
+		"any":
+			if not target.is_up():
+				return "Alvo caído"
+		_:
+			if target.is_hostile_to(actor):
+				return "Escolha um aliado"
+			if entry["resolution"] == "revive" and target.is_up():
+				return "Só para quem está caído"
+			if not target.is_up() and not entry["resolution"] in ["heal", "full_heal", "revive"]:
+				return "Aliado caído"
+	var kinds: Array = entry.get("creature_types", [])
+	if not kinds.is_empty() and not target.creature_type in kinds:
+		return "Só afeta: %s" % ", ".join(kinds)
 	var reach := maxi(Attack.MELEE_REACH_FEET, int(entry["range_feet"])) \
 			+ CombatFeatures.spell_range_bonus(self, actor, actor.get_spell(spell_id))
 	if Attack.grid_distance_feet(actor.position, target.position) > reach:
@@ -1113,7 +1137,17 @@ func spell_target_error(actor: Combatant, spell_id: String, target: Combatant) -
 
 
 static func is_area_spell(entry: Dictionary) -> bool:
-	return entry["target"] in ["cone", "cube"]
+	return entry["target"] in ["cone", "cube", "line", "sphere", "emanation"]
+
+
+## Magias que miram uma casa (áreas e teletransporte) ou o próprio conjurador, sem escolher criatura.
+static func aims_at_cell(entry: Dictionary) -> bool:
+	return is_area_spell(entry) or entry["target"] in ["point", "self"]
+
+
+## Alcance da magia em pés (mínimo 1,5 m), com bônus de características e Metamagia.
+func spell_reach(actor: Combatant, spell: Dictionary) -> int:
+	return maxi(Attack.MELEE_REACH_FEET, int(spell["entry"]["range_feet"])) + CombatFeatures.spell_range_bonus(self, actor, spell)
 
 
 ## Casas atingidas por um cone/cubo a partir do conjurador, na direção da casa "aim".
@@ -1121,6 +1155,15 @@ static func is_area_spell(entry: Dictionary) -> bool:
 ## cubo de 4,5 m = 3x3 casas encostadas no conjurador.
 func area_cells(actor: Combatant, entry: Dictionary, aim: Vector2i) -> Array[Vector2i]:
 	var cells: Array[Vector2i] = []
+	# Esfera num ponto ao alcance e emanação em volta do conjurador: casas a até area_feet do centro.
+	if entry["target"] in ["sphere", "emanation"]:
+		var center := aim if entry["target"] == "sphere" else actor.position
+		for y in arena_size.y:
+			for x in arena_size.x:
+				var cell := Vector2i(x, y)
+				if Attack.grid_distance_feet(center, cell) <= int(entry["area_feet"]):
+					cells.append(cell)
+		return cells
 	var delta := aim - actor.position
 	var dir := Vector2i(signi(delta.x), signi(delta.y))
 	if dir == Vector2i.ZERO:
@@ -1131,6 +1174,13 @@ func area_cells(actor: Combatant, entry: Dictionary, aim: Vector2i) -> Array[Vec
 	var half_size := size / 2
 	var diagonal := dir.x != 0 and dir.y != 0
 	var side := Vector2i(-dir.y, dir.x)
+	# Linha de 1,5 m de largura a partir do conjurador.
+	if entry["target"] == "line":
+		for forward in range(1, size + 1):
+			var line_cell := actor.position + dir * forward
+			if _in_bounds(line_cell):
+				cells.append(line_cell)
+		return cells
 	for forward in range(1, size + 1):
 		if diagonal:
 			for lateral in range(1, size + 1):
@@ -1158,13 +1208,38 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 	var casting_time := _casting_time(spell)
 	var targets: Array[Combatant] = []
 	var cells: Array[Vector2i] = []
-	if is_area_spell(entry):
-		if not aim is Vector2i or aim == actor.position:
+	var teleport_to := Vector2i(-1, -1)
+	var target_kind := str(entry["target"])
+	if target_kind == "self":
+		targets.append(actor)
+	elif target_kind == "point":
+		if not aim is Vector2i or not _in_bounds(aim) or combatant_at(aim) != null:
+			return _fail("Escolha uma casa livre")
+		if Attack.grid_distance_feet(actor.position, aim) > spell_reach(actor, spell):
+			return _fail("Casa fora do alcance da magia")
+		teleport_to = aim
+	elif is_area_spell(entry):
+		if target_kind == "sphere":
+			if not aim is Vector2i or not _in_bounds(aim):
+				return _fail("Escolha o ponto da magia")
+			if Attack.grid_distance_feet(actor.position, aim) > spell_reach(actor, spell):
+				return _fail("Ponto fora do alcance da magia (%d pés)" % spell_reach(actor, spell))
+		elif target_kind != "emanation" and (not aim is Vector2i or aim == actor.position):
 			return _fail("Escolha a direção da magia")
-		cells = area_cells(actor, entry, aim)
+		cells = area_cells(actor, entry, aim if aim is Vector2i else actor.position)
+		# Cura e efeitos de apoio pegam só aliados (o conjurador incluído); dano pega todos na área.
+		var helpful: bool = entry["resolution"] in ["heal", "buff"]
 		for unit in combatants:
-			if unit.is_up() and unit != actor and unit.position in cells:
+			if not unit.position in cells:
+				continue
+			if helpful:
+				if not unit.is_hostile_to(actor) and (unit.is_up() or entry["resolution"] == "heal"):
+					targets.append(unit)
+			elif unit.is_up() and (unit != actor or target_kind == "sphere"):
 				targets.append(unit)
+		if helpful and int(entry["max_targets"]) > 1 and targets.size() > int(entry["max_targets"]):
+			targets.sort_custom(func(a: Combatant, b: Combatant) -> bool: return a.hp * b.max_hp < b.hp * a.max_hp)
+			targets = targets.slice(0, int(entry["max_targets"]))
 	else:
 		var ids: Array[String] = [target_id]
 		if extra_ids is Array:
@@ -1175,8 +1250,12 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 		if spell_level > 0:
 			slot_preview = Spellcasting.lowest_slot(actor.character, registry, spell_level)
 		var max_targets := int(entry["max_targets"])
-		if max_targets > 1:
+		if max_targets > 1 or bool(entry["upcast_targets"]):
 			max_targets += maxi(0, slot_preview - spell_level) + (1 if plan.has("metamagic.twinned") else 0)
+		# Palavras da Criação (Bardo 20): Palavra de Poder Curar/Matar atinge um segundo alvo a até 3 m do primeiro.
+		var words: bool = actor.has_feature("feature.words_of_creation") and spell_id in ["spell.power_word_heal", "spell.power_word_kill"]
+		if words:
+			max_targets = maxi(max_targets, 2)
 		if ids.size() > max_targets:
 			return _fail("Alvos demais para esta magia (máximo %d)" % max_targets)
 		for id in ids:
@@ -1184,6 +1263,8 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 			var target_error := spell_target_error(actor, spell_id, unit)
 			if not target_error.is_empty():
 				return _fail(target_error)
+			if words and not targets.is_empty() and Attack.grid_distance_feet(targets[0].position, unit.position) > 10:
+				return _fail("O segundo alvo precisa estar a até 3 m do primeiro")
 			targets.append(unit)
 	var slot_level := 0
 	var free_cast := spell_level > 0 and _free_cast_available(actor, spell)
@@ -1211,15 +1292,35 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 	if entry["concentration"]:
 		_end_concentration(actor, events, "nova magia de concentração")
 		actor.concentration = {"spell_id": spell_id, "name": entry["name"], "extended": _meta.get("extended", false)}
+	if teleport_to != Vector2i(-1, -1):
+		events.append({"type": "pushed", "actor": actor.id, "from": actor.position, "to": teleport_to})
+		actor.position = teleport_to
+	# Raio Ardente: cada raio é um ataque; se o alvo cair, o próximo raio vai para outro inimigo ao alcance.
+	var rays := int(entry["rays"]) + (maxi(0, slot_level - spell_level) if int(entry["rays"]) > 0 else 0)
 	for target in targets:
-		if state != State.IN_PROGRESS:
-			break
-		_resolve_spell_on(actor, spell, target, slot_level, events)
+		var current_target := target
+		for i in maxi(1, rays):
+			if state != State.IN_PROGRESS:
+				break
+			if rays > 0 and i > 0 and not current_target.is_up():
+				current_target = _next_spell_target(actor, spell_id)
+				if current_target == null:
+					break
+			_resolve_spell_on(actor, spell, current_target, slot_level, events)
 	CombatFeatures.after_cast(self, actor, slot_level, _cast_with_slot, _healed_others, events)
 	CombatFeatures.finish_cast(self, actor, _meta, slot_level, events)
 	_meta = {}
 	events.append_array(_check_end())
 	return {"ok": true, "error": "", "events": events}
+
+
+func _next_spell_target(actor: Combatant, spell_id: String) -> Combatant:
+	var best: Combatant = null
+	for unit in combatants:
+		if unit.is_hostile_to(actor) and spell_target_error(actor, spell_id, unit).is_empty() \
+				and (best == null or Attack.grid_distance_feet(actor.position, unit.position) < Attack.grid_distance_feet(actor.position, best.position)):
+			best = unit
+	return best
 
 
 func _dart_count(entry: Dictionary, slot_level: int) -> int:
@@ -1282,6 +1383,9 @@ func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, s
 				event["effect"] = "protegido da magia"
 			else:
 				CombatFeatures.heighten(self, target)
+				if entry["save_advantage"]:
+					target.effects.append({"kind": "save_edge", "source": actor.id, "spell": entry["name"], "on": "none",
+							"actor": "", "count": 0})
 				var save := _roll_save(target, StringName(entry["save_ability"]), dc)
 				event["save"] = {"natural": save.natural, "modifier": save.modifier, "total": save.total, "dc": save.dc,
 						"success": save.success, "ability": entry["save_ability"]}
@@ -1299,6 +1403,21 @@ func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, s
 						raw = raw / 2
 					damage = Attack.apply_damage_modifiers(raw, damage_type, target.all_resistances())
 					event["resisted"] = damage < raw
+					# Segundo dano (Tempestade de Gelo, Coluna de Chamas), com a mesma regra de metade.
+					if not str(entry["extra_damage"]).is_empty():
+						var second := DiceExpression.parse(str(entry["extra_damage"]))
+						if not str(entry["upcast_extra"]).is_empty():
+							second.count += DiceExpression.parse(str(entry["upcast_extra"])).count * maxi(0, slot_level - int(entry["level"]))
+						var extra_raw := CombatFeatures.spell_damage(self, actor, spell, second, false, str(entry["extra_damage_type"]), false)
+						if save.success:
+							@warning_ignore("integer_division")
+							extra_raw = 0 if evasion else (extra_raw / 2 if entry["half_on_save"] else 0)
+						elif evasion:
+							@warning_ignore("integer_division")
+							extra_raw = extra_raw / 2
+						var extra_damage := Attack.apply_damage_modifiers(extra_raw, str(entry["extra_damage_type"]), target.all_resistances())
+						damage += extra_damage
+						event["second_damage"] = {"damage": extra_damage, "damage_type": entry["extra_damage_type"]}
 				affected = not save.success
 		"auto":
 			var darts := _dart_count(entry, slot_level)
@@ -1309,7 +1428,8 @@ func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, s
 		"heal":
 			var heal_dice := Spellcasting.scaled_dice(entry, str(entry["heal"]), actor.character_level, slot_level)
 			# Cura Suprema (Vida 17): dados de cura no máximo; Discípulo da Vida (Vida 3): +2 + círculo com espaço.
-			var rolled := heal_dice.maximum() if actor.has_feature("feature.supreme_healing") else heal_dice.roll(_roller)
+			var rolled := heal_dice.maximum() if actor.has_feature("feature.supreme_healing") or not target.effects_of("hope").is_empty() \
+					else heal_dice.roll(_roller)
 			var amount := maxi(0, rolled + int(spell.get("modifier", actor.spell_modifier)))
 			if _cast_with_slot and actor.has_feature("feature.disciple_of_life"):
 				amount += 2 + slot_level
@@ -1321,8 +1441,44 @@ func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, s
 			event["target_hp"] = target.hp
 		"buff":
 			affected = true
+		"revive":
+			target.hp = 1
+			event["healed"] = 1
+			event["target_hp"] = 1
+			event["effect"] = "volta com 1 PV"
+		"cleanse", "full_heal":
+			if entry["resolution"] == "full_heal":
+				event["healed"] = target.max_hp - target.hp
+				target.hp = target.max_hp
+				event["target_hp"] = target.hp
+			var removed := PackedStringArray()
+			for condition: String in entry["cleanse"]:
+				if condition == "exhaustion" and target.character != null and target.character.exhaustion > 0:
+					target.character.exhaustion -= 1
+					removed.append("1 nível de Exaustão")
+				elif condition != "exhaustion" and target.has_condition(condition):
+					remove_condition(target, condition, events)
+					removed.append(CONDITION_NAMES[condition])
+				if not removed.is_empty() and entry["resolution"] == "cleanse":
+					break
+			event["effect"] = "remove %s" % ", ".join(removed) if not removed.is_empty() else "nada a remover"
+		"power_word":
+			# Palavras de Poder: abaixo do limite de PV, o efeito; acima, o dano (Matar) ou deslocamento 0 (Atordoar).
+			if target.hp <= int(entry["hp_threshold"]):
+				if entry["effect"] == "kill":
+					damage = target.hp + target.temp_hp
+					event["effect"] = "morre"
+				else:
+					affected = true
+			elif not str(entry["damage"]).is_empty():
+				damage = Attack.apply_damage_modifiers(CombatFeatures.spell_damage(self, actor, spell, damage_dice, false, damage_type),
+						damage_type, target.all_resistances())
+			else:
+				target.effects.append({"kind": "slowed", "source": actor.id, "spell": entry["name"], "value": 999,
+						"on": "turn_start", "actor": actor.id, "count": 1})
+				event["effect"] = "deslocamento 0 até o próximo turno de %s" % actor.name
 	if affected:
-		event["effect"] = _apply_spell_effect(actor, entry, target)
+		event["effect"] = _apply_spell_effect(actor, entry, target, slot_level, dc)
 	event["damage"] = damage
 	if damage > 0:
 		_apply_damage(target, damage, events, event)
@@ -1340,9 +1496,46 @@ func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, s
 
 
 ## Aplica o efeito da magia ao alvo. Retorna uma descrição curta (registro).
-func _apply_spell_effect(actor: Combatant, entry: Dictionary, target: Combatant) -> String:
+func _apply_spell_effect(actor: Combatant, entry: Dictionary, target: Combatant, slot_level: int = 0, dc: int = 0) -> String:
 	var value := str(entry["effect_value"])
 	match str(entry["effect"]):
+		"paralyzed", "restrained", "frightened", "charmed", "incapacitated", "stunned":
+			var condition := str(entry["effect"])
+			if condition in target.condition_immunities or CombatFeatures.condition_blocked(self, target, condition, actor.id):
+				return "imune a %s" % CONDITION_NAMES[condition]
+			var effect := {"kind": "condition", "condition": condition, "source": actor.id, "spell": CONDITION_NAMES[condition],
+					"on": "concentration" if entry["concentration"] else "none", "actor": "", "count": 0}
+			if entry["repeat_save"] or entry["resolution"] == "power_word":
+				effect["save_ends"] = {"ability": "str" if condition == "restrained" else str(entry["save_ability"]), "dc": dc}
+			if entry["ends_on_damage"]:
+				effect["ends_on_damage"] = true
+			if not str(entry["escalate"]).is_empty():
+				effect["escalate"] = entry["escalate"]
+			target.effects.append(effect)
+			return CONDITION_NAMES[condition]
+		"blurred", "hope", "necrotic_ward", "flying":
+			target.effects.append({"kind": entry["effect"], "source": actor.id, "spell": entry["name"], "on": "concentration"})
+			if entry["effect"] == "flying" and target == current() and target.speed_feet < 60:
+				movement_left_feet += 60 - target.speed_feet
+			return {"blurred": "ataques contra têm desvantagem", "hope": "vantagem em Sabedoria e cura máxima",
+					"necrotic_ward": "resistência a necrótico", "flying": "voa a 18 m"}[entry["effect"]]
+		"death_ward", "freedom", "fire_shield":
+			target.effects.append({"kind": entry["effect"], "source": actor.id, "spell": entry["name"], "on": "none",
+					"actor": "", "count": 0})
+			if entry["effect"] == "freedom":
+				for condition in ["paralyzed", "restrained", "grappled"]:
+					remove_condition(target, condition, [] as Array[Dictionary])
+			return {"death_ward": "protegido da morte", "freedom": "livre de Paralisado e Contido",
+					"fire_shield": "resistência a frio; queima quem o acerta"}[entry["effect"]]
+		"aid":
+			var bonus := int(value) + 5 * maxi(0, slot_level - int(entry["level"]))
+			target.max_hp += bonus
+			target.hp += bonus
+			return "+%d PV máximos e atuais" % bonus
+		"dispel":
+			var before := target.effects.size()
+			target.effects = target.effects.filter(func(e: Dictionary) -> bool: return e["on"] != "concentration")
+			return "encerra %d efeito(s) de magia" % (before - target.effects.size())
 		"slowed":
 			target.effects.append({"kind": "slowed", "source": actor.id, "spell": entry["name"], "value": int(value),
 					"on": "turn_start", "actor": actor.id, "count": 1})
@@ -1409,6 +1602,11 @@ func _apply_damage(target: Combatant, damage: int, events: Array[Dictionary], ev
 		for effect in target.effects.duplicate():
 			if effect.get("ends_on_damage", false):
 				remove_condition(target, str(effect.get("condition", "")), events)
+	if not target.is_up() and not target.effects_of("death_ward").is_empty():
+		target.effects = target.effects.filter(func(e: Dictionary) -> bool: return e["kind"] != "death_ward")
+		target.hp = 1
+		event["target_hp"] = 1
+		events.append({"type": "feature", "actor": target.id, "feature": "death_ward", "text": "Proteção contra a Morte: fica com 1 PV"})
 	if not target.is_up() and CombatFeatures.on_zero_hp(self, target, events):
 		event["target_hp"] = target.hp
 	if not target.is_up():
@@ -1544,6 +1742,9 @@ func _push(actor: Combatant, target: Combatant, squares: int, events: Array[Dict
 func _choose_target(actor: Combatant) -> Combatant:
 	var best: Combatant = null
 	for unit in living(Combatant.Team.PARTY if actor.team == Combatant.Team.ENEMY else Combatant.Team.ENEMY):
+		# Enfeitiçado não ataca quem o enfeitiçou.
+		if actor.has_condition("charmed") and _condition_source(actor, "charmed") == unit.id:
+			continue
 		if best == null:
 			best = unit
 			continue

@@ -12,7 +12,8 @@ const ABILITIES := ["str", "dex", "con", "int", "wis", "cha"]
 
 ## Escolhas que uma característica pode conceder (ver CharacterChoices).
 const GRANTS := ["", "fighting_style", "feat", "epic_boon", "subclass", "weapon_mastery", "expertise", "skill",
-		"invocation", "metamagic", "option", "wild_shape", "magical_discoveries"]
+		"invocation", "metamagic", "option", "wild_shape", "magical_discoveries", "mystic_arcanum", "spell_mastery",
+		"signature_spells"]
 
 const FEATURE_FIELDS := {
 	"id": {"type": "string"},
@@ -124,12 +125,38 @@ const TYPES := {
 			"casting_time": {"type": "string", "enum": ["action", "bonus_action"]},
 			## 0 = pessoal (área a partir do conjurador), 5 = toque.
 			"range_feet": {"type": "int", "min": 0, "max": 300},
-			"target": {"type": "string", "enum": ["enemy", "ally", "cone", "cube"]},
-			"area_feet": {"type": "int", "min": 0, "max": 60, "required": false, "default": 0},
+			## enemy/ally/any = criaturas; self = o conjurador; cone/cube/line = área a partir do conjurador;
+			## sphere = esfera de raio area_feet num ponto ao alcance; emanation = em volta do conjurador (aliados);
+			## point = casa livre ao alcance (teletransporte).
+			"target": {"type": "string", "enum": ["enemy", "ally", "any", "self", "cone", "cube", "line", "sphere",
+					"emanation", "point"]},
+			"area_feet": {"type": "int", "min": 0, "max": 120, "required": false, "default": 0},
+			## Alvos a mais por círculo acima do mínimo (Imobilizar Pessoa, Voo, Enfeitiçar Monstro).
+			"upcast_targets": {"type": "bool", "required": false, "default": false},
+			## Raios com jogada de ataque própria (Raio Ardente); +1 por círculo acima.
+			"rays": {"type": "int", "min": 0, "max": 10, "required": false, "default": 0},
+			## Segundo dano da magia (Tempestade de Gelo, Coluna de Chamas) e seu aumento por círculo.
+			"extra_damage": {"type": "string", "dice": true, "required": false, "default": ""},
+			"extra_damage_type": {"type": "string", "required": false, "default": ""},
+			"upcast_extra": {"type": "string", "dice": true, "required": false, "default": ""},
+			## Condição imposta: repete o teste no fim de cada turno, acaba ao sofrer dano, piora se falhar de novo.
+			"repeat_save": {"type": "bool", "required": false, "default": false},
+			"ends_on_damage": {"type": "bool", "required": false, "default": false},
+			"escalate": {"type": "string", "required": false, "default": ""},
+			"save_advantage": {"type": "bool", "required": false, "default": false},
+			## Só afeta estes tipos de criatura (ex.: Imobilizar Pessoa: humanoide).
+			"creature_types": {"type": "array", "of": "string", "required": false, "default": []},
+			## Condições que a magia remove (Restauração Menor/Maior), uma por conjuração.
+			"cleanse": {"type": "array", "of": "string", "required": false, "default": []},
+			## Palavras de Poder: limite de PV para o efeito (abaixo dele) e dano acima.
+			"hp_threshold": {"type": "int", "min": 0, "max": 999, "required": false, "default": 0},
 			"max_targets": {"type": "int", "min": 1, "max": 6, "required": false, "default": 1},
 			## "smite" = dano extra conjurado logo após acertar (Golpe Divino), não pelo menu de magias.
-			## "condition_save" = teste de resistência sem dano; a falha aplica o efeito (ex.: Comando).
-			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff", "smite", "condition_save"]},
+			## "condition_save" = teste de resistência sem dano; a falha aplica o efeito (ex.: Comando);
+			## revive = volta com 1 PV; cleanse = remove condição; teleport = move o conjurador;
+			## power_word = efeito abaixo de hp_threshold; full_heal = recupera todos os PV.
+			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff", "smite", "condition_save",
+					"revive", "cleanse", "teleport", "power_word", "full_heal"]},
 			"save_ability": {"type": "string", "enum": ["", "str", "dex", "con", "int", "wis", "cha"], "required": false, "default": ""},
 			"half_on_save": {"type": "bool", "required": false, "default": false},
 			"damage": {"type": "string", "dice": true, "required": false, "default": ""},
@@ -141,7 +168,9 @@ const TYPES := {
 			"darts": {"type": "int", "min": 0, "max": 10, "required": false, "default": 0},
 			"upcast_dice": {"type": "string", "dice": true, "required": false, "default": ""},
 			"effect": {"type": "string", "enum": ["", "slowed", "mocked", "guided", "pushed", "ac_bonus", "blessed", "marked",
-					"warded", "no_reactions", "poisoned", "prone"],
+					"warded", "no_reactions", "poisoned", "prone", "paralyzed", "restrained", "frightened", "charmed",
+					"incapacitated", "stunned", "kill", "blurred", "aid", "hope", "flying", "death_ward", "freedom", "fire_shield",
+					"necrotic_ward", "dispel"],
 					"required": false, "default": ""},
 			"effect_value": {"type": "string", "required": false, "default": ""},
 			"concentration": {"type": "bool", "required": false, "default": false},
@@ -659,6 +688,8 @@ func _check_consistency() -> void:
 			errors.append("%s: magia com teste de resistência sem atributo" % id)
 		if spell["resolution"] == "heal" and str(spell["heal"]).is_empty():
 			errors.append("%s: magia de cura sem dados de cura" % id)
+		if spell["target"] in ["sphere", "emanation", "line"] and int(spell["area_feet"]) <= 0:
+			errors.append("%s: área sem tamanho (area_feet)" % id)
 		if spell["resolution"] == "buff" and str(spell["effect"]).is_empty():
 			errors.append("%s: magia de efeito sem efeito" % id)
 		for class_id: String in spell["classes"]:

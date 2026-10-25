@@ -111,6 +111,18 @@ static func specs(c: CharacterData, registry: ContentRegistry) -> Array[Dictiona
 				result.append(_spec(key, feature["name"], count, _discovery_options(c, registry)))
 			"invocation":
 				result.append(_spec(key, feature["name"], count, _invocation_options(c, key, feature.get("options", []))))
+			"mystic_arcanum":
+				for spell_level: int in ARCANUM_LEVELS:
+					if c.level >= int(ARCANUM_LEVELS[spell_level]):
+						result.append(_spec("arcanum.%d" % spell_level, "Arcano Místico (%dº círculo)" % spell_level, 1,
+								_spell_options(registry, c.class_id, spell_level)))
+			"spell_mastery":
+				for spell_level in [1, 2]:
+					result.append(_spec("spell_mastery.%d" % spell_level, "Maestria em Magia (%dº círculo)" % spell_level, 1,
+							_spell_options(registry, c.class_id, spell_level).filter(func(o: Dictionary) -> bool:
+								return registry.get_entry("spell", str(o["id"]))["casting_time"] == "action")))
+			"signature_spells":
+				result.append(_spec("signature", "Magias Assinatura (3º círculo)", 2, _spell_options(registry, c.class_id, 3)))
 			_:
 				result.append(_spec(key, feature["name"], count, _level_options(c, feature.get("options", []))))
 		if feature["grants"] in ["feat", "epic_boon", "fighting_style"] and not c.choice(key).is_empty():
@@ -153,6 +165,10 @@ static func _discovery_options(c: CharacterData, registry: ContentRegistry) -> A
 			var spell := registry.get_entry("spell", id)
 			options.append({"id": id, "name": spell["name"], "description": spell["description"]})
 	return options
+
+
+## Arcano Místico: círculo da magia -> nível de bruxo em que se ganha.
+const ARCANUM_LEVELS := {6: 11, 7: 13, 8: 15, 9: 17}
 
 
 ## Invocações que exigem outra invocação (Pacto da Lâmina, do Tomo, da Corrente ou Lâmina Sedenta).
