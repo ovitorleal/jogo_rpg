@@ -76,6 +76,21 @@ func complete(quest_id: String, party: Array[CharacterData], inventory: Inventor
 	return {"ok": true, "error": "", "lines": lines}
 
 
+## Texto do objetivo a mostrar na tela: a missão final primeiro, depois as outras ativas; "" sem nenhuma.
+func current_objective(registry: ContentRegistry) -> String:
+	var ids := active_ids()
+	ids.sort_custom(func(a: String, b: String) -> bool:
+		return bool(registry.get_entry("quest", a).get("final", false)) and not bool(registry.get_entry("quest", b).get("final", false)))
+	for quest_id in ids:
+		var quest := registry.get_entry("quest", quest_id)
+		if is_ready(quest_id, registry):
+			return "%s: volte e fale com %s" % [quest["name"], quest["giver"]]
+		for objective: Dictionary in quest.get("objectives", []):
+			if not is_objective_done(quest_id, objective["id"]):
+				return "%s: %s" % [quest["name"], objective["text"]]
+	return ""
+
+
 func active_ids() -> Array[String]:
 	var result: Array[String] = []
 	for quest_id: String in quests:

@@ -2,7 +2,7 @@ extends SceneTree
 ## Monta o TileSet do terreno e o mapa de teste (terreno, muros e objetos de cenário).
 ## Pré-requisito: generate_environment.gd + --import.
 ## Uso: godot --headless --path . --script res://tools/art/build_overworld.gd [-- --force] [--layout forest_brook]
-## Layouts: "test_map" (padrão, Clareira da Encruzilhada) e "forest_brook" (Bosque do Riacho).
+## Layouts: "test_map" (padrão, Clareira da Encruzilhada), "forest_brook" (Bosque do Riacho) e "village" (Vila de Ribeira).
 ##
 ## O terreno é definido nos VÉRTICES da grade (grama, terra, areia, água); cada tile escolhe a
 ## transição pelos 4 cantos (marching squares), o que dá bordas suaves e orgânicas.
@@ -18,6 +18,8 @@ const LAYOUTS := {
 			"terrain": "res://scenes/world/test_map_terrain.tscn", "props": "res://scenes/world/test_map_props.tscn"},
 	"forest_brook": {"size": Vector2i(44, 26), "seed": 20261025,
 			"terrain": "res://scenes/world/forest_brook_terrain.tscn", "props": "res://scenes/world/forest_brook_props.tscn"},
+	"village": {"size": Vector2i(40, 26), "seed": 20261026,
+			"terrain": "res://scenes/world/village_terrain.tscn", "props": "res://scenes/world/village_props.tscn"},
 }
 
 enum V { GRASS, DIRT, SAND, WATER }
@@ -31,12 +33,20 @@ const PROP_SCENES := {
 	"pine": "res://scenes/world/props/pine.tscn",
 	"bush": "res://scenes/world/props/bush.tscn",
 	"rock": "res://scenes/world/props/rock.tscn",
+	"house_red": "res://scenes/world/props/house_red.tscn",
+	"house_blue": "res://scenes/world/props/house_blue.tscn",
+	"well": "res://scenes/world/props/well.tscn",
 }
+## Vila de Ribeira: casas (tile da base da porta) e o poço da praça.
+const VILLAGE_BUILDINGS := [["house_red", Vector2i(12, 9)], ["house_blue", Vector2i(27, 9)],
+		["house_blue", Vector2i(9, 19)], ["house_red", Vector2i(30, 19)], ["well", Vector2i(20, 11)]]
 
 ## Áreas sem objetos (em tiles) por layout.
 const CLEAR := {
 	"test_map": [Rect2i(25, 11, 12, 12), Rect2i(41, 18, 7, 7), Rect2i(10, 22, 9, 7), Rect2i(51, 13, 9, 7)],
 	"forest_brook": [Rect2i(0, 10, 6, 7), Rect2i(23, 7, 11, 10)],
+	"village": [Rect2i(8, 4, 9, 8), Rect2i(23, 4, 9, 8), Rect2i(5, 14, 9, 8), Rect2i(26, 14, 9, 8),
+			Rect2i(14, 8, 12, 9), Rect2i(0, 12, 40, 5)],
 }
 const RUIN := Rect2i(10, 23, 9, 6)
 const GROVE := Rect2i(39, 20, 16, 11)
@@ -182,6 +192,8 @@ func _build_vertices() -> void:
 func _vertex(x: int, y: int) -> int:
 	if _layout == "forest_brook":
 		return _vertex_forest(x, y)
+	if _layout == "village":
+		return _vertex_village(x, y)
 	var lake := Vector2((x - 12.5) / 7.0, (y - 7.0) / 5.0)
 	var water := Vector2((x - 12.5) / 4.8, (y - 7.0) / 3.0)
 	if water.length() <= 1.0:
@@ -215,6 +227,28 @@ func _vertex_forest(x: int, y: int) -> int:
 	var trail_y := 13.0 + sin(x * 0.3) * 0.9
 	if x <= 26 and absf(y - trail_y) <= 1.1:
 		return V.DIRT
+	return V.GRASS
+
+
+## Vila de Ribeira: rua de terra leste-oeste, praça redonda com o poço, caminhos até as portas e um
+## laguinho a noroeste.
+func _vertex_village(x: int, y: int) -> int:
+	var pond := Vector2((x - 4.0) / 3.2, (y - 5.0) / 2.4)
+	if pond.length() <= 0.75:
+		return V.WATER
+	if pond.length() <= 1.0:
+		return V.SAND
+	var street_y := 14.0 + sin(x * 0.2) * 0.4
+	if absf(y - street_y) <= 1.1:
+		return V.DIRT
+	if Vector2(x - 20.5, (y - 12.5) * 1.2).length() <= 3.8:
+		return V.DIRT
+	for door_x: int in [12, 27]:
+		if absf(x - (door_x + 0.5)) <= 0.9 and y >= 9 and y <= 14:
+			return V.DIRT
+	for door_x: int in [9, 30]:
+		if absf(x - (door_x + 0.5)) <= 0.9 and y >= 14 and y <= 19:
+			return V.DIRT
 	return V.GRASS
 
 
@@ -287,6 +321,14 @@ func _build_props() -> Node2D:
 		_add_prop(root, "pine", Vector2(6, y))
 		_add_prop(root, "pine", Vector2(MAP.x * 16 - 6, y))
 		y += 22
+	if _layout == "village":
+		for building: Array in VILLAGE_BUILDINGS:
+			var base: Vector2i = building[1]
+			_add_prop(root, building[0], Vector2(base * 16) + Vector2(8, 14))
+		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["tree", "tree", "pine"], 22, 3)
+		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["bush"], 16, 1)
+		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["rock"], 6, 1)
+		return root
 	if _layout == "forest_brook":
 		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["tree", "pine", "tree"], 46, 2)
 		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["bush"], 14, 1)

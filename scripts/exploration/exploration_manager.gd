@@ -22,6 +22,12 @@ var last_xp: int = 0
 var scene_changes_enabled: bool = true
 ## Viagem em andamento (TravelSystem.to_dict()); vazio fora de viagem.
 var travel_state: Dictionary = {}
+## Acontecimentos de "uma vez" já vividos em viagens anteriores (eventos únicos e roteirizados): {id: true}.
+var once_events: Dictionary = {}
+## Texto de abertura mostrado na primeira chegada ao mapa depois de um novo jogo.
+var intro_message: String = ""
+## Recompensas da missão final, mostradas na tela de conclusão.
+var ending_lines: Array[String] = []
 ## Entrada (Marker2D) onde o jogador deve aparecer no próximo mapa carregado.
 var pending_entrance: String = ""
 var pending_map_scene: String = ""
@@ -79,6 +85,10 @@ func take_return_position(scene_path: String) -> Variant:
 func take_return_message() -> String:
 	if is_traveling():
 		return ""
+	if not intro_message.is_empty():
+		var intro := intro_message
+		intro_message = ""
+		return intro
 	var message := ""
 	match last_outcome:
 		CombatManager.Outcome.VICTORY:
@@ -97,6 +107,8 @@ func begin_travel(route_id: String, seed_number: int = -1) -> Error:
 		return ERR_DOES_NOT_EXIST
 	var travel := TravelSystem.new()
 	travel.start(route, seed_number if seed_number >= 0 else randi())
+	for id: String in once_events:
+		travel.resolved_once[id] = true
 	travel_state = travel.to_dict()
 	if not scene_changes_enabled:
 		return OK
@@ -113,6 +125,8 @@ func current_travel() -> TravelSystem:
 
 func store_travel(travel: TravelSystem) -> void:
 	travel_state = travel.to_dict()
+	for id: Variant in travel.resolved_once:
+		once_events[str(id)] = true
 
 
 ## Combate surgido na viagem: ao terminar, volta para a tela de viagem.
@@ -157,6 +171,9 @@ func is_resolved(trigger_id: String) -> bool:
 
 
 func reset() -> void:
+	intro_message = ""
+	ending_lines.clear()
+	once_events.clear()
 	resolved_triggers.clear()
 	pending_encounter_id = ""
 	pending_trigger_id = ""
@@ -171,4 +188,4 @@ func reset() -> void:
 
 
 func to_dict() -> Dictionary:
-	return {"resolved_triggers": resolved_triggers.keys(), "travel": travel_state.duplicate(true)}
+	return {"resolved_triggers": resolved_triggers.keys(), "travel": travel_state.duplicate(true), "once_events": once_events.keys()}

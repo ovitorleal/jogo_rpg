@@ -3,7 +3,9 @@ extends Control
 ## A validação é sempre a do CharacterFactory; esta tela só coleta escolhas.
 
 const TITLE_SCENE := "res://scenes/menus/title_screen.tscn"
-const START_SCENE := "res://scenes/world/test_map.tscn"
+const START_SCENE := "res://scenes/world/village.tscn"
+const INTRO_TEXT := "Depois de dias de estrada, você chega à Vila de Ribeira. Os moradores cochicham sobre goblins " \
+		+ "na floresta... Dizem que Ione, a chefe da vila, procura alguém corajoso. Ela costuma ficar perto do poço da praça."
 const DEFAULT_NAME := "Viajante"
 const LABEL_WIDTH := 92.0
 const LOOK_LABELS := {
@@ -745,6 +747,7 @@ func _on_start_pressed() -> void:
 	PartyManager.start_new_party(_character)
 	QuestManager.reset()
 	ExplorationManager.reset()
+	ExplorationManager.intro_message = INTRO_TEXT
 	var err := get_tree().change_scene_to_file(START_SCENE)
 	if err != OK:
 		push_error("Falha ao carregar %s: %s" % [START_SCENE, error_string(err)])

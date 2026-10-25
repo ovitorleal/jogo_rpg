@@ -35,6 +35,7 @@ static func capture(location: Dictionary) -> Dictionary:
 		"exploration": {
 			"resolved_triggers": ExplorationManager.resolved_triggers.keys(),
 			"disarmed_trigger": ExplorationManager.disarmed_trigger_id,
+			"once_events": ExplorationManager.once_events.keys(),
 		},
 		"travel": ExplorationManager.travel_state.duplicate(true),
 	}
@@ -193,6 +194,7 @@ static func validate(data: Dictionary, registry: ContentRegistry) -> Dictionary:
 		"quests": quests,
 		"resolved_triggers": resolved,
 		"disarmed_trigger": str((exploration as Dictionary).get("disarmed_trigger", "")),
+		"once_events": Array((exploration as Dictionary).get("once_events", [])).map(func(v: Variant) -> String: return str(v)),
 		"travel": travel,
 		"location": location,
 		"summary": data.get("summary", {}),
@@ -209,6 +211,8 @@ static func apply(state: Dictionary) -> String:
 	for trigger: String in state["resolved_triggers"]:
 		ExplorationManager.resolved_triggers[trigger] = true
 	ExplorationManager.disarmed_trigger_id = state["disarmed_trigger"]
+	for id: String in state.get("once_events", []):
+		ExplorationManager.once_events[id] = true
 	ExplorationManager.travel_state = (state["travel"] as Dictionary).duplicate(true)
 	var location: Dictionary = state["location"]
 	if location["kind"] == KIND_TRAVEL:

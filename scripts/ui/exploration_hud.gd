@@ -22,6 +22,7 @@ var journal_panel: JournalPanel
 var pause_menu: PauseMenu
 var choices_overlay: PanelContainer
 var choices_panel: ChoicesPanel
+var _objective_label: Label
 
 const DEFAULT_HINT := "[E] Continuar"
 
@@ -38,6 +39,16 @@ func _ready() -> void:
 	pause_menu.offset_top = 0
 	pause_menu.offset_right = 0
 	pause_menu.offset_bottom = 0
+	_objective_label = Label.new()
+	_objective_label.name = "ObjectiveLabel"
+	_objective_label.position = Vector2(6, 16)
+	_objective_label.size = Vector2(420, 12)
+	_objective_label.add_theme_font_size_override("font_size", 8)
+	_objective_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.52))
+	_objective_label.add_theme_color_override("font_outline_color", Color(0.102, 0.078, 0.137))
+	_objective_label.add_theme_constant_override("outline_size", 3)
+	add_child(_objective_label)
+	move_child(_objective_label, 1)
 	hide_prompt()
 	hide_message()
 	hide_sheet()
@@ -54,6 +65,16 @@ func _overlay(panel: PanelContainer, panel_name: String) -> Variant:
 	add_child(panel)
 	move_child(panel, _sheet_hint.get_index())
 	return panel
+
+
+## Objetivo atual no canto superior esquerdo ("" esconde).
+func set_objective(text: String) -> void:
+	_objective_label.text = "Objetivo: %s" % text if not text.is_empty() else ""
+	_objective_label.visible = not text.is_empty()
+
+
+func objective_text() -> String:
+	return _objective_label.text
 
 
 func show_prompt(text: String) -> void:

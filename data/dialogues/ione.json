@@ -1,0 +1,119 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "dialogue.ione",
+			"name": "Ione, chefe da vila",
+			"description": "A chefe da Vila de Ribeira, preocupada com os ataques dos goblins.",
+			"source": "original",
+			"speaker": "Ione",
+			"portrait": "res://assets/portraits/ione_portrait.png",
+			"entries": [
+				{
+					"condition": "quest_ready:quest.goblin_chief",
+					"node": "victory"
+				},
+				{
+					"condition": "quest_active:quest.goblin_chief",
+					"node": "reminder"
+				},
+				{
+					"condition": "quest_available:quest.goblin_chief",
+					"node": "greeting"
+				},
+				{
+					"condition": "",
+					"node": "idle"
+				}
+			],
+			"nodes": [
+				{
+					"id": "greeting",
+					"text": "Seja bem-vindo(a) a Ribeira. Sou Ione, chefe desta vila. Chegou num dia ruim: um bando de goblins, liderado por um tal de Garra-Rubra, ataca nossas carroças na estrada da floresta.",
+					"choices": [
+						{
+							"text": "Eu posso ajudar.",
+							"next": "accept",
+							"action": "start_quest:quest.goblin_chief"
+						},
+						{
+							"text": "Quem é Garra-Rubra?",
+							"next": "lore"
+						},
+						{
+							"text": "Agora não.",
+							"next": ""
+						}
+					]
+				},
+				{
+					"id": "lore",
+					"text": "Um goblin maior que os outros, de capa vermelha e escudo. Dizem que acampa no Bosque do Riacho, depois da Clareira da Encruzilhada. Amara, a guarda de lá, sabe o caminho.",
+					"choices": [
+						{
+							"text": "Vou atrás dele.",
+							"next": "accept",
+							"action": "start_quest:quest.goblin_chief"
+						},
+						{
+							"text": "Preciso pensar.",
+							"next": ""
+						}
+					]
+				},
+				{
+					"id": "accept",
+					"text": "Que os deuses guiem seus passos! Leve estas poções. Siga a Estrada da Vila, a leste, até a Clareira e fale com Amara. Descanse na estalagem quando precisar: é por conta da vila.",
+					"choices": [
+						{
+							"text": "Até a volta.",
+							"next": "",
+							"action": "give_item:item.potion_of_healing#2"
+						}
+					]
+				},
+				{
+					"id": "reminder",
+					"text": "Garra-Rubra ainda está lá fora? A estrada para a Clareira fica a leste. Amara pode indicar o Bosque do Riacho.",
+					"choices": [
+						{
+							"text": "Estou indo.",
+							"next": ""
+						}
+					]
+				},
+				{
+					"id": "victory",
+					"text": "Os goblins fugiram e Garra-Rubra caiu? Então Ribeira está a salvo! Aceite esta recompensa e a gratidão de todos nós.",
+					"choices": [
+						{
+							"text": "Foi uma honra ajudar.",
+							"next": "thanks",
+							"action": "complete_quest:quest.goblin_chief"
+						}
+					]
+				},
+				{
+					"id": "thanks",
+					"text": "Hoje à noite haverá festa na praça, e a estalagem será sempre sua casa. Volte quando quiser, herói de Ribeira.",
+					"choices": [
+						{
+							"text": "Obrigado(a), Ione.",
+							"next": ""
+						}
+					]
+				},
+				{
+					"id": "idle",
+					"text": "Graças a você, as carroças voltaram a passar. Ribeira não vai esquecer.",
+					"choices": [
+						{
+							"text": "Até logo.",
+							"next": ""
+						}
+					]
+				}
+			]
+		}
+	]
+}

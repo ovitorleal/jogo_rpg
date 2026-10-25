@@ -17,6 +17,12 @@ var _inventory: Inventory
 var _registry: ContentRegistry
 
 
+## Missões concluídas nesta conversa (para o mapa mostrar a conclusão da aventura).
+var completed: Array[String] = []
+## Recompensas dessas missões (XP, subida de nível, ouro, itens), sem a linha "Missão concluída".
+var reward_lines: Array[String] = []
+
+
 func begin(dialogue_entry: Dictionary, quests: QuestLog, party: Array[CharacterData], inventory: Inventory,
 		registry: ContentRegistry) -> Dictionary:
 	dialogue = dialogue_entry
@@ -80,6 +86,11 @@ func check(condition: String) -> bool:
 			return _quests.is_ready(quest_id, _registry)
 		"quest_completed":
 			return _quests.status(quest_id) == QuestLog.Status.COMPLETED
+		"objective_open":
+			# "objective_open:quest.x#objetivo": missão ativa com esse objetivo ainda não cumprido.
+			var ids := quest_id.split("#")
+			return ids.size() == 2 and _quests.status(ids[0]) == QuestLog.Status.ACTIVE \
+					and not _quests.is_objective_done(ids[0], ids[1])
 	return false
 
 
@@ -97,6 +108,13 @@ func _apply(action: String) -> Array[String]:
 			var done := _quests.complete(parts[1], _party, _inventory, _registry)
 			if done["ok"]:
 				lines.append_array(done["lines"])
+				completed.append(parts[1])
+				reward_lines.append_array(done["lines"].slice(1))
+		"give_item":
+			var spec := parts[1].split("#")
+			var amount := int(spec[1]) if spec.size() > 1 else 1
+			_inventory.add(spec[0], amount)
+			lines.append("Recebeu %dx %s" % [amount, _registry.get_entry("item", spec[0]).get("name", spec[0])])
 	return lines
 
 

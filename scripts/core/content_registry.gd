@@ -321,6 +321,12 @@ const TYPES := {
 			"segments": {"type": "int", "min": 1, "max": 8},
 			"hours_per_segment": {"type": "int", "min": 1, "max": 12},
 			"start_hour": {"type": "int", "min": 0, "max": 23},
+			## Acontecimentos garantidos em um trecho (uma vez por jogo), antes do sorteio.
+			"scripted_events": {"type": "object_array", "required": false, "default": [], "fields": {
+				"segment": {"type": "int", "min": 1, "max": 8},
+				"kind": {"type": "string", "enum": ["event", "combat"]},
+				"id": {"type": "string"},
+			}},
 		},
 	},
 	"event": {
@@ -354,9 +360,12 @@ const TYPES := {
 			"objectives": {"type": "object_array", "min_length": 1, "fields": {
 				"id": {"type": "string"},
 				"text": {"type": "string"},
-				"type": {"type": "string", "enum": ["defeat_encounter", "reach_map"]},
+				## talk = começar a conversa com o diálogo de id "target".
+				"type": {"type": "string", "enum": ["defeat_encounter", "reach_map", "talk"]},
 				"target": {"type": "string"},
 			}},
+			## Missão principal: concluí-la mostra a tela de conclusão da aventura.
+			"final": {"type": "bool", "required": false, "default": false},
 			"reward_xp": {"type": "int", "min": 0, "max": 10000},
 			"reward_gold": {"type": "int", "min": 0, "max": 10000},
 			"reward_items": {"type": "object_array", "required": false, "default": [], "fields": {
@@ -567,8 +576,10 @@ func _check_references(pending_refs: Array[Dictionary]) -> void:
 			errors.append("%s: '%s' deveria ser do tipo %s" % [ref["where"], ref["id"], ref["item_type"]])
 
 
-const DIALOGUE_CONDITIONS: Array[String] = ["quest_available", "quest_active", "quest_ready", "quest_completed"]
-const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest"]
+const DIALOGUE_CONDITIONS: Array[String] = ["quest_available", "quest_active", "quest_ready", "quest_completed",
+		"objective_open"]
+## give_item:<item_id>#<quantidade> entrega um item ao grupo.
+const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item"]
 
 
 ## Diálogos: nós referenciados existem, condições e ações conhecidas apontam para missões existentes.
@@ -597,8 +608,17 @@ func _check_rule(id: String, rule: String, allowed: Array[String], label: String
 	var parts := rule.split(":", true, 1)
 	if parts.size() != 2 or not parts[0] in allowed:
 		errors.append("%s: %s desconhecida '%s'" % [id, label, rule])
-	elif not has("quest", parts[1]):
+	elif parts[0] == "give_item":
+		if not has("item", parts[1].split("#")[0]):
+			errors.append("%s: %s com item inexistente '%s'" % [id, label, parts[1]])
+	elif not has("quest", parts[1].split("#")[0]):
 		errors.append("%s: %s com missão inexistente '%s'" % [id, label, parts[1]])
+	elif "#" in parts[1]:
+		# "objective_open:quest.x#objetivo": o objetivo precisa existir na missão.
+		var ids := parts[1].split("#")
+		var objectives: Array = get_entry("quest", ids[0]).get("objectives", []).map(func(o: Dictionary) -> String: return str(o["id"]))
+		if not ids[1] in objectives:
+			errors.append("%s: %s com objetivo inexistente '%s'" % [id, label, parts[1]])
 
 
 ## Regras entre campos que o esquema sozinho não expressa.
@@ -671,7 +691,8 @@ func _check_consistency() -> void:
 				errors.append("%s.%s: teste de perícia sem failure_text" % [id, choice.get("id")])
 	for id in ids("quest"):
 		for objective: Dictionary in get_entry("quest", id).get("objectives", []):
-			var target_type := "encounter" if objective.get("type") == "defeat_encounter" else "map"
+			var target_type: String = {"defeat_encounter": "encounter", "reach_map": "map", "talk": "dialogue"}.get(
+					str(objective.get("type")), "map")
 			if not has(target_type, str(objective.get("target", ""))):
 				errors.append("%s.%s: %s inexistente '%s'" % [id, objective.get("id"), target_type, objective.get("target")])
 	for id in ids("dialogue"):

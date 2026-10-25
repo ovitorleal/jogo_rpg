@@ -380,6 +380,120 @@
 			"prompt_reference": "",
 			"approval_status": "in_review",
 			"notes": "Ícone de inventário (tools/art/generate_environment.gd)."
+		},
+		{
+			"asset_id": "environment.house_red",
+			"category": "environments",
+			"file_path": "res://assets/environments/house_red.png",
+			"dimensions": [
+				48,
+				48
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Casa de enxaimel com telhado vermelho e chaminé; pivô no meio da base (linha 45)."
+		},
+		{
+			"asset_id": "environment.house_blue",
+			"category": "environments",
+			"file_path": "res://assets/environments/house_blue.png",
+			"dimensions": [
+				48,
+				48
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Casa de enxaimel com telhado azul; mesma forma da vermelha."
+		},
+		{
+			"asset_id": "environment.well",
+			"category": "environments",
+			"file_path": "res://assets/environments/well.png",
+			"dimensions": [
+				32,
+				32
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Poço de pedra com telhadinho; pivô na base (linha 29)."
+		},
+		{
+			"asset_id": "character.npc_ione",
+			"category": "characters",
+			"file_path": "res://assets/characters/npc_ione_sheet.png",
+			"dimensions": [
+				576,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 36,
+			"animation_fps": 8,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Ione, chefe da Vila de Ribeira: mesmo layout do herói, desenhada pelo CharacterPainter (cajado, coque grisalho)."
+		},
+		{
+			"asset_id": "portrait.ione",
+			"category": "portraits",
+			"file_path": "res://assets/portraits/ione_portrait.png",
+			"dimensions": [
+				64,
+				64
+			],
+			"format": "png",
+			"transparency": false,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Retrato da Ione, exibido em 2x nas falas."
+		},
+		{
+			"asset_id": "enemy.goblin_boss",
+			"category": "enemies",
+			"file_path": "res://assets/enemies/goblin_boss_sheet.png",
+			"dimensions": [
+				576,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 36,
+			"animation_fps": 8,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Garra-Rubra, chefe goblin: perfil do goblin com camisão de malha, escudo e capa vermelha."
 		}
 	]
 }
