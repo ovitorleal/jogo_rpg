@@ -109,6 +109,8 @@ static func specs(c: CharacterData, registry: ContentRegistry) -> Array[Dictiona
 				result.append(_spec(key, "Formas da Forma Selvagem", count, _wild_shape_options(c, registry)))
 			"magical_discoveries":
 				result.append(_spec(key, feature["name"], count, _discovery_options(c, registry)))
+			"invocation":
+				result.append(_spec(key, feature["name"], count, _invocation_options(c, key, feature.get("options", []))))
 			_:
 				result.append(_spec(key, feature["name"], count, _level_options(c, feature.get("options", []))))
 		if feature["grants"] in ["feat", "epic_boon", "fighting_style"] and not c.choice(key).is_empty():
@@ -153,12 +155,39 @@ static func _discovery_options(c: CharacterData, registry: ContentRegistry) -> A
 	return options
 
 
+## Invocações que exigem outra invocação (Pacto da Lâmina, do Tomo, da Corrente ou Lâmina Sedenta).
+const INVOCATION_REQUIRES := {
+	"invocation.devouring_blade": "invocation.thirsting_blade", "invocation.eldritch_smite": "invocation.pact_of_the_blade",
+	"invocation.lifedrinker": "invocation.pact_of_the_blade", "invocation.thirsting_blade": "invocation.pact_of_the_blade",
+	"invocation.gift_of_the_protectors": "invocation.pact_of_the_tome",
+	"invocation.investment_of_the_chain_master": "invocation.pact_of_the_chain",
+}
+
+
+## Invocações disponíveis: nível mínimo ("@5") e invocação exigida já escolhida.
+static func _invocation_options(c: CharacterData, key: String, options: Array) -> Array:
+	var chosen: Array[String] = []
+	for id in c.choice(key):
+		chosen.append(id.split("@")[0])
+	return _level_options(c, options).filter(func(option: Dictionary) -> bool:
+		var required: String = INVOCATION_REQUIRES.get(str(option["id"]).split("@")[0], "")
+		return required.is_empty() or required in chosen)
+
+
 ## Opção escolhida em qualquer característica do tipo "option" (Ordem Divina, tipo de terra...).
 static func has_option(c: CharacterData, option_id: String) -> bool:
 	for key: String in c.choices:
 		if key.begins_with("option.") and option_id in c.choices[key]:
 			return true
 	return false
+
+
+## Invocações Místicas escolhidas, sem o pré-requisito de nível ("invocation.agonizing_blast").
+static func invocations(c: CharacterData) -> Array[String]:
+	var result: Array[String] = []
+	for id in c.choice("invocation.feature.eldritch_invocations"):
+		result.append(id.split("@")[0])
+	return result
 
 
 ## Formas de fera conhecidas da Forma Selvagem (ids de monstros).

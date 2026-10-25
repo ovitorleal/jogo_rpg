@@ -82,22 +82,59 @@ static func short_rest(c: CharacterData, registry: ContentRegistry) -> Array[Str
 				restored.append(str(resource["name"]))
 	# Recuperação Natural (Círculo da Terra 6): recupera espaços somando até metade do nível
 	# (arredondado para cima), nenhum de 6º círculo ou mais; uma vez por descanso longo.
-	if has_feature(c, registry, "feature.natural_recovery") and remaining(c, registry, "natural_recovery_rest") > 0:
+	# Recuperação Arcana (Mago 1) segue a mesma regra.
+	for recovery: Array in [["feature.natural_recovery", "natural_recovery_rest", "Recuperação Natural"],
+			["feature.arcane_recovery", "arcane_recovery", "Recuperação Arcana"]]:
+		if has_feature(c, registry, recovery[0]) and remaining(c, registry, recovery[1]) > 0:
+			@warning_ignore("integer_division")
+			var recovered := recover_slots(c, (c.level + 1) / 2)
+			if recovered > 0:
+				spend(c, recovery[1])
+				restored.append("%s (%d círculos de espaços)" % [recovery[2], recovered])
+	# Restauração Feiticeira (Feiticeiro 5): Pontos de Feitiçaria até metade do nível; uma vez por descanso longo.
+	if has_feature(c, registry, "feature.sorcerous_restoration") and remaining(c, registry, "sorcerous_restoration") > 0 \
+			and c.resource_spent("sorcery_points") > 0:
 		@warning_ignore("integer_division")
-		var budget := (c.level + 1) / 2
-		var recovered := 0
-		for slot_level in range(mini(5, c.spell_slots_spent.size()), 0, -1):
-			while c.spell_slots_spent[slot_level - 1] > 0 and slot_level <= budget:
-				c.spell_slots_spent[slot_level - 1] -= 1
-				budget -= slot_level
-				recovered += slot_level
-		if recovered > 0:
-			spend(c, "natural_recovery_rest")
-			restored.append("Recuperação Natural (%d círculos de espaços)" % recovered)
+		var points := mini(c.resource_spent("sorcery_points"), c.level / 2)
+		if points > 0:
+			restore(c, "sorcery_points", points)
+			spend(c, "sorcerous_restoration")
+			restored.append("Restauração Feiticeira (%d pontos)" % points)
 	# Incansável (Patrulheiro 10): o descanso curto reduz a Exaustão em 1.
 	if c.exhaustion > 0 and has_feature(c, registry, "feature.tireless"):
 		c.exhaustion -= 1
 		restored.append("Exaustão -1")
+	return restored
+
+
+## Recupera espaços gastos (os maiores primeiro, nenhum de 6º+) até somar "budget" círculos.
+static func recover_slots(c: CharacterData, budget: int) -> int:
+	var recovered := 0
+	for slot_level in range(mini(5, c.spell_slots_spent.size()), 0, -1):
+		while c.spell_slots_spent[slot_level - 1] > 0 and slot_level <= budget:
+			c.spell_slots_spent[slot_level - 1] -= 1
+			budget -= slot_level
+			recovered += slot_level
+	return recovered
+
+
+## Astúcia Mágica (Bruxo 2): rito de 1 minuto que recupera espaços de pacto até metade do máximo
+## (todos com Mestre Místico); uma vez por descanso longo. Retorna quantos espaços voltaram.
+static func magical_cunning(c: CharacterData, registry: ContentRegistry) -> int:
+	if not has_feature(c, registry, "feature.magical_cunning") or remaining(c, registry, "magical_cunning") <= 0:
+		return 0
+	var total := 0
+	for count in Spellcasting.slots_for(registry.get_entry("class", c.class_id), c.level):
+		total += count
+	@warning_ignore("integer_division")
+	var allowed := total if has_feature(c, registry, "feature.eldritch_master") else (total + 1) / 2
+	var restored := 0
+	for i in c.spell_slots_spent.size():
+		while c.spell_slots_spent[i] > 0 and restored < allowed:
+			c.spell_slots_spent[i] -= 1
+			restored += 1
+	if restored > 0:
+		spend(c, "magical_cunning")
 	return restored
 
 

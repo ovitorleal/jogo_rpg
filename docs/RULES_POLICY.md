@@ -136,6 +136,15 @@ opções marcáveis pelo comando `option`.
 | Feras | 11 feras do SRD para a Forma Selvagem (Rato, Aranha, Cavalo de Montaria, Falcão Sangrento, Urso-Negro, Crocodilo, Cavalo de Guerra, Macaco, Urso-Pardo, Lobo Atroz, Aranha Gigante) | Ataques Múltiplos, dano extra (veneno), Caído/Agarrado ao acertar, Ágil e Táticas de Matilha |
 | Magias | Lampejo Estelar, Produzir Chama, Toque Chocante (sem ataques de oportunidade), Raio Nauseante (Envenenado até o fim do próximo turno) | 22 magias no total |
 
+### Feiticeiro, Bruxo e Mago (Fase 6.6, entrega 5)
+
+| Classe | Características com efeito | Notas |
+|---|---|---|
+| Feiticeiro | Feitiçaria Inata (ação bônus: CD +1 e vantagem nos ataques das magias de feiticeiro), Fonte de Magia (espaço vira pontos; pontos recriam espaço até o 5º pela tabela de custos), Metamagia (Cuidadosa, Distante, Potencializada, Estendida, Elevada, Acelerada, Buscadora, Transmutada, Gêmea; uma por magia, Potencializada e Buscadora combinam), Restauração Feiticeira, Feitiçaria Encarnada (duas Metamagias com Feitiçaria Inata), Apoteose Arcana | Dracônica: Resiliência Dracônica (+1 PV por nível; CA 10 + Des + Car), magias dracônicas sempre preparadas, Afinidade Elemental (resistência e +Carisma no dano do tipo), Asas de Dragão |
+| Bruxo | Invocações com efeito: Explosão Agonizante, Armadura das Sombras, Lâmina Devoradora, Mente Mística, Golpe Místico, Lança Mística, Vigor Corruptor, Bebedor de Vida, Pacto da Lâmina, Explosão Repulsiva, Lâmina Sedenta, Visão da Bruxa; pré-requisitos de nível e de pacto; Astúcia Mágica e Mestre Místico | Corruptor: Bênção do Obscuro, magias do patrono sempre preparadas, Sorte do Obscuro, Resiliência Corruptora, Arremessar pelo Inferno |
+| Mago | Recuperação Arcana (descanso curto: até metade do nível em círculos, nenhum de 6º+) | Evocador: Truque Potente (metade do dano ao errar ou quando o alvo resiste, sem efeitos), Esculpir Magias (1 + círculo aliados passam e não sofrem dano), Evocação Fortalecida (+Inteligência), Sobrecarga (dano máximo; nas próximas vezes 2d12 necrótico por círculo, +1d12 a cada uso) |
+| Magias | Comando ("Rasteje": Caído se falhar em Sabedoria), Orbe Cromático (3d8 do tipo a que o alvo não resiste) | 24 magias no total |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
@@ -152,10 +161,10 @@ opções marcáveis pelo comando `option`.
   Espada Longa, Machado Grande, Rapieira, Arco Longo (marciais).
 - Monstros: Lobo e Goblin Guerreiro (CA, PV, dados de vida, deslocamento, atributos, ataques, ND e XP).
 - Feras para a Forma Selvagem (11), em `data/monsters/beasts.json`.
-- Magias (22): truques Raio de Fogo, Raio de Gelo, Spray Venenoso, Chama Sagrada, Rajada Mística, Zombaria Viciosa;
+- Magias (24): truques Raio de Fogo, Raio de Gelo, Spray Venenoso, Chama Sagrada, Rajada Mística, Zombaria Viciosa;
   1º círculo Mísseis Mágicos, Mãos Flamejantes, Onda Trovejante, Raio Guiador, Curar Ferimentos, Palavra Curativa,
   Escudo da Fé, Bênção, Marca do Caçador, Maldição, Golpe Divino, Proteção contra o Bem e o Mal; truques Lampejo
-  Estelar, Produzir Chama, Toque Chocante; 1º círculo Raio Nauseante.
+  Estelar, Produzir Chama, Toque Chocante; 1º círculo Raio Nauseante, Comando, Orbe Cromático.
 - Itens: Poção de Cura e Rações (1 dia); características de nível 2 das 12 classes (registradas, sem efeito ainda).
 - Descrições são resumos próprios em português; nomes de regras traduzidos livremente.
 
@@ -193,6 +202,15 @@ opções marcáveis pelo comando `option`.
 | Auxílio da Terra centra a esfera no alvo e cura o aliado mais ferido na área; Santuário da Natureza é um cubo 3x3 em volta do druida, sem mover, renovado no início do turno dele | Mira por ponto livre ainda não existe na grade |
 | Recuperação Natural no descanso curto recupera sozinha os maiores espaços que cabem no limite | Sem tela de escolha no descanso |
 | Magias do Círculo e do Domínio que ainda não existem nos dados ficam de fora até a entrega 6 | Só magias cadastradas entram no menu |
+| Metamagia é marcada no menu e vale em toda magia que ela possa melhorar enquanto houver pontos; Distante, Cuidadosa, Transmutada e Gêmea só gastam pontos quando mudam algo; Buscadora gasta só ao errar; Sutil não tem efeito (componentes não são simulados) | Sem perguntas durante a conjuração |
+| Magia Gêmea só acrescenta um alvo em magias de vários alvos; Fonte de Magia só recria espaços já gastos (não passa do máximo) e converte o menor espaço livre | Modelo de espaços do jogo guarda só os gastos |
+| Feitiçaria Inata e Asas de Dragão duram o combate inteiro; voo vira deslocamento de 18 m | Combates curtos; sem terreno vertical |
+| Invocações sem efeito ainda: Passo Ascendente, Visão do Diabo, Olhar de Duas Mentes, Dom das Profundezas, Dom dos Protetores, Investimento do Mestre da Corrente, Lições dos Primeiros, Máscara de Muitas Faces, Mestre de Inúmeras Formas, Visões Nebulosas, Um com as Sombras, Salto Sobrenatural, Pacto da Corrente, Pacto do Tomo, Visões de Reinos Distantes, Sussurros do Túmulo | Dependem de magias de exploração, familiares, iluminação ou talentos extras |
+| Pacto da Lâmina vale para as armas corpo a corpo do personagem (sem conjurar arma nem trocar o tipo de dano); Lâmina Sedenta dá o segundo ataque na ação de Ataque | Sem sistema de mãos/sacar armas |
+| Astúcia Mágica é feita sozinha ao fim de cada combate (se houver espaços de pacto gastos) | O rito leva 1 minuto, fora do combate |
+| Sorte do Obscuro só em testes de resistência, usada quando pode virar o resultado; Arremessar pelo Inferno não tira o alvo da grade (só o dano e Incapacitado) | Testes de atributo não existem no combate |
+| Comando só com a ordem "Rasteje" (Caído); Orbe Cromático não salta para outro alvo | Ordens de movimento dependem de IA própria |
+| Contatar Patrono, Arcano Místico, Companheiro Dracônico, Adepto de Rituais, Memorizar Magia, Maestria em Magia, Magias Assinatura e Sábio da Evocação sem efeito | Magias de 2º a 9º círculo chegam na entrega 6; rituais e grimório não são simulados |
 | Produzir Chama é uma ação de ataque mágico (sem a chama de luz como ação bônus); Lampejo Estelar não anula Invisível | Sem iluminação na grade |
 | Talentos/características com escolhas recebem padrões automáticos; o jogador troca na criação ou com a tecla L | Subir de nível nunca trava o jogo |
 | Truques/preparadas limitados ao que existe na lista da classe (ex.: Clérigo conhece 1 truque em vez de 3; Bruxo prepara só Maldição) | Ainda há poucas magias cadastradas |

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.6.10] — 2026-10-25 — Fase 6.6, entrega 5: Feiticeiro, Bruxo e Mago
+
+### Adicionado
+- Feiticeiro e Feitiçaria Dracônica (níveis 1–20): Feitiçaria Inata, Fonte de Magia, 9 opções de Metamagia (marcadas
+  no menu), Restauração Feiticeira, Feitiçaria Encarnada, Apoteose Arcana, Resiliência Dracônica, Afinidade Elemental
+  e Asas de Dragão.
+- Bruxo e Patrono Corruptor: 12 Invocações Místicas com efeito (Pacto da Lâmina, Golpe Místico, Explosão Agonizante,
+  Explosão Repulsiva...), Astúcia Mágica, Mestre Místico, Bênção e Sorte do Obscuro, Resiliência Corruptora e
+  Arremessar pelo Inferno.
+- Mago e Evocador: Recuperação Arcana, Truque Potente, Esculpir Magias, Evocação Fortalecida e Sobrecarga.
+- Magias Comando e Orbe Cromático (24 no total); magias com escolha de tipo de dano e de condição por teste.
+- 9 testes novos (total 257).
+
+### Corrigido
+- Invocações que exigem pacto (Golpe Místico, Lâmina Sedenta...) eram oferecidas sem o pacto.
+
 ## [0.6.9] — 2026-10-25 — Fase 6.6, entrega 4: Bardo, Clérigo e Druida
 
 ### Adicionado

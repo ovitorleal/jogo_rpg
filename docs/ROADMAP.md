@@ -10,7 +10,7 @@
 | 5 | Progressão e conteúdo | Concluída (2026-10-24) |
 | 6 | Salvamento e integração | Concluída (2026-10-24) |
 | 6.5 | Magias e efeitos visuais | Concluída (2026-10-24) |
-| 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | **Em andamento** — entregas 1 a 4 de 6 |
+| 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | **Em andamento** — entregas 1 a 5 de 6 |
 | 7 | Vertical slice | — |
 | 8 | Publicação | — |
 
@@ -27,8 +27,15 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 | 2 | Marciais: Bárbaro (Berserker), Guerreiro (Campeão), Ladino (Ladrão), Monge (Mão Aberta) | **Concluída** (0.6.7) |
 | 3 | Meio-conjuradores: Paladino (Devoção), Patrulheiro (Caçador) | **Concluída** (0.6.8) |
 | 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | **Concluída** (0.6.9) |
-| 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | Próxima |
-| 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | — |
+| 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | **Concluída** (0.6.10) |
+| 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | Próxima |
+
+## Fase 6.6, entrega 5 — resultado (2026-10-25)
+
+- Feiticeiro (Dracônica), Bruxo (Corruptor) e Mago (Evocador) funcionando dos níveis 1 a 20; exceções (invocações de
+  exploração, Arcano Místico, Maestria em Magia, Magias Assinatura) em `RULES_POLICY.md`.
+- Verificado em janela real: menus do Feiticeiro (Metamagia), do Bruxo e do Mago (Sobrecarga).
+- 257 testes passando.
 
 ## Fase 6.6, entrega 4 — resultado (2026-10-25)
 
@@ -210,6 +217,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 6.6, entrega 5: Feiticeiro (Dracônica), Bruxo (Corruptor) e Mago (Evocador), níveis 1–20 — Pontos de
-Feitiçaria e Metamagia, Invocações Místicas e Arcano Místico, Recuperação Arcana, Esculpir Magias e Sobrecarga —
-com testes por característica.
+Fase 6.6, entrega 6: magias de 2º a 9º círculo exigidas pelas características e subclasses (sempre preparadas
+dos domínios, juramentos, círculos e patronos; Encontrar Montaria, Arcano Místico, Maestria em Magia, Magias
+Assinatura, Palavras da Criação), com os modelos de área e efeito que faltam e testes.

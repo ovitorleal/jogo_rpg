@@ -128,17 +128,20 @@ const TYPES := {
 			"area_feet": {"type": "int", "min": 0, "max": 60, "required": false, "default": 0},
 			"max_targets": {"type": "int", "min": 1, "max": 6, "required": false, "default": 1},
 			## "smite" = dano extra conjurado logo após acertar (Golpe Divino), não pelo menu de magias.
-			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff", "smite"]},
+			## "condition_save" = teste de resistência sem dano; a falha aplica o efeito (ex.: Comando).
+			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff", "smite", "condition_save"]},
 			"save_ability": {"type": "string", "enum": ["", "str", "dex", "con", "int", "wis", "cha"], "required": false, "default": ""},
 			"half_on_save": {"type": "bool", "required": false, "default": false},
 			"damage": {"type": "string", "dice": true, "required": false, "default": ""},
 			"damage_type": {"type": "string", "enum": ["", "acid", "bludgeoning", "cold", "fire", "force", "lightning",
 					"necrotic", "piercing", "poison", "psychic", "radiant", "slashing", "thunder"], "required": false, "default": ""},
+			## Tipos que o conjurador pode escolher (ex.: Orbe Cromático); o jogo usa o primeiro que o alvo não resiste.
+			"damage_types": {"type": "array", "of": "string", "ref": "damage_type", "required": false, "default": []},
 			"heal": {"type": "string", "dice": true, "required": false, "default": ""},
 			"darts": {"type": "int", "min": 0, "max": 10, "required": false, "default": 0},
 			"upcast_dice": {"type": "string", "dice": true, "required": false, "default": ""},
 			"effect": {"type": "string", "enum": ["", "slowed", "mocked", "guided", "pushed", "ac_bonus", "blessed", "marked",
-					"warded", "no_reactions", "poisoned"],
+					"warded", "no_reactions", "poisoned", "prone"],
 					"required": false, "default": ""},
 			"effect_value": {"type": "string", "required": false, "default": ""},
 			"concentration": {"type": "bool", "required": false, "default": false},
@@ -650,6 +653,8 @@ func _check_consistency() -> void:
 			errors.append("%s: cor inválida" % id)
 		if spell["resolution"] in ["spell_attack", "save", "auto"] and (str(spell["damage"]).is_empty() or str(spell["damage_type"]).is_empty()):
 			errors.append("%s: magia de dano sem dano/tipo" % id)
+		if spell["resolution"] == "condition_save" and (str(spell["save_ability"]).is_empty() or str(spell["effect"]).is_empty()):
+			errors.append("%s: magia de condição sem atributo ou efeito" % id)
 		if spell["resolution"] == "save" and str(spell["save_ability"]).is_empty():
 			errors.append("%s: magia com teste de resistência sem atributo" % id)
 		if spell["resolution"] == "heal" and str(spell["heal"]).is_empty():

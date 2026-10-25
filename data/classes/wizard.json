@@ -64,7 +64,7 @@
 					"name": "Recuperação Arcana",
 					"level": 1,
 					"description": "No descanso curto, recupera espaços somando até metade do nível (arredondado para cima, nenhum de 6º+); uma vez por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.scholar",

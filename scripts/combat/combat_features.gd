@@ -30,6 +30,17 @@ const LAND_RESISTANCE := {"land.arid": "fire", "land.polar": "cold", "land.tempe
 ## Golpe Primal: escolhe o primeiro tipo a que o alvo não resiste.
 const PRIMAL_TYPES := ["thunder", "fire", "cold", "lightning"]
 const SANCTUARY := "Santuário da Natureza"
+## Metamagia (custo em Pontos de Feitiçaria). Potencializada e Buscadora combinam com outra opção.
+const METAMAGIC_COSTS := {"metamagic.careful": 1, "metamagic.distant": 1, "metamagic.empowered": 1,
+		"metamagic.extended": 1, "metamagic.heightened": 2, "metamagic.quickened": 2, "metamagic.seeking": 1,
+		"metamagic.transmuted": 1, "metamagic.twinned": 1}
+const METAMAGIC_NAMES := {"metamagic.careful": "Cuidadosa", "metamagic.distant": "Distante", "metamagic.empowered": "Potencializada",
+		"metamagic.extended": "Estendida", "metamagic.heightened": "Elevada", "metamagic.quickened": "Acelerada",
+		"metamagic.seeking": "Buscadora", "metamagic.transmuted": "Transmutada", "metamagic.twinned": "Gêmea"}
+const METAMAGIC_STACKING := ["metamagic.empowered", "metamagic.seeking"]
+const TRANSMUTABLE := ["acid", "cold", "fire", "lightning", "poison", "thunder"]
+## Pontos de Feitiçaria para criar um espaço (círculo: [custo, nível mínimo de feiticeiro]).
+const SLOT_COSTS := {1: [2, 2], 2: [3, 3], 3: [5, 5], 4: [6, 7], 5: [7, 9]}
 
 
 # --- Auxiliares --------------------------------------------------------------------------
@@ -357,6 +368,8 @@ static func extra_damage(m: CombatManager, actor: Combatant, target: Combatant, 
 		var kind := "necrotic" if "radiant" in target.all_resistances() and not "necrotic" in target.all_resistances() else "radiant"
 		var dice := "2d8" if actor.has_feature("feature.improved_blessed_strikes") else "1d8"
 		extras.append({"amount": roll(m, dice, roll["critical"]), "type": kind, "label": "Golpe Divino"})
+	if attack.get("pact", false):
+		extras.append_array(_pact_weapon_extras(m, actor, target, roll, events))
 	# Golpe Primal (Fúria Elemental 7): uma vez por turno, com arma ou ataque de fera, +1d8 (2d8 no 15).
 	if (weapon or in_wild_shape(actor)) and actor.has_feature("elemental_fury.primal_strike") \
 			and not m.once_per_turn.has("primal_strike"):
@@ -369,6 +382,70 @@ static func extra_damage(m: CombatManager, actor: Combatant, target: Combatant, 
 		var dice := "2d8" if actor.has_feature("feature.improved_elemental_fury") else "1d8"
 		extras.append({"amount": roll(m, dice, roll["critical"]), "type": kind, "label": "Golpe Primal"})
 	return extras
+
+
+## Golpe Místico (gasta espaço de pacto: 1d8 + 1d8 por círculo de energia e Caído até Imenso) e
+## Bebedor de Vida (+1d6 necrótico; gasta um Dado de Vida para curar), uma vez por turno cada.
+static func _pact_weapon_extras(m: CombatManager, actor: Combatant, target: Combatant, attack_roll: Dictionary,
+		events: Array[Dictionary]) -> Array[Dictionary]:
+	var extras: Array[Dictionary] = []
+	var c := actor.character
+	if c == null or m.registry == null:
+		return extras
+	if actor.has_feature("invocation.eldritch_smite") and bool(actor.options.get("eldritch_smite", false)) \
+			and not m.once_per_turn.has("eldritch_smite"):
+		var slot := Spellcasting.lowest_slot(c, m.registry, 1)
+		if slot > 0:
+			m.once_per_turn["eldritch_smite"] = true
+			Spellcasting.spend_slot(c, slot)
+			extras.append({"amount": roll(m, "%dd8" % (1 + slot), attack_roll["critical"]), "type": "force", "label": "Golpe Místico"})
+			if Combatant.size_rank(target.size) <= Combatant.size_rank("huge"):
+				m.pending_after_hit.append({"kind": "prone", "effects": []})
+	if actor.has_feature("invocation.lifedrinker") and not m.once_per_turn.has("lifedrinker"):
+		m.once_per_turn["lifedrinker"] = true
+		var kind := "necrotic"
+		for candidate: String in ["necrotic", "psychic", "radiant"]:
+			if not candidate in target.all_resistances():
+				kind = candidate
+				break
+		extras.append({"amount": roll(m, "1d6", attack_roll["critical"]), "type": kind, "label": "Bebedor de Vida"})
+		if c.hit_dice_spent < c.level and actor.hp < actor.max_hp:
+			c.hit_dice_spent += 1
+			var die := int(m.registry.get_entry("class", c.class_id).get("hit_die", 8))
+			var healed := mini(actor.max_hp - actor.hp, maxi(1, roll(m, "1d%d" % die) + int(actor.modifiers.get(Ability.CONSTITUTION, 0))))
+			actor.hp += healed
+			events.append(feature_event(actor, "lifedrinker", "Bebedor de Vida: gasta um Dado de Vida e cura %d PV" % healed,
+					{"healed": healed}))
+	return extras
+
+
+## Arremessar pelo Inferno (Corruptor 14, opção do menu): uma vez por turno ao acertar um ataque, teste de
+## Carisma ou 8d10 psíquico (exceto corruptores) e Incapacitado até o fim do próximo turno do bruxo.
+static func hurl_through_hell(m: CombatManager, actor: Combatant, target: Combatant, events: Array[Dictionary]) -> void:
+	if not actor.has_feature("feature.hurl_through_hell") or not bool(actor.options.get("hurl", false)) \
+			or m.once_per_turn.has("hurl") or not target.is_up() or actor.character == null:
+		return
+	if resource_left(actor, m, "hurl_through_hell") > 0:
+		spend(actor, "hurl_through_hell")
+	else:
+		var slot := Spellcasting.lowest_slot(actor.character, m.registry, 1)
+		if slot == 0:
+			return
+		Spellcasting.spend_slot(actor.character, slot)
+	m.once_per_turn["hurl"] = true
+	var save := m._roll_save(target, Ability.CHARISMA, actor.spell_dc)
+	var damage := 0
+	if not save.success and target.creature_type != "corruptor":
+		damage = Attack.apply_damage_modifiers(roll(m, "8d10"), "psychic", target.all_resistances())
+	var event := feature_event(actor, "hurl_through_hell", "Arremessar pelo Inferno", {"target": target.id,
+			"save": save_event(save, "cha"), "damage": damage, "damage_type": "psychic", "vfx": "fear"})
+	if damage > 0:
+		m._apply_damage(target, damage, events, event)
+	else:
+		events.append(event)
+	if not save.success and target.is_up():
+		m.add_condition(target, "incapacitated", actor.id, events, {"on": "turn_end", "actor": actor.id,
+				"count": 2 if actor == m.current() else 1})
 
 
 ## Golpe Divino (opção do menu): logo após acertar corpo a corpo, gasta a ação bônus e o uso gratuito
@@ -509,6 +586,9 @@ static func after_hit(m: CombatManager, actor: Combatant, target: Combatant, att
 	m.pending_after_hit.clear()
 	for item: Dictionary in pending:
 		match str(item["kind"]):
+			"prone":
+				if target.is_up():
+					m.add_condition(target, "prone", actor.id, events)
 			"cunning":
 				for effect: String in item["effects"]:
 					apply_cunning(m, actor, target, effect, events)
@@ -533,6 +613,9 @@ static func after_hit(m: CombatManager, actor: Combatant, target: Combatant, att
 					"on": "turn_start", "actor": actor.id, "count": 1})
 	if bool(m.once_per_turn.get("flurry_active", false)) and actor.has_feature("feature.open_hand_technique"):
 		apply_open_hand(m, actor, target, str(actor.options.get("open_hand", "topple")), events)
+	hurl_through_hell(m, actor, target, events)
+	if not target.is_up() or m.state != CombatManager.State.IN_PROGRESS:
+		return
 	if actor.has_feature("feature.quivering_palm") and bool(actor.options.get("quivering", false)) \
 			and attack.get("unarmed", "") == "damage" and resource_left(actor, m, "focus") >= 4 \
 			and str(actor.state.get("quivering_target", "")).is_empty():
@@ -804,8 +887,16 @@ static func hunters_lore(actor: Combatant, target: Combatant, entry: Dictionary)
 
 ## Quando a criatura marcada cai, quem a marcou pode mover a marca com uma ação bônus.
 ## Quem cai em Forma Selvagem volta à forma normal.
-static func on_unit_down(m: CombatManager, unit: Combatant) -> void:
+static func on_unit_down(m: CombatManager, unit: Combatant, killer_id: String = "", events: Array[Dictionary] = []) -> void:
 	revert_form(m, unit, [] as Array[Dictionary], "")
+	# Bênção do Obscuro (Corruptor 3): ao derrubar um inimigo (ou alguém derrubá-lo a até 3 m), PV temporários.
+	for warlock in m.combatants:
+		if warlock.has_feature("feature.dark_ones_blessing") and warlock.is_up() and unit.is_hostile_to(warlock) \
+				and (killer_id == warlock.id or Attack.grid_distance_feet(warlock.position, unit.position) <= 10):
+			var temp := maxi(1, int(warlock.modifiers.get(Ability.CHARISMA, 0)) + warlock.character_level)
+			if temp > warlock.temp_hp:
+				warlock.temp_hp = temp
+				events.append(feature_event(warlock, "dark_ones_blessing", "Bênção do Obscuro: %d PV temporários" % temp))
 	for effect in unit.effects_of("marked"):
 		var source := m.get_combatant(str(effect["source"]))
 		if source != null and source.concentration.get("spell_id") == effect.get("spell_id"):
@@ -862,12 +953,299 @@ static func cantrip_bonus(actor: Combatant, spell: Dictionary) -> int:
 	return int(actor.modifiers.get(Ability.WISDOM, 0)) if _potent_cantrip(actor, spell) else 0
 
 
-## Fúria Elemental Aprimorada (Druida 15): truques de druida com alcance de 3 m ou mais ganham +90 m.
-static func spell_range_bonus(actor: Combatant, spell: Dictionary) -> int:
-	if actor.has_feature("feature.improved_elemental_fury") and _potent_cantrip(actor, spell) \
-			and int(spell["entry"]["range_feet"]) >= 10:
-		return 300
-	return 0
+## Alcance extra: Fúria Elemental Aprimorada (Druida 15: +90 m em truques de druida de 3 m+), Lança Mística
+## (+9 m por nível no truque da invocação) e Magia Distante (dobra; toque vira 9 m).
+static func spell_range_bonus(m: CombatManager, actor: Combatant, spell: Dictionary) -> int:
+	var bonus := 0
+	var range_feet := int(spell["entry"]["range_feet"])
+	if actor.has_feature("feature.improved_elemental_fury") and _potent_cantrip(actor, spell) and range_feet >= 10:
+		bonus += 300
+	if actor.has_feature("invocation.eldritch_spear") and str(spell["id"]) == invocation_cantrip(actor) and range_feet >= 10:
+		bonus += 30 * actor.character_level
+	if metamagic_plan(m, actor, spell).has("metamagic.distant"):
+		bonus += 25 if range_feet <= Attack.MELEE_REACH_FEET else range_feet
+	return bonus
+
+
+# --- Conjuração arcana ------------------------------------------------------------------------
+
+## Magia da própria classe (truque, preparada ou sempre preparada), não de talento.
+static func class_spell(m: CombatManager, actor: Combatant, spell: Dictionary) -> bool:
+	if actor.character == null or spell.get("intervention", false):
+		return false
+	var id := str(spell["id"])
+	return id in actor.character.cantrips or id in actor.character.prepared_spells \
+			or (m.registry != null and id in Spellcasting.always_prepared_ids(actor.character, m.registry))
+
+
+static func innate_active(unit: Combatant) -> bool:
+	return not unit.effects_of("innate_sorcery").is_empty()
+
+
+## Feitiçaria Inata (Feiticeiro 1): CD +1 nas magias de feiticeiro.
+static func spell_dc_bonus(m: CombatManager, actor: Combatant, spell: Dictionary) -> int:
+	return 1 if innate_active(actor) and class_spell(m, actor, spell) else 0
+
+
+## Feitiçaria Inata: vantagem nos ataques das magias de feiticeiro.
+static func spell_attack_mods(m: CombatManager, actor: Combatant, spell: Dictionary, adv: Dictionary) -> void:
+	if innate_active(actor) and class_spell(m, actor, spell):
+		adv["advantage"].append("feitiçaria inata")
+		adv["state"] = D20Test.resolve_advantage(adv["advantage"].size(), adv["disadvantage"].size())
+
+
+## Truque escolhido para Explosão Agonizante, Lança Mística e Explosão Repulsiva: Rajada Mística, se conhecida,
+## senão o primeiro truque de bruxo que causa dano.
+static func invocation_cantrip(actor: Combatant) -> String:
+	if actor.character == null:
+		return ""
+	if "spell.eldritch_blast" in actor.character.cantrips:
+		return "spell.eldritch_blast"
+	for spell in actor.spells:
+		var entry: Dictionary = spell["entry"]
+		if int(entry["level"]) == 0 and str(spell["id"]) in actor.character.cantrips and "class.warlock" in entry["classes"] \
+				and not str(entry["damage"]).is_empty():
+			return str(spell["id"])
+	return ""
+
+
+## Metamagia que vai valer nesta magia: {id: custo}, respeitando as opções marcadas no menu, os pontos,
+## o limite de uma opção (duas com Feitiçaria Encarnada e Feitiçaria Inata ativa; Potencializada e
+## Buscadora combinam) e a Apoteose Arcana (uma opção grátis por turno com Feitiçaria Inata).
+static func metamagic_plan(m: CombatManager, actor: Combatant, spell: Dictionary) -> Dictionary:
+	var plan := {}
+	if actor.character == null or not actor.has_feature("feature.metamagic") or spell.is_empty():
+		return plan
+	var entry: Dictionary = spell["entry"]
+	var points := resource_left(actor, m, "sorcery_points")
+	var innate := innate_active(actor)
+	var limit := 2 if innate and actor.has_feature("feature.sorcery_incarnate") else 1
+	var free_turn := innate and actor.has_feature("feature.arcane_apotheosis") and not m.once_per_turn.has("apotheosis")
+	var paid := 0
+	for option: Variant in actor.options.get("metamagic", []):
+		var id := str(option)
+		if not actor.has_feature(id) or not METAMAGIC_COSTS.has(id) or not _metamagic_fits(m, entry, id):
+			continue
+		var stacking := id in METAMAGIC_STACKING
+		if not stacking and paid >= limit:
+			continue
+		var cost := int(METAMAGIC_COSTS[id])
+		if free_turn and not stacking:
+			cost = 0
+			free_turn = false
+		if cost > points:
+			continue
+		points -= cost
+		if not stacking:
+			paid += 1
+		plan[id] = cost
+	return plan
+
+
+static func _metamagic_fits(m: CombatManager, entry: Dictionary, id: String) -> bool:
+	match id:
+		"metamagic.careful", "metamagic.heightened":
+			return entry["resolution"] in ["save", "condition_save"]
+		"metamagic.distant":
+			return true
+		"metamagic.empowered":
+			return not str(entry["damage"]).is_empty()
+		"metamagic.extended":
+			return bool(entry["concentration"])
+		"metamagic.quickened":
+			return entry["casting_time"] == "action" and m.bonus_action_available and not m.once_per_turn.has("leveled_spell") \
+					and not m.once_per_turn.has("quickened")
+		"metamagic.seeking":
+			return entry["resolution"] == "spell_attack"
+		"metamagic.transmuted":
+			return str(entry["damage_type"]) in TRANSMUTABLE and entry.get("damage_types", []).is_empty()
+		"metamagic.twinned":
+			return int(entry["level"]) > 0 and int(entry["max_targets"]) > 1
+	return false
+
+
+## Início da conjuração: gasta os pontos da Metamagia útil e prepara o estado da magia (criaturas
+## protegidas por Magia Cuidadosa e Esculpir Magias, Sobrecarga).
+static func begin_cast(m: CombatManager, actor: Combatant, spell: Dictionary, targets: Array[Combatant], plan: Dictionary,
+		slot_level: int, with_slot: bool, events: Array[Dictionary]) -> Dictionary:
+	var entry: Dictionary = spell["entry"]
+	var meta := {}
+	var protected: Array[String] = []
+	var used := PackedStringArray()
+	for id: String in plan:
+		var useful := true
+		match id:
+			"metamagic.distant":
+				var normal := maxi(Attack.MELEE_REACH_FEET, int(entry["range_feet"]))
+				useful = targets.any(func(t: Combatant) -> bool: return Attack.grid_distance_feet(actor.position, t.position) > normal)
+			"metamagic.careful":
+				useful = targets.any(func(t: Combatant) -> bool: return not t.is_hostile_to(actor))
+			"metamagic.transmuted":
+				useful = targets.any(func(t: Combatant) -> bool: return str(entry["damage_type"]) in t.all_resistances())
+			"metamagic.twinned":
+				useful = targets.size() > int(entry["max_targets"]) + maxi(0, slot_level - int(entry["level"]))
+			"metamagic.seeking":
+				meta["seeking"] = int(plan[id])
+				continue
+		if not useful:
+			continue
+		spend(actor, "sorcery_points", int(plan[id]))
+		if int(plan[id]) == 0:
+			m.once_per_turn["apotheosis"] = true
+		used.append(METAMAGIC_NAMES[id])
+		match id:
+			"metamagic.empowered":
+				meta["empowered_left"] = maxi(1, int(actor.modifiers.get(Ability.CHARISMA, 0)))
+			"metamagic.heightened":
+				for t in targets:
+					if t.is_hostile_to(actor):
+						meta["heightened_id"] = t.id
+						break
+			"metamagic.careful":
+				for t in targets:
+					if not t.is_hostile_to(actor) and protected.size() < maxi(1, int(actor.modifiers.get(Ability.CHARISMA, 0))):
+						protected.append(t.id)
+			"metamagic.extended":
+				meta["extended"] = true
+			"metamagic.quickened":
+				m.once_per_turn["quickened"] = true
+			"metamagic.transmuted":
+				meta["transmuted"] = true
+	# Esculpir Magias (Evocador 6): até 1 + círculo aliados na evocação ficam protegidos.
+	if actor.has_feature("feature.sculpt_spells") and entry["school"] == "evocation":
+		var limit := 1 + int(entry["level"])
+		for t in targets:
+			if not t.is_hostile_to(actor) and not t.id in protected and limit > 0:
+				protected.append(t.id)
+				limit -= 1
+	meta["protected_ids"] = protected
+	# Sobrecarga (Evocador 14, opção do menu): magia de mago de 1º a 5º com espaço causa o dano máximo.
+	if actor.has_feature("feature.overchannel") and bool(actor.options.get("overchannel", false)) and with_slot \
+			and slot_level >= 1 and slot_level <= 5 and not str(entry["damage"]).is_empty() and "class.wizard" in entry["classes"]:
+		meta["overchannel"] = true
+		used.append("Sobrecarga")
+	if not used.is_empty():
+		events.append(feature_event(actor, "metamagic", "%s: %s" % ["Metamagia" if used[0] != "Sobrecarga" else "Mago",
+				", ".join(used)], {"vfx": "aura"}))
+	return meta
+
+
+## Fim da conjuração: a Sobrecarga repetida no mesmo descanso longo causa 2d12 necrótico por círculo
+## (+1d12 por círculo a cada uso seguinte), sem resistência.
+static func finish_cast(m: CombatManager, actor: Combatant, meta: Dictionary, slot_level: int, events: Array[Dictionary]) -> void:
+	if not meta.get("overchannel", false) or actor.character == null:
+		return
+	var uses := actor.character.resource_spent("overchannel")
+	actor.character.resources_spent["overchannel"] = uses + 1
+	if uses > 0 and actor.is_up():
+		var damage := roll(m, "%dd12" % ((1 + uses) * slot_level))
+		m._apply_damage(actor, damage, events, feature_event(actor, "overchannel", "Sobrecarga cobra o preço",
+				{"target": actor.id, "damage": damage, "damage_type": "necrotic"}))
+
+
+static func protected_from_spell(m: CombatManager, target: Combatant) -> bool:
+	return target.id in m._meta.get("protected_ids", [])
+
+
+static func heighten(m: CombatManager, target: Combatant) -> void:
+	if m._meta.get("heightened_id", "") == target.id:
+		target.effects.append({"kind": "heightened", "source": "", "spell": "Magia Elevada", "on": "none", "actor": "", "count": 0})
+
+
+## Tipo de dano da magia no alvo: escolha da magia (Orbe Cromático) ou Magia Transmutada, pelo primeiro
+## tipo a que o alvo não resiste.
+static func spell_damage_type(m: CombatManager, entry: Dictionary, target: Combatant) -> String:
+	var kind := str(entry["damage_type"])
+	var resist := target.all_resistances()
+	var options: Array = entry.get("damage_types", [])
+	if not options.is_empty():
+		for candidate: String in options:
+			if not candidate in resist:
+				return candidate
+		return str(options[0])
+	if m._meta.get("transmuted", false) and kind in TRANSMUTABLE and kind in resist:
+		for candidate: String in TRANSMUTABLE:
+			if not candidate in resist:
+				return candidate
+	return kind
+
+
+## Dano da magia rolado dado a dado: Sobrecarga (todos no máximo), Magia Potencializada (rola de novo os
+## dados abaixo da média, até o Carisma) e bônus somados uma vez por jogada (with_bonus).
+static func spell_damage(m: CombatManager, actor: Combatant, spell: Dictionary, dice: DiceExpression, critical: bool,
+		damage_type: String, with_bonus: bool = true) -> int:
+	if dice == null:
+		return 0
+	var count := dice.count * (2 if critical else 1)
+	var values: Array[int] = []
+	if m._meta.get("overchannel", false):
+		for i in count:
+			values.append(dice.sides)
+	else:
+		values = m._roller.roll_dice(count, dice.sides)
+		var rerolls := int(m._meta.get("empowered_left", 0))
+		if rerolls > 0:
+			values.sort()
+			for i in values.size():
+				if rerolls <= 0 or values[i] * 2 > dice.sides:
+					break
+				values[i] = m._roller.roll_die(dice.sides)
+				rerolls -= 1
+			m._meta["empowered_left"] = rerolls
+	var total := dice.bonus
+	for value in values:
+		total += value
+	if with_bonus:
+		total += spell_damage_bonus(actor, spell, damage_type)
+	return maxi(0, total)
+
+
+## Afinidade Elemental (+Carisma no tipo escolhido), Evocação Fortalecida (+Inteligência em evocações de mago)
+## e Explosão Agonizante (+Carisma no truque da invocação).
+static func spell_damage_bonus(actor: Combatant, spell: Dictionary, damage_type: String) -> int:
+	var entry: Dictionary = spell["entry"]
+	var bonus := 0
+	if actor.has_feature("elemental_affinity.%s" % damage_type):
+		bonus += int(actor.modifiers.get(Ability.CHARISMA, 0))
+	if actor.has_feature("feature.empowered_evocation") and entry["school"] == "evocation" and "class.wizard" in entry["classes"]:
+		bonus += int(actor.modifiers.get(Ability.INTELLIGENCE, 0))
+	if actor.has_feature("invocation.agonizing_blast") and str(spell["id"]) == invocation_cantrip(actor):
+		bonus += int(actor.modifiers.get(Ability.CHARISMA, 0))
+	return bonus
+
+
+## Magia Buscadora: ao errar o ataque mágico, gasta o ponto e rola o d20 de novo.
+static func seek_spell(m: CombatManager, actor: Combatant, attack_roll: Dictionary, bonus: int, target_ac: int,
+		advantage_state: D20Test.Advantage, events: Array[Dictionary]) -> Dictionary:
+	if attack_roll["hit"] or not m._meta.has("seeking") or resource_left(actor, m, "sorcery_points") < int(m._meta["seeking"]):
+		return attack_roll
+	spend(actor, "sorcery_points", int(m._meta["seeking"]))
+	m._meta.erase("seeking")
+	events.append(feature_event(actor, "metamagic", "Metamagia: Buscadora (rola o ataque de novo)"))
+	return Attack.roll_attack(m._roller, bonus, target_ac, advantage_state)
+
+
+## Depois de acertar um ataque mágico: Explosão Repulsiva (empurra 3 m até Grande) e Arremessar pelo Inferno.
+static func after_spell_hit(m: CombatManager, actor: Combatant, spell: Dictionary, target: Combatant, events: Array[Dictionary]) -> void:
+	if actor.has_feature("invocation.repelling_blast") and str(spell["id"]) == invocation_cantrip(actor) and target.is_up() \
+			and Combatant.size_rank(target.size) <= Combatant.size_rank("large"):
+		m._push(actor, target, 2, events)
+	hurl_through_hell(m, actor, target, events)
+
+
+## Vantagem para manter a concentração: Mente Mística (invocação) e Magia Estendida.
+static func concentration_advantage(unit: Combatant) -> int:
+	var count := 0
+	if unit.has_feature("invocation.eldritch_mind"):
+		count += 1
+	if bool(unit.concentration.get("extended", false)):
+		count += 1
+	return count
+
+
+## Visão da Bruxa (invocação): Visão Verdadeira a 9 m (enxerga Invisível).
+static func truesight(unit: Combatant) -> int:
+	return 30 if unit.has_feature("invocation.witch_sight") else 0
 
 
 ## Golpes Abençoados Aprimorados (Clérigo 14): truque com Conjuração Potente que causa dano concede
@@ -983,6 +1361,10 @@ static func blindsight(unit: Combatant) -> int:
 
 
 static func save_disadvantage(unit: Combatant) -> int:
+	# Magia Elevada: desvantagem no teste contra a magia (consumida no teste).
+	if not unit.effects_of("heightened").is_empty():
+		unit.effects = unit.effects.filter(func(e: Dictionary) -> bool: return e["kind"] != "heightened")
+		return 1
 	if not unit.effects_of("staggered").is_empty():
 		unit.effects = unit.effects.filter(func(e: Dictionary) -> bool: return e["kind"] != "staggered")
 		return 1
@@ -1016,6 +1398,16 @@ static func after_save(m: CombatManager, unit: Combatant, ability: StringName, t
 		test.total += bonus
 		test.success = test.total >= test.dc
 		events.append(feature_event(unit, "bardic_inspiration", "usa a Inspiração de Bardo: +%d no teste" % bonus))
+		if test.success:
+			return test
+	# Sorte do Obscuro (Corruptor 6): +1d10 num teste que falhou, quando pode virar sucesso.
+	if unit.has_feature("feature.dark_ones_own_luck") and resource_left(unit, m, "dark_ones_own_luck") > 0 \
+			and test.dc - test.total <= 10:
+		spend(unit, "dark_ones_own_luck")
+		var luck := roll(m, "1d10")
+		test.total += luck
+		test.success = test.total >= test.dc
+		events.append(feature_event(unit, "dark_ones_own_luck", "Sorte do Obscuro: +%d no teste" % luck))
 		if test.success:
 			return test
 	if unit.has_feature("feature.indomitable") and resource_left(unit, m, "indomitable") > 0:
@@ -1138,7 +1530,55 @@ static func actions(m: CombatManager, unit: Combatant) -> Array[Dictionary]:
 	_bard_actions(m, unit, result)
 	_cleric_actions(m, unit, result)
 	_druid_actions(m, unit, result)
+	_arcane_actions(m, unit, result)
 	return result
+
+
+static func _arcane_actions(m: CombatManager, unit: Combatant, result: Array[Dictionary]) -> void:
+	if unit.character == null or m.registry == null:
+		return
+	var points := resource_left(unit, m, "sorcery_points")
+	if unit.has_feature("feature.innate_sorcery") and not innate_active(unit):
+		var error := _bonus_error(m)
+		if error.is_empty() and resource_left(unit, m, "innate_sorcery") <= 0 \
+				and not (unit.has_feature("feature.sorcery_incarnate") and points >= 2):
+			error = "Sem usos"
+		result.append(_action("innate_sorcery", "Feitiçaria Inata (ação bônus, %d)" % resource_left(unit, m, "innate_sorcery"), "none", error))
+	if unit.has_feature("feature.font_of_magic"):
+		var slot := Spellcasting.lowest_slot(unit.character, m.registry, 1)
+		var missing := ClassFeatures.maximum(unit.character, m.registry, "sorcery_points") - points
+		var error := "" if slot > 0 else "Sem espaços de magia"
+		if error.is_empty() and missing < slot:
+			error = "Pontos de Feitiçaria quase cheios"
+		result.append(_action("font_slot_to_points", "Fonte de Magia: espaço de %dº vira %d ponto(s) (%d)" % [slot, slot, points],
+				"none", error))
+		var create := _creatable_slot(m, unit)
+		var create_error := _bonus_error(m)
+		if create_error.is_empty() and create == 0:
+			create_error = "Nenhum espaço gasto que os pontos paguem"
+		result.append(_action("font_points_to_slot", "Fonte de Magia: pontos viram espaço de %dº (ação bônus)" % create
+				if create > 0 else "Fonte de Magia: pontos viram espaço (ação bônus)", "none", create_error))
+	if unit.has_feature("feature.dragon_wings") and not bool(unit.state.get("dragon_wings", false)):
+		var error := _bonus_error(m)
+		if error.is_empty() and resource_left(unit, m, "dragon_wings") <= 0 and points < 3:
+			error = "Sem usos (nem 3 Pontos de Feitiçaria)"
+		result.append(_action("dragon_wings", "Asas de Dragão (ação bônus)", "none", error))
+	if unit.has_feature("invocation.fiendish_vigor"):
+		var error := _magic_error(m)
+		if error.is_empty() and unit.temp_hp >= 12:
+			error = "Já tem 12 PV temporários"
+		result.append(_action("fiendish_vigor", "Vigor Corruptor: Vida Falsa (ação, 12 PV temporários)", "none", error))
+
+
+## Maior círculo gasto (até o 5º) que os Pontos de Feitiçaria podem recriar.
+static func _creatable_slot(m: CombatManager, unit: Combatant) -> int:
+	var points := resource_left(unit, m, "sorcery_points")
+	var spent := unit.character.spell_slots_spent
+	for slot_level in range(mini(5, spent.size()), 0, -1):
+		var cost: Array = SLOT_COSTS[slot_level]
+		if spent[slot_level - 1] > 0 and points >= int(cost[0]) and unit.character_level >= int(cost[1]):
+			return slot_level
+	return 0
 
 
 ## Erro da ação de Magia (ação livre e que não venha do Surto de Ação).
@@ -1366,6 +1806,16 @@ static func toggles(unit: Combatant) -> Array[Dictionary]:
 	if unit.has_feature("feature.quivering_palm") and str(unit.state.get("quivering_target", "")).is_empty():
 		result.append({"key": "quivering", "value": true, "name": "Palma Trêmula no próximo acerto (4 Foco)",
 				"checked": bool(unit.options.get("quivering", false))})
+	if unit.has_feature("feature.metamagic"):
+		for id: String in METAMAGIC_COSTS:
+			if unit.has_feature(id):
+				result.append({"key": "metamagic", "value": id, "name": "Metamagia: %s (%d)" % [METAMAGIC_NAMES[id], METAMAGIC_COSTS[id]],
+						"checked": id in unit.options.get("metamagic", [])})
+	for toggle: Array in [["feature.overchannel", "overchannel", "Sobrecarga na próxima magia de mago com espaço"],
+			["invocation.eldritch_smite", "eldritch_smite", "Golpe Místico ao acertar com a arma de pacto"],
+			["feature.hurl_through_hell", "hurl", "Arremessar pelo Inferno ao acertar"]]:
+		if unit.has_feature(toggle[0]):
+			result.append({"key": toggle[1], "value": true, "name": toggle[2], "checked": bool(unit.options.get(toggle[1], false))})
 	if not unit.get_spell("spell.divine_smite").is_empty():
 		for mode: Array in [["always", "em todo acerto corpo a corpo"], ["critical", "só em acertos críticos"]]:
 			result.append({"key": "smite", "value": mode[0], "name": "Golpe Divino: %s" % mode[1],
@@ -1376,13 +1826,13 @@ static func toggles(unit: Combatant) -> Array[Dictionary]:
 ## Alterna uma opção do menu.
 static func set_option(unit: Combatant, key: String, value: Variant) -> void:
 	match key:
-		"cunning":
-			var list: Array = unit.options.get("cunning", []).duplicate()
+		"cunning", "metamagic":
+			var list: Array = unit.options.get(key, []).duplicate()
 			if value in list:
 				list.erase(value)
 			else:
 				list.append(value)
-			unit.options["cunning"] = list
+			unit.options[key] = list
 		"brutal", "open_hand", "tactical_master", "smite":
 			unit.options[key] = "" if unit.options.get(key, "") == value and key != "open_hand" else value
 		_:
@@ -1734,6 +2184,43 @@ static func do_action(m: CombatManager, unit: Combatant, action_id: String, targ
 			unit.state["sanctuary"] = {"cells": cells, "rounds": 10}
 			refresh_sanctuary(m, unit)
 			events.append(feature_event(unit, "natures_sanctuary", "Santuário da Natureza: árvores espectrais em volta", {"vfx": "aura"}))
+		"innate_sorcery":
+			m.bonus_action_available = false
+			if resource_left(unit, m, "innate_sorcery") > 0:
+				spend(unit, "innate_sorcery")
+			else:
+				spend(unit, "sorcery_points", 2)
+			unit.effects.append({"kind": "innate_sorcery", "source": unit.id, "spell": "Feitiçaria Inata", "on": "none",
+					"actor": "", "count": 0})
+			events.append(feature_event(unit, "innate_sorcery", "Feitiçaria Inata: CD +1 e vantagem nos ataques de magia",
+					{"vfx": "aura"}))
+		"font_slot_to_points":
+			var slot := Spellcasting.lowest_slot(unit.character, m.registry, 1)
+			Spellcasting.spend_slot(unit.character, slot)
+			ClassFeatures.restore(unit.character, "sorcery_points", slot)
+			events.append(feature_event(unit, "font_of_magic", "Fonte de Magia: espaço de %dº círculo vira %d pontos" % [slot, slot]))
+		"font_points_to_slot":
+			m.bonus_action_available = false
+			var slot := _creatable_slot(m, unit)
+			spend(unit, "sorcery_points", int(SLOT_COSTS[slot][0]))
+			unit.character.spell_slots_spent[slot - 1] -= 1
+			events.append(feature_event(unit, "font_of_magic", "Fonte de Magia: %d pontos viram espaço de %dº círculo" %
+					[SLOT_COSTS[slot][0], slot]))
+		"dragon_wings":
+			m.bonus_action_available = false
+			if resource_left(unit, m, "dragon_wings") > 0:
+				spend(unit, "dragon_wings")
+			else:
+				spend(unit, "sorcery_points", 3)
+			unit.state["dragon_wings"] = true
+			if unit.speed_feet < 60:
+				m.movement_left_feet += 60 - unit.speed_feet
+				unit.speed_feet = 60
+			events.append(feature_event(unit, "dragon_wings", "Asas de Dragão: voa a 18 m", {"vfx": "aura"}))
+		"fiendish_vigor":
+			m.action_available = false
+			unit.temp_hp = 12
+			events.append(feature_event(unit, "fiendish_vigor", "Vigor Corruptor: 12 PV temporários", {"vfx": "heal"}))
 		"horde_breaker":
 			m.once_per_turn["horde_breaker"] = true
 			events.append(feature_event(unit, "horde_breaker", "Quebrador de Hordas contra %s" % target.name))

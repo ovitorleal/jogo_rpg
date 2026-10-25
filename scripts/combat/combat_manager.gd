@@ -67,6 +67,8 @@ var opportunity_attack: bool = false
 ## Conjuração atual gastou espaço (Discípulo da Vida, Curandeiro Abençoado) e curou outra criatura.
 var _cast_with_slot: bool = false
 var _healed_others: bool = false
+## Conjuração em andamento: Metamagia aplicada, criaturas protegidas, Sobrecarga (ver CombatFeatures.begin_cast).
+var _meta: Dictionary = {}
 ## Combatentes com dois turnos na primeira rodada (Reflexos de Ladrão).
 var _reflex_turns: Array[Combatant] = []
 ## Eventos gerados por reações a testes (Indomável...), entregues no próximo comando.
@@ -269,6 +271,9 @@ func attacks_per_action(actor: Combatant) -> int:
 		count = 3
 	elif actor.has_feature("feature.extra_attack"):
 		count = 2
+	# Lâmina Sedenta / Lâmina Devoradora (invocações do Pacto da Lâmina).
+	if actor.has_feature("invocation.thirsting_blade") and actor.has_feature("invocation.pact_of_the_blade"):
+		count = maxi(count, 3 if actor.has_feature("invocation.devouring_blade") else 2)
 	return maxi(count, int(actor.state.get("multiattack", 1)))
 
 
@@ -324,7 +329,7 @@ func attack_advantage(actor: Combatant, target: Combatant, attack: Dictionary) -
 	for condition: String in ["restrained", "stunned", "paralyzed", "unconscious", "blinded", "petrified"]:
 		if target.has_condition(condition):
 			advantage.append("alvo %s" % CONDITION_NAMES[condition].to_lower())
-	if target.has_condition("invisible") and not actor_blindsight:
+	if target.has_condition("invisible") and not actor_blindsight and CombatFeatures.truesight(actor) < distance:
 		disadvantage.append("alvo invisível")
 	if not target.effects_of("warded").is_empty() and actor.creature_type in CombatFeatures.WARD_TYPES:
 		disadvantage.append("proteção contra o bem e o mal")
@@ -399,6 +404,9 @@ func apply_results_to_party(registry: ContentRegistry = null) -> void:
 	for unit: Combatant in party:
 		if unit.character != null:
 			unit.character.current_hp = unit.hp
+			# Astúcia Mágica (Bruxo 2): o rito de 1 minuto é feito depois do combate, se houver espaços gastos.
+			if registry != null:
+				ClassFeatures.magical_cunning(unit.character, registry)
 	if outcome == Outcome.VICTORY and not party.is_empty():
 		@warning_ignore("integer_division")
 		var share := total_xp() / party.size()
@@ -1027,6 +1035,8 @@ func spell_error(actor: Combatant, spell_id: String) -> String:
 		return "Em Forma Selvagem não é possível conjurar"
 	if spell.get("intervention", false) and not _free_cast_available(actor, spell):
 		return "Intervenção Divina já usada"
+	if int(entry["level"]) > 0 and once_per_turn.has("quickened"):
+		return "Depois de Magia Acelerada, só truques neste turno"
 	if _casting_time(spell) == "bonus_action":
 		if not bonus_action_available:
 			return "A ação bônus deste turno já foi usada"
@@ -1049,8 +1059,14 @@ func spell_error(actor: Combatant, spell_id: String) -> String:
 
 
 ## Tempo de conjuração: a Intervenção Divina é sempre uma ação de Magia.
+## Magia Acelerada (Metamagia) troca a ação por ação bônus.
 func _casting_time(spell: Dictionary) -> String:
-	return "action" if spell.get("intervention", false) else str(spell["entry"]["casting_time"])
+	if spell.get("intervention", false):
+		return "action"
+	var base := str(spell["entry"]["casting_time"])
+	if base == "action" and current() != null and CombatFeatures.metamagic_plan(self, current(), spell).has("metamagic.quickened"):
+		return "bonus_action"
+	return base
 
 
 ## Uso gratuito (sem espaço) da magia ainda disponível: Iniciado em Magia ("mi.<chave>", um uso) ou
@@ -1090,7 +1106,7 @@ func spell_target_error(actor: Combatant, spell_id: String, target: Combatant) -
 	elif not target.is_up() and entry["resolution"] != "heal":
 		return "Aliado caído"
 	var reach := maxi(Attack.MELEE_REACH_FEET, int(entry["range_feet"])) \
-			+ CombatFeatures.spell_range_bonus(actor, actor.get_spell(spell_id))
+			+ CombatFeatures.spell_range_bonus(self, actor, actor.get_spell(spell_id))
 	if Attack.grid_distance_feet(actor.position, target.position) > reach:
 		return "Alvo fora do alcance da magia (%d pés)" % reach
 	return ""
@@ -1138,6 +1154,8 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 	var spell := actor.get_spell(spell_id)
 	var entry: Dictionary = spell["entry"]
 	var spell_level := int(entry["level"])
+	var plan := CombatFeatures.metamagic_plan(self, actor, spell)
+	var casting_time := _casting_time(spell)
 	var targets: Array[Combatant] = []
 	var cells: Array[Vector2i] = []
 	if is_area_spell(entry):
@@ -1158,7 +1176,7 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 			slot_preview = Spellcasting.lowest_slot(actor.character, registry, spell_level)
 		var max_targets := int(entry["max_targets"])
 		if max_targets > 1:
-			max_targets += maxi(0, slot_preview - spell_level)
+			max_targets += maxi(0, slot_preview - spell_level) + (1 if plan.has("metamagic.twinned") else 0)
 		if ids.size() > max_targets:
 			return _fail("Alvos demais para esta magia (máximo %d)" % max_targets)
 		for id in ids:
@@ -1176,10 +1194,12 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 		slot_level = Spellcasting.lowest_slot(actor.character, registry, spell_level)
 		Spellcasting.spend_slot(actor.character, slot_level)
 		slot_used_this_turn = true
-	if _casting_time(spell) == "bonus_action":
+	if casting_time == "bonus_action":
 		bonus_action_available = false
 	else:
 		action_available = false
+	if spell_level > 0:
+		once_per_turn["leveled_spell"] = true
 	_cast_with_slot = spell_level > 0 and not free_cast
 	_healed_others = false
 	var target_ids: Array = targets.map(func(u: Combatant) -> String: return u.id)
@@ -1187,14 +1207,17 @@ func _do_cast(actor: Combatant, spell_id: String, target_id: String, aim: Varian
 			"level": spell_level, "slot_level": slot_level, "vfx": entry["vfx"], "color": entry["color"],
 			"targets": target_ids, "cells": cells, "darts": _dart_count(entry, slot_level), "free": free_cast}]
 	CombatFeatures.extend_rage(actor)
+	_meta = CombatFeatures.begin_cast(self, actor, spell, targets, plan, slot_level, _cast_with_slot, events)
 	if entry["concentration"]:
 		_end_concentration(actor, events, "nova magia de concentração")
-		actor.concentration = {"spell_id": spell_id, "name": entry["name"]}
+		actor.concentration = {"spell_id": spell_id, "name": entry["name"], "extended": _meta.get("extended", false)}
 	for target in targets:
 		if state != State.IN_PROGRESS:
 			break
 		_resolve_spell_on(actor, spell, target, slot_level, events)
 	CombatFeatures.after_cast(self, actor, slot_level, _cast_with_slot, _healed_others, events)
+	CombatFeatures.finish_cast(self, actor, _meta, slot_level, events)
+	_meta = {}
 	events.append_array(_check_end())
 	return {"ok": true, "error": "", "events": events}
 
@@ -1208,55 +1231,80 @@ func _dart_count(entry: Dictionary, slot_level: int) -> int:
 func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, slot_level: int,
 		events: Array[Dictionary]) -> void:
 	var entry: Dictionary = spell["entry"]
+	var damage_type := CombatFeatures.spell_damage_type(self, entry, target)
 	var event := {"type": "spell_effect", "actor": actor.id, "target": target.id, "spell": entry["name"],
-			"resolution": entry["resolution"], "damage": 0, "damage_type": entry["damage_type"], "healed": 0,
+			"resolution": entry["resolution"], "damage": 0, "damage_type": damage_type, "healed": 0,
 			"target_hp": target.hp, "effect": ""}
 	var damage_dice: DiceExpression = null
 	if not str(entry["damage"]).is_empty():
 		damage_dice = Spellcasting.scaled_dice(entry, str(entry["damage"]), actor.character_level, slot_level)
+	var dc := int(spell.get("dc", actor.spell_dc)) + CombatFeatures.spell_dc_bonus(self, actor, spell)
+	# Truque Potente (Evocador 3): truque que erra ou que o alvo resiste causa metade do dano, sem efeitos.
+	var potent: bool = int(entry["level"]) == 0 and actor.has_feature("feature.potent_cantrip")
 	var damage := 0
 	var affected := false
+	var hit := false
 	match str(entry["resolution"]):
 		"spell_attack":
 			var pseudo := {"attack_type": "ranged" if int(entry["range_feet"]) > Attack.MELEE_REACH_FEET else "melee",
 					"range_normal": int(entry["range_feet"])}
 			var adv := attack_advantage(actor, target, pseudo)
+			CombatFeatures.spell_attack_mods(self, actor, spell, adv)
 			var bless := _bless_roll(actor)
-			var roll := Attack.roll_attack(_roller, int(spell.get("attack", actor.spell_attack)) + bless, target.effective_ac(), adv["state"])
+			var bonus := int(spell.get("attack", actor.spell_attack)) + bless
+			var roll := Attack.roll_attack(_roller, bonus, target.effective_ac(), adv["state"])
+			roll = CombatFeatures.seek_spell(self, actor, roll, bonus, target.effective_ac(), adv["state"], events)
 			_consume_attack_effects(actor, target)
 			event["roll"] = roll
 			event["bless"] = bless
 			event["advantage_reasons"] = adv["advantage"]
 			event["disadvantage_reasons"] = adv["disadvantage"]
-			if roll["hit"]:
-				var raw := Attack.roll_damage(damage_dice, _roller, roll["critical"]) + CombatFeatures.cantrip_bonus(actor, spell)
-				damage = Attack.apply_damage_modifiers(raw, str(entry["damage_type"]), target.all_resistances())
+			hit = roll["hit"]
+			if hit or potent:
+				var raw := CombatFeatures.spell_damage(self, actor, spell, damage_dice, roll["critical"], damage_type) \
+						+ CombatFeatures.cantrip_bonus(actor, spell)
+				if not hit:
+					@warning_ignore("integer_division")
+					raw = raw / 2
+					event["potent_cantrip"] = true
+				damage = Attack.apply_damage_modifiers(raw, damage_type, target.all_resistances())
 				event["resisted"] = damage < raw
+			if hit:
 				var extra := _mark_damage(actor, target, roll["critical"])
 				event["extra"] = extra
 				damage += int(extra["damage"])
 				affected = true
 				event["mark_extra"] = extra
-		"save":
-			var save := _roll_save(target, StringName(entry["save_ability"]), int(spell.get("dc", actor.spell_dc)))
-			event["save"] = {"natural": save.natural, "modifier": save.modifier, "total": save.total, "dc": save.dc,
-					"success": save.success, "ability": entry["save_ability"]}
-			var raw := damage_dice.roll(_roller) + CombatFeatures.cantrip_bonus(actor, spell)
-			# Evasão (Ladino/Monge 7): em teste de Destreza para metade, nada com sucesso e metade com falha.
-			var evasion: bool = entry["save_ability"] == "dex" and entry["half_on_save"] and not target.is_incapacitated() 					and (target.has_feature("feature.evasion_rogue") or target.has_feature("feature.evasion_monk"))
-			if save.success:
-				@warning_ignore("integer_division")
-				raw = 0 if evasion else (raw / 2 if entry["half_on_save"] else 0)
-			elif evasion:
-				@warning_ignore("integer_division")
-				raw = raw / 2
-			affected = not save.success
-			damage = Attack.apply_damage_modifiers(raw, str(entry["damage_type"]), target.all_resistances())
-			event["resisted"] = damage < raw
+		"save", "condition_save":
+			# Magia Cuidadosa e Esculpir Magias: passa automaticamente e não sofre dano de metade.
+			if CombatFeatures.protected_from_spell(self, target):
+				event["protected"] = true
+				event["effect"] = "protegido da magia"
+			else:
+				CombatFeatures.heighten(self, target)
+				var save := _roll_save(target, StringName(entry["save_ability"]), dc)
+				event["save"] = {"natural": save.natural, "modifier": save.modifier, "total": save.total, "dc": save.dc,
+						"success": save.success, "ability": entry["save_ability"]}
+				if entry["resolution"] == "save":
+					var raw := CombatFeatures.spell_damage(self, actor, spell, damage_dice, false, damage_type) \
+							+ CombatFeatures.cantrip_bonus(actor, spell)
+					# Evasão (Ladino/Monge 7): em teste de Destreza para metade, nada com sucesso e metade com falha.
+					var evasion: bool = entry["save_ability"] == "dex" and entry["half_on_save"] and not target.is_incapacitated() \
+							and (target.has_feature("feature.evasion_rogue") or target.has_feature("feature.evasion_monk"))
+					if save.success:
+						@warning_ignore("integer_division")
+						raw = 0 if evasion else (raw / 2 if entry["half_on_save"] or potent else 0)
+					elif evasion:
+						@warning_ignore("integer_division")
+						raw = raw / 2
+					damage = Attack.apply_damage_modifiers(raw, damage_type, target.all_resistances())
+					event["resisted"] = damage < raw
+				affected = not save.success
 		"auto":
 			var darts := _dart_count(entry, slot_level)
 			for i in darts:
-				damage += Attack.apply_damage_modifiers(damage_dice.roll(_roller), str(entry["damage_type"]), target.all_resistances())
+				var dart := CombatFeatures.spell_damage(self, actor, spell, damage_dice, false, damage_type, i == 0)
+				damage += Attack.apply_damage_modifiers(dart, damage_type, target.all_resistances())
 			event["darts"] = darts
 		"heal":
 			var heal_dice := Spellcasting.scaled_dice(entry, str(entry["heal"]), actor.character_level, slot_level)
@@ -1283,6 +1331,8 @@ func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, s
 			CombatFeatures.after_mark_damage(self, actor, target, event["mark_extra"], events)
 	else:
 		events.append(event)
+	if hit and state == State.IN_PROGRESS:
+		CombatFeatures.after_spell_hit(self, actor, spell, target, events)
 	if affected and entry["effect"] == "pushed" and target.is_up():
 		@warning_ignore("integer_division")
 		var squares := maxi(1, int(str(entry["effect_value"])) / Attack.FEET_PER_SQUARE)
@@ -1334,6 +1384,12 @@ func _apply_spell_effect(actor: Combatant, entry: Dictionary, target: Combatant)
 			target.effects.append({"kind": "condition", "condition": "poisoned", "source": actor.id, "spell": "Envenenado",
 					"on": "turn_end", "actor": actor.id, "count": 2 if actor == current() else 1})
 			return "Envenenado até o fim do próximo turno de %s" % actor.name
+		"prone":
+			if "prone" in target.condition_immunities or target.has_condition("prone"):
+				return ""
+			target.effects.append({"kind": "condition", "condition": "prone", "source": actor.id, "spell": "Caído",
+					"on": "none", "actor": "", "count": 0})
+			return "Caído"
 		"warded":
 			target.effects.append({"kind": "warded", "source": actor.id, "spell": entry["name"], "on": "concentration"})
 			return "protegido contra aberrações, celestiais, elementais, feéricos, corruptores e mortos-vivos"
@@ -1357,12 +1413,12 @@ func _apply_damage(target: Combatant, damage: int, events: Array[Dictionary], ev
 		event["target_hp"] = target.hp
 	if not target.is_up():
 		events.append({"type": "down", "actor": target.id, "dead": target.team == Combatant.Team.ENEMY})
-		CombatFeatures.on_unit_down(self, target)
+		CombatFeatures.on_unit_down(self, target, str(event.get("actor", "")), events)
 		_end_concentration(target, events, "caiu")
 	elif damage > 0 and not target.concentration.is_empty() and not CombatFeatures.keeps_concentration(target):
 		@warning_ignore("integer_division")
 		var dc := clampi(damage / 2, 10, 30)
-		var save := _roll_save(target, Ability.CONSTITUTION, dc)
+		var save := _roll_save(target, Ability.CONSTITUTION, dc, "concentration")
 		events.append({"type": "concentration_check", "actor": target.id, "spell": target.concentration["name"],
 				"natural": save.natural, "modifier": save.modifier, "total": save.total, "dc": dc, "success": save.success})
 		if not save.success:
@@ -1395,6 +1451,8 @@ func _roll_save(target: Combatant, ability: StringName, dc: int, condition: Stri
 		if target.has_condition("restrained"):
 			disadvantage += 1
 	advantage += CombatFeatures.save_advantage(target, ability)
+	if condition == "concentration":
+		advantage += CombatFeatures.concentration_advantage(target)
 	disadvantage += CombatFeatures.save_disadvantage(target)
 	var test := D20Test.roll(_roller, target.save_bonus(ability) + _bless_roll(target) - 2 * _exhaustion(target)
 			+ CombatFeatures.save_bonus(self, target, ability), dc,

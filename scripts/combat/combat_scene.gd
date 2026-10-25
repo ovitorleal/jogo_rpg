@@ -643,6 +643,8 @@ func _refresh_attack_options(actor: Combatant) -> void:
 				detail = "cura %s%s" % [entry["heal"], Ability.format_modifier(actor.spell_modifier)]
 			"smite":
 				detail = "+%s ao acertar" % entry["damage"]
+			"condition_save":
+				detail = "CD %d · %s" % [actor.spell_dc, "Caído" if entry["effect"] == "prone" else entry["effect"]]
 			"buff":
 				match str(entry["effect"]):
 					"ac_bonus":

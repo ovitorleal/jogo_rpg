@@ -403,6 +403,42 @@
 			"effect": "poisoned",
 			"vfx": "ray",
 			"color": "#9adf5a"
+		},
+		{
+			"id": "spell.command",
+			"name": "Comando",
+			"description": "Uma criatura a até 18 m testa Sabedoria; se falhar, obedece à ordem \"Rasteje!\" e fica Caída.",
+			"source": "SRD 5.2.1",
+			"level": 1,
+			"school": "enchantment",
+			"classes": ["class.bard", "class.cleric", "class.paladin"],
+			"casting_time": "action",
+			"range_feet": 60,
+			"target": "enemy",
+			"resolution": "condition_save",
+			"save_ability": "wis",
+			"effect": "prone",
+			"vfx": "mock",
+			"color": "#ffd27a"
+		},
+		{
+			"id": "spell.chromatic_orb",
+			"name": "Orbe Cromático",
+			"description": "Ataque mágico à distância (27 m): 3d8 de dano de ácido, frio, fogo, elétrico, veneno ou trovejante. +1d8 por círculo acima do 1º.",
+			"source": "SRD 5.2.1",
+			"level": 1,
+			"school": "evocation",
+			"classes": ["class.sorcerer", "class.wizard"],
+			"casting_time": "action",
+			"range_feet": 90,
+			"target": "enemy",
+			"resolution": "spell_attack",
+			"damage": "3d8",
+			"damage_type": "fire",
+			"damage_types": ["fire", "cold", "lightning", "acid", "poison", "thunder"],
+			"upcast_dice": "1d8",
+			"vfx": "bolt",
+			"color": "#d58aff"
 		}
 	]
 }

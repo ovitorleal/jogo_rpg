@@ -52,7 +52,7 @@
 					"name": "Invocações Místicas",
 					"level": 1,
 					"description": "Aprende Invocações Místicas (quantidade pela tabela).",
-					"implemented": false,
+					"implemented": true,
 					"grants": "invocation",
 					"options": [
 						{
@@ -231,7 +231,7 @@
 					"name": "Astúcia Mágica",
 					"level": 2,
 					"description": "Rito de 1 minuto: recupera espaços de pacto até metade do máximo (arredondado para cima); uma vez por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.warlock_subclass",
@@ -300,7 +300,7 @@
 					"name": "Mestre Místico",
 					"level": 20,
 					"description": "Astúcia Mágica recupera todos os espaços de pacto.",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"spellcasting_ability": "cha",
