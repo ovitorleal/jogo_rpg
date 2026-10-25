@@ -116,6 +116,8 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
 text = "..."
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="Actions" type="HBoxContainer" parent="Margin/Layout"]
 layout_mode = 2
@@ -129,6 +131,8 @@ text = "Ataque:"
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+clip_text = true
+fit_to_longest_item = false
 
 [node name="EndTurnButton" type="Button" parent="Margin/Layout/Actions"]
 unique_name_in_owner = true

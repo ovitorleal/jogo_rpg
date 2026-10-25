@@ -114,14 +114,15 @@ func click_cell(cell: Vector2i) -> Dictionary:
 	var occupant := manager.combatant_at(cell)
 	var result: Dictionary
 	if _selected_attack_id.begins_with(FEATURE_PREFIX):
-		if occupant != null and occupant.is_hostile_to(actor):
+		var wants_enemy := _feature_target(_selected_attack_id.trim_prefix(FEATURE_PREFIX)) == "enemy"
+		if occupant != null and occupant.is_hostile_to(actor) == wants_enemy:
 			result = manager.submit({"type": "feature", "actor": actor.id, "feature": _selected_attack_id.trim_prefix(FEATURE_PREFIX),
 					"target": occupant.id})
 			_selected_attack_id = ""
 		elif occupant == null:
 			result = manager.submit({"type": "move", "actor": actor.id, "to": cell})
 		else:
-			result = {"ok": false, "error": "Escolha um inimigo", "events": []}
+			result = {"ok": false, "error": "Escolha um inimigo" if wants_enemy else "Escolha um aliado", "events": []}
 		_after_command(result)
 		return result
 	if _selected_attack_id == OFFHAND_ID:
@@ -179,14 +180,28 @@ func _on_action_menu(id: int) -> void:
 		return
 	if id >= FEATURE_BASE:
 		var action: Dictionary = _menu_features[id - FEATURE_BASE]
-		if action["target"] == "enemy":
+		if action["target"] != "none":
 			select_attack(FEATURE_PREFIX + str(action["id"]))
-			_status.text = "%s: clique num inimigo marcado." % action["name"]
+			_status.text = "%s: clique num alvo marcado." % action["name"]
 			return
 		press_feature(str(action["id"]))
 		return
 	var entry: Array = STANDARD_ACTIONS[id]
 	press_standard_action(entry[0], entry[2])
+
+
+func _feature_target(feature_id: String) -> String:
+	for action in _menu_features:
+		if action["id"] == feature_id:
+			return str(action["target"])
+	return "enemy"
+
+
+func _feature_range(feature_id: String) -> int:
+	for action in _menu_features:
+		if action["id"] == feature_id:
+			return int(action.get("range", 5))
+	return 5
 
 
 ## Usa uma característica de classe (Fúria, Retomar o Fôlego...), com alvo se precisar.
@@ -341,9 +356,12 @@ func _animate(event: Dictionary) -> void:
 		"feature":
 			var feature_unit := manager.get_combatant(str(event.get("target", event["actor"])))
 			var feature_token := _board.token_for(feature_unit)
+			if event.get("reshape", false):
+				_board.token_for(manager.get_combatant(str(event["actor"]))).reload_sprite()
 			if event.has("vfx"):
-				var colors := {"rage": "#ff4a3a", "heal": "#7aff9a", "aura": "#9ad0ff", "fear": "#b04aff"}
-				var style: String = {"rage": "aura", "fear": "mock"}.get(event["vfx"], event["vfx"])
+				var colors := {"rage": "#ff4a3a", "heal": "#7aff9a", "aura": "#9ad0ff", "fear": "#b04aff", "smite": "#ffe9a0",
+						"mark": "#7aff6a"}
+				var style: String = {"rage": "aura", "fear": "mock", "smite": "pillar"}.get(event["vfx"], event["vfx"])
 				var fx := SpellVfx.create(style, Color(colors.get(event["vfx"], "#ffffff")), feature_token.position + Vector2(0, -14),
 						[feature_token.position + Vector2(0, -12)] as Array[Vector2], [] as Array[Rect2])
 				_board.add_child(fx)
@@ -484,6 +502,8 @@ func _refresh() -> void:
 				conditions.append(CombatManager.CONDITION_NAMES[effect["condition"]])
 		if unit.temp_hp > 0:
 			conditions.append("+%d PV temp." % unit.temp_hp)
+		if CombatFeatures.in_wild_shape(unit):
+			conditions.append("forma: %s" % unit.state["wild_shape"]["name"])
 		if not conditions.is_empty() and unit.is_up():
 			state += " [%s]" % ", ".join(conditions)
 		var text := "%s%d  %s  %d/%d PV%s" % [marker, unit.initiative, unit.name, unit.hp, unit.max_hp, state]
@@ -567,9 +587,15 @@ func _refresh_highlights(actor: Combatant, party_turn: bool) -> void:
 				if manager.offhand_error(actor, unit).is_empty():
 					_board.targets.append(unit)
 		elif _selected_attack_id.begins_with(FEATURE_PREFIX):
+			var feature_id := _selected_attack_id.trim_prefix(FEATURE_PREFIX)
+			var reach := _feature_range(feature_id)
+			var kind := _feature_target(feature_id)
 			for unit in manager.combatants:
-				var reach := 5
-				if unit.is_up() and unit.is_hostile_to(actor) and Attack.grid_distance_feet(actor.position, unit.position) <= reach:
+				if Attack.grid_distance_feet(actor.position, unit.position) > reach:
+					continue
+				if (kind == "enemy" and unit.is_up() and unit.is_hostile_to(actor)) \
+						or (kind == "ally" and not unit.is_hostile_to(actor)) \
+						or (kind == "other_ally" and unit != actor and not unit.is_hostile_to(actor)):
 					_board.targets.append(unit)
 		else:
 			var attack := actor.get_attack(_selected_attack_id)
@@ -615,6 +641,8 @@ func _refresh_attack_options(actor: Combatant) -> void:
 				detail = "%d× %s" % [entry["darts"], entry["damage"]]
 			"heal":
 				detail = "cura %s%s" % [entry["heal"], Ability.format_modifier(actor.spell_modifier)]
+			"smite":
+				detail = "+%s ao acertar" % entry["damage"]
 			"buff":
 				match str(entry["effect"]):
 					"ac_bonus":
@@ -628,7 +656,9 @@ func _refresh_attack_options(actor: Combatant) -> void:
 		var reach := "área %d pés" % entry["area_feet"] if CombatManager.is_area_spell(entry) \
 				else ("toque" if int(entry["range_feet"]) <= 5 else "%d pés" % entry["range_feet"])
 		var timing := " · bônus" if entry["casting_time"] == "bonus_action" else ""
-		_attack_option.add_item("✦ %s (%s) · %s · %s%s" % [entry["name"], SCHOOL_LEVEL[int(entry["level"])], detail,
+		if manager._free_cast_available(actor, spell):
+			timing += " · sem espaço"
+		_attack_option.add_item("✦ %s (%s) · %s · %s%s" % [spell.get("label", entry["name"]), SCHOOL_LEVEL[int(entry["level"])], detail,
 				reach, timing])
 		var index := _attack_option.item_count - 1
 		_attack_option.set_item_metadata(index, SPELL_PREFIX + str(spell["id"]))

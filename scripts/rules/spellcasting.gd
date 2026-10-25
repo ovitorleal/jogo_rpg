@@ -99,16 +99,80 @@ static func max_slot_level(class_entry: Dictionary, level: int) -> int:
 	return slots_for(class_entry, level).size()
 
 
+## Magias sempre preparadas por características ("spells"/"free_resource") e pela subclasse
+## ("always_prepared" por nível): [{id, free}]. Não contam no limite de preparadas; "free" é o
+## recurso de classe que permite conjurá-las sem espaço ("" se não houver).
+static func always_prepared(c: CharacterData, registry: ContentRegistry) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var seen := {}
+	for feature in CharacterChoices.active_features(c, registry):
+		for spell_id: String in feature.get("spells", []):
+			if not seen.has(spell_id):
+				seen[spell_id] = true
+				result.append({"id": spell_id, "free": str(feature.get("free_resource", ""))})
+	if not c.subclass_id.is_empty():
+		for group: Dictionary in registry.get_entry("subclass", c.subclass_id).get("always_prepared", []):
+			if c.level < int(group["level"]):
+				continue
+			# Magias do Círculo da Terra dependem do tipo de terra escolhido.
+			if not str(group.get("option", "")).is_empty() and not CharacterChoices.has_option(c, str(group["option"])):
+				continue
+			for spell_id: String in group["spells"]:
+				if not seen.has(spell_id):
+					seen[spell_id] = true
+					result.append({"id": spell_id, "free": str(group.get("free_resource", ""))})
+	# Descobertas Mágicas (Colégio do Conhecimento 6).
+	for spell_id in CharacterChoices.magical_discoveries(c):
+		if not seen.has(spell_id):
+			seen[spell_id] = true
+			result.append({"id": spell_id, "free": ""})
+	return result
+
+
+static func always_prepared_ids(c: CharacterData, registry: ContentRegistry) -> Array[String]:
+	var result: Array[String] = []
+	for spell in always_prepared(c, registry):
+		result.append(str(spell["id"]))
+	return result
+
+
+## Listas de magias de onde a classe prepara: a própria; com Segredos Mágicos (Bardo 10), também
+## Clérigo, Druida e Mago.
+static func spell_lists(c: CharacterData, registry: ContentRegistry) -> Array[String]:
+	var lists: Array[String] = [c.class_id]
+	if ClassFeatures.has_feature(c, registry, "feature.magical_secrets"):
+		for class_id: String in ["class.cleric", "class.druid", "class.wizard"]:
+			if not class_id in lists:
+				lists.append(class_id)
+	return lists
+
+
+## Magias de 1º círculo+ que o jogador pode preparar (sem as sempre preparadas).
+static func preparable_spells(c: CharacterData, registry: ContentRegistry) -> Array[String]:
+	var class_entry := registry.get_entry("class", c.class_id)
+	var always := always_prepared_ids(c, registry)
+	var result: Array[String] = []
+	for list in spell_lists(c, registry):
+		for id in class_spells(list, registry, 1, max_slot_level(class_entry, c.level)):
+			if not id in always and not id in result:
+				result.append(id)
+	return result
+
+
+## Truque a mais da Ordem Divina (Taumaturgo) e da Ordem Primal (Mago).
+static func extra_cantrips(c: CharacterData) -> int:
+	return 1 if CharacterChoices.has_option(c, "divine_order.thaumaturge") or CharacterChoices.has_option(c, "primal_order.magician") else 0
+
+
 ## Quantos truques e magias preparadas o personagem pode ter agora, limitados ao que existe
 ## na lista da classe (adaptação: o jogo ainda tem poucas magias).
 static func limits(c: CharacterData, registry: ContentRegistry) -> Dictionary:
 	var class_entry := registry.get_entry("class", c.class_id)
 	if not is_caster(class_entry):
 		return {"cantrips": 0, "prepared": 0}
-	var max_level := max_slot_level(class_entry, c.level)
 	return {
-		"cantrips": mini(cantrips_known(class_entry, c.level), class_spells(c.class_id, registry, 0, 0).size()),
-		"prepared": mini(prepared_count(class_entry, c.level), class_spells(c.class_id, registry, 1, max_level).size()),
+		"cantrips": mini(cantrips_known(class_entry, c.level) + extra_cantrips(c), class_spells(c.class_id, registry, 0, 0).size()),
+		"prepared": mini(prepared_count(class_entry, c.level), preparable_spells(c, registry).size()),
 	}
 
 
@@ -117,14 +181,16 @@ static func limits(c: CharacterData, registry: ContentRegistry) -> Dictionary:
 static func fill_defaults(c: CharacterData, registry: ContentRegistry) -> Array[String]:
 	var added: Array[String] = []
 	var lim := limits(c, registry)
-	var class_entry := registry.get_entry("class", c.class_id)
+	# Magia que passou a ser sempre preparada libera a vaga (ex.: Marca do Caçador do Patrulheiro).
+	for id in always_prepared_ids(c, registry):
+		c.prepared_spells.erase(id)
 	for id in class_spells(c.class_id, registry, 0, 0):
 		if c.cantrips.size() >= int(lim["cantrips"]):
 			break
 		if not id in c.cantrips:
 			c.cantrips.append(id)
 			added.append(id)
-	for id in class_spells(c.class_id, registry, 1, max_slot_level(class_entry, c.level)):
+	for id in preparable_spells(c, registry):
 		if c.prepared_spells.size() >= int(lim["prepared"]):
 			break
 		if not id in c.prepared_spells:
@@ -140,14 +206,17 @@ static func validate(c: CharacterData, registry: ContentRegistry) -> Array[Strin
 	var lim := limits(c, registry)
 	if c.cantrips.size() > int(lim["cantrips"]):
 		errors.append("Truques demais: %d (máximo %d)" % [c.cantrips.size(), lim["cantrips"]])
-	if c.prepared_spells.size() > int(lim["prepared"]):
-		errors.append("Magias preparadas demais: %d (máximo %d)" % [c.prepared_spells.size(), lim["prepared"]])
+	var always := always_prepared_ids(c, registry)
+	var counted := c.prepared_spells.filter(func(id: String) -> bool: return not id in always)
+	if counted.size() > int(lim["prepared"]):
+		errors.append("Magias preparadas demais: %d (máximo %d)" % [counted.size(), lim["prepared"]])
 	var max_level := max_slot_level(class_entry, c.level)
 	for id in c.cantrips:
 		if not id in class_spells(c.class_id, registry, 0, 0):
 			errors.append("Truque fora da lista da classe: %s" % id)
+	var preparable := preparable_spells(c, registry)
 	for id in c.prepared_spells:
-		if not id in class_spells(c.class_id, registry, 1, max_level):
+		if not id in preparable and not id in always:
 			errors.append("Magia fora da lista da classe ou acima do círculo disponível: %s" % id)
 	var slots := slots_for(class_entry, c.level)
 	for i in c.spell_slots_spent.size():

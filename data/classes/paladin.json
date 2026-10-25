@@ -60,7 +60,7 @@
 					"name": "Cura pelas Mãos",
 					"level": 1,
 					"description": "Reserva de cura igual a 5 x nível por descanso longo; ação bônus para curar um toque (ou 5 pontos para remover Envenenado).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.spellcasting_paladin",
@@ -90,14 +90,18 @@
 					"name": "Golpe do Paladino",
 					"level": 2,
 					"description": "Sempre tem Golpe Divino preparada e pode conjurá-la uma vez sem espaço por descanso longo.",
-					"implemented": false
+					"implemented": true,
+					"spells": [
+						"spell.divine_smite"
+					],
+					"free_resource": "paladins_smite"
 				},
 				{
 					"id": "feature.channel_divinity_paladin",
 					"name": "Canalizar Divindade",
 					"level": 3,
 					"description": "Sentido Divino (ação bônus: detecta celestiais, corruptores e mortos-vivos a até 18 m) e efeitos da subclasse. Usos 2 (3 no 11); recupera um no descanso curto.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.paladin_subclass",
@@ -151,49 +155,53 @@
 					"name": "Montaria Fiel",
 					"level": 5,
 					"description": "Sempre tem Encontrar Montaria preparada e pode conjurá-la uma vez sem espaço por descanso longo.",
-					"implemented": false
+					"implemented": false,
+					"spells": [
+						"spell.find_steed"
+					],
+					"free_resource": "faithful_steed"
 				},
 				{
 					"id": "feature.aura_of_protection",
 					"name": "Aura de Proteção",
 					"level": 6,
 					"description": "Você e aliados a até 3 m somam seu Carisma (mínimo +1) aos testes de resistência.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.abjure_foes",
 					"name": "Repelir Inimigos",
 					"level": 9,
 					"description": "Canalizar Divindade: criaturas (quantidade = Carisma) a até 18 m testam Sabedoria ou ficam Amedrontadas por 1 minuto.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.aura_of_courage",
 					"name": "Aura de Coragem",
 					"level": 10,
 					"description": "Você e aliados na aura são imunes a Amedrontado.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.radiant_strikes",
 					"name": "Golpes Radiantes",
 					"level": 11,
 					"description": "Ataques corpo a corpo e desarmados que acertam causam +1d8 de dano radiante.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.restoring_touch",
 					"name": "Toque Restaurador",
 					"level": 14,
 					"description": "Cura pelas Mãos pode remover Cego, Enfeitiçado, Surdo, Amedrontado, Paralisado ou Atordoado (5 pontos cada).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.aura_expansion",
 					"name": "Expansão da Aura",
 					"level": 18,
 					"description": "A Aura de Proteção passa a 9 m.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.epic_boon_paladin",
@@ -313,6 +321,33 @@
 						"1",
 						"1",
 						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "faithful_steed",
+					"name": "Encontrar Montaria gratuita",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
 						"1",
 						"1",
 						"1",

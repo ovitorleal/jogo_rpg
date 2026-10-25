@@ -104,6 +104,10 @@ static func format_sheet(sheet: CharacterSheet) -> String:
 			out.append("Truques: %s" % spell_names.call(caster.cantrips))
 		if not caster.prepared_spells.is_empty():
 			out.append("Preparadas: %s" % spell_names.call(caster.prepared_spells))
+		var always := Spellcasting.always_prepared_ids(caster, registry).filter(func(id: String) -> bool:
+			return registry.has("spell", id))
+		if not always.is_empty():
+			out.append("Sempre preparadas: %s" % spell_names.call(Array(always, TYPE_STRING, "", null)))
 		out.append("")
 
 	var resources := ClassFeatures.summary(sheet.character, Content.registry)

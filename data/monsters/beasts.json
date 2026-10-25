@@ -1,0 +1,372 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "monster.rat",
+			"name": "Rato",
+			"description": "Roedor miúdo que escapa por entre os inimigos.",
+			"source": "SRD 5.2.1",
+			"size": "tiny",
+			"creature_type": "fera",
+			"armor_class": 10,
+			"hit_points": 1,
+			"hit_dice": "1d4-1",
+			"speed": 20,
+			"ability_scores": [2, 11, 9, 2, 10, 4],
+			"challenge_rating": "0",
+			"xp": 10,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.rat_bite",
+					"name": "Mordida",
+					"attack_type": "melee",
+					"attack_bonus": 2,
+					"damage": "1",
+					"damage_type": "piercing",
+					"reach": 5
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.agile",
+					"name": "Ágil",
+					"description": "Não provoca ataques de oportunidade ao sair do alcance.",
+					"implemented": true
+				}
+			]
+		},
+		{
+			"id": "monster.spider",
+			"name": "Aranha",
+			"description": "Aranha pequena de picada venenosa.",
+			"source": "SRD 5.2.1",
+			"size": "tiny",
+			"creature_type": "fera",
+			"armor_class": 12,
+			"hit_points": 1,
+			"hit_dice": "1d4-1",
+			"speed": 20,
+			"ability_scores": [2, 14, 8, 1, 10, 2],
+			"challenge_rating": "0",
+			"xp": 10,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.spider_bite",
+					"name": "Mordida",
+					"attack_type": "melee",
+					"attack_bonus": 4,
+					"damage": "1",
+					"damage_type": "piercing",
+					"reach": 5,
+					"extra_damage": "1d4",
+					"extra_damage_type": "poison"
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.spider_climb",
+					"name": "Escalada de Aranha",
+					"description": "Escala superfícies difíceis e tetos.",
+					"implemented": false
+				}
+			]
+		},
+		{
+			"id": "monster.riding_horse",
+			"name": "Cavalo de Montaria",
+			"description": "Cavalo forte e veloz.",
+			"source": "SRD 5.2.1",
+			"size": "large",
+			"creature_type": "fera",
+			"armor_class": 11,
+			"hit_points": 13,
+			"hit_dice": "2d10+2",
+			"speed": 60,
+			"ability_scores": [16, 13, 12, 2, 11, 7],
+			"challenge_rating": "1/4",
+			"xp": 50,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.riding_horse_hooves",
+					"name": "Cascos",
+					"attack_type": "melee",
+					"attack_bonus": 5,
+					"damage": "1d8+3",
+					"damage_type": "bludgeoning",
+					"reach": 5
+				}
+			],
+			"traits": []
+		},
+		{
+			"id": "monster.blood_hawk",
+			"name": "Falcão Sangrento",
+			"description": "Ave de rapina que caça em bando.",
+			"source": "SRD 5.2.1",
+			"size": "small",
+			"creature_type": "fera",
+			"armor_class": 12,
+			"hit_points": 7,
+			"hit_dice": "2d6",
+			"speed": 10,
+			"fly_speed": 60,
+			"ability_scores": [6, 14, 10, 3, 14, 5],
+			"challenge_rating": "1/8",
+			"xp": 25,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.blood_hawk_beak",
+					"name": "Bico",
+					"attack_type": "melee",
+					"attack_bonus": 4,
+					"damage": "1d4+2",
+					"damage_type": "piercing",
+					"reach": 5
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.pack_tactics",
+					"name": "Táticas de Matilha",
+					"description": "Vantagem no ataque se um aliado estiver a até 1,5 m do alvo.",
+					"implemented": true
+				}
+			]
+		},
+		{
+			"id": "monster.black_bear",
+			"name": "Urso-Negro",
+			"description": "Urso robusto que golpeia duas vezes com as garras.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"creature_type": "fera",
+			"armor_class": 11,
+			"hit_points": 19,
+			"hit_dice": "3d8+6",
+			"speed": 30,
+			"multiattack": 2,
+			"ability_scores": [15, 12, 14, 2, 12, 7],
+			"challenge_rating": "1/2",
+			"xp": 100,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.black_bear_rend",
+					"name": "Dilacerar",
+					"attack_type": "melee",
+					"attack_bonus": 4,
+					"damage": "1d6+2",
+					"damage_type": "slashing",
+					"reach": 5
+				}
+			],
+			"traits": []
+		},
+		{
+			"id": "monster.crocodile",
+			"name": "Crocodilo",
+			"description": "Réptil de mandíbula que prende a presa.",
+			"source": "SRD 5.2.1",
+			"size": "large",
+			"creature_type": "fera",
+			"armor_class": 12,
+			"hit_points": 13,
+			"hit_dice": "2d10+2",
+			"speed": 20,
+			"ability_scores": [15, 10, 13, 2, 10, 5],
+			"challenge_rating": "1/2",
+			"xp": 100,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.crocodile_bite",
+					"name": "Mordida",
+					"attack_type": "melee",
+					"attack_bonus": 4,
+					"damage": "1d8+2",
+					"damage_type": "piercing",
+					"reach": 5,
+					"on_hit_condition": "grappled",
+					"on_hit_max_size": "medium",
+					"escape_dc": 12
+				}
+			],
+			"traits": []
+		},
+		{
+			"id": "monster.warhorse",
+			"name": "Cavalo de Guerra",
+			"description": "Cavalo treinado para a batalha.",
+			"source": "SRD 5.2.1",
+			"size": "large",
+			"creature_type": "fera",
+			"armor_class": 11,
+			"hit_points": 19,
+			"hit_dice": "3d10+3",
+			"speed": 60,
+			"ability_scores": [18, 12, 13, 2, 12, 7],
+			"challenge_rating": "1/2",
+			"xp": 100,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.warhorse_hooves",
+					"name": "Cascos",
+					"attack_type": "melee",
+					"attack_bonus": 6,
+					"damage": "2d4+4",
+					"damage_type": "bludgeoning",
+					"reach": 5
+				}
+			],
+			"traits": []
+		},
+		{
+			"id": "monster.ape",
+			"name": "Macaco",
+			"description": "Primata forte que esmurra duas vezes.",
+			"source": "SRD 5.2.1",
+			"size": "medium",
+			"creature_type": "fera",
+			"armor_class": 12,
+			"hit_points": 19,
+			"hit_dice": "3d8+6",
+			"speed": 30,
+			"multiattack": 2,
+			"ability_scores": [16, 14, 14, 6, 12, 7],
+			"challenge_rating": "1/2",
+			"xp": 100,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.ape_fist",
+					"name": "Soco",
+					"attack_type": "melee",
+					"attack_bonus": 5,
+					"damage": "1d4+3",
+					"damage_type": "bludgeoning",
+					"reach": 5
+				}
+			],
+			"traits": []
+		},
+		{
+			"id": "monster.brown_bear",
+			"name": "Urso-Pardo",
+			"description": "Urso enorme que morde e derruba com a garra.",
+			"source": "SRD 5.2.1",
+			"size": "large",
+			"creature_type": "fera",
+			"armor_class": 11,
+			"hit_points": 22,
+			"hit_dice": "3d10+6",
+			"speed": 40,
+			"multiattack": 2,
+			"ability_scores": [17, 12, 15, 2, 13, 7],
+			"challenge_rating": "1",
+			"xp": 200,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.brown_bear_bite",
+					"name": "Mordida",
+					"attack_type": "melee",
+					"attack_bonus": 5,
+					"damage": "1d8+3",
+					"damage_type": "piercing",
+					"reach": 5
+				},
+				{
+					"id": "attack.brown_bear_claw",
+					"name": "Garra",
+					"attack_type": "melee",
+					"attack_bonus": 5,
+					"damage": "1d4+3",
+					"damage_type": "slashing",
+					"reach": 5,
+					"on_hit_condition": "prone",
+					"on_hit_max_size": "large"
+				}
+			],
+			"traits": []
+		},
+		{
+			"id": "monster.dire_wolf",
+			"name": "Lobo Atroz",
+			"description": "Lobo gigante que derruba a presa.",
+			"source": "SRD 5.2.1",
+			"size": "large",
+			"creature_type": "fera",
+			"armor_class": 14,
+			"hit_points": 22,
+			"hit_dice": "3d10+6",
+			"speed": 50,
+			"ability_scores": [17, 15, 15, 3, 12, 7],
+			"challenge_rating": "1",
+			"xp": 200,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.dire_wolf_bite",
+					"name": "Mordida",
+					"attack_type": "melee",
+					"attack_bonus": 5,
+					"damage": "1d10+3",
+					"damage_type": "piercing",
+					"reach": 5,
+					"on_hit_condition": "prone",
+					"on_hit_max_size": "large"
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.pack_tactics",
+					"name": "Táticas de Matilha",
+					"description": "Vantagem no ataque se um aliado estiver a até 1,5 m do alvo.",
+					"implemented": true
+				}
+			]
+		},
+		{
+			"id": "monster.giant_spider",
+			"name": "Aranha Gigante",
+			"description": "Aranha do tamanho de um cavalo, de veneno forte.",
+			"source": "SRD 5.2.1",
+			"size": "large",
+			"creature_type": "fera",
+			"armor_class": 14,
+			"hit_points": 26,
+			"hit_dice": "4d10+4",
+			"speed": 30,
+			"ability_scores": [14, 16, 12, 2, 11, 4],
+			"challenge_rating": "1",
+			"xp": 200,
+			"damage_resistances": [],
+			"attacks": [
+				{
+					"id": "attack.giant_spider_bite",
+					"name": "Mordida",
+					"attack_type": "melee",
+					"attack_bonus": 5,
+					"damage": "1d8+3",
+					"damage_type": "piercing",
+					"reach": 5,
+					"extra_damage": "2d6",
+					"extra_damage_type": "poison"
+				}
+			],
+			"traits": [
+				{
+					"id": "trait.spider_climb",
+					"name": "Escalada de Aranha",
+					"description": "Escala superfícies difíceis e tetos.",
+					"implemented": false
+				}
+			]
+		}
+	]
+}

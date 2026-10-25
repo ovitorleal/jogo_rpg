@@ -80,6 +80,24 @@ static func short_rest(c: CharacterData, registry: ContentRegistry) -> Array[Str
 			"short_one":
 				c.resources_spent[resource["id"]] = spent - 1
 				restored.append(str(resource["name"]))
+	# Recuperação Natural (Círculo da Terra 6): recupera espaços somando até metade do nível
+	# (arredondado para cima), nenhum de 6º círculo ou mais; uma vez por descanso longo.
+	if has_feature(c, registry, "feature.natural_recovery") and remaining(c, registry, "natural_recovery_rest") > 0:
+		@warning_ignore("integer_division")
+		var budget := (c.level + 1) / 2
+		var recovered := 0
+		for slot_level in range(mini(5, c.spell_slots_spent.size()), 0, -1):
+			while c.spell_slots_spent[slot_level - 1] > 0 and slot_level <= budget:
+				c.spell_slots_spent[slot_level - 1] -= 1
+				budget -= slot_level
+				recovered += slot_level
+		if recovered > 0:
+			spend(c, "natural_recovery_rest")
+			restored.append("Recuperação Natural (%d círculos de espaços)" % recovered)
+	# Incansável (Patrulheiro 10): o descanso curto reduz a Exaustão em 1.
+	if c.exhaustion > 0 and has_feature(c, registry, "feature.tireless"):
+		c.exhaustion -= 1
+		restored.append("Exaustão -1")
 	return restored
 
 

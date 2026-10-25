@@ -572,15 +572,25 @@ func _fix_spells(fill: bool) -> void:
 					chosen.append(id)
 
 
-func _spell_limits() -> Dictionary:
+func _spell_probe() -> CharacterData:
 	var probe := CharacterData.new()
 	probe.class_id = _class_id
 	probe.level = 1
-	return Spellcasting.limits(probe, _registry)
+	return probe
 
 
+func _spell_limits() -> Dictionary:
+	return Spellcasting.limits(_spell_probe(), _registry)
+
+
+## Opções de magia da classe; as sempre preparadas (ex.: Marca do Caçador) não entram na escolha.
 func _spell_options(min_level: int, max_level: int) -> Array[String]:
-	return Spellcasting.class_spells(_class_id, _registry, min_level, max_level)
+	var always := Spellcasting.always_prepared_ids(_spell_probe(), _registry)
+	var options: Array[String] = []
+	for id in Spellcasting.class_spells(_class_id, _registry, min_level, max_level):
+		if not id in always:
+			options.append(id)
+	return options
 
 
 func _sync_spell_widgets() -> void:

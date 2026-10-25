@@ -28,6 +28,13 @@ func setup(combatant: Combatant) -> void:
 	play("idle")
 
 
+## Troca a folha de sprite depois que o combatente muda de aparência (Forma Selvagem).
+func reload_sprite() -> void:
+	SpriteLibrary.attach(_sprite, SpriteLibrary.frames_for_texture(unit.sprite_key, unit.sprite_texture)
+			if unit.sprite_texture != null else SpriteLibrary.frames_for(unit.sprite_path))
+	play("idle")
+
+
 func play(action: String) -> void:
 	if _sprite.sprite_frames == null:
 		return

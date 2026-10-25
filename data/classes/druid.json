@@ -67,7 +67,7 @@
 					"name": "Ordem Primal",
 					"level": 1,
 					"description": "Escolhe um papel sagrado.",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -87,7 +87,31 @@
 					"name": "Forma Selvagem",
 					"level": 2,
 					"description": "Ação bônus: assume a forma de uma fera conhecida (ND 1/4 sem voo; 1/2 no 4; 1 com voo no 8), ganhando PV temporários iguais ao nível. Usos pela tabela; recupera um no descanso curto.",
-					"implemented": false
+					"implemented": true,
+					"grants": "wild_shape",
+					"count": 4,
+					"count_by_level": [
+						0,
+						4,
+						4,
+						6,
+						6,
+						6,
+						6,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8,
+						8
+					]
 				},
 				{
 					"id": "feature.wild_companion",
@@ -141,14 +165,14 @@
 					"name": "Ressurgimento Selvagem",
 					"level": 5,
 					"description": "Sem usos de Forma Selvagem, gasta um espaço para ganhar um; uma vez por descanso longo troca um uso por um espaço de 1º círculo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.elemental_fury",
 					"name": "Fúria Elemental",
 					"level": 7,
 					"description": "Escolhe uma opção.",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -168,14 +192,14 @@
 					"name": "Fúria Elemental Aprimorada",
 					"level": 15,
 					"description": "Conjuração Potente: +90 m de alcance em truques de 3 m ou mais; Golpe Primal vira 2d8.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.beast_spells",
 					"name": "Magias de Fera",
 					"level": 18,
 					"description": "Pode conjurar magias em Forma Selvagem (exceto com componente material de custo).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.epic_boon_druid",
@@ -190,7 +214,7 @@
 					"name": "Arquidruida",
 					"level": 20,
 					"description": "Recupera um uso de Forma Selvagem ao rolar iniciativa sem usos; converte usos em espaço de magia (2 círculos por uso) uma vez por descanso longo; envelhece devagar.",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"spellcasting_ability": "wis",
@@ -266,6 +290,60 @@
 						"4"
 					],
 					"recharge": "short_one"
+				},
+				{
+					"id": "wild_resurgence",
+					"name": "Ressurgimento Selvagem (espaço)",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				},
+				{
+					"id": "nature_magician",
+					"name": "Mago da Natureza",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1"
+					],
+					"recharge": "long"
 				}
 			]
 		}

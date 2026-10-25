@@ -144,7 +144,7 @@ static func _validate_skill_choices(chosen: Array[StringName], count: int, optio
 
 static func _validate_equipment(c: CharacterData, registry: ContentRegistry, class_entry: Dictionary) -> Array[String]:
 	var errors: Array[String] = []
-	var training: Array = class_entry["armor_training"]
+	var training: Array = CharacterChoices.training(c, registry)["armor"] if not class_entry.is_empty() else []
 	if not c.armor_id.is_empty():
 		var armor := registry.get_entry("item", c.armor_id)
 		if armor.get("item_type") != "armor":

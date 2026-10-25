@@ -88,21 +88,23 @@
 					"name": "Palavras Cortantes",
 					"level": 3,
 					"description": "Reação: gasta Inspiração de Bardo para subtrair o dado de uma jogada de dano, teste de atributo ou ataque bem-sucedido de criatura a até 18 m.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.magical_discoveries",
 					"name": "Descobertas Mágicas",
 					"level": 6,
 					"description": "Aprende duas magias das listas de Clérigo, Druida ou Mago, sempre preparadas.",
-					"implemented": false
+					"implemented": true,
+					"grants": "magical_discoveries",
+					"count": 2
 				},
 				{
 					"id": "feature.peerless_skill",
 					"name": "Perícia Inigualável",
 					"level": 14,
 					"description": "Ao falhar num teste de atributo ou ataque, gasta Inspiração de Bardo e soma o dado (não gasta se continuar falhando).",
-					"implemented": false
+					"implemented": true
 				}
 			]
 		},
@@ -118,43 +120,66 @@
 					"name": "Discípulo da Vida",
 					"level": 3,
 					"description": "Magias com espaço que curam restauram 2 + o círculo do espaço a mais.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.life_domain_spells",
 					"name": "Magias do Domínio da Vida",
 					"level": 3,
 					"description": "Sempre preparadas: Auxílio, Bênção, Curar Ferimentos, Restauração Menor (3); Palavra Curativa em Massa, Reviver (5); Aura de Vida, Proteção contra a Morte (7); Restauração Maior, Curar Ferimentos em Massa (9).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.preserve_life",
 					"name": "Preservar a Vida",
 					"level": 3,
 					"description": "Canalizar Divindade: restaura PV iguais a 5 x nível entre criaturas Sangrando a até 9 m (até metade do máximo de cada uma).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.blessed_healer",
 					"name": "Curandeiro Abençoado",
 					"level": 6,
 					"description": "Ao curar outros com espaço de magia, recupera 2 + o círculo do espaço.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.supreme_healing",
 					"name": "Cura Suprema",
 					"level": 17,
 					"description": "Dados de cura de magias e Canalizar Divindade usam o valor máximo.",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"always_prepared": [
 				{
 					"level": 3,
 					"spells": [
+						"spell.aid",
 						"spell.bless",
-						"spell.cure_wounds"
+						"spell.cure_wounds",
+						"spell.lesser_restoration"
+					]
+				},
+				{
+					"level": 5,
+					"spells": [
+						"spell.mass_healing_word",
+						"spell.revivify"
+					]
+				},
+				{
+					"level": 7,
+					"spells": [
+						"spell.aura_of_life",
+						"spell.death_ward"
+					]
+				},
+				{
+					"level": 9,
+					"spells": [
+						"spell.greater_restoration",
+						"spell.mass_cure_wounds"
 					]
 				}
 			]
@@ -171,7 +196,7 @@
 					"name": "Tipo de Terra",
 					"level": 3,
 					"description": "Escolhe a terra que define as Magias do Círculo e a resistência da Proteção da Natureza.",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -201,35 +226,35 @@
 					"name": "Magias do Círculo da Terra",
 					"level": 3,
 					"description": "Tem preparadas as magias da terra escolhida para o seu nível de druida.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.lands_aid",
 					"name": "Auxílio da Terra",
 					"level": 3,
 					"description": "Ação de Magia gastando Forma Selvagem: esfera de 3 m a até 18 m; criaturas escolhidas testam Constituição contra 2d6 necrótico (metade com sucesso) e uma criatura recupera 2d6 PV (3d6 no 10, 4d6 no 14).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.natural_recovery",
 					"name": "Recuperação Natural",
 					"level": 6,
 					"description": "Uma magia do Círculo sem espaço por descanso longo; no descanso curto, recupera espaços somando até metade do nível (arredondado para cima).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.natures_ward",
 					"name": "Proteção da Natureza",
 					"level": 10,
 					"description": "Imune a Envenenado e resistente ao tipo de dano da terra escolhida.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.natures_sanctuary",
 					"name": "Santuário da Natureza",
 					"level": 14,
 					"description": "Gasta Forma Selvagem: cubo de 4,5 m de árvores espectrais por 1 minuto; você e aliados ganham meia cobertura e a resistência da Proteção da Natureza.",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"resources": [
@@ -259,6 +284,171 @@
 						"1"
 					],
 					"recharge": "long"
+				},
+				{
+					"id": "natural_recovery_rest",
+					"name": "Recuperação Natural (descanso curto)",
+					"values": [
+						"0",
+						"0",
+						"0",
+						"0",
+						"0",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1",
+						"1"
+					],
+					"recharge": "long"
+				}
+			],
+			"always_prepared": [
+				{
+					"level": 3,
+					"option": "land.arid",
+					"spells": [
+						"spell.blur",
+						"spell.burning_hands",
+						"spell.fire_bolt"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 5,
+					"option": "land.arid",
+					"spells": [
+						"spell.fireball"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 7,
+					"option": "land.arid",
+					"spells": [
+						"spell.blight"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 9,
+					"option": "land.arid",
+					"spells": [
+						"spell.wall_of_stone"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 3,
+					"option": "land.polar",
+					"spells": [
+						"spell.fog_cloud",
+						"spell.hold_person",
+						"spell.ray_of_frost"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 5,
+					"option": "land.polar",
+					"spells": [
+						"spell.sleet_storm"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 7,
+					"option": "land.polar",
+					"spells": [
+						"spell.ice_storm"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 9,
+					"option": "land.polar",
+					"spells": [
+						"spell.cone_of_cold"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 3,
+					"option": "land.temperate",
+					"spells": [
+						"spell.misty_step",
+						"spell.shocking_grasp",
+						"spell.sleep"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 5,
+					"option": "land.temperate",
+					"spells": [
+						"spell.lightning_bolt"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 7,
+					"option": "land.temperate",
+					"spells": [
+						"spell.freedom_of_movement"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 9,
+					"option": "land.temperate",
+					"spells": [
+						"spell.tree_stride"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 3,
+					"option": "land.tropical",
+					"spells": [
+						"spell.acid_splash",
+						"spell.ray_of_sickness",
+						"spell.web"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 5,
+					"option": "land.tropical",
+					"spells": [
+						"spell.stinking_cloud"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 7,
+					"option": "land.tropical",
+					"spells": [
+						"spell.polymorph"
+					],
+					"free_resource": "natural_recovery"
+				},
+				{
+					"level": 9,
+					"option": "land.tropical",
+					"spells": [
+						"spell.insect_plague"
+					],
+					"free_resource": "natural_recovery"
 				}
 			]
 		},
@@ -392,35 +582,35 @@
 					"name": "Magias do Juramento de Devoção",
 					"level": 3,
 					"description": "Sempre preparadas: Proteção contra o Bem e o Mal, Escudo da Fé (3); Auxílio, Zona da Verdade (5); Sinal de Esperança, Dissipar Magia (9); Liberdade de Movimento, Guardião da Fé (13); Comunhão, Coluna de Chamas (17).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.sacred_weapon",
 					"name": "Arma Sagrada",
 					"level": 3,
 					"description": "Na ação de Ataque, gasta Canalizar Divindade: por 10 minutos soma o Carisma (mínimo +1) aos ataques com uma arma corpo a corpo, que pode causar dano radiante.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.aura_of_devotion",
 					"name": "Aura de Devoção",
 					"level": 7,
 					"description": "Você e aliados na Aura de Proteção são imunes a Enfeitiçado.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.smite_of_protection",
 					"name": "Golpe de Proteção",
 					"level": 15,
 					"description": "Ao conjurar Golpe Divino, você e aliados na aura têm meia cobertura até o seu próximo turno.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.holy_nimbus",
 					"name": "Nimbo Sagrado",
 					"level": 20,
 					"description": "Ação bônus por 10 minutos: vantagem em testes contra corruptores e mortos-vivos, inimigos que começam o turno na aura sofrem Carisma + proficiência de dano radiante; uma vez por descanso longo.",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"resources": [
@@ -456,7 +646,36 @@
 				{
 					"level": 3,
 					"spells": [
+						"spell.protection_from_evil_and_good",
 						"spell.shield_of_faith"
+					]
+				},
+				{
+					"level": 5,
+					"spells": [
+						"spell.aid",
+						"spell.zone_of_truth"
+					]
+				},
+				{
+					"level": 9,
+					"spells": [
+						"spell.beacon_of_hope",
+						"spell.dispel_magic"
+					]
+				},
+				{
+					"level": 13,
+					"spells": [
+						"spell.freedom_of_movement",
+						"spell.guardian_of_faith"
+					]
+				},
+				{
+					"level": 17,
+					"spells": [
+						"spell.commune",
+						"spell.flame_strike"
 					]
 				}
 			]
@@ -473,14 +692,14 @@
 					"name": "Saber do Caçador",
 					"level": 3,
 					"description": "Sabe as imunidades, resistências e vulnerabilidades da criatura marcada pela Marca do Caçador.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.hunters_prey",
 					"name": "Presa do Caçador",
 					"level": 3,
 					"description": "Escolhe uma opção (pode trocar após descanso).",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -500,7 +719,7 @@
 					"name": "Táticas Defensivas",
 					"level": 7,
 					"description": "Escolhe uma opção (pode trocar após descanso).",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -520,14 +739,14 @@
 					"name": "Presa do Caçador Superior",
 					"level": 11,
 					"description": "Uma vez por turno, o dano extra da Marca do Caçador também atinge outra criatura a até 9 m.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.superior_hunters_defense",
 					"name": "Defesa do Caçador Superior",
 					"level": 15,
 					"description": "Reação ao sofrer dano: resistência a esse tipo de dano até o fim do turno.",
-					"implemented": false
+					"implemented": true
 				}
 			]
 		},

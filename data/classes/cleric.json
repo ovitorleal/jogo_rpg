@@ -57,7 +57,7 @@
 					"name": "Ordem Divina",
 					"level": 1,
 					"description": "Escolhe um papel sagrado.",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -77,7 +77,7 @@
 					"name": "Canalizar Divindade",
 					"level": 2,
 					"description": "Canaliza energia divina: Centelha Divina (cura ou dano de 1d8 + Sabedoria, mais 1d8 nos níveis 7, 13 e 18) ou Expulsar Mortos-Vivos. Usos pela tabela; recupera um no descanso curto.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.cleric_subclass",
@@ -124,14 +124,14 @@
 					"name": "Queimar Mortos-Vivos",
 					"level": 5,
 					"description": "Expulsar Mortos-Vivos causa dano radiante (d8 igual à Sabedoria) a quem falhar.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.blessed_strikes",
 					"name": "Golpes Abençoados",
 					"level": 7,
 					"description": "Escolhe uma opção.",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -151,14 +151,14 @@
 					"name": "Intervenção Divina",
 					"level": 10,
 					"description": "Ação de Magia: conjura qualquer magia de clérigo de até 5º círculo sem espaço; uma vez por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.improved_blessed_strikes",
 					"name": "Golpes Abençoados Aprimorados",
 					"level": 14,
 					"description": "Golpe Divino vira 2d8; Conjuração Potente concede PV temporários iguais ao dobro da Sabedoria ao causar dano com truque.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.epic_boon_cleric",

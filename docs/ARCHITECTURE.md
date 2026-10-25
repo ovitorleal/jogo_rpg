@@ -121,6 +121,16 @@
 | Características como dados completos (1–20) com `implemented`; comportamento ligado por id no motor | Ficha mostra tudo desde já, sem afirmar que algo funciona antes de funcionar |
 | Movimento casa a casa no `CombatManager` | Ataques de oportunidade no ponto exato em que o inimigo sai do alcance |
 
+### Fase 6.6 (entregas 2 e 3)
+
+| Decisão | Motivo |
+|---|---|
+| `CombatFeatures`: ganchos estáticos chamados pelo `CombatManager` (turno, ataque, dano, reações, testes, condições, auras) | Características ligadas por id sem espalhar regras pelo gerenciador; nada é chamado pela UI |
+| Opções escolhidas (Presa do Caçador, Táticas Defensivas...) entram em `Combatant.feature_ids` com o id da opção | Os ganchos testam `has_feature("opção")` como qualquer característica |
+| Magias sempre preparadas nos dados (`spells`/`free_resource` da característica, `always_prepared` da subclasse) e usos sem espaço como "res.<recurso>" | Golpe do Paladino, Inimigo Favorito e magias de subclasse sem código por classe |
+| Escolhas por acerto (Golpe Divino, Golpe Brutal...) como opções marcadas antes do ataque | Combate sem perguntas no meio da resolução; a cena só exibe eventos |
+| Forma Selvagem guarda os atributos originais em `Combatant.state["wild_shape"]` e troca CA, deslocamento, atributos físicos, ataques e traços pelos da fera (monstro dos dados) | Volta exata à forma normal; feras reaproveitam o formato dos monstros |
+
 ## Camadas
 
 A especificação (seções 7 e 8) define: Apresentação, Sistemas de jogo, Motor de regras, Dados de conteúdo,
