@@ -56,21 +56,21 @@
 					"name": "Feitiçaria Inata",
 					"level": 1,
 					"description": "Ação bônus por 1 minuto: CD das magias de feiticeiro +1 e vantagem nos ataques dessas magias. Dois usos por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.font_of_magic",
 					"name": "Fonte de Magia",
 					"level": 2,
 					"description": "Pontos de Feitiçaria iguais ao nível: converte espaços em pontos e pontos em espaços (até 5º círculo).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.metamagic",
 					"name": "Metamagia",
 					"level": 2,
 					"description": "Aprende opções de Metamagia (2, mais 2 no 10 e no 17).",
-					"implemented": false,
+					"implemented": true,
 					"grants": "metamagic",
 					"count": 2,
 					"options": [
@@ -193,14 +193,14 @@
 					"name": "Restauração Feiticeira",
 					"level": 5,
 					"description": "No descanso curto, recupera Pontos de Feitiçaria até metade do nível; uma vez por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.sorcery_incarnate",
 					"name": "Feitiçaria Encarnada",
 					"level": 7,
 					"description": "Sem usos de Feitiçaria Inata, ativa gastando 2 pontos; com ela ativa, até duas Metamagias por magia.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.epic_boon_sorcerer",
@@ -215,7 +215,7 @@
 					"name": "Apoteose Arcana",
 					"level": 20,
 					"description": "Com Feitiçaria Inata ativa, uma Metamagia por turno sem custo.",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"spellcasting_ability": "cha",

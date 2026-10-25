@@ -189,10 +189,15 @@ static func from_character(c: CharacterData, registry: ContentRegistry) -> Comba
 	unit.size = str(sheet.species.get("size", "medium"))
 	for feature in CharacterChoices.active_features(c, registry):
 		unit.feature_ids.append(str(feature["id"]))
-		# Opção escolhida (Presa do Caçador, Táticas Defensivas...) entra como característica própria.
-		if feature.get("grants") == "option":
-			for option_id in c.choice("option.%s" % feature["id"]):
-				unit.feature_ids.append(option_id)
+		# Opções, Invocações e Metamagias escolhidas entram como características próprias (sem o "@nível").
+		if feature.get("grants") in ["option", "invocation", "metamagic"]:
+			for option_id in c.choice(CharacterChoices.feature_key(feature)):
+				unit.feature_ids.append(option_id.split("@")[0])
+	# Afinidade Elemental (Dracônica 6) e Resiliência Corruptora (Corruptor 10): resistência ao tipo escolhido.
+	for feature_id in unit.feature_ids:
+		for prefix in ["elemental_affinity.", "fiendish_resilience."]:
+			if feature_id.begins_with(prefix) and not feature_id.trim_prefix(prefix) in unit.resistances:
+				unit.resistances.append(feature_id.trim_prefix(prefix))
 	unit.state["unarmored"] = sheet.armor.is_empty() and sheet.shield.is_empty()
 	# Artes Marciais (Monge): sem armadura e escudo, armas de monge e desarmado usam o maior entre
 	# Força e Destreza e o dado de Artes Marciais quando ele for maior que o dano da arma.
@@ -214,6 +219,21 @@ static func from_character(c: CharacterData, registry: ContentRegistry) -> Comba
 			attack["attack_bonus"] = modifier + sheet.proficiency_bonus
 			attack["damage"] = "%dd%d%s" % [dice.count, dice.sides, "%+d" % modifier if modifier != 0 else ""] \
 					if dice.sides > 0 else str(maxi(0, 1 + modifier))
+	# Pacto da Lâmina: armas corpo a corpo viram arma de pacto, com proficiência e o Carisma se for maior.
+	if unit.has_feature("invocation.pact_of_the_blade"):
+		var charisma: int = sheet.modifiers[Ability.CHARISMA]
+		for attack in unit.attacks:
+			if str(attack.get("weapon_id", "")).is_empty() or attack["attack_type"] != "melee":
+				continue
+			attack["pact"] = true
+			var used := int(attack["ability_modifier"])
+			if charisma > used:
+				var dice := DiceExpression.parse(str(attack["damage"]))
+				dice.bonus += charisma - used
+				attack["damage"] = "%dd%d%s" % [dice.count, dice.sides, "%+d" % dice.bonus if dice.bonus != 0 else ""]
+				attack["ability_modifier"] = charisma
+				used = charisma
+			attack["attack_bonus"] = used + sheet.proficiency_bonus
 	# Estilo de Luta Arquearia: +2 nos ataques com armas à distância.
 	if unit.has_feat("feat.archery"):
 		for attack in unit.attacks:

@@ -806,21 +806,21 @@
 					"name": "Resiliência Dracônica",
 					"level": 3,
 					"description": "+3 PV máximos (+1 por nível seguinte); sem armadura, CA = 10 + Destreza + Carisma.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.draconic_spells",
 					"name": "Magias Dracônicas",
 					"level": 3,
 					"description": "Sempre preparadas: Alterar-se, Orbe Cromático, Comando, Sopro do Dragão (3); Medo, Voo (5); Olho Arcano, Enfeitiçar Monstro (7); Lenda, Invocar Dragão (9).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.elemental_affinity",
 					"name": "Afinidade Elemental",
 					"level": 6,
 					"description": "Escolhe um tipo de dano: resistência e soma o Carisma a uma jogada de dano de magias desse tipo.",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -855,7 +855,7 @@
 					"name": "Asas de Dragão",
 					"level": 14,
 					"description": "Ação bônus: deslocamento de voo de 18 m por 1 hora; uma vez por descanso longo (ou 3 pontos de feitiçaria).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.dragon_companion",
@@ -893,6 +893,38 @@
 					],
 					"recharge": "long"
 				}
+			],
+			"always_prepared": [
+				{
+					"level": 3,
+					"spells": [
+						"spell.alter_self",
+						"spell.chromatic_orb",
+						"spell.command",
+						"spell.dragons_breath"
+					]
+				},
+				{
+					"level": 5,
+					"spells": [
+						"spell.fear",
+						"spell.fly"
+					]
+				},
+				{
+					"level": 7,
+					"spells": [
+						"spell.arcane_eye",
+						"spell.charm_monster"
+					]
+				},
+				{
+					"level": 9,
+					"spells": [
+						"spell.legend_lore",
+						"spell.summon_dragon"
+					]
+				}
 			]
 		},
 		{
@@ -907,28 +939,28 @@
 					"name": "Bênção do Obscuro",
 					"level": 3,
 					"description": "Ao reduzir um inimigo a 0 PV (ou alguém fazê-lo a até 3 m), ganha PV temporários iguais a Carisma + nível.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.fiend_spells",
 					"name": "Magias do Corruptor",
 					"level": 3,
 					"description": "Sempre preparadas: Mãos Flamejantes, Comando (3); Raio Ardente, Sugestão (5); Bola de Fogo, Nuvem Fétida (7); Escudo de Fogo, Muralha de Fogo (9); Missão, Praga de Insetos (11).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.dark_ones_own_luck",
 					"name": "Sorte do Obscuro",
 					"level": 6,
 					"description": "Soma 1d10 a um teste de atributo ou de resistência; usos = Carisma por descanso longo.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.fiendish_resilience",
 					"name": "Resiliência Corruptora",
 					"level": 10,
 					"description": "Escolhe um tipo de dano (exceto energia) após cada descanso: resistência a ele.",
-					"implemented": false,
+					"implemented": true,
 					"grants": "option",
 					"options": [
 						{
@@ -998,7 +1030,7 @@
 					"name": "Arremessar pelo Inferno",
 					"level": 14,
 					"description": "Uma vez por turno ao acertar: teste de Carisma ou 8d10 psíquico e Incapacitado até o fim do seu próximo turno; uma vez por descanso longo (ou gastando espaço de pacto).",
-					"implemented": false
+					"implemented": true
 				}
 			],
 			"resources": [
@@ -1061,7 +1093,36 @@
 				{
 					"level": 3,
 					"spells": [
-						"spell.burning_hands"
+						"spell.burning_hands",
+						"spell.command"
+					]
+				},
+				{
+					"level": 5,
+					"spells": [
+						"spell.scorching_ray",
+						"spell.suggestion"
+					]
+				},
+				{
+					"level": 7,
+					"spells": [
+						"spell.fireball",
+						"spell.stinking_cloud"
+					]
+				},
+				{
+					"level": 9,
+					"spells": [
+						"spell.fire_shield",
+						"spell.wall_of_fire"
+					]
+				},
+				{
+					"level": 11,
+					"spells": [
+						"spell.geas",
+						"spell.insect_plague"
 					]
 				}
 			]
@@ -1085,28 +1146,28 @@
 					"name": "Truque Potente",
 					"level": 3,
 					"description": "Truques que erram ou que o alvo resiste ainda causam metade do dano (sem efeitos extras).",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.sculpt_spells",
 					"name": "Esculpir Magias",
 					"level": 6,
 					"description": "Em evocações, escolhe 1 + círculo criaturas que passam automaticamente e não sofrem dano de metade.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.empowered_evocation",
 					"name": "Evocação Fortalecida",
 					"level": 10,
 					"description": "Soma a Inteligência a uma jogada de dano das evocações de mago.",
-					"implemented": false
+					"implemented": true
 				},
 				{
 					"id": "feature.overchannel",
 					"name": "Sobrecarga",
 					"level": 14,
 					"description": "Magia de mago de 1º a 5º que cause dano pode causar o dano máximo; depois do primeiro uso, sofre 2d12 necrótico por círculo (cumulativo).",
-					"implemented": false
+					"implemented": true
 				}
 			]
 		}

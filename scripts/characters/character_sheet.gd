@@ -103,6 +103,15 @@ static func build(c: CharacterData, registry: ContentRegistry) -> CharacterSheet
 	sheet.armor_class = RulesEngine.armor_class(dex, sheet.armor, int(sheet.shield.get("ac_bonus", 0)), unarmored_score)
 	sheet.max_hp = RulesEngine.max_hit_points(c.level, int(sheet.class_entry.get("hit_die", 6)),
 			sheet.scores[Ability.CONSTITUTION], int(sheet.species.get("hp_bonus_per_level", 0)))
+	# Resiliência Dracônica (Dracônica 3): +1 PV por nível de feiticeiro; sem armadura, CA 10 + Des + Car.
+	var shield_bonus := int(sheet.shield.get("ac_bonus", 0))
+	if "feature.draconic_resilience" in sheet.feature_ids:
+		sheet.max_hp += c.level
+		if sheet.armor.is_empty():
+			sheet.armor_class = maxi(sheet.armor_class, 10 + sheet.modifiers[Ability.DEXTERITY] + sheet.modifiers[Ability.CHARISMA] + shield_bonus)
+	# Armadura das Sombras (invocação): Armadura Arcana permanente, CA 13 + Des sem armadura.
+	if "invocation.armor_of_shadows" in CharacterChoices.invocations(c) and sheet.armor.is_empty():
+		sheet.armor_class = maxi(sheet.armor_class, 13 + sheet.modifiers[Ability.DEXTERITY] + shield_bonus)
 	sheet.initiative = RulesEngine.initiative_bonus(dex)
 	sheet.feat_ids.assign(CharacterChoices.feats(c, registry).map(func(f: Dictionary) -> String: return f["feat_id"]))
 	# Alerta: proficiência na iniciativa. Defesa: +1 na CA com armadura.
