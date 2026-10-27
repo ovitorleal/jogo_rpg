@@ -13,7 +13,8 @@ Campos: nome · fonte · autor/titular · licença · URL · data de obtenção 
 ## Conteúdo próprio
 
 Assets originais do projeto estão em `assets/asset_catalog.json` com `source_type` e `license: project`.
-A licença do conteúdo próprio ainda não foi escolhida (decisão pendente do responsável).
+Licença do conteúdo próprio (código, arte, textos, aventura): **todos os direitos reservados** (`LICENSE`, decisão do
+responsável em 2026-10-27). O build publicado leva `LICENSE.txt`, `THIRD_PARTY_NOTICES.md` e `ENGINE_LICENSES.txt`.
 
 ## Classes, subclasses, antecedentes e talentos
 

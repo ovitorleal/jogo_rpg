@@ -1,13 +1,26 @@
 # PROJECT_NAME
 
-RPG 2D de fantasia (nome provisório) feito em **Godot 4.7.2** com GDScript tipado, para navegador desktop.
-Especificação completa: [PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md](PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md).
+RPG 2D de fantasia (nome provisório) feito em **Godot 4.7.2** com GDScript tipado, para navegador desktop, com regras
+do SRD 5.2.1 (2024). Especificação completa: [PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md](PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md).
 
-**Estado atual:** Fase 5 concluída (progressão, inventário, missões e diálogo) — veja [docs/ROADMAP.md](docs/ROADMAP.md).
+**Jogar no navegador:** https://ovitorleal.github.io/jogo_rpg/
 
-**Controles:** WASD ou setas para andar · E, Espaço ou Enter para interagir · C ficha · I inventário · J diário (Esc fecha) · no combate: clique numa casa azul para mover e num inimigo marcado para atacar.
+**Estado atual:** versão 0.8.0 — aventura de demonstração "A Garra-Rubra" completa (Fase 7) e publicação (Fase 8).
+Veja [docs/ROADMAP.md](docs/ROADMAP.md), o roteiro em [docs/VERTICAL_SLICE.md](docs/VERTICAL_SLICE.md) e as limitações
+conhecidas em [docs/PUBLISHING.md](docs/PUBLISHING.md).
 
-## Requisitos
+## Como jogar
+
+- **Novo jogo:** crie o personagem (espécie, classe, antecedente, atributos, aparência, talentos e magias).
+- **Objetivo:** aparece sempre no canto superior esquerdo do mapa.
+- **Exploração:** WASD ou setas para andar · E, Espaço ou Enter para interagir · C ficha · I inventário · J diário ·
+  L escolhas de nível · Esc menu (salvar, voltar ao título).
+- **Combate:** clique numa casa azul para mover e num inimigo marcado para atacar; magias e o menu **Ações ▾** trazem
+  as características de classe e as opções (Fúria, Golpe Divino, Metamagia...).
+- **Salvamento:** automático nos pontos seguros e manual pelo menu (Esc). Fica guardado só neste navegador; limpar os
+  dados do site apaga o progresso.
+
+## Requisitos para desenvolver
 
 - Godot 4.7.2-stable (editor padrão, sem .NET): https://godotengine.org/download
 - Templates de exportação Web da mesma versão (apenas `web_*` são necessários)
@@ -28,17 +41,19 @@ godot --headless --path . --script res://tests/run_tests.gd
 # Executar o jogo no desktop
 godot --path .
 
-# Exportar para Web
-godot --headless --path . --export-release "Web" exports/web/index.html
+# Exportar e validar o build Web (sem publicar); --deploy publica no GitHub Pages
+tools/publish/publish_web.sh
 
 # Servir o build Web em http://127.0.0.1:8060
 python -m http.server 8060 --bind 127.0.0.1 --directory exports/web
 ```
 
-O build Web não usa threads, portanto não exige cabeçalhos COOP/COEP do servidor.
+O build Web não usa threads, portanto não exige cabeçalhos COOP/COEP do servidor. Detalhes em
+[docs/PUBLISHING.md](docs/PUBLISHING.md).
 
 ## Licenças
 
-- Código e assets próprios: licença **a definir** pelo responsável do projeto.
-- Terceiros: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) e [docs/CONTENT_LICENSES.md](docs/CONTENT_LICENSES.md).
+- Código e conteúdo próprios: **todos os direitos reservados** ([LICENSE](LICENSE)).
+- Regras e conteúdo do SRD 5.2.1: CC BY 4.0 (atribuição em Créditos, no jogo).
+- Godot Engine: MIT. Terceiros: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) e [docs/CONTENT_LICENSES.md](docs/CONTENT_LICENSES.md).
 - Este projeto não é um produto oficial de Dungeons & Dragons nem afiliado à Wizards of the Coast.

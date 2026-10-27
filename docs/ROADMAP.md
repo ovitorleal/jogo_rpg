@@ -12,7 +12,7 @@
 | 6.5 | Magias e efeitos visuais | Concluída (2026-10-24) |
 | 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | Concluída (2026-10-25) |
 | 7 | Vertical slice | Concluída (2026-10-25) |
-| 8 | Publicação | — |
+| 8 | Publicação | Concluída (2026-10-27) — preparação; site no ar após a ativação do Pages |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
 
@@ -29,6 +29,17 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 | 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | **Concluída** (0.6.9) |
 | 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | **Concluída** (0.6.10) |
 | 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | **Concluída** (0.6.11) |
+
+## Fase 8 — resultado (2026-10-27)
+
+- Publicação no GitHub Pages pelo branch `gh-pages`, com `tools/publish/publish_web.sh`: testes, exportação,
+  verificação dos arquivos e publicação do mesmo build validado (`--deploy`, só a partir de um commit limpo do `main`).
+- Corrigido: a pasta `exports/` entrava no pacote (sem `.gdignore`); agora é ignorada e excluída do preset.
+- Licença do conteúdo próprio: todos os direitos reservados (`LICENSE`). Avisos do Godot e dos componentes do motor em
+  `ENGINE_LICENSES.txt`, publicado junto do jogo; atribuição do SRD em Créditos.
+- Documentação: `docs/PUBLISHING.md` (como publicar, requisitos, limites da hospedagem, salvamento local e limitações
+  conhecidas) e `README.md` com o endereço do jogo.
+- Nome do jogo continua provisório (decisão do responsável).
 
 ## Fase 7 — resultado (2026-10-25)
 
@@ -238,5 +249,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Próxima tarefa concreta
 
-Fase 8 (publicação): exportar para Web, verificar os arquivos, testar a hospedagem gratuita escolhida, conferir
-licenças (`CONTENT_LICENSES.md`, catálogo de assets), preparar documentação e limitações, e publicar só depois de validar.
+Todas as fases da especificação estão concluídas. Próximos passos, a decidir com o responsável: nome definitivo do jogo,
+companheiros com IA, testes contra a morte, reações de monstros, mais conteúdo (mapas, missões, monstros), áudio e
+arte das feras da Forma Selvagem.

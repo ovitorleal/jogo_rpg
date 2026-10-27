@@ -17,6 +17,8 @@ O build distribuído inclui o motor Godot Engine.
 - Fonte: https://godotengine.org — https://github.com/godotengine/godot
 - Licença: MIT — https://godotengine.org/license
 - Obtido em: 2026-10-23 (release oficial no GitHub, SHA-512 verificado)
+- Componentes de terceiros do motor (FreeType, HarfBuzz, zlib e outros) e os textos das licenças: arquivo
+  `ENGINE_LICENSES.txt`, gerado pelo próprio motor (`tools/publish/write_engine_licenses.gd`) e publicado junto do jogo.
 
 ```
 Copyright (c) 2014-present Godot Engine contributors.
