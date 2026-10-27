@@ -1,0 +1,23 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "quest.lyra_wolf",
+			"name": "A Caça de Lyra",
+			"description": "Um lobo faminto espanta a caça de Lyra na mata a sudeste da Clareira da Encruzilhada.",
+			"source": "original",
+			"giver": "Lyra",
+			"objectives": [
+				{
+					"id": "defeat_wolf",
+					"text": "Derrotar o lobo da mata a sudeste da Clareira",
+					"type": "defeat_encounter",
+					"target": "encounter.lone_wolf"
+				}
+			],
+			"reward_xp": 50,
+			"reward_gold": 0,
+			"reward_items": []
+		}
+	]
+}
