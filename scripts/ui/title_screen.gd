@@ -10,7 +10,7 @@ const NOT_PERSISTENT_WARNING := "Atenção: este navegador não está guardando 
 ## Atribuição exigida pela licença CC BY 4.0 do SRD 5.2 (texto oficial, não traduzir).
 const SRD_ATTRIBUTION := "This work includes material from the System Reference Document 5.2 (\"SRD 5.2\") by Wizards of the Coast LLC, available at https://www.dndbeyond.com/srd. The SRD 5.2 is licensed under the Creative Commons Attribution 4.0 International License, available at https://creativecommons.org/licenses/by/4.0/legalcode."
 const NOT_OFFICIAL_NOTICE := "Este jogo não é um produto oficial de Dungeons & Dragons e não é afiliado à Wizards of the Coast."
-const GODOT_NOTICE := "Feito com Godot Engine (licença MIT). Copyright (c) 2014-present Godot Engine contributors. Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur. Componentes de terceiros do motor: ver COPYRIGHT.txt do Godot."
+const GODOT_NOTICE := "Feito com Godot Engine (licença MIT). Copyright (c) 2014-present Godot Engine contributors. Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur. Componentes de terceiros do motor: arquivo ENGINE_LICENSES.txt publicado junto do jogo."
 
 @onready var _new_game_button: Button = %NewGameButton
 @onready var _continue_button: Button = %ContinueButton
@@ -86,7 +86,8 @@ static func credits_text() -> String:
 		"[b]Regras[/b]\n%s" % SRD_ATTRIBUTION,
 		NOT_OFFICIAL_NOTICE,
 		"[b]Motor[/b]\n%s" % GODOT_NOTICE,
-		"[b]Arte[/b]\nArte provisória original do projeto.",
+		"[b]Arte e conteúdo[/b]\nArte original do projeto, desenhada por código. Aventura, diálogos e personagens originais. "
+				+ "Código e conteúdo próprios: todos os direitos reservados (ver LICENSE.txt).",
 	]))
 
 

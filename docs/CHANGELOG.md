@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.8.0] — 2026-10-27 — Fase 8: publicação
+
+### Adicionado
+- `tools/publish/publish_web.sh`: testes, exportação Web, verificação dos arquivos e publicação no GitHub Pages
+  (branch `gh-pages`) do mesmo build validado.
+- `tools/publish/write_engine_licenses.gd`: gera `ENGINE_LICENSES.txt` com a licença do Godot e dos componentes de
+  terceiros do motor, publicado junto do jogo.
+- `LICENSE` (todos os direitos reservados para o conteúdo próprio; SRD sob CC BY 4.0; Godot sob MIT).
+- `docs/PUBLISHING.md` com o processo, requisitos, limites da hospedagem, salvamento local e limitações conhecidas.
+- Créditos citam a licença do conteúdo próprio e o arquivo de avisos do motor.
+
+### Corrigido
+- O pacote Web incluía arquivos da pasta `exports/` (o build anterior); agora a pasta é ignorada pelo editor e
+  excluída do preset.
+
 ## [0.7.0] — 2026-10-25 — Fase 7: fatia vertical "A Garra-Rubra"
 
 ### Adicionado
