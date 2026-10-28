@@ -100,6 +100,10 @@ static func _validate_value(value: Variant, spec: Dictionary, where: String,
 				objects.append(object_result[0])
 			_check_length(objects, spec, where, errors)
 			value = objects
+		"object":
+			if not value is Dictionary:
+				return [value, ["%s: esperado objeto" % where]]
+			value = (value as Dictionary).duplicate(true)
 		_:
 			errors.append("%s: tipo de esquema desconhecido '%s'" % [where, type_name])
 	return [value, errors]

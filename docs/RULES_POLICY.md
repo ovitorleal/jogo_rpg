@@ -155,6 +155,13 @@ opções marcáveis pelo comando `option`.
 | Efeitos: Auxílio (+PV), Borrão, Sinal de Esperança (vantagem em Sabedoria e cura máxima), Voo, Proteção contra a Morte, Liberdade de Movimento, Escudo de Fogo, Aura de Vida, Dissipar Magia | `_apply_spell_effect`, `CombatFeatures` | |
 | Arcano Místico (uma magia de 6º a 9º círculo cada, uma vez por descanso longo), Maestria em Magia (1º e 2º círculo à vontade), Magias Assinatura (duas de 3º, uma vez por descanso curto cada), Palavras da Criação (segundo alvo a até 3 m) | `CharacterChoices`, `Spellcasting.always_prepared` | |
 
+### Companheiros (0.9.0)
+
+| Regra | Onde | Notas |
+|---|---|---|
+| Companheiros criados pelas regras normais de criação (arranjo padrão sugerido pela classe, aumentos do antecedente) e subidos de nível com as escolhas padrão | `CompanionRoster.build` | SRD 5.2.1, criação de personagem e avanço de nível |
+| Teste de perícia no diálogo: d20 + bônus da perícia do membro com o maior bônus contra a CD | `DialogueRunner._skill_check`, `CharacterSheet.roll_skill_check` | SRD 5.2.1, testes de atributo; Talento Confiável vale |
+
 ## Conteúdo do SRD utilizado (dados em `data/`)
 
 - Classes (as 12, somente nível 1: dado de vida, resistências, perícias, treinamentos, kit, características):
@@ -182,6 +189,9 @@ opções marcáveis pelo comando `option`.
 
 | Adaptação | Motivo |
 |---|---|
+| Grupo limitado a protagonista + 2 companheiros; o melhor do grupo faz os testes de perícia das conversas | Escolha de design (estilo de RPG de grupo); no SRD qualquer um pode tentar e Ajudar daria vantagem |
+| Aliados caídos voltam com 1 PV depois de uma vitória | Ainda não há testes contra a morte nem estabilização; evita perder companheiros sem regra para isso |
+| Companheiros na estalagem não ganham experiência; ao voltar, recebem a diferença para o líder | Simplifica o acompanhamento do nível pedido pelo responsável |
 | Propriedades de Maestria e ataques de oportunidade são aplicados automaticamente (o jogo escolhe aplicar) | Evita perguntas a cada golpe; a escolha raramente é desfavorável |
 | Ações Ajudar, Esconder, Influenciar, Preparar, Procurar, Estudar e Usar ainda não existem no combate | Dependem de cobertura, iluminação ou situações fora da grade atual |
 | Troca de iniciativa do Alerta, partes sociais e de exploração das características ficam registradas sem efeito | Grupo de um personagem; sem sistema social/exploração detalhado |

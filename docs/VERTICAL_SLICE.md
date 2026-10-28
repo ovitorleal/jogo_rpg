@@ -33,9 +33,23 @@ na tela **"Ribeira está salva!"**. O objetivo atual fica sempre no canto superi
 | Um salvamento | Autosave nos pontos seguros e salvamento antes da tela de conclusão |
 | Um objetivo final claro | Objetivo na tela a cada passo e tela de conclusão |
 
+## Companheiros (0.9.0)
+
+O grupo leva o protagonista e até dois companheiros; os demais recrutados esperam na Estalagem do Ganso Dourado
+(livro de hóspedes, ao lado da estalagem). Dados em `data/companions/`, conversas em `data/dialogues/companions.json`.
+
+| Companheiro | Espécie e classe | Onde | Como recrutar |
+|---|---|---|---|
+| Doran Martelo-Fundo | Anão, Clérigo (Acólito) | Vila de Ribeira | Aceitar a missão de Ione |
+| Bruna Pé-Ligeiro | Pequenina, Ladina (Criminosa) | Vila de Ribeira | Concluir "Ameaça na Ruína" (Amara) |
+| Lyra Vento-Leste | Elfa, Patrulheira (Soldado) | Clareira | Derrotar o lobo da mata ("A Caça de Lyra") |
+| Kael Brasa-Negra | Tiefling, Bruxo (Sábio) | Clareira | Emprestar 15 PO |
+| Tarka Rocha-Viva | Golias, Bárbara (Soldado) | Bosque do Riacho | Queda de braço: Atletismo CD 12 (pode repetir) |
+| Ignis Escama-Rubra | Draconato, Feiticeiro (Sábio) | Bosque do Riacho | Derrotar Garra-Rubra e soltá-lo |
+
 ## Sem depender do desenvolvedor
 
 - Derrota leva ao título; **Continuar** carrega o último salvamento automático (chegada ao mapa, fim de conversa...).
 - Fugir do combate é permitido; o gatilho só volta a disparar depois que o jogador sai dele.
 - A tela de conclusão aparece uma vez, ao entregar a missão; depois Ione só agradece.
-- Teste de ponta a ponta: `tests/quests/test_vertical_slice.gd`.
+- Teste de ponta a ponta: `tests/quests/test_vertical_slice.gd`; companheiros em `tests/party/test_companions.gd`.

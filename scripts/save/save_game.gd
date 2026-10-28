@@ -31,6 +31,7 @@ static func capture(location: Dictionary) -> Dictionary:
 		"location": location.duplicate(true),
 		"party": party,
 		"inventory": PartyManager.inventory.to_dict(),
+		"companions": PartyManager.roster.to_dict(),
 		"quests": QuestManager.log.to_dict(),
 		"exploration": {
 			"resolved_triggers": ExplorationManager.resolved_triggers.keys(),
@@ -178,6 +179,10 @@ static func validate(data: Dictionary, registry: ContentRegistry) -> Dictionary:
 	else:
 		errors.append("diário de missões ausente")
 
+	var roster_result := CompanionRoster.from_dict(data.get("companions", {}), registry)
+	for problem: String in roster_result[1]:
+		errors.append("companheiros: %s" % problem)
+
 	var resolved: Array[String] = []
 	var exploration: Variant = data.get("exploration", {})
 	if exploration is Dictionary and exploration.get("resolved_triggers", []) is Array:
@@ -191,6 +196,7 @@ static func validate(data: Dictionary, registry: ContentRegistry) -> Dictionary:
 	return {"ok": true, "errors": errors, "data": data, "state": {
 		"members": members,
 		"inventory": inventory,
+		"roster": roster_result[0],
 		"quests": quests,
 		"resolved_triggers": resolved,
 		"disarmed_trigger": str((exploration as Dictionary).get("disarmed_trigger", "")),
@@ -204,7 +210,7 @@ static func validate(data: Dictionary, registry: ContentRegistry) -> Dictionary:
 
 ## Aplica um estado validado aos autoloads. Retorna a cena a carregar.
 static func apply(state: Dictionary) -> String:
-	PartyManager.restore(state["members"], state["inventory"])
+	PartyManager.restore(state["members"], state["inventory"], state.get("roster"))
 	QuestManager.reset()
 	QuestManager.log = state["quests"]
 	ExplorationManager.reset()

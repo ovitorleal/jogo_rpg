@@ -352,6 +352,24 @@ const TYPES := {
 			}},
 		},
 	},
+	"companion": {
+		"dir": "companions",
+		"prefix": "companion.",
+		"fields": {
+			"species_id": {"type": "string", "ref": "species"},
+			"class_id": {"type": "string", "ref": "class"},
+			"background_id": {"type": "string", "ref": "background"},
+			## Papel no grupo e como recrutar (texto mostrado na tela do grupo).
+			"role": {"type": "string"},
+			"how_to_recruit": {"type": "string"},
+			"map_id": {"type": "string", "ref": "map"},
+			"dialogue_id": {"type": "string", "ref": "dialogue"},
+			## Perícias preferidas (as que a classe permitir entram primeiro).
+			"skills": {"type": "array", "of": "string", "ref": "skill", "required": false, "default": []},
+			## Aparência (mesmas chaves de CharacterData.appearance; conferida pelos testes).
+			"appearance": {"type": "object", "required": false, "default": {}},
+		},
+	},
 	"quest": {
 		"dir": "quests",
 		"prefix": "quest.",
@@ -380,6 +398,8 @@ const TYPES := {
 		"fields": {
 			"speaker": {"type": "string"},
 			"portrait": {"type": "string", "required": false, "default": ""},
+			## Companheiro que fala: o retrato é pintado a partir da aparência dele.
+			"companion": {"type": "string", "ref": "companion", "required": false, "default": ""},
 			## Primeira entrada cuja condição é verdadeira define o nó inicial.
 			"entries": {"type": "object_array", "min_length": 1, "fields": {
 				"condition": {"type": "string", "required": false, "default": ""},
@@ -392,7 +412,13 @@ const TYPES := {
 					"text": {"type": "string"},
 					"next": {"type": "string", "required": false, "default": ""},
 					"condition": {"type": "string", "required": false, "default": ""},
+					## Ações separadas por ";" (ex.: "pay_gold:15;recruit:companion.kael").
 					"action": {"type": "string", "required": false, "default": ""},
+					## Teste de perícia do melhor membro do grupo: sucesso vai para "next" (e aplica a ação),
+					## falha vai para "fail_next".
+					"check": {"type": "string", "ref": "skill", "required": false, "default": ""},
+					"dc": {"type": "int", "min": 0, "max": 30, "required": false, "default": 0},
+					"fail_next": {"type": "string", "required": false, "default": ""},
 				}},
 			}},
 		},
@@ -577,9 +603,11 @@ func _check_references(pending_refs: Array[Dictionary]) -> void:
 
 
 const DIALOGUE_CONDITIONS: Array[String] = ["quest_available", "quest_active", "quest_ready", "quest_completed",
-		"objective_open"]
-## give_item:<item_id>#<quantidade> entrega um item ao grupo.
-const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item"]
+		"objective_open", "quest_started", "objective_done", "companion_recruited", "companion_available",
+		"gold_at_least", "gold_below", "trigger_resolved"]
+## give_item:<item_id>#<quantidade> entrega um item ao grupo; recruit:<companion_id> recruta;
+## pay_gold:<n> paga ouro do grupo.
+const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item", "recruit", "pay_gold"]
 
 
 ## Diálogos: nós referenciados existem, condições e ações conhecidas apontam para missões existentes.
@@ -600,10 +628,21 @@ func _check_dialogue(id: String, dialogue: Dictionary) -> void:
 				errors.append("%s.%s: escolha aponta para nó inexistente '%s'" % [id, node.get("id"), next])
 			_check_rule(id, str(choice.get("condition", "")), DIALOGUE_CONDITIONS, "condição")
 			_check_rule(id, str(choice.get("action", "")), DIALOGUE_ACTIONS, "ação")
+			var fail_next := str(choice.get("fail_next", ""))
+			if not str(choice.get("check", "")).is_empty():
+				if int(choice.get("dc", 0)) <= 0:
+					errors.append("%s.%s: teste de perícia sem CD" % [id, node.get("id")])
+				if not fail_next.is_empty() and not node_ids.has(fail_next):
+					errors.append("%s.%s: falha aponta para nó inexistente '%s'" % [id, node.get("id"), fail_next])
 
 
 func _check_rule(id: String, rule: String, allowed: Array[String], label: String) -> void:
 	if rule.is_empty():
+		return
+	# Ações podem vir encadeadas: "pay_gold:15;recruit:companion.kael".
+	if ";" in rule:
+		for piece in rule.split(";"):
+			_check_rule(id, piece.strip_edges(), allowed, label)
 		return
 	var parts := rule.split(":", true, 1)
 	if parts.size() != 2 or not parts[0] in allowed:
@@ -611,6 +650,15 @@ func _check_rule(id: String, rule: String, allowed: Array[String], label: String
 	elif parts[0] == "give_item":
 		if not has("item", parts[1].split("#")[0]):
 			errors.append("%s: %s com item inexistente '%s'" % [id, label, parts[1]])
+	elif parts[0] in ["recruit", "companion_recruited", "companion_available"]:
+		if not has("companion", parts[1]):
+			errors.append("%s: %s com companheiro inexistente '%s'" % [id, label, parts[1]])
+	elif parts[0] in ["gold_at_least", "gold_below", "pay_gold"]:
+		if not parts[1].is_valid_int() or int(parts[1]) < 0:
+			errors.append("%s: %s com valor inválido '%s'" % [id, label, parts[1]])
+	elif parts[0] == "trigger_resolved":
+		if parts[1].is_empty():
+			errors.append("%s: %s sem gatilho" % [id, label])
 	elif not has("quest", parts[1].split("#")[0]):
 		errors.append("%s: %s com missão inexistente '%s'" % [id, label, parts[1]])
 	elif "#" in parts[1]:

@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.9.0] — 2026-10-27 — Companheiros recrutáveis
+
+### Adicionado
+- Seis companheiros originais (`data/companions/`), cada um com classe e espécie diferentes: Doran (anão clérigo),
+  Bruna (pequenina ladina), Lyra (elfa patrulheira), Kael (tiefling bruxo), Tarka (golias bárbara) e Ignis (draconato
+  feiticeiro). Aparência própria pintada em runtime, como o protagonista.
+- Recrutamento por conversa e um pequeno pedido: missão aceita (Doran), missão concluída (Bruna), caçar o lobo da mata
+  (Lyra, missão nova "A Caça de Lyra"), pagar 15 PO (Kael), queda de braço com Atletismo CD 12 (Tarka) e soltar o
+  prisioneiro depois de Garra-Rubra (Ignis).
+- Grupo de até três (protagonista + 2 companheiros), todos controlados pelo jogador no combate. Recrutados com o grupo
+  cheio esperam na Estalagem do Ganso Dourado; o livro de hóspedes organiza quem vai e quem fica.
+- Companheiros entram no nível e na experiência do protagonista; quem volta da estalagem alcança o líder.
+- Companheiros andam atrás do líder na exploração. `Tab` troca o membro mostrado na ficha, no inventário e nas escolhas.
+- Diálogos: condições `quest_started`, `objective_done`, `companion_recruited`, `companion_available`,
+  `gold_at_least`, `gold_below`, `trigger_resolved`; ações `recruit` e `pay_gold`; várias ações separadas por `;`;
+  escolhas com teste de perícia (`check`, `dc`, `fail_next`) feito pelo membro do grupo com o maior bônus.
+- Salvamento guarda os recrutados e quem espera na estalagem (validados como o grupo).
+- 12 testes novos (total 280).
+
+### Alterado
+- Depois de uma vitória, aliados caídos se levantam com 1 PV (ainda não há testes contra a morte).
+- O descanso na estalagem também recupera quem espera lá.
+
 ## [0.8.0] — 2026-10-27 — Fase 8: publicação
 
 ### Adicionado

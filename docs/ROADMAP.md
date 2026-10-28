@@ -13,6 +13,7 @@
 | 6.6 | Características de classe (1–20), subclasses, antecedentes e talentos | Concluída (2026-10-25) |
 | 7 | Vertical slice | Concluída (2026-10-25) |
 | 8 | Publicação | Concluída (2026-10-27) — preparação; site no ar após a ativação do Pages |
+| Extra | Companheiros recrutáveis | Concluída (2026-10-27) — 0.9.0 |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
 
@@ -29,6 +30,18 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 | 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | **Concluída** (0.6.9) |
 | 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | **Concluída** (0.6.10) |
 | 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | **Concluída** (0.6.11) |
+
+## Companheiros recrutáveis — resultado (2026-10-27)
+
+- Pedido do responsável: seis companheiros (classes e espécies diferentes) recrutados ao longo da campanha, grupo de
+  protagonista + 2. Decisões: o jogador controla todos no combate; recrutamento por conversa e um pequeno pedido;
+  quem não vai no grupo espera na estalagem e acompanha o nível do protagonista.
+- `CompanionRoster` (recrutados, estalagem, montagem no nível do líder), `CompanionNpc` nos mapas, `PartyFollower`,
+  painel do grupo na estalagem e `Tab` nos painéis. Tabela dos companheiros em `docs/VERTICAL_SLICE.md`.
+- Verificado em janela real: NPCs nos três mapas, conversa com retrato pintado, seguidores, painel da estalagem, ficha
+  com `Tab` e combate com três membros.
+- 280 testes passando.
+- Pendências: companheiros com IA própria (opcional), falas dos companheiros durante a aventura, testes contra a morte.
 
 ## Fase 8 — resultado (2026-10-27)
 
@@ -243,12 +256,12 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 ## Pendências do combate
 
 - Testes de morte, condições, reações (ataques de oportunidade), ações bônus, Esquivar/Disparada/Desengajar.
-- Companheiros com IA (o grupo ainda tem só o líder).
+- Companheiros com IA própria (hoje o jogador controla todo o grupo).
 - Descanso para recuperar PV; sem ele, os PV perdidos ficam até um novo jogo.
 - Animações de ataque/dano (hoje o registro e as barras de PV mostram o resultado).
 
 ## Próxima tarefa concreta
 
 Todas as fases da especificação estão concluídas. Próximos passos, a decidir com o responsável: nome definitivo do jogo,
-companheiros com IA, testes contra a morte, reações de monstros, mais conteúdo (mapas, missões, monstros), áudio e
+falas e reações dos companheiros, testes contra a morte, reações de monstros, mais conteúdo (mapas, missões, monstros), áudio e
 arte das feras da Forma Selvagem.
