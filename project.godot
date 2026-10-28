@@ -10,9 +10,9 @@ config_version=5
 
 [application]
 
-config/name="PROJECT_NAME"
-config/description="RPG 2D de fantasia (protótipo)."
-config/version="0.9.0"
+config/name="As Crônicas de Arghaz"
+config/description="RPG de fantasia no mundo de Arghaz, com regras do SRD 5.2.1."
+config/version="0.10.0"
 run/main_scene="res://scenes/menus/title_screen.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
@@ -101,3 +101,7 @@ renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 textures/canvas_textures/default_texture_filter=0
 2d/snap/snap_2d_transforms_to_pixel=true
+
+[gui]
+
+theme/custom="res://assets/ui/arghaz_theme.tres"

@@ -1,5 +1,19 @@
 # Pipeline de assets
 
+## Arte de As Crônicas de Arghaz (0.10.0)
+
+1. O responsável gera as imagens no ChatGPT. Os pedidos e as capturas de referência ficam em
+   `art_source/PEDIDOS_DE_ARTE.md`.
+2. Os originais ficam em `art_source/arghaz/` (com `.gdignore`, fora do pacote).
+3. `godot --headless --path . --script res://tools/art/import_arghaz.gd` faz o seguinte:
+   - mantém só a figura principal;
+   - recorta;
+   - reduz para 256 px de altura e grava em `assets/characters/arghaz/`, junto com o logo e os fundos.
+4. Depois de importar, ligue mipmaps nos `.import` dos personagens e use compressão com perdas (`compress/mode=1`)
+   nos fundos grandes.
+5. Registre cada arquivo em `assets/asset_catalog.json` com `source_type: ai_generated`.
+6. Para a interface, rode `tools/art/build_ui_theme.gd`, que gera `assets/ui/arghaz_theme.tres`.
+
 ## Arte atual (gerada por código)
 
 Arte original desenhada por scripts, com saída determinística (`tools/art/`, fora da exportação):

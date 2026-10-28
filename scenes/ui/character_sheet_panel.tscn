@@ -3,12 +3,12 @@
 [ext_resource type="Script" path="res://scripts/ui/character_sheet_panel.gd" id="1_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.102, 0.078, 0.137, 0.96)
+bg_color = Color(0.067, 0.086, 0.110, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.522, 0.592, 0.722, 1)
+border_color = Color(0.604, 0.659, 0.698, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2

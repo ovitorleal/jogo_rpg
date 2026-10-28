@@ -12,7 +12,7 @@ var _summary: RichTextLabel
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	var background := ColorRect.new()
-	background.color = Color(0.102, 0.078, 0.137)
+	background.color = Color(0.067, 0.086, 0.110)
 	background.set_anchors_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 	var center := CenterContainer.new()

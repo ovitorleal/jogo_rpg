@@ -7,24 +7,24 @@
 default_font_size = 9
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.102, 0.078, 0.137, 0.97)
+bg_color = Color(0.067, 0.086, 0.110, 0.97)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.522, 0.592, 0.722, 1)
+border_color = Color(0.604, 0.659, 0.698, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_event"]
-bg_color = Color(0.102, 0.078, 0.137, 0.98)
+bg_color = Color(0.067, 0.086, 0.110, 0.98)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.878, 0.706, 0.541, 1)
+border_color = Color(0.851, 0.659, 0.302, 1)
 corner_radius_top_left = 3
 corner_radius_top_right = 3
 corner_radius_bottom_right = 3
@@ -47,7 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.102, 0.078, 0.137, 1)
+color = Color(0.067, 0.086, 0.110, 1)
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -79,7 +79,7 @@ text = "Viagem"
 [node name="Clock" type="Label" parent="Margin/Layout/Header"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
+theme_override_colors/font_color = Color(0.851, 0.659, 0.302, 1)
 theme_override_font_sizes/font_size = 10
 text = "Dia 1, 08:00"
 
@@ -98,7 +98,7 @@ text = "..."
 [node name="Message" type="Label" parent="Margin/Layout"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
+theme_override_colors/font_color = Color(0.851, 0.659, 0.302, 1)
 autowrap_mode = 3
 
 [node name="Columns" type="HBoxContainer" parent="Margin/Layout"]
@@ -183,7 +183,7 @@ theme_override_font_sizes/font_size = 12
 [node name="EventSpeaker" type="Label" parent="EventPanel/Margin/Content"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.878, 0.706, 0.541, 1)
+theme_override_colors/font_color = Color(0.851, 0.659, 0.302, 1)
 theme_override_font_sizes/font_size = 10
 
 [node name="EventText" type="RichTextLabel" parent="EventPanel/Margin/Content"]

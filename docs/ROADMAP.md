@@ -14,6 +14,7 @@
 | 7 | Vertical slice | Concluída (2026-10-25) |
 | 8 | Publicação | Concluída (2026-10-27) — preparação; site no ar após a ativação do Pages |
 | Extra | Companheiros recrutáveis | Concluída (2026-10-27) — 0.9.0 |
+| 9 | Identidade visual de As Crônicas de Arghaz | **Em andamento** — 0.10.0 |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
 
@@ -30,6 +31,16 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 | 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | **Concluída** (0.6.9) |
 | 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | **Concluída** (0.6.10) |
 | 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | **Concluída** (0.6.11) |
+
+## Fase 9 — identidade visual (em andamento, 2026-10-27)
+
+- Pedido do responsável: todo o jogo no estilo da arte nova (ilustrações geradas com ChatGPT), nome
+  **As Crônicas de Arghaz**. Decisões: visual do personagem pela classe; um fundo pintado por mapa.
+- Pronto: nome, logo e título; classes, espécies e companheiros; Vila de Ribeira pintada; tema da interface; criação
+  de personagem com as ilustrações.
+- Falta (depende de arte; lista e pedidos em `art_source/PEDIDOS_DE_ARTE.md`): NPCs, inimigos, Clareira, Bosque do
+  Riacho, arena de combate, estrada da viagem, fundo do título e ícones de itens.
+- Arte que chegar entra pelo `tools/art/import_arghaz.gd`.
 
 ## Companheiros recrutáveis — resultado (2026-10-27)
 
@@ -242,7 +253,6 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 
 ## Decisões pendentes (responsável do projeto)
 
-- Nome definitivo do jogo (hoje `PROJECT_NAME`).
 - Licença do código e dos assets próprios (`LICENSE` ainda não criado).
 - Biblioteca de testes: manter o executor próprio ou adotar GUT/gdUnit4 (ambos MIT).
 - Mais classes/espécies/antecedentes do SRD no MVP, ou manter os dois de cada até o vertical slice.
