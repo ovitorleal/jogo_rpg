@@ -1,0 +1,242 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "dialogue.companion_doran",
+			"name": "Doran Martelo-Fundo",
+			"description": "Ferreiro e sacerdote anão da Vila de Ribeira.",
+			"source": "original",
+			"speaker": "Doran",
+			"companion": "companion.doran",
+			"entries": [
+				{"condition": "quest_started:quest.goblin_chief", "node": "offer"},
+				{"condition": "", "node": "wait"}
+			],
+			"nodes": [
+				{
+					"id": "wait",
+					"text": "Hm. Forasteiro. A bigorna não espera e eu também não. Se quer ajudar Ribeira, fale primeiro com Ione, perto do poço.",
+					"choices": [{"text": "Vou falar com ela.", "next": ""}]
+				},
+				{
+					"id": "offer",
+					"text": "Então foi você que Ione mandou atrás do tal Garra-Rubra. Sozinho não volta inteiro. Meu martelo cura tanto quanto amassa: deixa eu ir junto.",
+					"choices": [
+						{"text": "Bem-vindo ao grupo, Doran.", "next": "joined", "action": "recruit:companion.doran"},
+						{"text": "Por que você quer ir?", "next": "why"},
+						{"text": "Ainda não.", "next": ""}
+					]
+				},
+				{
+					"id": "why",
+					"text": "Forjei as rodas de cada carroça que esses goblins queimaram. E rezo pelos carroceiros que não voltaram. Isso basta?",
+					"choices": [
+						{"text": "Basta. Venha.", "next": "joined", "action": "recruit:companion.doran"},
+						{"text": "Outra hora.", "next": ""}
+					]
+				},
+				{
+					"id": "joined",
+					"text": "Vou buscar meu escudo. E não reclame se eu cantar no caminho.",
+					"choices": [{"text": "Vamos.", "next": ""}]
+				}
+			]
+		},
+		{
+			"id": "dialogue.companion_bruna",
+			"name": "Bruna Pé-Ligeiro",
+			"description": "Pequenina ladra que perdeu a mochila para um goblin.",
+			"source": "original",
+			"speaker": "Bruna",
+			"companion": "companion.bruna",
+			"entries": [
+				{"condition": "quest_completed:quest.ruin_threat", "node": "thanks"},
+				{"condition": "", "node": "hello"}
+			],
+			"nodes": [
+				{
+					"id": "hello",
+					"text": "Psiu! Você tem cara de quem anda pela estrada. Um goblin da ruína, perto da Clareira, levou minha mochila com tudo dentro. Quem der cabo dele ganha uma amiga... e uma ladra de primeira.",
+					"choices": [
+						{"text": "Vou ver o que posso fazer.", "next": ""},
+						{"text": "Uma ladra? Sério?", "next": "honest"}
+					]
+				},
+				{
+					"id": "honest",
+					"text": "Ladra aposentada! Quase. Fale com Amara, a guarda da Clareira: ela também quer esse goblin longe.",
+					"choices": [{"text": "Entendido.", "next": ""}]
+				},
+				{
+					"id": "thanks",
+					"text": "Soube que a ruína está livre! A mochila? Ah, deixa pra lá, o goblin comeu meu queijo mesmo. Mas promessa é promessa: onde você for, eu vou na frente abrindo as fechaduras.",
+					"choices": [
+						{"text": "Então venha, Bruna.", "next": "joined", "action": "recruit:companion.bruna"},
+						{"text": "Agora não.", "next": ""}
+					]
+				},
+				{
+					"id": "joined",
+					"text": "Já peguei minhas adagas. E as suas moedas estão seguras comigo. Brincadeira! Quase.",
+					"choices": [{"text": "...", "next": ""}]
+				}
+			]
+		},
+		{
+			"id": "dialogue.companion_lyra",
+			"name": "Lyra Vento-Leste",
+			"description": "Batedora élfica da Floresta Sussurrante.",
+			"source": "original",
+			"speaker": "Lyra",
+			"companion": "companion.lyra",
+			"entries": [
+				{"condition": "trigger_resolved:test_map.lone_wolf", "node": "proven"},
+				{"condition": "quest_active:quest.lyra_wolf", "node": "reminder"},
+				{"condition": "", "node": "hello"}
+			],
+			"nodes": [
+				{
+					"id": "hello",
+					"text": "Silêncio... ouviu? Um lobo faminto ronda a mata a sudeste daqui e espanta toda a caça. Prove que sabe caçar: derrube esse lobo e eu sigo com você.",
+					"choices": [
+						{"text": "Eu cuido do lobo.", "next": "accepted", "action": "start_quest:quest.lyra_wolf"},
+						{"text": "Agora não.", "next": ""}
+					]
+				},
+				{
+					"id": "accepted",
+					"text": "Siga as pegadas para sudeste, perto do bosque. Ataque antes que ele chame a matilha.",
+					"choices": [{"text": "Até logo.", "next": ""}]
+				},
+				{
+					"id": "reminder",
+					"text": "O lobo ainda está na mata a sudeste. Eu sinto o cheiro dele daqui.",
+					"choices": [{"text": "Estou indo.", "next": ""}]
+				},
+				{
+					"id": "proven",
+					"text": "O lobo da mata não uiva mais... foi você. Mão firme e passo leve. Caçamos juntos a partir de hoje, se quiser.",
+					"choices": [
+						{"text": "Venha comigo, Lyra.", "next": "joined", "action": "complete_quest:quest.lyra_wolf;recruit:companion.lyra"},
+						{"text": "Outra hora.", "next": ""}
+					]
+				},
+				{
+					"id": "joined",
+					"text": "Meu arco é seu. Só não me peça para dormir dentro de casa.",
+					"choices": [{"text": "Combinado.", "next": ""}]
+				}
+			]
+		},
+		{
+			"id": "dialogue.companion_kael",
+			"name": "Kael Brasa-Negra",
+			"description": "Tiefling bruxo endividado com o mascate da estrada.",
+			"source": "original",
+			"speaker": "Kael",
+			"companion": "companion.kael",
+			"entries": [
+				{"condition": "", "node": "hello"}
+			],
+			"nodes": [
+				{
+					"id": "hello",
+					"text": "Ah, um rosto novo! Sou Kael, estudioso de coisas que é melhor não estudar. Devo 15 peças de ouro ao mascate da estrada e prometi não sair daqui sem pagar. Me empresta? Em troca, levo meus segredos de fogo infernal para o seu lado.",
+					"choices": [
+						{"text": "Toma as 15 PO. Venha comigo.", "next": "joined", "condition": "gold_at_least:15",
+							"action": "pay_gold:15;recruit:companion.kael"},
+						{"text": "Não tenho esse dinheiro agora.", "next": "broke", "condition": "gold_below:15"},
+						{"text": "Que pacto é esse?", "next": "pact"},
+						{"text": "Agora não.", "next": ""}
+					]
+				},
+				{
+					"id": "pact",
+					"text": "Um contrato com uma entidade das profundezas. Letra miúda, claro. Ela me dá poder; eu... ainda estou descobrindo o que dou a ela.",
+					"choices": [{"text": "Entendo.", "next": "hello"}]
+				},
+				{
+					"id": "broke",
+					"text": "Sem problema, sem problema. Amara paga bem por serviços na estrada. Volte quando tiver as 15 PO, eu não vou a lugar nenhum. Literalmente.",
+					"choices": [{"text": "Até mais.", "next": ""}]
+				},
+				{
+					"id": "joined",
+					"text": "Dívida paga, alma (quase) leve! Vamos: estou louco para mostrar o que esse pacto faz com goblins.",
+					"choices": [{"text": "Vamos.", "next": ""}]
+				}
+			]
+		},
+		{
+			"id": "dialogue.companion_tarka",
+			"name": "Tarka Rocha-Viva",
+			"description": "Golias mercenária que só segue quem vence uma queda de braço.",
+			"source": "original",
+			"speaker": "Tarka",
+			"companion": "companion.tarka",
+			"entries": [
+				{"condition": "", "node": "hello"}
+			],
+			"nodes": [
+				{
+					"id": "hello",
+					"text": "HA! Mais um aventureiro magrelo. Sou Tarka, das montanhas. Quer minha força ao seu lado? Vença uma queda de braço comigo. Escolha quem do seu grupo vai encarar.",
+					"choices": [
+						{"text": "Queda de braço! (Atletismo CD 12, o mais forte do grupo)", "next": "won", "fail_next": "lost",
+							"check": "athletics", "dc": 12},
+						{"text": "Agora não.", "next": ""}
+					]
+				},
+				{
+					"id": "won",
+					"text": "...Ugh! Você venceu! Faz tempo que ninguém me derruba. Tarka cumpre a palavra: onde você lutar, eu luto.",
+					"choices": [{"text": "Bem-vinda, Tarka.", "next": "joined", "action": "recruit:companion.tarka"}]
+				},
+				{
+					"id": "lost",
+					"text": "HA! Seu braço é de gravetos! Volte quando comer mais mingau. Pode tentar de novo quando quiser.",
+					"choices": [
+						{"text": "De novo! (Atletismo CD 12)", "next": "won", "fail_next": "lost", "check": "athletics", "dc": 12},
+						{"text": "Depois.", "next": ""}
+					]
+				},
+				{
+					"id": "joined",
+					"text": "Vamos atrás desse Garra-Rubra. Eu guardo a cabeça dele de troféu.",
+					"choices": [{"text": "...Vamos.", "next": ""}]
+				}
+			]
+		},
+		{
+			"id": "dialogue.companion_ignis",
+			"name": "Ignis Escama-Rubra",
+			"description": "Feiticeiro draconato prisioneiro dos goblins.",
+			"source": "original",
+			"speaker": "Ignis",
+			"companion": "companion.ignis",
+			"entries": [
+				{"condition": "", "node": "hello"}
+			],
+			"nodes": [
+				{
+					"id": "hello",
+					"text": "Garra-Rubra caiu? Então os deuses ainda olham por este vale. Sou Ignis. Os goblins me pegaram na estrada e queriam vender minhas escamas. Solte estas cordas e meu fogo é seu.",
+					"choices": [
+						{"text": "Corto as cordas. Venha conosco.", "next": "joined", "action": "recruit:companion.ignis"},
+						{"text": "Corto as cordas. Siga seu caminho.", "next": "free"}
+					]
+				},
+				{
+					"id": "free",
+					"text": "Livre! Obrigado... mas não tenho para onde ir. Se mudar de ideia, estarei aqui.",
+					"choices": [{"text": "Até logo.", "next": ""}]
+				},
+				{
+					"id": "joined",
+					"text": "Meu avô era um dragão vermelho, sabia? Ou pelo menos ele dizia isso. Vamos!",
+					"choices": [{"text": "Vamos.", "next": ""}]
+				}
+			]
+		}
+	]
+}
