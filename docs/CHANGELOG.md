@@ -8,12 +8,13 @@
 - Arte ilustrada (gerada com ChatGPT pelo responsável): 12 classes, 9 espécies do SRD, logo e o fundo pintado da Vila
   de Ribeira. Originais em `art_source/arghaz/` (ignorados pelo Godot) e `tools/art/import_arghaz.gd`, que limpa
   pedaços de vizinhos da folha, recorta e reduz.
-- Personagens usam a ilustração da classe (companheiros podem ter a própria, campo `figure`), animada por código:
+- Personagens usam a ilustração da espécie, vestida para a classe quando existir `<espécie>_<classe>.png` (companheiros
+  podem ter a própria, campo `figure`), animada por código:
   balanço ao andar, avanço no ataque e espelho para a esquerda. Retrato = busto da ilustração.
 - Mapas com fundo pintado (`MapBackdrop`): tiles, adereços e placas continuam como colisão, mas não são desenhados.
 - Tema global da interface (`assets/ui/arghaz_theme.tres`, gerado por `tools/art/build_ui_theme.gd`) nas cores do
   logo: azul-petróleo escuro, dourado e turquesa.
-- Criação de personagem mostra a ilustração da classe e a da espécie no lugar do editor de partes.
+- Criação de personagem mostra só a ilustração do personagem (espécie) no lugar do editor de partes.
 - `art_source/PEDIDOS_DE_ARTE.md`: tudo o que falta desenhar, com pedidos prontos e capturas de referência de layout
   (`art_source/referencias/`).
 

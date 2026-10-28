@@ -30,6 +30,14 @@ func _initialize() -> void:
 		count += _character("%s/sprites/classes/%s.png" % [SOURCE, name], "%s/class_%s.png" % [OUT_CHARACTERS, CLASSES[name]])
 	for name: String in SPECIES:
 		count += _character("%s/sprites/especies/%s.png" % [SOURCE, name], "%s/species_%s.png" % [OUT_CHARACTERS, SPECIES[name]])
+	# Espécie vestida para a classe: sprites/combinacoes/<especie>_<classe>.png (ex.: anao_paladino.png).
+	var combos := 0
+	for species: String in SPECIES:
+		for klass: String in CLASSES:
+			var source := "%s/sprites/combinacoes/%s_%s.png" % [SOURCE, species, klass]
+			if FileAccess.file_exists(ProjectSettings.globalize_path(source)):
+				combos += _character(source, "%s/%s_%s.png" % [OUT_CHARACTERS, SPECIES[species], CLASSES[klass]])
+	print("import_arghaz: %d combinações espécie + classe" % combos)
 	var logo := _load("%s/logo-arghaz.png" % SOURCE)
 	if logo != null:
 		logo = logo.get_region(logo.get_used_rect())

@@ -274,11 +274,11 @@ func _build_look_preview() -> void:
 	column.add_theme_constant_override("separation", 4)
 	panel.add_child(column)
 	var holder := Control.new()
-	holder.custom_minimum_size = Vector2(96, 124)
+	holder.custom_minimum_size = Vector2(96, 190)
 	holder.clip_contents = true
 	_look_sprite = AnimatedSprite2D.new()
-	_look_sprite.scale = Vector2(3, 3)
-	_look_sprite.position = Vector2(48, 116)
+	_look_sprite.scale = Vector2(5, 5)
+	_look_sprite.position = Vector2(48, 182)
 	holder.add_child(_look_sprite)
 	column.add_child(holder)
 	_look_portrait = TextureRect.new()
@@ -450,23 +450,21 @@ func _refresh() -> void:
 	_update_look_preview()
 
 
-## Prévia com as ilustrações: a da classe anda no quadro e a da espécie aparece embaixo.
+## Prévia com a ilustração do personagem: a espécie (vestida para a classe, quando houver essa arte).
 func _update_figure_preview() -> bool:
-	var class_path := Appearance.class_figure_path(_class_id)
-	var species_path := Appearance.species_figure_path(_species_id)
-	var has_art := ResourceLoader.exists(class_path)
+	var path := Appearance.figure_for(_species_id, _class_id)
+	var has_art := ResourceLoader.exists(path)
 	_set_appearance_editor_visible(not has_art)
 	_figure_caption.visible = has_art
+	_look_portrait.visible = not has_art
 	if not has_art:
 		return false
-	var key := "figure:%s|%s" % [class_path, species_path]
+	var key := "figure:%s" % path
 	if key == _look_key:
 		return true
 	_look_key = key
-	SpriteLibrary.attach(_look_sprite, SpriteLibrary.frames_for(class_path))
+	SpriteLibrary.attach(_look_sprite, SpriteLibrary.frames_for(path))
 	_play_look()
-	_look_portrait.texture = load(species_path) if ResourceLoader.exists(species_path) else null
-	_look_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	_figure_caption.text = "%s · %s" % [_class().get("name", ""), _species().get("name", "")]
 	return true
 
