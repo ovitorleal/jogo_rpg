@@ -62,4 +62,4 @@ servido por qualquer hospedagem estática (os arquivos de `exports/web` bastam).
   exploração estão registradas sem efeito (lista em `RULES_POLICY.md`).
 - Só o Lobo tem arte própria na Forma Selvagem; efeitos visuais de área são simples.
 - Sem áudio.
-- Parte da arte foi gerada com ChatGPT; ver a nota no `LICENSE` e o catálogo de assets.
+- O logo foi gerado com ChatGPT; ver a nota no `LICENSE`.

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/world/village_terrain.tscn" id="2_terrain"]
@@ -9,19 +9,12 @@
 [ext_resource type="PackedScene" path="res://scenes/world/npc_ione.tscn" id="7_ione"]
 [ext_resource type="PackedScene" path="res://scenes/world/campfire.tscn" id="8_campfire"]
 [ext_resource type="PackedScene" path="res://scenes/world/npc_companion.tscn" id="20_companion"]
-[ext_resource type="Script" path="res://scripts/exploration/map_backdrop.gd" id="30_backdrop"]
-[ext_resource type="Texture2D" path="res://assets/backgrounds/village.png" id="31_village_bg"]
 
 [node name="Village" type="Node2D"]
 script = ExtResource("1_script")
 
 [node name="Terrain" parent="." instance=ExtResource("2_terrain")]
 unique_name_in_owner = true
-
-[node name="Backdrop" type="Sprite2D" parent="."]
-texture = ExtResource("31_village_bg")
-script = ExtResource("30_backdrop")
-map_rect = Rect2(0, 56, 640, 360)
 
 [node name="Entrances" type="Node2D" parent="."]
 

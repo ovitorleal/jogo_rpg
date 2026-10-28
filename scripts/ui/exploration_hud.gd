@@ -47,7 +47,7 @@ func _ready() -> void:
 	_objective_label.size = Vector2(420, 12)
 	_objective_label.add_theme_font_size_override("font_size", 8)
 	_objective_label.add_theme_color_override("font_color", Color(1.0, 0.86, 0.52))
-	_objective_label.add_theme_color_override("font_outline_color", Color(0.067, 0.086, 0.110))
+	_objective_label.add_theme_color_override("font_outline_color", Color(0.102, 0.078, 0.137))
 	_objective_label.add_theme_constant_override("outline_size", 3)
 	add_child(_objective_label)
 	move_child(_objective_label, 1)
@@ -185,8 +185,8 @@ func _build_choices_overlay() -> PanelContainer:
 	small.default_font_size = 9
 	panel.theme = small
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.067, 0.086, 0.110, 0.97)
-	style.border_color = Color(0.851, 0.659, 0.302)
+	style.bg_color = Color(0.102, 0.078, 0.137, 0.97)
+	style.border_color = Color(0.878, 0.706, 0.541)
 	style.set_border_width_all(1)
 	panel.add_theme_stylebox_override("panel", style)
 	var margin := MarginContainer.new()

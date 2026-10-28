@@ -46,7 +46,6 @@ func _ready() -> void:
 	elif not entrance.is_empty() and has_node("Entrances/%s" % entrance):
 		_player.global_position = (get_node("Entrances/%s" % entrance) as Node2D).global_position
 		_player.reset_physics_interpolation()
-	_apply_backdrop()
 	_configure_camera_limits()
 	_player.interaction_target_changed.connect(_on_interaction_target_changed)
 	for node in get_tree().get_nodes_in_group(Interactable.GROUP):
@@ -488,32 +487,8 @@ func _map_id() -> String:
 	return ""
 
 
-## Fundo pintado (nó "Backdrop"), ou null em mapas ainda desenhados com tiles.
-func backdrop() -> MapBackdrop:
-	return get_node_or_null("Backdrop") as MapBackdrop
-
-
-## Com fundo pintado, tiles, adereços e objetos fixos param de ser desenhados (as colisões continuam);
-## personagens continuam visíveis por cima da pintura.
-func _apply_backdrop() -> void:
-	if backdrop() == null:
-		return
-	var transparent := Color(1, 1, 1, 0)
-	%Terrain.modulate = transparent
-	var props := get_node_or_null("Objects/Props") as CanvasItem
-	if props != null:
-		props.modulate = transparent
-	for child in get_node("Objects").get_children():
-		if child is Interactable and not child is Npc:
-			var sprite := child.get_node_or_null("Sprite") as CanvasItem
-			if sprite != null:
-				sprite.visible = false
-
-
-## Área do mapa em pixels: a do fundo pintado ou a dos tiles usados.
+## Área do mapa em pixels, a partir dos tiles usados.
 func get_map_rect() -> Rect2i:
-	if backdrop() != null:
-		return Rect2i(backdrop().map_rect)
 	var used := _ground.get_used_rect()
 	var tile_size := _ground.tile_set.tile_size
 	return Rect2i(used.position * tile_size, used.size * tile_size)

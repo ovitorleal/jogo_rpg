@@ -1,35 +1,5 @@
 # Bíblia visual
 
-## As Crônicas de Arghaz (a partir de 0.10.0) — direção atual
-
-Ilustração em pixel art detalhado de alta resolução, com volume pintado, contorno escuro e muito detalhe de
-tecido, couro e metal. As referências são as imagens do responsável: as folhas de classes e espécies, a vila e o logo.
-Pode sair do pixel art estrito de 16 bits. Nada copiado de jogos existentes.
-
-- **Personagem do jogador:** ilustração da espécie vestida com o equipamento da classe (`<espécie>_<classe>.png`).
-  Sem a combinação, aparece a espécie. As ilustrações das classes servem de referência de equipamento.
-- **Personagens:** pose única de corpo inteiro, de frente e levemente de cima, fundo transparente. No jogo têm
-  34 px de altura no mundo (`SpriteLibrary.FIGURE_HEIGHT`), com filtro suave e mipmaps. A animação é feita por
-  código: balanço, avanço e espelho.
-- **Mapas:** um fundo pintado por mapa, visto de cima, sem personagens. A área visível de 640×360 px do mundo
-  corresponde a cerca de 1672×941 px de imagem.
-- **Luz:** de cima à esquerda.
-- **Interface** (`tools/art/build_ui_theme.gd`):
-
-  | Cor | Valor | Uso |
-  |---|---|---|
-  | Azul-petróleo escuro | `#11161C` | fundos |
-  | Dourado | `#D9A84D` | molduras |
-  | Dourado claro | `#FFD780` | destaque |
-  | Turquesa | `#58CFD9` | foco |
-  | Texto claro | `#EFE8D5` | texto |
-
-- **Arquivos:** originais em `art_source/arghaz/` e versões do jogo em `assets/characters/arghaz/`,
-  `assets/backgrounds/` e `assets/ui/`.
-
-O restante deste documento descreve a direção anterior (16 bits gerada por código), que vale para a arte ainda não
-substituída.
-
 **Estado:** direção 16 bits definida (2026-10-24). Assets atuais são originais, gerados por código
 (`tools/art/`), com `approval_status: in_review` no catálogo até aprovação do desenvolvedor.
 Ao mudar algo aqui, revisar os assets existentes e o catálogo (`assets/asset_catalog.json`).
