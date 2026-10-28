@@ -5,8 +5,7 @@ do SRD 5.2.1 (2024). Especificação completa: [PROJECT_MASTER_SPECIFICATION_FAN
 
 **Jogar no navegador:** https://ovitorleal.github.io/jogo_rpg/
 
-**Estado atual:** versão 0.10.0 — aventura "A Garra-Rubra", companheiros recrutáveis e a nova identidade visual
-(em andamento). História do mundo em [As Crônicas de Arghaz.md](As%20Cr%C3%B4nicas%20de%20Arghaz.md).
+**Estado atual:** versão 0.8.0 — aventura de demonstração "A Garra-Rubra" completa (Fase 7) e publicação (Fase 8).
 Veja [docs/ROADMAP.md](docs/ROADMAP.md), o roteiro em [docs/VERTICAL_SLICE.md](docs/VERTICAL_SLICE.md) e as limitações
 conhecidas em [docs/PUBLISHING.md](docs/PUBLISHING.md).
 

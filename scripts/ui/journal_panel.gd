@@ -7,8 +7,8 @@ var _text: RichTextLabel
 
 func _ready() -> void:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.067, 0.086, 0.110, 0.97)
-	style.border_color = Color(0.851, 0.659, 0.302)
+	style.bg_color = Color(0.102, 0.078, 0.137, 0.97)
+	style.border_color = Color(0.878, 0.706, 0.541)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(2)
 	add_theme_stylebox_override("panel", style)

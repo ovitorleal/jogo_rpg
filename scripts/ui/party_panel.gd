@@ -15,8 +15,8 @@ func _ready() -> void:
 	small.default_font_size = 9
 	theme = small
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.067, 0.086, 0.110, 0.97)
-	style.border_color = Color(0.851, 0.659, 0.302)
+	style.bg_color = Color(0.102, 0.078, 0.137, 0.97)
+	style.border_color = Color(0.878, 0.706, 0.541)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(2)
 	add_theme_stylebox_override("panel", style)
@@ -118,7 +118,7 @@ func _row(c: CharacterData, registry: ContentRegistry, action_text: String) -> B
 func _header(text: String) -> void:
 	var label := Label.new()
 	label.text = text
-	label.add_theme_color_override("font_color", Color(0.851, 0.659, 0.302))
+	label.add_theme_color_override("font_color", Color(0.878, 0.706, 0.541))
 	_column.add_child(label)
 
 
@@ -126,5 +126,5 @@ func _note(text: String) -> void:
 	var label := Label.new()
 	label.text = "  " + text
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	label.add_theme_color_override("font_color", Color(0.604, 0.659, 0.698))
+	label.add_theme_color_override("font_color", Color(0.522, 0.592, 0.722))
 	_column.add_child(label)

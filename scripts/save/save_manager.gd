@@ -48,7 +48,7 @@ func _ready() -> void:
 	_label.offset_bottom = -4
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_label.add_theme_font_size_override("font_size", 8)
-	_label.add_theme_color_override("font_outline_color", Color(0.067, 0.086, 0.110))
+	_label.add_theme_color_override("font_outline_color", Color(0.102, 0.078, 0.137))
 	_label.add_theme_constant_override("outline_size", 3)
 	_label.modulate.a = 0.0
 	_layer.add_child(_label)

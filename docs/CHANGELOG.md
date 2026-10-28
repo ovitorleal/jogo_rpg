@@ -1,26 +1,15 @@
 # Changelog
 
-## [0.10.0] — 2026-10-27 — As Crônicas de Arghaz: nova identidade visual (em andamento)
+## [0.10.0] — 2026-10-27 — Nome e logo: As Crônicas de Arghaz
 
 ### Adicionado
-- Nome definitivo: **As Crônicas de Arghaz**. Logo na tela de título, subtítulo "Livro I — Antes dos Homens" e a
-  história do mundo (`As Crônicas de Arghaz.md`).
-- Arte ilustrada (gerada com ChatGPT pelo responsável): 12 classes, 9 espécies do SRD, logo e o fundo pintado da Vila
-  de Ribeira. Originais em `art_source/arghaz/` (ignorados pelo Godot) e `tools/art/import_arghaz.gd`, que limpa
-  pedaços de vizinhos da folha, recorta e reduz.
-- Personagens usam a ilustração da espécie, vestida para a classe quando existir `<espécie>_<classe>.png` (companheiros
-  podem ter a própria, campo `figure`), animada por código:
-  balanço ao andar, avanço no ataque e espelho para a esquerda. Retrato = busto da ilustração.
-- Mapas com fundo pintado (`MapBackdrop`): tiles, adereços e placas continuam como colisão, mas não são desenhados.
-- Tema global da interface (`assets/ui/arghaz_theme.tres`, gerado por `tools/art/build_ui_theme.gd`) nas cores do
-  logo: azul-petróleo escuro, dourado e turquesa.
-- Criação de personagem mostra só a ilustração do personagem (espécie) no lugar do editor de partes.
-- `art_source/PEDIDOS_DE_ARTE.md`: tudo o que falta desenhar, com pedidos prontos e capturas de referência de layout
-  (`art_source/referencias/`).
+- Nome definitivo **As Crônicas de Arghaz**, com o logo (gerado com ChatGPT pelo responsável) na tela de título e o
+  subtítulo "Livro I — Antes dos Homens". A história do mundo fica em `As Crônicas de Arghaz.md`.
 
-### Pendente
-- Arte de Ione, Amara, goblins, Garra-Rubra, lobo, Clareira, Bosque do Riacho, arena, estrada, título e itens (ainda
-  no estilo antigo).
+### Removido
+- A arte nova dos personagens, mapas e interface (0.10.0 anterior, PRs #20 e #21) foi desfeita a pedido do
+  responsável. O jogo voltou ao visual da 0.9.0, mantendo só o logo e o nome. O trabalho desfeito ficou guardado no
+  branch local `backup-herois-arghaz`.
 
 ## [0.9.0] — 2026-10-27 — Companheiros recrutáveis
 
