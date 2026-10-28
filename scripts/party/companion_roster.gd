@@ -81,6 +81,8 @@ func recruit(companion_id: String, party: Array[CharacterData], registry: Conten
 	var c := build(entry, leader.level if leader != null else 1, registry)
 	if c == null:
 		return {"ok": false, "error": "Não foi possível criar %s" % entry["name"], "text": "", "joined": false}
+	if leader != null and leader.level == c.level:
+		c.experience = maxi(c.experience, leader.experience)
 	recruited.append(companion_id)
 	if party.size() < MAX_PARTY:
 		party.append(c)

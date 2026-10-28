@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/exploration/exploration_map.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://scenes/world/village_terrain.tscn" id="2_terrain"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/village_props.tscn" id="6_props"]
 [ext_resource type="PackedScene" path="res://scenes/world/npc_ione.tscn" id="7_ione"]
 [ext_resource type="PackedScene" path="res://scenes/world/campfire.tscn" id="8_campfire"]
+[ext_resource type="PackedScene" path="res://scenes/world/npc_companion.tscn" id="20_companion"]
 
 [node name="Village" type="Node2D"]
 script = ExtResource("1_script")
@@ -35,6 +36,12 @@ prompt_text = "Entrar na estalagem"
 message_text = "Estalagem do Ganso Dourado. \"Cama quente e sopa por conta da vila\", diz o estalajadeiro. Descansar até o amanhecer?"
 action = "rest_long"
 
+[node name="InnRegister" parent="Objects" instance=ExtResource("3_sign")]
+position = Vector2(248, 176)
+prompt_text = "Organizar o grupo"
+message_text = "O livro de hóspedes da estalagem. Companheiros que não vão com você esperam aqui. Organizar o grupo?"
+action = "party"
+
 [node name="Hearth" parent="Objects" instance=ExtResource("8_campfire")]
 position = Vector2(372, 236)
 
@@ -45,6 +52,16 @@ position = Vector2(352, 206)
 position = Vector2(612, 216)
 message_text = "A placa diz: \"Estrada da Vila — Clareira da Encruzilhada, algumas horas a leste pelos campos.\" Partir agora?"
 action = "travel:route.village_road"
+
+[node name="Doran" parent="Objects" instance=ExtResource("20_companion")]
+position = Vector2(420, 228)
+facing = "left"
+companion_id = "companion.doran"
+
+[node name="Bruna" parent="Objects" instance=ExtResource("20_companion")]
+position = Vector2(300, 196)
+facing = "down"
+companion_id = "companion.bruna"
 
 [node name="Player" parent="Objects" instance=ExtResource("4_player")]
 unique_name_in_owner = true

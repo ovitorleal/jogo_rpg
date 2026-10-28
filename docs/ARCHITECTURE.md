@@ -129,6 +129,16 @@
 | Objetivo atual calculado pelo `QuestLog.current_objective` e mostrado pelo HUD a cada chegada e conversa | O jogador sempre sabe o próximo passo |
 | Acontecimentos garantidos nas rotas (`scripted_events`) e eventos "uma vez" guardados no `ExplorationManager` e no salvamento | Encontros de história previsíveis sem repetir a cada viagem |
 
+### Companheiros (0.9.0)
+
+| Decisão | Motivo |
+|---|---|
+| `CompanionRoster` (classe de regras, sem autoloads) guarda recrutados e estalagem; o `PartyManager` guarda a instância | Recrutar, trocar e salvar testáveis sem cena |
+| Companheiro montado pelo `CharacterFactory` com o arranjo sugerido da classe e subido com `Progression.level_up` até o nível do líder | Mesma validação do protagonista; nada de fichas prontas que envelhecem com as regras |
+| Recrutamento é a ação de diálogo `recruit:<id>`; pedidos usam condições e testes de perícia do `DialogueRunner` | Cada companheiro é só dados (companheiro + diálogo), sem código por personagem |
+| `CompanionNpc` some ao ser recrutado e pode exigir um encontro vencido; `PartyFollower` só segue o rastro do líder | A exploração mostra o estado, não o decide |
+| Painel do grupo emite pedidos; o `ExplorationMap` chama o roster e salva | UI sem regras |
+
 ### Fase 6.6 (entregas 2 e 3)
 
 | Decisão | Motivo |

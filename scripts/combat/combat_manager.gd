@@ -408,7 +408,8 @@ func apply_results_to_party(registry: ContentRegistry = null) -> void:
 	var party := combatants.filter(func(u: Combatant) -> bool: return u.team == Combatant.Team.PARTY)
 	for unit: Combatant in party:
 		if unit.character != null:
-			unit.character.current_hp = unit.hp
+			# Sem testes contra a morte: depois de uma vitória, quem caiu se levanta com 1 PV.
+			unit.character.current_hp = maxi(unit.hp, 1) if outcome == Outcome.VICTORY else unit.hp
 			# Astúcia Mágica (Bruxo 2): o rito de 1 minuto é feito depois do combate, se houver espaços gastos.
 			if registry != null:
 				ClassFeatures.magical_cunning(unit.character, registry)

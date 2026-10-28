@@ -1,7 +1,8 @@
 class_name ExplorationMap
 extends Node2D
 ## Controlador de um mapa de exploração: limites da câmera, aviso de interação,
-## falas com retrato, ficha do personagem e início/retorno de encontros.
+## falas com retrato, ficha do personagem, companheiros (seguidores e estalagem) e início/retorno de
+## encontros.
 ## Espera os nós únicos %Terrain (com a camada Ground), %Player e %Hud.
 
 const NO_CHARACTER_MESSAGE := "Nenhum personagem no grupo. Use \"Novo jogo\" no menu para criar um."
@@ -10,14 +11,26 @@ const PLAYER_PORTRAIT := preload("res://assets/portraits/hero_portrait.png")
 const CONFIRM_HINT := "[E] Confirmar · [Esc] Cancelar"
 const TITLE_SCENE := "res://scenes/menus/title_screen.tscn"
 const ENDING_SCENE := "res://scenes/menus/ending_screen.tscn"
+const NEXT_MEMBER_HINT := "[Tab] próximo membro"
+## Distância (px) entre pontos do rastro do líder e quantos pontos separam cada seguidor.
+const TRAIL_STEP := 4.0
+const TRAIL_GAP := 5
 
 ## Ação aguardando confirmação (texto do Interactable.action).
 var _pending_action: String = ""
 ## Conversa em andamento (null fora de diálogo) e avisos acumulados durante ela.
 var _dialogue: DialogueRunner = null
 var _dialogue_notes: Array[String] = []
+## Tamanho do grupo no início da conversa (recrutar muda o grupo e os seguidores).
+var _dialogue_party_size: int = 0
 ## Recompensas da missão final, guardadas ao fim da conversa para a tela de conclusão.
 var _ending_rewards: Array[String] = []
+## Membro do grupo mostrado na ficha/inventário/escolhas (Tab troca) e painel aberto agora.
+var _viewed: int = 0
+var _open_kind: String = ""
+## Companheiros andando atrás do líder e o rastro (mais recente por último) que eles seguem.
+var _followers: Array[PartyFollower] = []
+var _trail: Array[Vector2] = []
 
 @onready var _ground: TileMapLayer = %Terrain.get_node("Ground")
 @onready var _player: Player = %Player
@@ -48,6 +61,10 @@ func _ready() -> void:
 	_hud.pause_menu.save_requested.connect(save_from_menu)
 	_hud.pause_menu.title_requested.connect(return_to_title)
 	_hud.inventory_panel.changed.connect(func() -> void: SaveManager.request_autosave("equipamento"))
+	_hud.inventory_panel.changed.connect(_refresh_follower_looks)
+	_hud.party_panel.join_requested.connect(_on_join_requested)
+	_hud.party_panel.leave_requested.connect(_on_leave_requested)
+	refresh_followers()
 	var notes: Array[String] = []
 	var message := ExplorationManager.take_return_message()
 	if not message.is_empty():
@@ -61,6 +78,26 @@ func _ready() -> void:
 	refresh_objective()
 	# Ponto seguro: chegada ao mapa (troca de área, volta de combate, missão atualizada).
 	SaveManager.request_autosave("mapa")
+
+
+## Tab troca o membro mostrado antes que a interface use a tecla para mudar o foco.
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and (event as InputEventKey).keycode == KEY_TAB \
+			and _open_kind in ["sheet", "inventory", "choices"] and _hud.is_overlay_open():
+		get_viewport().set_input_as_handled()
+		cycle_member()
+
+
+func _physics_process(_delta: float) -> void:
+	if _followers.is_empty():
+		return
+	var here := _player.global_position
+	if _trail.is_empty() or _trail[-1].distance_to(here) >= TRAIL_STEP:
+		_trail.append(here)
+		if _trail.size() > TRAIL_GAP * CompanionRoster.MAX_PARTY + 1:
+			_trail.pop_front()
+	for i in _followers.size():
+		_followers[i].target = _trail[maxi(0, _trail.size() - 1 - TRAIL_GAP * (i + 1))]
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -194,6 +231,7 @@ func toggle_journal() -> void:
 
 
 func close_overlays() -> void:
+	_open_kind = ""
 	_hud.hide_overlays()
 	_player.input_enabled = true
 	_on_interaction_target_changed(_player.get_interaction_target())
@@ -208,12 +246,33 @@ func _toggle_overlay(kind: String) -> void:
 		return
 	if _hud.is_message_open():
 		return
-	var leader: CharacterData = PartyManager.get_leader()
 	_player.input_enabled = false
 	_hud.hide_prompt()
-	if leader == null and kind != "journal":
+	if not PartyManager.has_party() and kind != "journal":
 		_hud.show_message(NO_CHARACTER_MESSAGE)
 		return
+	_show_overlay(kind)
+
+
+## Membro do grupo mostrado nos painéis (o líder por padrão).
+func viewed_member() -> CharacterData:
+	if not PartyManager.has_party():
+		return null
+	_viewed = clampi(_viewed, 0, PartyManager.members.size() - 1)
+	return PartyManager.members[_viewed]
+
+
+## Mostra o próximo membro do grupo no painel aberto (ficha, inventário ou escolhas).
+func cycle_member() -> void:
+	if PartyManager.members.size() <= 1 or not _open_kind in ["sheet", "inventory", "choices"]:
+		return
+	_viewed = (_viewed + 1) % PartyManager.members.size()
+	_show_overlay(_open_kind)
+
+
+func _show_overlay(kind: String) -> void:
+	var leader := viewed_member()
+	_open_kind = kind
 	match kind:
 		"sheet":
 			_hud.show_sheet(CharacterSheet.build(leader, Content.registry))
@@ -227,6 +286,71 @@ func _toggle_overlay(kind: String) -> void:
 			_hud.show_choices(leader, Content.registry)
 			if not _hud.choices_panel.changed.is_connected(_on_choices_changed):
 				_hud.choices_panel.changed.connect(_on_choices_changed)
+	if kind != "journal" and PartyManager.members.size() > 1:
+		_hud.extend_overlay_hint(NEXT_MEMBER_HINT)
+
+
+## Estalagem: quem vai no grupo e quem fica esperando.
+func open_party_panel(status: String = "") -> void:
+	if not PartyManager.has_party():
+		_show_player_line(NO_CHARACTER_MESSAGE)
+		return
+	_player.input_enabled = false
+	_hud.hide_prompt()
+	_open_kind = "party"
+	_hud.show_party(PartyManager.roster, PartyManager.members, Content.registry, status)
+
+
+func _on_join_requested(c: CharacterData) -> void:
+	var result := PartyManager.roster.join(c, PartyManager.members, Content.registry)
+	_after_party_change(" ".join(result["lines"]) if result["ok"] else result["error"])
+
+
+func _on_leave_requested(c: CharacterData) -> void:
+	var result := PartyManager.roster.leave(c, PartyManager.members)
+	_after_party_change("%s vai esperar na estalagem." % c.name if result["ok"] else result["error"])
+
+
+func _after_party_change(status: String) -> void:
+	PartyManager.party_changed.emit()
+	refresh_followers()
+	SaveManager.request_autosave("grupo")
+	open_party_panel(status)
+
+
+# --- Companheiros no mapa -------------------------------------------------------
+
+## Cria (ou recria) os seguidores para os companheiros do grupo ativo.
+func refresh_followers() -> void:
+	for follower in _followers:
+		follower.queue_free()
+	_followers.clear()
+	_trail.clear()
+	if not PartyManager.has_party():
+		return
+	var parent: Node = _player.get_parent()
+	for i in range(1, PartyManager.members.size()):
+		var follower := PartyFollower.new()
+		follower.name = "Follower%d" % i
+		parent.add_child(follower)
+		follower.setup(PartyManager.members[i], _player.global_position + Vector2(-6.0 * i, -2.0 * i))
+		_followers.append(follower)
+
+
+func followers() -> Array[PartyFollower]:
+	return _followers
+
+
+func _refresh_follower_looks() -> void:
+	for follower in _followers:
+		follower.refresh_appearance()
+
+
+## Companheiros recrutados somem do mapa; os que dependem de um encontro aparecem depois dele.
+func refresh_companions() -> void:
+	for node in get_tree().get_nodes_in_group(Interactable.GROUP):
+		if node is CompanionNpc and is_ancestor_of(node):
+			(node as CompanionNpc).refresh()
 
 
 # --- Diálogo ------------------------------------------------------------------
@@ -238,7 +362,9 @@ func start_dialogue(dialogue_id: String) -> void:
 		return
 	_dialogue = DialogueRunner.new()
 	_dialogue_notes.clear()
-	_dialogue.begin(entry, QuestManager.log, PartyManager.members, PartyManager.inventory, Content.registry)
+	_dialogue_party_size = PartyManager.members.size()
+	_dialogue.begin(entry, QuestManager.log, PartyManager.members, PartyManager.inventory, Content.registry,
+			PartyManager.roster, null, ExplorationManager.resolved_triggers)
 	# Objetivo "conversar com": cumprido ao começar a conversa (depois de escolher a fala de abertura).
 	_dialogue_notes.append_array(QuestManager.notify("talk", dialogue_id))
 	_player.input_enabled = false
@@ -263,6 +389,10 @@ func end_dialogue() -> void:
 	var finished_final := _completed_final_quest()
 	_dialogue = null
 	refresh_objective()
+	refresh_companions()
+	if PartyManager.members.size() != _dialogue_party_size:
+		PartyManager.party_changed.emit()
+		refresh_followers()
 	if finished_final:
 		show_ending()
 		return
@@ -316,6 +446,11 @@ func is_in_dialogue() -> bool:
 func _show_dialogue_node() -> void:
 	var portrait_path := str(_dialogue.dialogue.get("portrait", ""))
 	var portrait: Texture2D = load(portrait_path) if not portrait_path.is_empty() else null
+	var companion_id := str(_dialogue.dialogue.get("companion", ""))
+	if portrait == null and not companion_id.is_empty():
+		var preview := CompanionNpc.preview(companion_id, Content.registry)
+		if preview != null:
+			portrait = Appearance.portrait_texture(preview, Content.registry)
 	var options: Array[String] = []
 	for choice in _dialogue.choices():
 		options.append(choice["text"])
@@ -327,10 +462,11 @@ func _show_dialogue_node() -> void:
 
 ## Escolhas mudaram (talento, estilo...): PV máximos podem mudar e o progresso é salvo.
 func _on_choices_changed() -> void:
-	var leader: CharacterData = PartyManager.get_leader()
-	if leader != null:
-		leader.current_hp = mini(leader.current_hp, CharacterSheet.build(leader, Content.registry).max_hp)
+	var member := viewed_member()
+	if member != null:
+		member.current_hp = mini(member.current_hp, CharacterSheet.build(member, Content.registry).max_hp)
 	_player.refresh_appearance()
+	_refresh_follower_looks()
 	SaveManager.request_autosave("escolhas")
 
 
@@ -414,10 +550,15 @@ func _execute_action(action: String) -> void:
 	if action.begins_with("travel:"):
 		_player.input_enabled = false
 		ExplorationManager.begin_travel.call_deferred(action.trim_prefix("travel:"))
+	elif action == "party":
+		open_party_panel()
 	elif action == "rest_long":
 		var healed := 0
 		for c in PartyManager.members:
 			healed += Rest.long_rest(c, Content.registry)
+		# Quem espera na estalagem também descansa.
+		for c in PartyManager.roster.bench:
+			Rest.long_rest(c, Content.registry)
 		_show_player_line("Você descansa junto à fogueira até o amanhecer. PV e Dados de Vida restaurados (+%d PV)." % healed)
 		SaveManager.request_autosave("descanso")
 	else:

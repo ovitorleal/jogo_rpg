@@ -22,6 +22,7 @@ var journal_panel: JournalPanel
 var pause_menu: PauseMenu
 var choices_overlay: PanelContainer
 var choices_panel: ChoicesPanel
+var party_panel: PartyPanel
 var _objective_label: Label
 
 const DEFAULT_HINT := "[E] Continuar"
@@ -31,6 +32,7 @@ func _ready() -> void:
 	inventory_panel = _overlay(InventoryPanel.new(), "InventoryPanel")
 	journal_panel = _overlay(JournalPanel.new(), "JournalPanel")
 	choices_overlay = _overlay(_build_choices_overlay(), "ChoicesOverlay")
+	party_panel = _overlay(PartyPanel.new(), "PartyPanel")
 	pause_menu = _overlay(PauseMenu.new(), "PauseMenu")
 	pause_menu.set_anchors_preset(Control.PRESET_CENTER)
 	pause_menu.grow_horizontal = Control.GROW_DIRECTION_BOTH
@@ -214,6 +216,20 @@ func show_choices(character: CharacterData, registry: ContentRegistry) -> void:
 	_show_overlay_hint("[L] ou [Esc] fechar · as escolhas valem na hora")
 
 
+func show_party(roster: CompanionRoster, members: Array[CharacterData], registry: ContentRegistry,
+		status: String = "") -> void:
+	hide_overlays()
+	party_panel.show_party(roster, members, registry, status)
+	party_panel.visible = true
+	_show_overlay_hint("[Esc] fechar")
+
+
+## Acrescenta uma dica à linha de teclas do painel aberto (ex.: "[Tab] próximo membro").
+func extend_overlay_hint(extra: String) -> void:
+	if _sheet_hint.visible and not extra in _sheet_hint.text:
+		_sheet_hint.text = "%s · %s" % [_sheet_hint.text, extra]
+
+
 func show_pause_menu(status: String) -> void:
 	hide_overlays()
 	pause_menu.open(status)
@@ -235,7 +251,7 @@ func is_sheet_open() -> bool:
 
 
 func is_overlay_open() -> bool:
-	return _sheet_panel.visible or inventory_panel.visible or journal_panel.visible or pause_menu.visible 			or choices_overlay.visible
+	return _sheet_panel.visible or inventory_panel.visible or journal_panel.visible or pause_menu.visible 			or choices_overlay.visible or party_panel.visible
 
 
 func hide_overlays() -> void:
@@ -244,6 +260,7 @@ func hide_overlays() -> void:
 	journal_panel.visible = false
 	pause_menu.visible = false
 	choices_overlay.visible = false
+	party_panel.visible = false
 
 
 func get_sheet_text() -> String:

@@ -16,7 +16,8 @@ signal interacted(source: Interactable)
 ## Retrato de quem fala. Vazio com speaker_name vazio = retrato do personagem do jogador.
 @export var speaker_portrait: Texture2D
 ## Ação executada após confirmar a mensagem (o mapa decide o efeito):
-## "travel:<route_id>" inicia uma viagem; "rest_long" faz um descanso longo.
+## "travel:<route_id>" inicia uma viagem; "rest_long" faz um descanso longo; "party" abre a
+## organização do grupo (estalagem); "talk:<dialogue_id>" abre uma conversa.
 @export var action: String = ""
 @export var enabled: bool = true
 
