@@ -13,6 +13,7 @@
 			"how_to_recruit": "Aceitar a missão de Ione e falar com ele na vila",
 			"map_id": "map.village",
 			"dialogue_id": "dialogue.companion_doran",
+			"figure": "species_dwarf",
 			"skills": ["medicine", "religion"],
 			"appearance": {"body": "masculine", "build": "broad", "hair_style": "short", "beard": "braided", "skin": 2,
 				"hair_color": 3, "outfit": 5, "cloak": "cape", "cloak_color": 1}
@@ -29,6 +30,7 @@
 			"how_to_recruit": "Concluir a missão \"Ameaça na Ruína\" (Amara, na Clareira) e falar com ela na vila",
 			"map_id": "map.village",
 			"dialogue_id": "dialogue.companion_bruna",
+			"figure": "species_halfling",
 			"skills": ["acrobatics", "perception", "persuasion", "insight"],
 			"appearance": {"body": "feminine", "hair_style": "curly", "skin": 1, "hair_color": 4, "outfit": 4,
 				"cloak": "cape", "cloak_color": 2}
@@ -45,6 +47,7 @@
 			"how_to_recruit": "Aceitar o pedido dela e derrotar o lobo da mata da Clareira",
 			"map_id": "map.clearing",
 			"dialogue_id": "dialogue.companion_lyra",
+			"figure": "species_elf",
 			"skills": ["survival", "perception", "stealth"],
 			"appearance": {"body": "feminine", "build": "slim", "hair_style": "braid", "ears": "pointed_long", "skin": 0,
 				"hair_color": 5, "outfit": 2, "cloak": "cape", "cloak_color": 2}
@@ -61,6 +64,7 @@
 			"how_to_recruit": "Emprestar 15 PO para ele pagar a dívida",
 			"map_id": "map.clearing",
 			"dialogue_id": "dialogue.companion_kael",
+			"figure": "class_warlock",
 			"skills": ["arcana", "deception"],
 			"appearance": {"body": "masculine", "hair_style": "long", "horns": "ram", "tail": "spade", "skin": 3,
 				"hair_color": 1, "outfit": 3, "cloak": "cape", "cloak_color": 4}
@@ -77,6 +81,7 @@
 			"how_to_recruit": "Vencer a queda de braço (Atletismo CD 12) no Bosque do Riacho",
 			"map_id": "map.forest_brook",
 			"dialogue_id": "dialogue.companion_tarka",
+			"figure": "species_goliath",
 			"skills": ["athletics", "survival"],
 			"appearance": {"body": "feminine", "build": "broad", "hair_style": "topknot", "marks": "runes", "skin": 2,
 				"hair_color": 0, "outfit": 7, "cloak": "none"}
@@ -93,6 +98,7 @@
 			"how_to_recruit": "Derrotar Garra-Rubra e soltá-lo no acampamento do Bosque do Riacho",
 			"map_id": "map.forest_brook",
 			"dialogue_id": "dialogue.companion_ignis",
+			"figure": "species_dragonborn",
 			"skills": ["intimidation", "insight"],
 			"appearance": {"body": "masculine", "horns": "curved", "skin": 4, "outfit": 1, "cloak": "cape", "cloak_color": 0}
 		}

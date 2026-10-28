@@ -31,7 +31,7 @@ func _rebuild() -> void:
 	for spec in specs:
 		var label := Label.new()
 		label.text = "%s%s" % [spec["label"], " (escolha %d)" % spec["count"] if int(spec["count"]) > 1 else ""]
-		label.add_theme_color_override("font_color", Color(0.878, 0.706, 0.541))
+		label.add_theme_color_override("font_color", Color(0.851, 0.659, 0.302))
 		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		add_child(label)
 		if spec["options"].is_empty():

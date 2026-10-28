@@ -1,11 +1,12 @@
-# PROJECT_NAME
+# As Crônicas de Arghaz
 
-RPG 2D de fantasia (nome provisório) feito em **Godot 4.7.2** com GDScript tipado, para navegador desktop, com regras
+RPG 2D de fantasia no mundo de Arghaz, feito em **Godot 4.7.2** com GDScript tipado, para navegador desktop, com regras
 do SRD 5.2.1 (2024). Especificação completa: [PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md](PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md).
 
 **Jogar no navegador:** https://ovitorleal.github.io/jogo_rpg/
 
-**Estado atual:** versão 0.8.0 — aventura de demonstração "A Garra-Rubra" completa (Fase 7) e publicação (Fase 8).
+**Estado atual:** versão 0.10.0 — aventura "A Garra-Rubra", companheiros recrutáveis e a nova identidade visual
+(em andamento). História do mundo em [As Crônicas de Arghaz.md](As%20Cr%C3%B4nicas%20de%20Arghaz.md).
 Veja [docs/ROADMAP.md](docs/ROADMAP.md), o roteiro em [docs/VERTICAL_SLICE.md](docs/VERTICAL_SLICE.md) e as limitações
 conhecidas em [docs/PUBLISHING.md](docs/PUBLISHING.md).
 

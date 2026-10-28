@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.10.0] — 2026-10-27 — As Crônicas de Arghaz: nova identidade visual (em andamento)
+
+### Adicionado
+- Nome definitivo: **As Crônicas de Arghaz**. Logo na tela de título, subtítulo "Livro I — Antes dos Homens" e a
+  história do mundo (`As Crônicas de Arghaz.md`).
+- Arte ilustrada (gerada com ChatGPT pelo responsável): 12 classes, 9 espécies do SRD, logo e o fundo pintado da Vila
+  de Ribeira. Originais em `art_source/arghaz/` (ignorados pelo Godot) e `tools/art/import_arghaz.gd`, que limpa
+  pedaços de vizinhos da folha, recorta e reduz.
+- Personagens usam a ilustração da classe (companheiros podem ter a própria, campo `figure`), animada por código:
+  balanço ao andar, avanço no ataque e espelho para a esquerda. Retrato = busto da ilustração.
+- Mapas com fundo pintado (`MapBackdrop`): tiles, adereços e placas continuam como colisão, mas não são desenhados.
+- Tema global da interface (`assets/ui/arghaz_theme.tres`, gerado por `tools/art/build_ui_theme.gd`) nas cores do
+  logo: azul-petróleo escuro, dourado e turquesa.
+- Criação de personagem mostra a ilustração da classe e a da espécie no lugar do editor de partes.
+- `art_source/PEDIDOS_DE_ARTE.md`: tudo o que falta desenhar, com pedidos prontos e capturas de referência de layout
+  (`art_source/referencias/`).
+
+### Pendente
+- Arte de Ione, Amara, goblins, Garra-Rubra, lobo, Clareira, Bosque do Riacho, arena, estrada, título e itens (ainda
+  no estilo antigo).
+
 ## [0.9.0] — 2026-10-27 — Companheiros recrutáveis
 
 ### Adicionado

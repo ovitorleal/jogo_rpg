@@ -494,6 +494,444 @@
 			"prompt_reference": "",
 			"approval_status": "in_review",
 			"notes": "Garra-Rubra, chefe goblin: perfil do goblin com camisão de malha, escudo e capa vermelha."
+		},
+		{
+			"asset_id": "background.village",
+			"category": "environments",
+			"file_path": "res://assets/backgrounds/village.png",
+			"dimensions": [
+				1672,
+				941
+			],
+			"format": "png",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável a partir da captura da vila de Ribeira",
+			"approval_status": "approved",
+			"notes": "Fundo pintado da Vila de Ribeira (área 640x360 a partir de y=56). Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_barbarian",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_barbarian.png",
+			"dimensions": [
+				232,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class barbarian); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_bard",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_bard.png",
+			"dimensions": [
+				210,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class bard); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_cleric",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_cleric.png",
+			"dimensions": [
+				218,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class cleric); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_druid",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_druid.png",
+			"dimensions": [
+				192,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class druid); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_fighter",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_fighter.png",
+			"dimensions": [
+				243,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class fighter); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_monk",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_monk.png",
+			"dimensions": [
+				206,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class monk); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_paladin",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_paladin.png",
+			"dimensions": [
+				249,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class paladin); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_ranger",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_ranger.png",
+			"dimensions": [
+				213,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class ranger); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_rogue",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_rogue.png",
+			"dimensions": [
+				227,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class rogue); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_sorcerer",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_sorcerer.png",
+			"dimensions": [
+				201,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class sorcerer); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_warlock",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_warlock.png",
+			"dimensions": [
+				225,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class warlock); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_class_wizard",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/class_wizard.png",
+			"dimensions": [
+				207,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (class wizard); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_dragonborn",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_dragonborn.png",
+			"dimensions": [
+				164,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species dragonborn); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_dwarf",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_dwarf.png",
+			"dimensions": [
+				180,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species dwarf); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_elf",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_elf.png",
+			"dimensions": [
+				119,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species elf); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_gnome",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_gnome.png",
+			"dimensions": [
+				138,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species gnome); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_goliath",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_goliath.png",
+			"dimensions": [
+				151,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species goliath); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_halfling",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_halfling.png",
+			"dimensions": [
+				161,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species halfling); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_human",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_human.png",
+			"dimensions": [
+				134,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species human); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_orc",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_orc.png",
+			"dimensions": [
+				158,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species orc); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "characters.arghaz_species_tiefling",
+			"category": "characters",
+			"file_path": "res://assets/characters/arghaz/species_tiefling.png",
+			"dimensions": [
+				147,
+				256
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Ilustração de pose única (species tiefling); animada por código na SpriteLibrary. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "ui.arghaz_logo_arghaz",
+			"category": "ui",
+			"file_path": "res://assets/ui/logo_arghaz.png",
+			"dimensions": [
+				1200,
+				586
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "ai_generated",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz, limpo por tools/art/import_arghaz.gd",
+			"approval_status": "approved",
+			"notes": "Logo de As Crônicas de Arghaz. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
 		}
+
 	]
 }

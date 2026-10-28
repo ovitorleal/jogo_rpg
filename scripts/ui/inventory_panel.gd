@@ -28,8 +28,8 @@ var _status: Label
 
 func _ready() -> void:
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.102, 0.078, 0.137, 0.97)
-	style.border_color = Color(0.522, 0.592, 0.722)
+	style.bg_color = Color(0.067, 0.086, 0.110, 0.97)
+	style.border_color = Color(0.604, 0.659, 0.698)
 	style.set_border_width_all(1)
 	style.set_corner_radius_all(2)
 	add_theme_stylebox_override("panel", style)
@@ -54,7 +54,7 @@ func _ready() -> void:
 	var left := VBoxContainer.new()
 	left.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(left)
-	left.add_child(_label("Mochila do grupo", 9, Color(0.522, 0.592, 0.722)))
+	left.add_child(_label("Mochila do grupo", 9, Color(0.604, 0.659, 0.698)))
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -65,10 +65,10 @@ func _ready() -> void:
 	var right := VBoxContainer.new()
 	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.add_child(right)
-	right.add_child(_label("Equipado", 9, Color(0.522, 0.592, 0.722)))
+	right.add_child(_label("Equipado", 9, Color(0.604, 0.659, 0.698)))
 	_equipped = VBoxContainer.new()
 	right.add_child(_equipped)
-	_status = _label("", 9, Color(0.878, 0.706, 0.541))
+	_status = _label("", 9, Color(0.851, 0.659, 0.302))
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	layout.add_child(_status)
 

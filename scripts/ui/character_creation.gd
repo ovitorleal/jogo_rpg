@@ -70,6 +70,10 @@ var _swatch_boxes: Dictionary = {}
 var _swatch_rows: Dictionary = {}
 var _look_sprite: AnimatedSprite2D
 var _look_portrait: TextureRect
+var _appearance_section: Control
+var _random_look_button: Button
+## Legenda da prévia ("Bárbaro · Draconato") quando há ilustrações.
+var _figure_caption: Label
 
 @onready var _form: VBoxContainer = %Form
 @onready var _preview: CharacterSheetPanel = %Preview
@@ -202,6 +206,9 @@ func _build_form() -> void:
 	_add_row("Antecedente", _background_option)
 
 	_add_section("Aparência")
+	# Com a arte de Arghaz o visual vem da classe: o editor de partes fica escondido (a aparência
+	# continua salva e serve de reserva quando não há ilustração).
+	_appearance_section = _form.get_child(_form.get_child_count() - 1)
 	for category: String in CharacterPainter.PARTS:
 		var option := OptionButton.new()
 		option.item_selected.connect(_on_look_selected.bind(category))
@@ -267,11 +274,11 @@ func _build_look_preview() -> void:
 	column.add_theme_constant_override("separation", 4)
 	panel.add_child(column)
 	var holder := Control.new()
-	holder.custom_minimum_size = Vector2(96, 104)
+	holder.custom_minimum_size = Vector2(96, 124)
 	holder.clip_contents = true
 	_look_sprite = AnimatedSprite2D.new()
 	_look_sprite.scale = Vector2(3, 3)
-	_look_sprite.position = Vector2(48, 96)
+	_look_sprite.position = Vector2(48, 116)
 	holder.add_child(_look_sprite)
 	column.add_child(holder)
 	_look_portrait = TextureRect.new()
@@ -279,7 +286,13 @@ func _build_look_preview() -> void:
 	_look_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_look_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	column.add_child(_look_portrait)
+	_figure_caption = Label.new()
+	_figure_caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_figure_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_figure_caption.visible = false
+	column.add_child(_figure_caption)
 	var random_button := Button.new()
+	_random_look_button = random_button
 	random_button.text = "Aleatório"
 	random_button.pressed.connect(func() -> void: randomize_look())
 	column.add_child(random_button)
@@ -310,7 +323,7 @@ func _make_content_option(type_name: String) -> OptionButton:
 func _add_section(title: String) -> void:
 	var label := Label.new()
 	label.text = title
-	label.add_theme_color_override("font_color", Color(0.522, 0.592, 0.722))
+	label.add_theme_color_override("font_color", Color(0.604, 0.659, 0.698))
 	_form.add_child(HSeparator.new())
 	_form.add_child(label)
 
@@ -437,7 +450,39 @@ func _refresh() -> void:
 	_update_look_preview()
 
 
+## Prévia com as ilustrações: a da classe anda no quadro e a da espécie aparece embaixo.
+func _update_figure_preview() -> bool:
+	var class_path := Appearance.class_figure_path(_class_id)
+	var species_path := Appearance.species_figure_path(_species_id)
+	var has_art := ResourceLoader.exists(class_path)
+	_set_appearance_editor_visible(not has_art)
+	_figure_caption.visible = has_art
+	if not has_art:
+		return false
+	var key := "figure:%s|%s" % [class_path, species_path]
+	if key == _look_key:
+		return true
+	_look_key = key
+	SpriteLibrary.attach(_look_sprite, SpriteLibrary.frames_for(class_path))
+	_play_look()
+	_look_portrait.texture = load(species_path) if ResourceLoader.exists(species_path) else null
+	_look_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	_figure_caption.text = "%s · %s" % [_class().get("name", ""), _species().get("name", "")]
+	return true
+
+
+func _set_appearance_editor_visible(shown: bool) -> void:
+	_appearance_section.visible = shown
+	_random_look_button.visible = shown
+	for category: String in _look_rows:
+		(_look_rows[category] as Control).visible = shown and (_look_rows[category] as Control).visible
+	for key: String in _swatch_rows:
+		(_swatch_rows[key] as Control).visible = shown and (_swatch_rows[key] as Control).visible
+
+
 func _update_look_preview() -> void:
+	if _update_figure_preview():
+		return
 	var profile := _profile()
 	var gear: Dictionary = CharacterPainter.gear_for(_character, _registry) if _character != null else NO_GEAR
 	var key := Appearance.key_of(_look, profile, gear)

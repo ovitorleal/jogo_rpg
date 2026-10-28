@@ -23,10 +23,14 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 - Todo asset novo entra em `assets/asset_catalog.json` com origem e licença; escala e paleta em `docs/ART_BIBLE.md`.
 - Arte e mapa de teste gerados por `tools/art/` (ver `docs/ASSET_PIPELINE.md`); `build_overworld.gd --force` apaga
   edições do editor. Estilo e paleta em `docs/ART_BIBLE.md`; nada copiado de jogos existentes.
-- Aparência: personagens jogáveis são pintados em runtime (`CharacterPainter`, perfis em `data/appearance/`);
-  use `Appearance.sheet_texture/portrait_texture`, nunca a folha fixa do herói, para o líder.
-- Sprites animados: folhas 9 colunas (parado 0-1, caminhada 2-5, ataque 6-8) via `SpriteLibrary`; personagens em
-  quadros 64×64 (alta resolução). Sempre use `SpriteLibrary.attach(sprite, frames)` (ajusta escala/offset).
+- Jogo: **As Crônicas de Arghaz**. Arte nova (ilustrações geradas com ChatGPT pelo responsável) em `art_source/arghaz/`,
+  importada por `tools/art/import_arghaz.gd`; o que falta está em `art_source/PEDIDOS_DE_ARTE.md`. Não gere arte
+  "no estilo" por código: peça ao responsável. Interface: tema `assets/ui/arghaz_theme.tres` (`build_ui_theme.gd`).
+- Aparência: o personagem usa a ilustração da classe (`Appearance.figure_path`; companheiro pode ter `figure`).
+  O `CharacterPainter` é só reserva. Use `Appearance.sheet_texture/portrait_texture`, nunca a folha fixa do herói.
+- Sprites: ilustrações de pose única viram animações por código (`SpriteLibrary.frames_for_figure`); folhas antigas
+  têm 9 colunas (parado 0-1, caminhada 2-5, ataque 6-8). Sempre use `SpriteLibrary.attach(sprite, frames)`.
+- Mapas com fundo pintado: nó `Backdrop` (`MapBackdrop`, `map_rect`); tiles e adereços viram só colisão.
 - Verificação visual: o painel do navegador pode estar pausado; prefira uma sonda com janela real que salva
   `root.get_texture().get_image()` no scratchpad.
 - Exploração: `Interactable` não decide efeitos; o `ExplorationMap` decide. Detalhes em `docs/ARCHITECTURE.md`.

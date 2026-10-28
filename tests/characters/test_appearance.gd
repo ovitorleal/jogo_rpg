@@ -113,11 +113,33 @@ func test_migration_from_schema_2_uses_species_defaults() -> void:
 		assert_eq(Appearance.resolve(loaded, _registry())["ears"], "pointed_long", "Padrão élfico aplicado")
 
 
-func test_combatant_uses_generated_sheet() -> void:
+func test_combatant_uses_class_figure() -> void:
 	var c := _character("species.orc")
 	var unit := Combatant.from_character(c, _registry())
-	assert_true(unit.sprite_texture != null, "Combatente usa a folha da aparência")
-	assert_eq(unit.sprite_texture.get_size(), Vector2(576, 256), "Folha completa")
+	assert_true(unit.sprite_texture != null, "Combatente usa a ilustração")
+	assert_eq(unit.sprite_texture.resource_path, Appearance.class_figure_path(c.class_id), "Ilustração da classe")
+	var frames := SpriteLibrary.frames_for_texture(unit.sprite_key, unit.sprite_texture)
+	for anim in ["idle_down", "walk_left", "attack_right", "walk_up"]:
+		assert_true(frames.has_animation(anim), "Animação %s feita por código" % anim)
+	assert_eq(frames.get_frame_count(&"walk_right"), 4, "Caminhada com balanço")
+	assert_true(Appearance.portrait_texture(c, _registry()) is AtlasTexture, "Retrato = busto da ilustração")
+
+
+func test_companion_figure_overrides_class() -> void:
+	var c := CompanionRoster.build(_registry().get_entry("companion", "companion.doran"), 1, _registry())
+	assert_eq(Appearance.figure_path(c, _registry()), "res://assets/characters/arghaz/species_dwarf.png",
+			"Doran usa a ilustração do anão, não a da clériga")
+	for id in _registry().ids("companion"):
+		var figure := str(_registry().get_entry("companion", id).get("figure", ""))
+		assert_true(figure.is_empty() or ResourceLoader.exists("res://assets/characters/arghaz/%s.png" % figure),
+				"%s: ilustração existe" % id)
+
+
+func test_every_class_and_species_has_a_figure() -> void:
+	for id in _registry().ids("class"):
+		assert_true(ResourceLoader.exists(Appearance.class_figure_path(id)), "%s tem ilustração" % id)
+	for id in _registry().ids("species"):
+		assert_true(ResourceLoader.exists(Appearance.species_figure_path(id)), "%s tem ilustração" % id)
 
 
 func test_creation_screen_appearance_controls() -> void:

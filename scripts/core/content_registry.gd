@@ -368,6 +368,8 @@ const TYPES := {
 			"skills": {"type": "array", "of": "string", "ref": "skill", "required": false, "default": []},
 			## Aparência (mesmas chaves de CharacterData.appearance; conferida pelos testes).
 			"appearance": {"type": "object", "required": false, "default": {}},
+			## Ilustração própria em assets/characters/arghaz/ (sem extensão); vazio = a da classe.
+			"figure": {"type": "string", "required": false, "default": ""},
 		},
 	},
 	"quest": {
