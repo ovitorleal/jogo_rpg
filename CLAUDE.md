@@ -26,7 +26,8 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
 - Jogo: **As Crônicas de Arghaz**. Arte nova (ilustrações geradas com ChatGPT pelo responsável) em `art_source/arghaz/`,
   importada por `tools/art/import_arghaz.gd`; o que falta está em `art_source/PEDIDOS_DE_ARTE.md`. Não gere arte
   "no estilo" por código: peça ao responsável. Interface: tema `assets/ui/arghaz_theme.tres` (`build_ui_theme.gd`).
-- Aparência: o personagem usa a ilustração da classe (`Appearance.figure_path`; companheiro pode ter `figure`).
+- Aparência: o personagem usa a ilustração da espécie vestida para a classe (`<espécie>_<classe>.png`; sem ela, a
+  espécie) via `Appearance.figure_path/figure_for`; companheiro pode ter `figure`.
   O `CharacterPainter` é só reserva. Use `Appearance.sheet_texture/portrait_texture`, nunca a folha fixa do herói.
 - Sprites: ilustrações de pose única viram animações por código (`SpriteLibrary.frames_for_figure`); folhas antigas
   têm 9 colunas (parado 0-1, caminhada 2-5, ataque 6-8). Sempre use `SpriteLibrary.attach(sprite, frames)`.

@@ -3,8 +3,9 @@ extends RefCounted
 ## Aparência modular do personagem: resolve escolhas (com padrões da espécie), valida contra
 ## o perfil da espécie (data/appearance/), sorteia combinações e gera/guarda em cache as
 ## texturas (folha animada e retrato) desenhadas pelo CharacterPainter.
-## Com a arte de As Crônicas de Arghaz, o personagem usa a ilustração da classe (ou a "figure" do
-## companheiro) como sprite e um recorte do busto como retrato; o CharacterPainter fica de reserva.
+## Com a arte de As Crônicas de Arghaz, o personagem usa a ilustração da espécie vestida com o equipamento
+## da classe (<espécie>_<classe>.png); sem ela, a da espécie. Companheiros podem ter a própria ("figure").
+## O retrato é um recorte do busto; o CharacterPainter fica de reserva.
 
 const COLOR_KEYS := {"skin": "skin_tones", "hair_color": "hair_colors"}
 const FIXED_COLOR_COUNTS := {"eye_color": 8, "outfit": 8, "cloak_color": 5}
@@ -76,7 +77,17 @@ static func figure_path(c: CharacterData, registry: ContentRegistry) -> String:
 		var figure := str(registry.get_entry("companion", companion).get("figure", ""))
 		if not figure.is_empty():
 			return "%s/%s.png" % [FIGURE_DIR, figure]
-	return class_figure_path(c.class_id)
+	return figure_for(c.species_id, c.class_id)
+
+
+## Ilustração para espécie + classe: a combinação, se existir, senão a da espécie.
+static func figure_for(species_id: String, class_id: String) -> String:
+	var combo := combo_figure_path(species_id, class_id)
+	return combo if ResourceLoader.exists(combo) else species_figure_path(species_id)
+
+
+static func combo_figure_path(species_id: String, class_id: String) -> String:
+	return "%s/%s_%s.png" % [FIGURE_DIR, species_id.trim_prefix("species."), class_id.trim_prefix("class.")]
 
 
 static func class_figure_path(class_id: String) -> String:

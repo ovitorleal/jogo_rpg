@@ -113,11 +113,15 @@ func test_migration_from_schema_2_uses_species_defaults() -> void:
 		assert_eq(Appearance.resolve(loaded, _registry())["ears"], "pointed_long", "Padrão élfico aplicado")
 
 
-func test_combatant_uses_class_figure() -> void:
+func test_combatant_uses_species_figure() -> void:
 	var c := _character("species.orc")
 	var unit := Combatant.from_character(c, _registry())
 	assert_true(unit.sprite_texture != null, "Combatente usa a ilustração")
-	assert_eq(unit.sprite_texture.resource_path, Appearance.class_figure_path(c.class_id), "Ilustração da classe")
+	assert_eq(unit.sprite_texture.resource_path, Appearance.figure_for(c.species_id, c.class_id),
+			"Ilustração da espécie (ou da espécie vestida para a classe)")
+	assert_true(Appearance.figure_for("species.orc", "class.fighter").ends_with("species_orc.png")
+			or ResourceLoader.exists(Appearance.combo_figure_path("species.orc", "class.fighter")),
+			"Sem a combinação, usa a espécie")
 	var frames := SpriteLibrary.frames_for_texture(unit.sprite_key, unit.sprite_texture)
 	for anim in ["idle_down", "walk_left", "attack_right", "walk_up"]:
 		assert_true(frames.has_animation(anim), "Animação %s feita por código" % anim)

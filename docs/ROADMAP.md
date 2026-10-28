@@ -35,10 +35,11 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 ## Fase 9 — identidade visual (em andamento, 2026-10-27)
 
 - Pedido do responsável: todo o jogo no estilo da arte nova (ilustrações geradas com ChatGPT), nome
-  **As Crônicas de Arghaz**. Decisões: visual do personagem pela classe; um fundo pintado por mapa.
+  **As Crônicas de Arghaz**. Decisões: visual pela espécie, vestida com o equipamento da classe (uma ilustração por combinação); um fundo
+  pintado por mapa.
 - Pronto: nome, logo e título; classes, espécies e companheiros; Vila de Ribeira pintada; tema da interface; criação
   de personagem com as ilustrações.
-- Falta (depende de arte; lista e pedidos em `art_source/PEDIDOS_DE_ARTE.md`): NPCs, inimigos, Clareira, Bosque do
+- Falta (depende de arte; lista e pedidos em `art_source/PEDIDOS_DE_ARTE.md`): as 108 combinações espécie + classe, NPCs, inimigos, Clareira, Bosque do
   Riacho, arena de combate, estrada da viagem, fundo do título e ícones de itens.
 - Arte que chegar entra pelo `tools/art/import_arghaz.gd`.
 

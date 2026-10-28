@@ -6,6 +6,8 @@ Ilustração em pixel art detalhado de alta resolução, com volume pintado, con
 tecido, couro e metal. As referências são as imagens do responsável: as folhas de classes e espécies, a vila e o logo.
 Pode sair do pixel art estrito de 16 bits. Nada copiado de jogos existentes.
 
+- **Personagem do jogador:** ilustração da espécie vestida com o equipamento da classe (`<espécie>_<classe>.png`).
+  Sem a combinação, aparece a espécie. As ilustrações das classes servem de referência de equipamento.
 - **Personagens:** pose única de corpo inteiro, de frente e levemente de cima, fundo transparente. No jogo têm
   34 px de altura no mundo (`SpriteLibrary.FIGURE_HEIGHT`), com filtro suave e mipmaps. A animação é feita por
   código: balanço, avanço e espelho.

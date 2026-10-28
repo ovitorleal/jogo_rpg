@@ -12,6 +12,27 @@ Regras para todos os personagens e monstros:
 - luz vindo de cima à esquerda;
 - nada copiado de personagens de jogos existentes.
 
+## Prioridade 0 — espécie vestida para a classe (pasta `sprites/combinacoes/`)
+
+O personagem aparece com a ilustração da **espécie**. Para ele usar o equipamento da classe, é preciso uma imagem
+para cada combinação. O nome do arquivo é `<especie>_<classe>.png`, por exemplo `anao_paladino.png`. Sem a
+combinação, o jogo mostra a espécie com a roupa simples.
+
+- Espécies: `anao`, `draconato`, `elfo`, `gnomo`, `golias`, `halfling`, `humano`, `orc`, `tiefling`.
+- Classes: `barbaro`, `bardo`, `bruxo`, `clerigo`, `druida`, `feiticeiro`, `guerreiro`, `ladino`, `mago`, `monge`,
+  `paladino`, `patrulheiro`.
+
+São 108 imagens. Dá para fazer uma espécie por conversa: anexe a imagem da espécie e a folha das 12 classes e peça
+uma imagem por classe.
+
+> Esta é a minha personagem [anexo da espécie]. Desenhe **exatamente a mesma pessoa** (mesmo rosto, cabelo, pele,
+> proporções e altura) vestida e equipada como o [classe] da folha de classes que enviei: mesma armadura, roupa e
+> arma. Mesmo estilo de pixel art, corpo inteiro, de frente, levemente de cima, PNG com fundo transparente, sem
+> sombra, 1024×1024.
+
+Comece pelas combinações dos companheiros, que já têm ilustração própria, e pelas mais jogadas, como `humano_guerreiro`
+e `elfo_mago`.
+
 ## Prioridade 1 — aparecem na aventura principal
 
 ### Mapas (pasta `mapas/`)
@@ -81,5 +102,5 @@ Só aparecem quando um druida usa a Forma Selvagem. Todas de perfil virado para 
 
 ## O que já está pronto
 
-As 12 classes, as 9 espécies do SRD (o Aasimar fica guardado; ele não é do SRD 5.2.1), o logo e a vila. A interface
+As 12 classes (usadas como referência de equipamento), as 9 espécies do SRD (o Aasimar fica guardado; ele não é do SRD 5.2.1), o logo e a vila. A interface
 (painéis, botões e cores) eu refaço por código, nas cores do logo.
