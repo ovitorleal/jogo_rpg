@@ -47,6 +47,16 @@ O grupo leva o protagonista e até dois companheiros; os demais recrutados esper
 | Tarka Rocha-Viva | Golias, Bárbara (Soldado) | Bosque do Riacho | Queda de braço: Atletismo CD 12 (pode repetir) |
 | Ignis Escama-Rubra | Draconato, Feiticeiro (Sábio) | Bosque do Riacho | Derrotar Garra-Rubra e soltá-lo |
 
+## A história no Ato I (0.11.0)
+
+A aventura é o Ato I da campanha de `docs/HISTORIA.md`:
+- **A Garra Vermelha:** Garra-Rubra a deixa ao ser derrotado. Ao voltar ao acampamento, o grupo a examina, e os
+  companheiros presentes comentam.
+- **O sonho:** no primeiro descanso com a Garra, o herói sonha com Vermeth.
+- **Ione:** reconhece o símbolo da Garra e aponta Vessa como próximo destino.
+- **Crônicas:** se desbloqueiam no diário ao longo do caminho.
+- **Fim:** a tela de conclusão termina com o epílogo do Ato I.
+
 ## Sem depender do desenvolvedor
 
 - Derrota leva ao título; **Continuar** carrega o último salvamento automático (chegada ao mapa, fim de conversa...).

@@ -172,9 +172,9 @@ func show_inventory(inventory: Inventory, character: CharacterData, registry: Co
 	_show_overlay_hint("[I] ou [Esc] fechar inventário")
 
 
-func show_journal(quests: QuestLog, registry: ContentRegistry) -> void:
+func show_journal(quests: QuestLog, registry: ContentRegistry, lore: Array[Dictionary] = []) -> void:
 	hide_overlays()
-	journal_panel.show_journal(quests, registry)
+	journal_panel.show_journal(quests, registry, lore)
 	journal_panel.visible = true
 	_show_overlay_hint("[J] ou [Esc] fechar diário")
 

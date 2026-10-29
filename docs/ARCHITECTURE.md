@@ -139,6 +139,14 @@
 | `CompanionNpc` some ao ser recrutado e pode exigir um encontro vencido; `PartyFollower` só segue o rastro do líder | A exploração mostra o estado, não o decide |
 | Painel do grupo emite pedidos; o `ExplorationMap` chama o roster e salva | UI sem regras |
 
+### Fase 9 (história)
+
+| Decisão | Motivo |
+|---|---|
+| Cenas e crônicas em dados, com condições na mesma sintaxe dos diálogos (`DialogueRunner.prepare` + `check`) | Escrever história sem código novo por cena |
+| Cenas vistas em `ExplorationManager.once_events` | Já é salvo; nada novo no esquema do salvamento |
+| A cena de chegada se junta às mensagens da chegada (ex.: resultado do combate) | A cena da Garra aparece logo depois da vitória |
+
 ### Fase 6.6 (entregas 2 e 3)
 
 | Decisão | Motivo |

@@ -352,6 +352,35 @@ const TYPES := {
 			}},
 		},
 	},
+	"story": {
+		"dir": "story",
+		"prefix": "story.",
+		"fields": {
+			## Momento: "arrive" (ao chegar no mapa) ou "rest" (depois de um descanso longo).
+			"trigger": {"type": "string", "enum": ["arrive", "rest"]},
+			## Mapa em que a cena acontece (vazio = qualquer um).
+			"map_id": {"type": "string", "ref": "map", "required": false, "default": ""},
+			## Condição na sintaxe dos diálogos (vazio = sempre).
+			"condition": {"type": "string", "required": false, "default": ""},
+			"speaker": {"type": "string", "required": false, "default": ""},
+			"text": {"type": "string"},
+			## Comentários dos companheiros (só quem está no grupo fala).
+			"remarks": {"type": "object_array", "required": false, "default": [], "fields": {
+				"companion": {"type": "string", "ref": "companion"},
+				"text": {"type": "string"},
+			}},
+		},
+	},
+	"lore": {
+		"dir": "lore",
+		"prefix": "lore.",
+		"fields": {
+			## Ordem de leitura no diário e condição de desbloqueio (sintaxe dos diálogos; vazio = sempre).
+			"order": {"type": "int", "min": 0, "max": 1000},
+			"unlock": {"type": "string", "required": false, "default": ""},
+			"text": {"type": "string"},
+		},
+	},
 	"companion": {
 		"dir": "companions",
 		"prefix": "companion.",
@@ -384,6 +413,8 @@ const TYPES := {
 			}},
 			## Missão principal: concluí-la mostra a tela de conclusão da aventura.
 			"final": {"type": "bool", "required": false, "default": false},
+			## Texto do epílogo mostrado na tela de conclusão (missão final).
+			"epilogue": {"type": "string", "required": false, "default": ""},
 			"reward_xp": {"type": "int", "min": 0, "max": 10000},
 			"reward_gold": {"type": "int", "min": 0, "max": 10000},
 			"reward_items": {"type": "object_array", "required": false, "default": [], "fields": {
@@ -604,7 +635,7 @@ func _check_references(pending_refs: Array[Dictionary]) -> void:
 
 const DIALOGUE_CONDITIONS: Array[String] = ["quest_available", "quest_active", "quest_ready", "quest_completed",
 		"objective_open", "quest_started", "objective_done", "companion_recruited", "companion_available",
-		"gold_at_least", "gold_below", "trigger_resolved"]
+		"gold_at_least", "gold_below", "trigger_resolved", "has_item", "lacks_item", "event_seen"]
 ## give_item:<item_id>#<quantidade> entrega um item ao grupo; recruit:<companion_id> recruta;
 ## pay_gold:<n> paga ouro do grupo.
 const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item", "recruit", "pay_gold"]
@@ -647,7 +678,7 @@ func _check_rule(id: String, rule: String, allowed: Array[String], label: String
 	var parts := rule.split(":", true, 1)
 	if parts.size() != 2 or not parts[0] in allowed:
 		errors.append("%s: %s desconhecida '%s'" % [id, label, rule])
-	elif parts[0] == "give_item":
+	elif parts[0] in ["give_item", "has_item", "lacks_item"]:
 		if not has("item", parts[1].split("#")[0]):
 			errors.append("%s: %s com item inexistente '%s'" % [id, label, parts[1]])
 	elif parts[0] in ["recruit", "companion_recruited", "companion_available"]:
@@ -656,6 +687,9 @@ func _check_rule(id: String, rule: String, allowed: Array[String], label: String
 	elif parts[0] in ["gold_at_least", "gold_below", "pay_gold"]:
 		if not parts[1].is_valid_int() or int(parts[1]) < 0:
 			errors.append("%s: %s com valor inválido '%s'" % [id, label, parts[1]])
+	elif parts[0] == "event_seen":
+		if parts[1].is_empty():
+			errors.append("%s: %s sem evento" % [id, label])
 	elif parts[0] == "trigger_resolved":
 		if parts[1].is_empty():
 			errors.append("%s: %s sem gatilho" % [id, label])
@@ -745,6 +779,10 @@ func _check_consistency() -> void:
 				errors.append("%s.%s: %s inexistente '%s'" % [id, objective.get("id"), target_type, objective.get("target")])
 	for id in ids("dialogue"):
 		_check_dialogue(id, get_entry("dialogue", id))
+	for id in ids("story"):
+		_check_rule(id, str(get_entry("story", id).get("condition", "")), DIALOGUE_CONDITIONS, "condição")
+	for id in ids("lore"):
+		_check_rule(id, str(get_entry("lore", id).get("unlock", "")), DIALOGUE_CONDITIONS, "desbloqueio")
 	for id in ids("spell"):
 		var spell := get_entry("spell", id)
 		if not Color.html_is_valid(str(spell["color"])):

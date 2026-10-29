@@ -73,7 +73,7 @@ func _ready() -> void:
 	var map_id := _map_id()
 	if not map_id.is_empty():
 		notes.append_array(QuestManager.notify("reach_map", map_id))
-	if not notes.is_empty():
+	if not play_story("arrive", notes) and not notes.is_empty():
 		_show_player_line("\n".join(notes))
 	refresh_objective()
 	# Ponto seguro: chegada ao mapa (troca de área, volta de combate, missão atualizada).
@@ -281,7 +281,8 @@ func _show_overlay(kind: String) -> void:
 			if not _hud.inventory_panel.changed.is_connected(_player.refresh_appearance):
 				_hud.inventory_panel.changed.connect(_player.refresh_appearance)
 		"journal":
-			_hud.show_journal(QuestManager.log, Content.registry)
+			_hud.show_journal(QuestManager.log, Content.registry,
+					StoryDirector.unlocked_lore(story_conditions(), Content.registry))
 		"choices":
 			_hud.show_choices(leader, Content.registry)
 			if not _hud.choices_panel.changed.is_connected(_on_choices_changed):
@@ -364,7 +365,7 @@ func start_dialogue(dialogue_id: String) -> void:
 	_dialogue_notes.clear()
 	_dialogue_party_size = PartyManager.members.size()
 	_dialogue.begin(entry, QuestManager.log, PartyManager.members, PartyManager.inventory, Content.registry,
-			PartyManager.roster, null, ExplorationManager.resolved_triggers)
+			PartyManager.roster, null, ExplorationManager.resolved_triggers, ExplorationManager.once_events)
 	# Objetivo "conversar com": cumprido ao começar a conversa (depois de escolher a fala de abertura).
 	_dialogue_notes.append_array(QuestManager.notify("talk", dialogue_id))
 	_player.input_enabled = false
@@ -437,6 +438,38 @@ func refresh_objective() -> void:
 	if text.is_empty() and QuestManager.log.status("quest.goblin_chief") == QuestLog.Status.NOT_STARTED:
 		text = "Fale com Ione, a chefe da vila, perto do poço de Ribeira"
 	_hud.set_objective(text)
+
+
+# --- História -------------------------------------------------------------------
+
+## Condições do jogo agora (missões, inventário, grupo, encontros e cenas vistas), na sintaxe dos diálogos.
+func story_conditions() -> DialogueRunner:
+	return DialogueRunner.new().prepare(QuestManager.log, PartyManager.members, PartyManager.inventory,
+			Content.registry, PartyManager.roster, null, ExplorationManager.resolved_triggers,
+			ExplorationManager.once_events)
+
+
+## Mostra a primeira cena pendente do momento ("arrive"/"rest"), depois das mensagens dadas (ex.: o resultado do
+## combate), e a marca como vista. Retorna se mostrou.
+func play_story(trigger: String, before: Array[String] = []) -> bool:
+	if not PartyManager.has_party():
+		return false
+	var beats := StoryDirector.pending_beats(trigger, _map_id(), story_conditions(), Content.registry,
+			ExplorationManager.once_events)
+	if beats.is_empty():
+		return false
+	var beat := beats[0]
+	ExplorationManager.once_events[beat["id"]] = true
+	var text := StoryDirector.beat_text(beat, PartyManager.members)
+	if not before.is_empty():
+		text = "%s\n\n%s" % ["\n".join(before), text]
+	if str(beat.get("speaker", "")).is_empty():
+		_show_player_line(text)
+	else:
+		_player.input_enabled = false
+		_hud.hide_prompt()
+		_hud.show_message(text, str(beat["speaker"]))
+	return true
 
 
 func is_in_dialogue() -> bool:
@@ -559,6 +592,10 @@ func _execute_action(action: String) -> void:
 		# Quem espera na estalagem também descansa.
 		for c in PartyManager.roster.bench:
 			Rest.long_rest(c, Content.registry)
+		# Cena de história depois do descanso (ex.: o sonho com a Garra) substitui a mensagem comum.
+		if play_story("rest"):
+			SaveManager.request_autosave("descanso")
+			return
 		_show_player_line("Você descansa junto à fogueira até o amanhecer. PV e Dados de Vida restaurados (+%d PV)." % healed)
 		SaveManager.request_autosave("descanso")
 	else:

@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.11.0] — 2026-10-29 — Fase 9: a história de Arghaz no jogo
+
+### Adicionado
+- História do jogo em `docs/HISTORIA.md`: as Eras I a III do autor e as Eras IV a VI propostas e aprovadas
+  (Era dos Povos, Guerra das Escamas, Era dos Homens), a campanha em três atos, a vilã Vermeth e o arco de cada
+  companheiro.
+- Abertura nova: ano 1.214 da Era dos Homens, mil anos depois do Silêncio dos dragões.
+- **Garra Vermelha** (`item.red_claw`): Garra-Rubra a deixa ao ser derrotado.
+- Cenas de história (`data/story/`, `StoryDirector`): uma vez só, ao chegar num mapa ou ao descansar, com falas
+  dos companheiros que estiverem no grupo. Ato I: a Garra no acampamento e o sonho com Vermeth no primeiro
+  descanso com ela.
+- **Crônicas de Arghaz** no diário (`data/lore/`): seis verbetes que se desbloqueiam com a história (mana, Arauto,
+  linhagens, Silêncio, Vermeth, Era dos Homens).
+- Ione reconhece a Garra e manda o herói a Vessa (gancho do Ato II); a tela de conclusão mostra o epílogo da missão
+  final (campo `epilogue`).
+- Condições de diálogo `has_item`, `lacks_item` e `event_seen`.
+- 7 testes novos (total 287).
+
 ## [0.10.0] — 2026-10-27 — Nome e logo: As Crônicas de Arghaz
 
 ### Adicionado

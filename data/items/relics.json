@@ -1,0 +1,14 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "item.red_claw",
+			"name": "Garra Vermelha",
+			"description": "Uma garra de metal rubro, morna ao toque, que Garra-Rubra usava no lugar da mão. Não foi forjada por mãos de anão nem de ninguém: parece ter crescido. Às vezes, ela pulsa.",
+			"source": "original",
+			"item_type": "gear",
+			"weight_lb": 2,
+			"cost_gp": 0
+		}
+	]
+}

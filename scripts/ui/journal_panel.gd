@@ -1,6 +1,7 @@
 class_name JournalPanel
 extends PanelContainer
-## Diário de missões (apresentação): ativas com objetivos ([x] cumprido, [ ] pendente) e concluídas.
+## Diário de missões (apresentação): ativas com objetivos ([x] cumprido, [ ] pendente), concluídas e as
+## Crônicas de Arghaz desbloqueadas (StoryDirector.unlocked_lore).
 
 var _text: RichTextLabel
 
@@ -24,15 +25,15 @@ func _ready() -> void:
 	margin.add_child(_text)
 
 
-func show_journal(quests: QuestLog, registry: ContentRegistry) -> void:
-	_text.text = format(quests, registry)
+func show_journal(quests: QuestLog, registry: ContentRegistry, lore: Array[Dictionary] = []) -> void:
+	_text.text = format(quests, registry, lore)
 
 
 func get_plain_text() -> String:
 	return _text.get_parsed_text()
 
 
-static func format(quests: QuestLog, registry: ContentRegistry) -> String:
+static func format(quests: QuestLog, registry: ContentRegistry, lore: Array[Dictionary] = []) -> String:
 	var lines := PackedStringArray(["[b]Diário de missões[/b]", ""])
 	var active := quests.active_ids()
 	if active.is_empty():
@@ -53,4 +54,11 @@ static func format(quests: QuestLog, registry: ContentRegistry) -> String:
 		lines.append("[b]Concluídas[/b]")
 		for quest_id in completed:
 			lines.append("  [lb]x] %s" % registry.get_entry("quest", quest_id)["name"])
+	if not lore.is_empty():
+		lines.append("")
+		lines.append("[b]Crônicas de Arghaz[/b]")
+		for entry in lore:
+			lines.append("[color=#e0b48a]%s[/color]" % entry["name"])
+			lines.append(entry["text"])
+			lines.append("")
 	return "\n".join(lines)
