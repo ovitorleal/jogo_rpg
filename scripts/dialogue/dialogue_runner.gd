@@ -6,7 +6,8 @@ extends RefCounted
 ##
 ## Condições: quest_available:<id>, quest_active:<id> (ativa e ainda não pronta),
 ## quest_ready:<id>, quest_completed:<id>, quest_started:<id>, objective_open/objective_done:<id>#<objetivo>,
-## companion_recruited/companion_available:<id>, gold_at_least/gold_below:<n>, trigger_resolved:<gatilho>.
+## companion_recruited/companion_available:<id>, gold_at_least/gold_below:<n>, trigger_resolved:<gatilho>,
+## has_item/lacks_item:<item>, event_seen:<cena ou evento "uma vez">.
 ## Ações (várias separadas por ";"): start_quest, complete_quest, give_item:<item>#<n>, recruit:<companion>,
 ## pay_gold:<n>. Escolhas com "check"/"dc" fazem um teste de perícia do melhor membro do grupo.
 
@@ -22,6 +23,8 @@ var _roster: CompanionRoster
 var _roller: DiceRoller
 ## Gatilhos de encontro já vencidos ({id: true}), para condições como "trigger_resolved".
 var _resolved: Dictionary = {}
+## Cenas de história e eventos "uma vez" já vistos ({id: true}), para "event_seen".
+var _seen: Dictionary = {}
 
 
 ## Missões concluídas nesta conversa (para o mapa mostrar a conclusão da aventura).
@@ -32,15 +35,9 @@ var reward_lines: Array[String] = []
 
 func begin(dialogue_entry: Dictionary, quests: QuestLog, party: Array[CharacterData], inventory: Inventory,
 		registry: ContentRegistry, roster: CompanionRoster = null, roller: DiceRoller = null,
-		resolved: Dictionary = {}) -> Dictionary:
+		resolved: Dictionary = {}, seen: Dictionary = {}) -> Dictionary:
 	dialogue = dialogue_entry
-	_quests = quests
-	_party = party
-	_inventory = inventory
-	_registry = registry
-	_roster = roster if roster != null else CompanionRoster.new()
-	_roller = roller if roller != null else DiceRoller.new()
-	_resolved = resolved
+	prepare(quests, party, inventory, registry, roster, roller, resolved, seen)
 	finished = false
 	node = {}
 	for entry: Dictionary in dialogue.get("entries", []):
@@ -49,6 +46,21 @@ func begin(dialogue_entry: Dictionary, quests: QuestLog, party: Array[CharacterD
 			break
 	finished = node.is_empty()
 	return node
+
+
+## Contexto para avaliar condições sem abrir uma conversa (cenas de história, crônicas).
+func prepare(quests: QuestLog, party: Array[CharacterData], inventory: Inventory, registry: ContentRegistry,
+		roster: CompanionRoster = null, roller: DiceRoller = null, resolved: Dictionary = {},
+		seen: Dictionary = {}) -> DialogueRunner:
+	_quests = quests
+	_party = party
+	_inventory = inventory
+	_registry = registry
+	_roster = roster if roster != null else CompanionRoster.new()
+	_roller = roller if roller != null else DiceRoller.new()
+	_resolved = resolved
+	_seen = seen
+	return self
 
 
 func speaker() -> String:
@@ -113,6 +125,12 @@ func check(condition: String) -> bool:
 			return _inventory == null or _inventory.gold < int(quest_id)
 		"trigger_resolved":
 			return _resolved.has(quest_id)
+		"has_item":
+			return _inventory != null and _inventory.count(quest_id) > 0
+		"lacks_item":
+			return _inventory == null or _inventory.count(quest_id) == 0
+		"event_seen":
+			return _seen.has(quest_id)
 		"quest_available":
 			return _quests.status(quest_id) == QuestLog.Status.NOT_STARTED
 		"quest_active":

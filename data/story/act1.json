@@ -1,0 +1,43 @@
+{
+	"schema_version": 1,
+	"entries": [
+		{
+			"id": "story.claw_found",
+			"name": "A Garra Vermelha",
+			"description": "Depois de derrotar Garra-Rubra, o grupo examina a garra que ele usava.",
+			"source": "original",
+			"trigger": "arrive",
+			"map_id": "map.forest_brook",
+			"condition": "has_item:item.red_claw",
+			"speaker": "",
+			"text": "Entre os pertences de Garra-Rubra, a garra de metal vermelho ainda está quente, como se tivesse sangue próprio. Os goblins fugiram deixando sacos de escamas, frascos de sangue seco e ossos raspados: oferendas. Garra-Rubra não saqueava carroças por ouro. Ele alimentava esta coisa.",
+			"remarks": [
+				{"companion": "companion.ignis", "text": "Essa garra... meu sangue ferve só de olhar para ela. Era por isso que queriam as minhas escamas."},
+				{"companion": "companion.doran", "text": "Isso não foi forjado por mãos de anão. Nem de ninguém. Parece ter crescido, como um osso."},
+				{"companion": "companion.lyra", "text": "Os anciões do meu povo contavam histórias sobre Garras assim. Eu achava que eram só histórias."},
+				{"companion": "companion.kael", "text": "Que estranho... ela parece familiar. Como uma voz que eu já ouvi em algum lugar."},
+				{"companion": "companion.tarka", "text": "Um goblin fraco virou chefe por causa disso? Então eu quero ver o dono original."},
+				{"companion": "companion.bruna", "text": "Vale uma fortuna. E eu não chegaria nem perto. As duas coisas são verdade."}
+			]
+		},
+		{
+			"id": "story.vermeth_dream",
+			"name": "O sonho de fogo",
+			"description": "Na primeira noite com a Garra Vermelha, o herói sonha com Vermeth.",
+			"source": "original",
+			"trigger": "rest",
+			"map_id": "",
+			"condition": "has_item:item.red_claw",
+			"speaker": "Uma voz no sonho",
+			"text": "Você sonha com uma montanha que respira. Sob a rocha, algo imenso e vermelho abre um olho do tamanho de um lago. \"Você trouxe minha garra para casa, pequena coisa. Obrigada.\" A voz não é cruel; é paciente, como quem corrige um desenho mal feito. \"Durma. Logo terminaremos o que meu pai começou.\" Você acorda com a Garra quente na mão, sem lembrar de tê-la pegado.",
+			"remarks": [
+				{"companion": "companion.kael", "text": "Você também ouviu? Ela... me chamou pelo nome. Esqueça o que eu disse. Foi só um sonho."},
+				{"companion": "companion.ignis", "text": "Vermeth. O nome veio até mim acordado. Meu avô dizia que a Linhagem Vermelha nunca morreu: só dorme."},
+				{"companion": "companion.doran", "text": "Rezei a noite toda e o Martelo do Fundo não respondeu. Pela primeira vez, ele ficou em silêncio."},
+				{"companion": "companion.lyra", "text": "Os elfos chamam isso de \"chamado da escama\". Quem ouve, ou destrói a Garra, ou se perde."},
+				{"companion": "companion.tarka", "text": "Uma dragoa de verdade! E ela fala! Ótimo. Vai ser uma luta digna."},
+				{"companion": "companion.bruna", "text": "Eu dormi como uma pedra. Mas acordei com a mochila mais leve... e a Garra no seu colo. Não fui eu, juro."}
+			]
+		}
+	]
+}

@@ -80,6 +80,11 @@ static func summary_text() -> String:
 		done.append(Content.registry.get_entry("quest", quest_id).get("name", quest_id))
 	if not done.is_empty():
 		lines.append("Missões concluídas: %s" % ", ".join(done))
+	for quest_id in QuestManager.log.completed_ids():
+		var epilogue := str(Content.registry.get_entry("quest", quest_id).get("epilogue", ""))
+		if not epilogue.is_empty():
+			lines.append("")
+			lines.append("[i]%s[/i]" % epilogue)
 	lines.append("")
 	lines.append("O jogo foi salvo. Você pode continuar explorando a vila e a floresta.")
 	return "\n".join(lines)

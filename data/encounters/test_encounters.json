@@ -93,6 +93,10 @@
 				{
 					"item_id": "item.potion_of_healing",
 					"count": 1
+				},
+				{
+					"item_id": "item.red_claw",
+					"count": 1
 				}
 			]
 		}

@@ -40,6 +40,9 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
   Inventário do grupo em `PartyManager.inventory`; equipamento em uso fica no `CharacterData`.
 - Companheiros: dados em `data/companions/`; recrutar só via ação de diálogo `recruit:` / `CompanionRoster`
   (`PartyManager.roster`, grupo máximo `MAX_PARTY`). NPC no mapa = `npc_companion.tscn` com `companion_id`.
+- História: `docs/HISTORIA.md` (cânone do autor + propostas aprovadas). Cenas em `data/story/` (gatilhos `arrive`/`rest`,
+  uma vez, falas por companheiro) e Crônicas em `data/lore/`, avaliadas pelo `StoryDirector` com as condições dos
+  diálogos (`DialogueRunner.prepare/check`). Cenas vistas ficam em `ExplorationManager.once_events` (salvas).
 - Características/talentos: dados em `data/classes`, `data/subclasses`, `data/feats` (campo `grants` gera escolhas em
   `CharacterChoices`; recursos em `ClassFeatures`). Ao ligar uma característica no motor, mude `implemented` para true.
 - Magias: regras em `Spellcasting` (`scripts/rules/`), dados em `data/spells/` (efeito e estilo visual por magia),

@@ -15,6 +15,7 @@
 | 8 | Publicação | Concluída (2026-10-27) — preparação; site no ar após a ativação do Pages |
 | Extra | Companheiros recrutáveis | Concluída (2026-10-27) — 0.9.0 |
 | Extra | Nome e logo: As Crônicas de Arghaz | Concluída (2026-10-27) — 0.10.0 |
+| 9 | A história de Arghaz no jogo (Ato I) | Concluída (2026-10-29) — 0.11.0 |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
 
@@ -31,6 +32,16 @@ Fonte: SRD 5.2.1 (PDF oficial, CC BY 4.0) lido localmente; descrições resumida
 | 4 | Conjuradores: Bardo (Conhecimento), Clérigo (Vida), Druida (Terra + Forma Selvagem) | **Concluída** (0.6.9) |
 | 5 | Conjuradores: Feiticeiro (Dracônica + Metamagia), Bruxo (Corruptor + Invocações), Mago (Evocador) | **Concluída** (0.6.10) |
 | 6 | Magias de 2º a 9º círculo exigidas pelas características e subclasses | **Concluída** (0.6.11) |
+
+## Fase 9 — resultado (2026-10-29)
+
+- História completa em `docs/HISTORIA.md`, aprovada pelo responsável ("pode seguir com as propostas").
+- Ato I com a camada da história: a Garra Vermelha, a cena no acampamento, o sonho com Vermeth, Ione e o gancho
+  para Vessa, o epílogo e as Crônicas no diário. Tudo em dados (`data/story/`, `data/lore/`) avaliado pelo
+  `StoryDirector` com as condições dos diálogos.
+- Verificado em janela real: abertura, cena da Garra com Ignis e Kael, sonho na estalagem, Crônicas no diário e Ione.
+- 287 testes passando.
+- Próximo: Ato II (Vessa e a Academia de Mana, as Garras dos anões, orcs e elfos), conforme `docs/HISTORIA.md`.
 
 ## Companheiros recrutáveis — resultado (2026-10-27)
 
@@ -263,5 +274,5 @@ limitado à serialização validada (gravação/leitura de arquivo testada; o `S
 ## Próxima tarefa concreta
 
 Todas as fases da especificação estão concluídas. Próximos passos, a decidir com o responsável: nome definitivo do jogo,
-falas e reações dos companheiros, testes contra a morte, reações de monstros, mais conteúdo (mapas, missões, monstros), áudio e
+Ato II da campanha (`docs/HISTORIA.md`), testes contra a morte, reações de monstros, mais conteúdo (mapas, missões, monstros), áudio e
 arte das feras da Forma Selvagem.

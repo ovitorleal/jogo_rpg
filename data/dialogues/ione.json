@@ -87,9 +87,36 @@
 					"text": "Os goblins fugiram e Garra-Rubra caiu? Então Ribeira está a salvo! Aceite esta recompensa e a gratidão de todos nós.",
 					"choices": [
 						{
+							"text": "Foi uma honra ajudar. E ele carregava isto: uma garra vermelha.",
+							"next": "symbol",
+							"condition": "has_item:item.red_claw",
+							"action": "complete_quest:quest.goblin_chief"
+						},
+						{
 							"text": "Foi uma honra ajudar.",
 							"next": "thanks",
+							"condition": "lacks_item:item.red_claw",
 							"action": "complete_quest:quest.goblin_chief"
+						}
+					]
+				},
+				{
+					"id": "symbol",
+					"text": "Pelos... Esse símbolo na base da garra. Eu já vi isso no livro mais velho do templo, aquele que ninguém consegue ler direito. Dizem que fala das Garras do Arauto, de antes do Silêncio dos dragões. Se isso é real, Ribeira não é lugar para guardá-la.",
+					"choices": [
+						{
+							"text": "O que devo fazer com ela?",
+							"next": "vessa"
+						}
+					]
+				},
+				{
+					"id": "vessa",
+					"text": "Leve-a a Vessa, a cidade das planícies, à Academia de Mana. Os sábios de lá saberão o que ela é. Mas hoje não: hoje à noite há festa na praça, e a estalagem será sempre sua casa, herói de Ribeira.",
+					"choices": [
+						{
+							"text": "Partirei para Vessa. Obrigado(a), Ione.",
+							"next": ""
 						}
 					]
 				},
