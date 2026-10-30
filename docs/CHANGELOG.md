@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.12.0] — 2026-10-29 — Subida de nível e retratos do grupo
+
+### Adicionado
+- Aviso de subida de nível: faixa dourada "VOCÊ SUBIU DE NÍVEL!" (ou "DORAN SUBIU DE NÍVEL!" para companheiros),
+  com o novo nível e os PV máximos. Vários avisos entram numa fila.
+- Efeito no personagem que subiu: coluna de luz, anel no chão, faíscas douradas e brilho no sprite (o herói ou o
+  seguidor).
+- Os avisos valem para qualquer fonte de XP (combate, missão, viagem, companheiro que volta da estalagem). O grupo
+  guarda o último nível anunciado (`PartyManager.seen_levels`), e o mapa avisa ao chegar, depois de uma conversa
+  e ao trocar o grupo.
+- Retratos do grupo na lateral esquerda (`PartyFrames`): retrato, nome, nível e barra de PV de cada membro, com o
+  líder destacado. A barra fica vermelha com pouca vida, e clicar num retrato abre a ficha daquele membro.
+- 8 testes novos (total 295).
+
+### Corrigido
+- Missões travavam quando o objetivo era cumprido antes de recebê-las. Exemplos: matar o goblin da ruína antes de
+  falar com Amara, o lobo antes da Lyra, chegar ao Bosque antes do recado. O diário agora guarda o histórico de
+  acontecimentos (`QuestLog.history`, salvo junto) e, ao começar a missão, marca o que já foi feito. Salvamentos
+  antigos já travados destravam ao entrar no mapa do encontro vencido.
+
 ## [0.11.0] — 2026-10-29 — Fase 9: a história de Arghaz no jogo
 
 ### Adicionado

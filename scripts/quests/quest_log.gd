@@ -3,12 +3,16 @@ extends RefCounted
 ## Estado das missões do jogador: ativas (com objetivos cumpridos) e concluídas.
 ## Objetivos avançam por notificações ("defeat_encounter", "reach_map"); a missão fica
 ## "pronta" quando todos os objetivos estão cumpridos e é entregue por um diálogo, que
-## concede as recompensas. Só lógica; serializável.
+## concede as recompensas. Tudo o que é notificado fica no histórico: ao começar uma missão, objetivos
+## já feitos antes (ex.: o goblin morto antes de falar com quem dá a missão) contam como cumpridos.
+## Só lógica; serializável.
 
 enum Status { NOT_STARTED, ACTIVE, COMPLETED }
 
 ## quest_id -> {"status": "active"|"completed", "done": Array[String]}
 var quests: Dictionary = {}
+## Acontecimentos já notificados ("tipo|alvo" -> true), com ou sem missão ativa.
+var history: Dictionary = {}
 
 
 func status(quest_id: String) -> Status:
@@ -40,12 +44,21 @@ func start(quest_id: String, registry: ContentRegistry) -> Dictionary:
 	if status(quest_id) != Status.NOT_STARTED:
 		return _fail("Missão já iniciada")
 	quests[quest_id] = {"status": "active", "done": []}
-	return {"ok": true, "error": "", "text": "Nova missão: %s" % registry.get_entry("quest", quest_id)["name"]}
+	var quest := registry.get_entry("quest", quest_id)
+	var lines: Array[String] = ["Nova missão: %s" % quest["name"]]
+	for objective: Dictionary in quest.get("objectives", []):
+		if history.has(_key(objective["type"], objective["target"])):
+			quests[quest_id]["done"].append(objective["id"])
+			lines.append("Objetivo já cumprido: %s" % objective["text"])
+	if lines.size() > 1 and is_ready(quest_id, registry):
+		lines.append("Volte a %s para concluir \"%s\"." % [quest["giver"], quest["name"]])
+	return {"ok": true, "error": "", "text": "\n".join(lines)}
 
 
 ## Registra algo que aconteceu no jogo; retorna mensagens de objetivos cumpridos.
 func notify(kind: String, target: String, registry: ContentRegistry) -> Array[String]:
 	var messages: Array[String] = []
+	history[_key(kind, target)] = true
 	for quest_id: String in quests:
 		if status(quest_id) != Status.ACTIVE:
 			continue
@@ -107,8 +120,13 @@ func completed_ids() -> Array[String]:
 	return result
 
 
+## Já aconteceu (com ou sem missão ativa)?
+func has_happened(kind: String, target: String) -> bool:
+	return history.has(_key(kind, target))
+
+
 func to_dict() -> Dictionary:
-	return {"quests": quests.duplicate(true)}
+	return {"quests": quests.duplicate(true), "history": history.keys()}
 
 
 static func from_dict(data: Dictionary, registry: ContentRegistry) -> Array:
@@ -126,7 +144,18 @@ static func from_dict(data: Dictionary, registry: ContentRegistry) -> Array:
 			errors.append("Estado inválido da missão '%s'" % quest_id)
 		else:
 			log.quests[quest_id] = {"status": entry["status"], "done": Array(entry.get("done", [])).map(func(v: Variant) -> String: return str(v))}
+	# Salvamentos antigos não têm histórico: começa vazio (o mapa reconhece encontros já vencidos ao entrar).
+	var past: Variant = data.get("history", [])
+	if past is Array:
+		for key: Variant in past:
+			log.history[str(key)] = true
+	else:
+		errors.append("Histórico de missões inválido")
 	return [log if errors.is_empty() else null, errors]
+
+
+static func _key(kind: String, target: String) -> String:
+	return "%s|%s" % [kind, target]
 
 
 func _fail(message: String) -> Dictionary:

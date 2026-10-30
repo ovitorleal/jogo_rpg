@@ -64,6 +64,9 @@ func _ready() -> void:
 	_hud.inventory_panel.changed.connect(_refresh_follower_looks)
 	_hud.party_panel.join_requested.connect(_on_join_requested)
 	_hud.party_panel.leave_requested.connect(_on_leave_requested)
+	_hud.party_frames.member_pressed.connect(open_member_sheet)
+	_hud.inventory_panel.changed.connect(refresh_party_frames)
+	PartyManager.party_changed.connect(refresh_party_frames)
 	refresh_followers()
 	var notes: Array[String] = []
 	var message := ExplorationManager.take_return_message()
@@ -73,9 +76,13 @@ func _ready() -> void:
 	var map_id := _map_id()
 	if not map_id.is_empty():
 		notes.append_array(QuestManager.notify("reach_map", map_id))
+	notes.append_array(_recall_defeated_encounters())
 	if not play_story("arrive", notes) and not notes.is_empty():
 		_show_player_line("\n".join(notes))
 	refresh_objective()
+	refresh_party_frames()
+	# Subidas de nível vindas do combate, da viagem ou de missões aparecem ao chegar.
+	announce_level_ups()
 	# Ponto seguro: chegada ao mapa (troca de área, volta de combate, missão atualizada).
 	SaveManager.request_autosave("mapa")
 
@@ -315,8 +322,46 @@ func _on_leave_requested(c: CharacterData) -> void:
 func _after_party_change(status: String) -> void:
 	PartyManager.party_changed.emit()
 	refresh_followers()
+	announce_level_ups()
 	SaveManager.request_autosave("grupo")
 	open_party_panel(status)
+
+
+# --- Retratos do grupo e subida de nível ---------------------------------------
+
+## Atualiza os retratos da lateral (PV, nível, quem está no grupo).
+func refresh_party_frames() -> void:
+	if is_inside_tree():
+		_hud.party_frames.show_party(PartyManager.members, Content.registry)
+
+
+## Clique num retrato: abre a ficha daquele membro.
+func open_member_sheet(index: int) -> void:
+	if _hud.is_message_open() or _dialogue != null:
+		return
+	if _hud.is_overlay_open():
+		close_overlays()
+	_viewed = index
+	_player.input_enabled = false
+	_hud.hide_prompt()
+	_show_overlay("sheet")
+
+
+## Mostra o aviso "VOCÊ SUBIU DE NÍVEL!" e o efeito de luz para cada membro que subiu desde o último aviso.
+func announce_level_ups() -> void:
+	var risen := PartyManager.take_level_ups()
+	for c in risen:
+		var sheet := CharacterSheet.build(c, Content.registry)
+		var leader := c == PartyManager.get_leader()
+		_hud.level_up_banner.announce(c.name, c.level, "PV máximos %d · novas escolhas em [L]" % sheet.max_hp, leader)
+		var body: Node2D = _player if leader else null
+		for follower in _followers:
+			if follower.character == c:
+				body = follower
+		if body != null:
+			LevelUpEffect.play_on(body)
+	if not risen.is_empty():
+		refresh_party_frames()
 
 
 # --- Companheiros no mapa -------------------------------------------------------
@@ -394,6 +439,8 @@ func end_dialogue() -> void:
 	if PartyManager.members.size() != _dialogue_party_size:
 		PartyManager.party_changed.emit()
 		refresh_followers()
+	refresh_party_frames()
+	announce_level_ups()
 	if finished_final:
 		show_ending()
 		return
@@ -407,6 +454,20 @@ func end_dialogue() -> void:
 		_player.input_enabled = false
 		return
 	_on_interaction_target_changed(_player.get_interaction_target())
+
+
+## Encontros deste mapa já vencidos entram no histórico de missões. Destrava salvamentos de antes da
+## correção (inimigo morto antes de a missão começar, missão esperando um inimigo que não volta).
+func _recall_defeated_encounters() -> Array[String]:
+	var messages: Array[String] = []
+	for node in get_tree().get_nodes_in_group(EncounterTrigger.GROUP):
+		var trigger := node as EncounterTrigger
+		if trigger == null or not is_ancestor_of(trigger) or trigger.encounter_id.is_empty():
+			continue
+		if ExplorationManager.is_resolved(trigger.trigger_id) \
+				and not QuestManager.log.has_happened("defeat_encounter", trigger.encounter_id):
+			messages.append_array(QuestManager.notify("defeat_encounter", trigger.encounter_id))
+	return messages
 
 
 func _completed_final_quest() -> bool:
@@ -592,6 +653,7 @@ func _execute_action(action: String) -> void:
 		# Quem espera na estalagem também descansa.
 		for c in PartyManager.roster.bench:
 			Rest.long_rest(c, Content.registry)
+		refresh_party_frames()
 		# Cena de história depois do descanso (ex.: o sonho com a Garra) substitui a mensagem comum.
 		if play_story("rest"):
 			SaveManager.request_autosave("descanso")

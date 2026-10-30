@@ -40,6 +40,9 @@ Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — l
   Inventário do grupo em `PartyManager.inventory`; equipamento em uso fica no `CharacterData`.
 - Companheiros: dados em `data/companions/`; recrutar só via ação de diálogo `recruit:` / `CompanionRoster`
   (`PartyManager.roster`, grupo máximo `MAX_PARTY`). NPC no mapa = `npc_companion.tscn` com `companion_id`.
+- HUD: retratos do grupo em `PartyFrames` (atualizar com `ExplorationMap.refresh_party_frames()`); subida de nível
+  anunciada por `ExplorationMap.announce_level_ups()` (compara com `PartyManager.seen_levels`; aviso
+  `LevelUpBanner` + `LevelUpEffect`). Nunca anuncie direto no motor de regras.
 - História: `docs/HISTORIA.md` (cânone do autor + propostas aprovadas). Cenas em `data/story/` (gatilhos `arrive`/`rest`,
   uma vez, falas por companheiro) e Crônicas em `data/lore/`, avaliadas pelo `StoryDirector` com as condições dos
   diálogos (`DialogueRunner.prepare/check`). Cenas vistas ficam em `ExplorationManager.once_events` (salvas).

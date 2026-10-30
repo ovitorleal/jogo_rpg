@@ -23,6 +23,9 @@ var pause_menu: PauseMenu
 var choices_overlay: PanelContainer
 var choices_panel: ChoicesPanel
 var party_panel: PartyPanel
+## Retratos do grupo na lateral esquerda e o aviso de subida de nível.
+var party_frames: PartyFrames
+var level_up_banner: LevelUpBanner
 var _objective_label: Label
 
 const DEFAULT_HINT := "[E] Continuar"
@@ -51,6 +54,15 @@ func _ready() -> void:
 	_objective_label.add_theme_constant_override("outline_size", 3)
 	add_child(_objective_label)
 	move_child(_objective_label, 1)
+	party_frames = PartyFrames.new()
+	party_frames.name = "PartyFrames"
+	party_frames.position = Vector2(4, 32)
+	add_child(party_frames)
+	# Abaixo dos painéis (ficha, inventário...), que cobrem a tela.
+	move_child(party_frames, 2)
+	level_up_banner = LevelUpBanner.new()
+	level_up_banner.name = "LevelUpBanner"
+	add_child(level_up_banner)
 	hide_prompt()
 	hide_message()
 	hide_sheet()
