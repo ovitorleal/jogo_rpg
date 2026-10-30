@@ -16,6 +16,7 @@
 | Extra | Companheiros recrutáveis | Concluída (2026-10-27) — 0.9.0 |
 | Extra | Nome e logo: As Crônicas de Arghaz | Concluída (2026-10-27) — 0.10.0 |
 | 9 | A história de Arghaz no jogo (Ato I) | Concluída (2026-10-29) — 0.11.0 |
+| Extra | Subida de nível e retratos do grupo | Concluída (2026-10-29) — 0.12.0 |
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
 
