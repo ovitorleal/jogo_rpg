@@ -4,7 +4,10 @@ onda: livros-de-arghaz
 fase: research
 data: 2026-11-07
 projeto: As Crônicas de Arghaz
-aprovado: false
+aprovado: true
+aprovado_por: Vitor Leal
+aprovado_em: 2026-11-07
+aprovacao: "registrada pelo Claude a pedido do responsável, que tentou marcar e não conseguiu (\"nao estou conseguindo marcar\")"
 llm-routing:
   proxima-fase: passo-2-plan
   modelo: claude-sonnet-5-5
@@ -254,7 +257,7 @@ Hand-rolled no pipeline existente, **com modelo antes**:
 - [x] Hand-rolled justificado (texto canônico e arte no pipeline próprio)
 - [x] Padrões da codebase identificados
 - [x] Riscos, estados preexistentes e três populações mapeados
-- [ ] Revisado pelo humano
-- [ ] Aprovado para próxima fase
+- [x] Revisado pelo humano
+- [x] Aprovado para próxima fase (Vitor Leal, 2026-11-07)
 
-aprovado: false
+aprovado: true

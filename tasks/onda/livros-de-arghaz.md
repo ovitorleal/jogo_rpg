@@ -1,7 +1,7 @@
 ---
 onda: livros-de-arghaz
 fase-metodologia: 1
-estado: AGUARDANDO-APROVACAO
+estado: PRONTO-PARA-PASSO-2
 atualizado: 2026-11-07
 projeto: jogo_rpg
 caminho: C:\Users\ovito\OneDrive\Desktop\jogo_rpg
@@ -14,7 +14,7 @@ contratos:
 # 🗺️ PAINEL — livros-de-arghaz
 
 ## Onde estamos AGORA
-Passo **1 (research)** concluído e aguardando a aprovação do responsável (`aprovado: true` no research).
+Passo **1 (research)** concluído e **aprovado** pelo responsável em 2026-11-07.
 Próximo: `/passo-2-plan livros-de-arghaz`.
 
 ## As fases
@@ -35,7 +35,7 @@ nome próprio (só Ione cai; o compêndio sustenta Ribeira, Amara, Garra-Rubra, 
 a abertura, o epílogo e a cena do sonho (Era do Despertar, sem ano; Vermeth, a Brasa Coroada, ativa). Ermo no
 cenário do mapa (árvore ancestral, calçamento antigo sob raízes, ruínas), com modelo aprovado antes. Ids não mudam.
 
-**Artefato gerado:** `tasks/research/livros-de-arghaz.md` (aguardando aprovado: true)
+**Artefato gerado:** `tasks/research/livros-de-arghaz.md` (aprovado: true, Vitor Leal, 2026-11-07)
 
 **Ler antes de agir:**
 1. `tasks/research/livros-de-arghaz.md` — o que cada fonte estabelece, mapa de impacto, pontos para o plano
@@ -47,7 +47,7 @@ cenário do mapa (árvore ancestral, calçamento antigo sob raízes, ruínas), c
 - Não tocar `tests/party/test_companions.gd` nem `data/monsters/` (estão na folha da outra onda).
 - Livro II proíbe inventar números e causas: nada de ano, "3× maior" ou "Segunda Corrente".
 
-**Gate pendente:** aprovação do research pelo responsável.
+**Gate pendente:** nenhum, pronto para seguir.
 
 **Próxima ação:**
 /passo-2-plan livros-de-arghaz
