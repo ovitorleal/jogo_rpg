@@ -88,7 +88,8 @@ dados de terceiros.
       precisa de aprovação do responsável.
 - [x] Deploy separado: `tools/publish/publish_web.sh` (testes, exportação, verificação e publicação no `gh-pages`).
 
-**Evidência:** run do CI neste branch: _(preencher com o link do primeiro run verde)_
+**Evidência:** primeiro run verde, https://github.com/ovitorleal/jogo_rpg/actions/runs/42402936045 (2026-11-07):
+**295 testes passaram, 0 falharam** no Linux; gitleaks e o autoteste do segredo plantado passaram.
 
 ## 7. Observabilidade Mínima (adaptado)
 
@@ -101,8 +102,8 @@ dados de terceiros.
 
 ## Verificação Final
 
-- [ ] CI verde no último push deste branch
-- [ ] Gitleaks pegou o segredo plantado (autoteste do CI)
+- [x] CI verde no último push deste branch (run 42402936045)
+- [x] Gitleaks pegou o segredo plantado (autoteste do CI, mesmo run)
 - [x] CSP visível: N/A (RR-OZ-01)
 - [x] Rota admin retorna 401: N/A (sem servidor nem contas)
 - [x] Health check: N/A (testes de integração no lugar)
