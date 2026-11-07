@@ -1,5 +1,11 @@
 # Changelog
 
+## [Correção] — 2026-11-07 — Respostas do diálogo pelo teclado
+
+### Adicionado
+- As teclas 1 a 9 (fila de cima ou teclado numérico) escolhem a resposta do diálogo com o mesmo número. A dica da
+  caixa passa a dizer "Escolha uma resposta (teclas 1-N)". Clique e setas continuam funcionando.
+
 ## [Onda Zero] — 2026-11-07 — Fundação da Metodologia 5 Fases
 
 ### Adicionado

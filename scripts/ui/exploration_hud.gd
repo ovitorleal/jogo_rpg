@@ -124,7 +124,8 @@ func hide_message() -> void:
 
 ## Fala de diálogo com escolhas (botões navegáveis por teclado e mouse).
 func show_dialogue(speaker_name: String, portrait: Texture2D, text: String, options: Array[String]) -> void:
-	show_message(text, speaker_name, portrait, "Escolha uma resposta" if not options.is_empty() else DEFAULT_HINT)
+	show_message(text, speaker_name, portrait, "Escolha uma resposta (teclas 1-%d)" % mini(options.size(), 9) \
+			if not options.is_empty() else DEFAULT_HINT)
 	_clear_choices()
 	for i in options.size():
 		var button := Button.new()
@@ -139,6 +140,26 @@ func show_dialogue(speaker_name: String, portrait: Texture2D, text: String, opti
 		(func() -> void:
 			if is_instance_valid(first) and first.is_inside_tree():
 				first.grab_focus()).call_deferred()
+
+
+## Teclas 1-9 (fila de cima ou teclado numérico) escolhem a resposta com o mesmo número.
+func _unhandled_input(event: InputEvent) -> void:
+	if not (event is InputEventKey) or not event.pressed or event.echo or not _message_panel.visible:
+		return
+	var index := choice_index_for_key((event as InputEventKey).keycode)
+	if index < 0 or index >= _choices.get_child_count():
+		return
+	get_viewport().set_input_as_handled()
+	dialogue_choice.emit(index)
+
+
+## Índice da resposta (0 para a tecla 1) ou -1 se a tecla não for um número de 1 a 9.
+static func choice_index_for_key(keycode: Key) -> int:
+	if keycode >= KEY_1 and keycode <= KEY_9:
+		return keycode - KEY_1
+	if keycode >= KEY_KP_1 and keycode <= KEY_KP_9:
+		return keycode - KEY_KP_1
+	return -1
 
 
 func dialogue_options() -> Array[String]:
