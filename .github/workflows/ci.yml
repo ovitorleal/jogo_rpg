@@ -1,0 +1,71 @@
+# CI de As Crônicas de Arghaz (Onda Zero): testes do jogo no Godot headless e varredura de segredos.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: 4.7.2
+  GITLEAKS_VERSION: 8.30.1
+
+jobs:
+  testes:
+    name: Testes (Godot headless)
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar Godot ${{ env.GODOT_VERSION }}
+        run: |
+          curl -sSfL -o godot.zip \
+            "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip"
+          unzip -q godot.zip
+          mv "Godot_v${GODOT_VERSION}-stable_linux.x86_64" "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot"
+          "$RUNNER_TEMP/godot" --version
+
+      - name: Importar o projeto
+        # A primeira importação gera o cache de classes (class_name) que os testes precisam.
+        run: timeout 600 "$RUNNER_TEMP/godot" --headless --path . --import || true
+
+      - name: Rodar os testes
+        # O executor sai com código diferente de zero se algum teste falhar ou se nenhum rodar.
+        run: timeout 1800 "$RUNNER_TEMP/godot" --headless --path . --script res://tests/run_tests.gd
+
+  segredos:
+    name: Segredos (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Instalar gitleaks ${{ env.GITLEAKS_VERSION }}
+        run: |
+          curl -sSfL -o gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          tar -xzf gitleaks.tar.gz gitleaks
+          mv gitleaks "$RUNNER_TEMP/gitleaks"
+          "$RUNNER_TEMP/gitleaks" version
+
+      - name: Autoteste (o gitleaks precisa achar um segredo plantado)
+        # Planta uma chave falsa num diretório temporário, fora do repositório, e exige que o gitleaks a detecte.
+        # Prova que a varredura funciona sem commitar segredo nenhum.
+        run: |
+          mkdir -p "$RUNNER_TEMP/plantado"
+          printf 'aws_access_key_id = "AKIA%s"\naws_secret_access_key = "%s"\n' \
+            "QYLPMN5HHHFPZAM2" "wJalrXUtnFEMI/K7MDENG/bPxRfiCYzEXAMPLEKEY9" > "$RUNNER_TEMP/plantado/config.ini"
+          if "$RUNNER_TEMP/gitleaks" dir "$RUNNER_TEMP/plantado" --no-banner --exit-code 1; then
+            echo "::error::O gitleaks não detectou o segredo plantado"
+            exit 1
+          fi
+          echo "Autoteste ok: segredo plantado detectado."
+
+      - name: Varrer o histórico do repositório
+        run: '"$RUNNER_TEMP/gitleaks" git . --no-banner --redact --exit-code 1'

@@ -2,6 +2,19 @@
 
 **As Crônicas de Arghaz** — RPG 2D de fantasia em Godot 4.7.2 + GDScript tipado, exportado para Web (Compatibility/WebGL 2).
 Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — leia as seções relevantes antes de cada tarefa.
+Produto em uma página: `tasks/PRD.md`.
+
+## Metodologia (desde 2026-11-07)
+
+Todo trabalho segue a **Metodologia 5 Fases** (skill `metodologia-5-fases`): Onda Zero e depois ondas, cada uma
+passando por research → plan → security → code → review.
+- O passo seguinte só começa com `aprovado: true` no artefato anterior, marcado pelo responsável; o Claude
+  nunca se autoaprova.
+- Cada onda tem branch `onda/<nome>`, publicado no GitHub ao abrir; nunca se trabalha no `main`.
+- Os arquivos que a onda toca são declarados em `tasks/obras/<onda>.md`, que é apagado ao fechar.
+- Artefatos: `tasks/research|specs|security|reviews/<onda>.md` e o painel em `tasks/onda/<onda>.md`.
+- Fundação: `tasks/onda-zero/fundacao.md`, adaptada a um jogo Godot sem servidor.
+- O CI (`.github/workflows/ci.yml`) roda os testes e o `gitleaks` em todo push e PR.
 
 ## Comandos (Windows)
 
