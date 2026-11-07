@@ -1,5 +1,15 @@
 # Changelog
 
+## [Onda Zero] — 2026-11-07 — Fundação da Metodologia 5 Fases
+
+### Adicionado
+- O desenvolvimento passa a seguir a Metodologia 5 Fases: ondas, gates aprovados pelo responsável, branch
+  `onda/<nome>` e quadro de obras em `tasks/obras/`.
+- CI no GitHub Actions: os testes rodam no Godot 4.7.2 headless e o gitleaks varre o histórico, com autoteste
+  de detecção. O `main` está protegido e só aceita merge com os dois checks verdes.
+- `tasks/PRD.md` e a evidência da fundação (`tasks/onda-zero/fundacao.md`), com as dívidas D-OZ-01/02 e o
+  risco RR-OZ-01.
+
 ## [0.12.0] — 2026-10-29 — Subida de nível e retratos do grupo
 
 ### Adicionado

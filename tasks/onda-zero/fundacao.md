@@ -2,8 +2,9 @@
 projeto: As Crônicas de Arghaz
 stack: Godot 4.7.2 + GDScript tipado, exportado para Web (Compatibility/WebGL 2), site estático no GitHub Pages
 data_inicio: 2026-11-07
-data_conclusao:
-concluido: false
+data_conclusao: 2026-11-07
+concluido: true
+aprovado_por: Vitor Leal (responsável), na conversa de 2026-11-07
 ---
 
 # Onda Zero — Fundação do Projeto As Crônicas de Arghaz
@@ -84,8 +85,9 @@ dados de terceiros.
       que ele a detecte. Prova a detecção sem commitar segredo.
 - [x] Auditoria de dependências (`npm audit`): **N/A**. O jogo não tem dependências de pacote; o Godot é a
       única, fixada na versão 4.7.2.
-- [ ] Branch protection na `main` exigindo o CI verde: **pendente**. É configuração da conta no GitHub e
-      precisa de aprovação do responsável.
+- [x] Branch protection na `main`: ativada em 2026-11-07 com a aprovação do responsável. O merge exige os
+      checks "Testes (Godot headless)" e "Segredos (gitleaks)" verdes, vale também para administradores, e
+      force push e exclusão do branch estão bloqueados.
 - [x] Deploy separado: `tools/publish/publish_web.sh` (testes, exportação, verificação e publicação no `gh-pages`).
 
 **Evidência:** primeiro run verde, https://github.com/ovitorleal/jogo_rpg/actions/runs/42402936045 (2026-11-07):
@@ -118,11 +120,13 @@ dados de terceiros.
 
 ## Status
 
-- [ ] Todas as fundações concluídas ou justificadas (N/A ou dívida registrada)
-- [ ] Verificação final passou
-- [ ] Branch protection decidida pelo responsável
-- [ ] Pronto para `/passo-1-research` da primeira onda
+- [x] Todas as fundações concluídas ou justificadas (N/A ou dívida registrada)
+- [x] Verificação final passou
+- [x] Branch protection decidida pelo responsável (ativada)
+- [x] Pronto para `/passo-1-research` da primeira onda
+
+**Aprovado pelo responsável em 2026-11-07**, incluindo as dívidas D-OZ-01 e D-OZ-02 e o risco residual RR-OZ-01.
 
 **Quando todos os checkboxes estiverem `[x]`, o responsável muda `concluido: false` para `concluido: true` no topo.**
 
-concluido: false
+concluido: true

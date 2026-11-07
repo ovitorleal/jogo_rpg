@@ -17,7 +17,7 @@
 | Extra | Nome e logo: As Crônicas de Arghaz | Concluída (2026-10-27) — 0.10.0 |
 | 9 | A história de Arghaz no jogo (Ato I) | Concluída (2026-10-29) — 0.11.0 |
 | Extra | Subida de nível e retratos do grupo | Concluída (2026-10-29) — 0.12.0 |
-| Onda Zero | Fundação da Metodologia 5 Fases (CI, gitleaks, PRD) | 🔵 Em obra (2026-11-07) — `tasks/onda-zero/fundacao.md` |
+| Onda Zero | Fundação da Metodologia 5 Fases (CI, gitleaks, PRD, proteção do main) | ✅ Concluída (2026-11-07) — `tasks/onda-zero/fundacao.md` |
 
 A partir de 2026-11-07 o trabalho segue a Metodologia 5 Fases (ver `CLAUDE.md`). As próximas etapas viram
 **ondas**, com artefatos em `tasks/`.
