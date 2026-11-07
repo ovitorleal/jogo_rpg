@@ -1,0 +1,290 @@
+extends SceneTree
+## Modelo descartável do Ermo (onda livros-de-arghaz, passo 2). Pinta as peças novas com o mesmo
+## PixelCanvas e a paleta da ART_BIBLE e compõe "hoje" x "Ermo" lado a lado.
+## Uso: godot --headless --path <projeto> --script <este arquivo> -- <pasta de saída>
+
+const T := 16
+const W := 256
+const H := 176
+const ZOOM := 3
+const STONE := ["#4a4a5c", "#6e6e84", "#9090a6", "#b8b8cc"]
+const OLD_STONE := ["#4e4a50", "#77707a", "#9c95a0", "#c2bcc4"] # pedra antiga: a mesma rampa, levemente quente
+const MOSS := ["#2f6a2a", "#4f9a3e", "#7ccc5a"]
+const BARK := ["#3a2214", "#6a3e22", "#9a6232"]
+const OLD_BARK := ["#2e1c14", "#55361f", "#7e5532"]
+const LEAVES := ["#1e4a24", "#2f7a34", "#58b046"]
+const OLD_LEAVES := ["#173c22", "#25632e", "#438c3c"]
+
+var _tiles: Image
+
+
+func _initialize() -> void:
+	var args := OS.get_cmdline_user_args()
+	var out_dir: String = args[0] if args.size() > 0 else OS.get_user_data_dir()
+	_tiles = Image.load_from_file(ProjectSettings.globalize_path("res://assets/tilesets/overworld_tiles.png"))
+	var before := _scene_before()
+	var after := _scene_after()
+	var sheet := Image.create_empty(W * 2 + 8, H, false, Image.FORMAT_RGBA8)
+	sheet.fill(Color("#1a1423"))
+	sheet.blit_rect(before, Rect2i(0, 0, W, H), Vector2i(0, 0))
+	sheet.blit_rect(after, Rect2i(0, 0, W, H), Vector2i(W + 8, 0))
+	_save_zoom(sheet, out_dir.path_join("ermo_antes_depois.png"))
+	_save_zoom(after, out_dir.path_join("ermo_proposto.png"))
+	_save_zoom(_pieces_sheet(), out_dir.path_join("ermo_pecas.png"))
+	quit(0)
+
+
+func _save_zoom(img: Image, path: String) -> void:
+	var big := img.duplicate() as Image
+	big.resize(img.get_width() * ZOOM, img.get_height() * ZOOM, Image.INTERPOLATE_NEAREST)
+	big.save_png(path)
+	print("Gerado: ", path)
+
+
+func _hash(x: int, y: int, salt: int) -> float:
+	var h := (x * 374761393 + y * 668265263 + salt * 2147483647) & 0x7fffffff
+	h = (h ^ (h >> 13)) * 1274126177 & 0x7fffffff
+	return float(h % 10000) / 10000.0
+
+
+func _png(path: String) -> Image:
+	return Image.load_from_file(ProjectSettings.globalize_path(path))
+
+
+func _ground() -> Image:
+	var img := Image.create_empty(W, H, false, Image.FORMAT_RGBA8)
+	for ty in H / T:
+		for tx in W / T:
+			var r := _hash(tx, ty, 5)
+			var v := 0 if r < 0.55 else (1 if r < 0.85 else (2 if r < 0.93 else 3))
+			img.blit_rect(_tiles, Rect2i(v * T, 0, T, T), Vector2i(tx * T, ty * T))
+	return img
+
+
+## Objeto com pivô (px, py) na base; ordem por y.
+func _place(scene: Image, items: Array) -> void:
+	items.sort_custom(func(a: Array, b: Array) -> bool: return a[2] < b[2])
+	for it: Array in items:
+		var img: Image = it[0]
+		var pivot: Vector2i = it[3]
+		scene.blend_rect(img, Rect2i(0, 0, img.get_width(), img.get_height()), Vector2i(it[1], it[2]) - pivot)
+
+
+# --- Hoje ----------------------------------------------------------------------------------------
+
+func _scene_before() -> Image:
+	var scene := _ground()
+	# Trilha de terra (tile cheio de terra: máscara 15 da transição).
+	var dirt := Rect2i((0 + 3) * T, (1 + 3) * T, T, T)
+	for tx in W / T:
+		scene.blit_rect(_tiles, dirt, Vector2i(tx * T, 96))
+	var tree := _png("res://assets/environments/tree.png")
+	var pine := _png("res://assets/environments/pine.png")
+	var bush := _png("res://assets/environments/bush.png")
+	var rock := _png("res://assets/environments/rock.png")
+	var tp := Vector2i(16, 44)
+	_place(scene, [
+		[tree, 30, 70, tp], [pine, 70, 60, tp], [tree, 120, 74, tp], [tree, 200, 68, tp],
+		[pine, 236, 80, tp], [tree, 40, 160, tp], [pine, 150, 168, tp], [tree, 220, 160, tp],
+		[bush, 96, 80, Vector2i(8, 14)], [bush, 180, 140, Vector2i(8, 14)], [rock, 80, 140, Vector2i(8, 14)],
+		[rock, 170, 84, Vector2i(8, 14)],
+	])
+	return scene
+
+
+# --- Ermo ----------------------------------------------------------------------------------------
+
+func _scene_after() -> Image:
+	var scene := _ground()
+	_old_road(scene, 108, 30)
+	var young := _png("res://assets/environments/tree.png")
+	var bush := _png("res://assets/environments/bush.png")
+	var tp := Vector2i(16, 44)
+	_place(scene, [
+		[_ancestral_tree(), 56, 110, Vector2i(48, 92)],
+		[young, 120, 92, tp], [young, 240, 96, tp], [young, 150, 172, tp],
+		[_young_tree(), 140, 100, Vector2i(10, 30)], [_young_tree(), 214, 172, Vector2i(10, 30)],
+		[_wall_base(), 200, 96, Vector2i(24, 26)],
+		[_fallen_column(), 70, 164, Vector2i(28, 16)],
+		[_sapling(), 172, 124, Vector2i(6, 14)],
+		[bush, 110, 156, Vector2i(8, 14)], [bush, 244, 160, Vector2i(8, 14)],
+	])
+	return scene
+
+
+## Calçamento antigo: blocos gastos em fiadas desencontradas; alguns faltam (terra e capim),
+## rachaduras, capim nas juntas. y = topo, h = altura da faixa.
+func _old_road(scene: Image, y0: int, h: int) -> void:
+	var bw := 10
+	var bh := 6
+	for row in h / bh:
+		var off := 0 if row % 2 == 0 else bw / 2
+		for col in range(-1, W / bw + 1):
+			var bx := col * bw + off
+			var by := y0 + row * bh
+			var r := _hash(col, row, 77)
+			var outer := row == 0 or row == h / bh - 1
+			if r < (0.4 if outer else 0.12):
+				continue # bloco que sumiu: fica o capim
+			var tone := Color(OLD_STONE[1]) if r < 0.6 else (Color(OLD_STONE[2]) if r < 0.9 else Color(OLD_STONE[0]))
+			for y in range(by, by + bh):
+				for x in range(bx, bx + bw):
+					if x < 0 or x >= W:
+						continue
+					var edge_x := x == bx or x == bx + bw - 1
+					var edge_y := y == by or y == by + bh - 1
+					var c := tone
+					if edge_x or edge_y:
+						c = Color(OLD_STONE[0]) # junta
+						if _hash(x, y, 13) < 0.35:
+							c = Color(MOSS[1]) # capim brotando na junta
+					elif y == by + 1 and _hash(x, y, 3) < 0.5:
+						c = tone.lightened(0.12) # borda gasta, iluminada por cima
+					elif _hash(x, y, 9) < 0.06:
+						c = Color(OLD_STONE[0]) # rachadura / desgaste
+					scene.set_pixel(x, y, c)
+	# Raízes atravessando a estrada a partir da árvore ancestral.
+	var roots := PixelCanvas.new(W, H)
+	var m := roots.new_mask()
+	for path: Array in [
+			[Vector2(66, 108), Vector2(90, 116), Vector2(118, 114), Vector2(132, 118)],
+			[Vector2(60, 110), Vector2(70, 124), Vector2(86, 134), Vector2(96, 138)],
+			[Vector2(46, 110), Vector2(32, 122), Vector2(16, 128)],
+			[Vector2(54, 111), Vector2(52, 126), Vector2(44, 136)]]:
+		for i in path.size() - 1:
+			var t0 := 4.5 - i * 1.4
+			roots.mask_line(m, path[i], path[i + 1], maxf(t0, 1.2))
+	roots.paint_part(m, PixelCanvas.ramp(OLD_BARK[0], OLD_BARK[1], OLD_BARK[2]), 1, 1)
+	roots.outline()
+	scene.blend_rect(roots.image, Rect2i(0, 0, W, H), Vector2i.ZERO)
+
+
+## Árvore ancestral 96x96, pivô (48, 92): tronco largo com sapopemas, copa muito acima das jovens,
+## musgo no tronco. "As novas não ocupam o mesmo teto" (Livro II, cap. 7).
+func _ancestral_tree() -> Image:
+	var c := PixelCanvas.new(96, 96)
+	var bark := PixelCanvas.ramp(OLD_BARK[0], OLD_BARK[1], OLD_BARK[2])
+	var leaves := PixelCanvas.ramp(OLD_LEAVES[0], OLD_LEAVES[1], OLD_LEAVES[2])
+	var trunk := c.new_mask()
+	c.mask_polygon(trunk, PackedVector2Array([
+		Vector2(38, 40), Vector2(58, 40), Vector2(60, 70), Vector2(68, 84), Vector2(76, 92),
+		Vector2(20, 92), Vector2(28, 84), Vector2(36, 70)]))
+	c.paint_part(trunk, bark, 2, 2)
+	# Sulcos verticais da casca.
+	for x in [42, 47, 52, 56]:
+		for y in range(44, 88):
+			if _hash(x, y, 41) < 0.7:
+				c.set_px(x, y, Color(OLD_BARK[0]))
+	var moss := c.new_mask()
+	c.mask_ellipse(moss, 41, 76, 4, 6)
+	c.mask_ellipse(moss, 30, 88, 5, 3)
+	c.paint_part(moss, PixelCanvas.ramp(MOSS[0], MOSS[1], MOSS[2]))
+	var canopy := c.new_mask()
+	c.mask_ellipse(canopy, 48, 26, 40, 22)
+	c.mask_ellipse(canopy, 22, 36, 18, 12)
+	c.mask_ellipse(canopy, 74, 36, 18, 12)
+	c.mask_ellipse(canopy, 48, 12, 26, 12)
+	c.paint_part(canopy, leaves, 2, 3)
+	for i in 260:
+		var x := int(_hash(i, 1, 501) * 96)
+		var y := int(_hash(i, 2, 501) * 50)
+		if c.mask_get(canopy, x, y) and c.mask_get(canopy, x + 1, y + 1):
+			var lit := x + y < 70
+			c.set_px(x, y, leaves[2].lightened(0.12) if lit else leaves[0])
+			c.set_px(x + 1, y, leaves[2] if lit else leaves[0].darkened(0.1))
+	c.outline()
+	c.shadow(48, 92.5, 30, 4, 0.3)
+	return c.image
+
+
+## Árvore jovem 20x32, pivô (10, 30): a geração menor, crescida depois.
+func _young_tree() -> Image:
+	var c := PixelCanvas.new(20, 32)
+	var trunk := c.new_mask()
+	c.mask_rect(trunk, 9, 18, 2, 12)
+	c.paint_part(trunk, PixelCanvas.ramp(BARK[0], BARK[1], BARK[2]), 1, 1)
+	var canopy := c.new_mask()
+	c.mask_ellipse(canopy, 10, 12, 8, 8)
+	c.mask_ellipse(canopy, 10, 7, 5, 5)
+	c.paint_part(canopy, PixelCanvas.ramp("#24602c", "#3a8c3c", "#6cc054"), 1, 2)
+	c.outline()
+	c.shadow(10, 30.5, 6, 1.5)
+	return c.image
+
+
+## Muda brotando da rachadura da estrada, 12x16, pivô (6, 14) (epílogo do Livro II).
+func _sapling() -> Image:
+	var c := PixelCanvas.new(12, 16)
+	var stem := c.new_mask()
+	c.mask_rect(stem, 6, 7, 1, 7)
+	c.paint_part(stem, PixelCanvas.ramp(BARK[0], BARK[1], BARK[2]), 0, 0)
+	var leaf := c.new_mask()
+	c.mask_ellipse(leaf, 4, 7, 2.5, 1.5)
+	c.mask_ellipse(leaf, 8, 5, 2.5, 1.5)
+	c.mask_ellipse(leaf, 6, 3, 1.5, 2)
+	c.paint_part(leaf, PixelCanvas.ramp("#2f7a34", "#58b046", "#8ad86a"), 1, 1)
+	c.outline()
+	return c.image
+
+
+## Base de muralha antiga 48x28, pivô (24, 26): duas fiadas irregulares, topo quebrado, musgo e hera.
+func _wall_base() -> Image:
+	var c := PixelCanvas.new(48, 28)
+	var stone := PixelCanvas.ramp(OLD_STONE[0], OLD_STONE[1], OLD_STONE[3])
+	var wall := c.new_mask()
+	c.mask_polygon(wall, PackedVector2Array([
+		Vector2(2, 26), Vector2(2, 12), Vector2(8, 10), Vector2(12, 6), Vector2(20, 7), Vector2(24, 12),
+		Vector2(32, 11), Vector2(36, 4), Vector2(42, 5), Vector2(46, 14), Vector2(46, 26)]))
+	c.paint_part(wall, stone, 1, 2)
+	for y in [13, 19]:
+		for x in range(3, 46):
+			if c.mask_get(wall, x, y):
+				c.set_px(x, y, Color(OLD_STONE[0]))
+	for x in [10, 22, 34, 16, 28, 40]:
+		var y0 := 8 if x in [10, 22, 34] else 14
+		for y in range(y0, y0 + 5):
+			if c.mask_get(wall, x, y):
+				c.set_px(x, y, Color(OLD_STONE[0]))
+	var moss := c.new_mask()
+	c.mask_ellipse(moss, 14, 8, 6, 2.5)
+	c.mask_ellipse(moss, 39, 6, 5, 2)
+	c.mask_line(moss, Vector2(30, 12), Vector2(26, 25), 1.5)
+	c.mask_line(moss, Vector2(6, 12), Vector2(8, 24), 1.2)
+	c.paint_part(moss, PixelCanvas.ramp(MOSS[0], MOSS[1], MOSS[2]))
+	c.outline()
+	c.shadow(24, 26.5, 22, 2, 0.28)
+	return c.image
+
+
+## Coluna caída 56x20, pivô (28, 16): tambores de pedra, ponta quebrada, musgo por cima.
+func _fallen_column() -> Image:
+	var c := PixelCanvas.new(56, 20)
+	var stone := PixelCanvas.ramp(OLD_STONE[0], OLD_STONE[2], OLD_STONE[3])
+	var col := c.new_mask()
+	c.mask_round_rect(col, 4, 5, 44, 11, 4)
+	c.mask_polygon(col, PackedVector2Array([Vector2(47, 5), Vector2(53, 7), Vector2(50, 10), Vector2(54, 13), Vector2(47, 16)]))
+	c.paint_part(col, stone, 2, 2)
+	for x in [15, 27, 39]:
+		for y in range(5, 16):
+			if c.mask_get(col, x, y):
+				c.set_px(x, y, Color(OLD_STONE[0]))
+	for x in range(6, 46, 3):
+		c.set_px(x, 8, Color(OLD_STONE[1])) # caneluras
+	var moss := c.new_mask()
+	c.mask_ellipse(moss, 20, 5, 9, 2)
+	c.mask_ellipse(moss, 36, 6, 5, 1.5)
+	c.paint_part(moss, PixelCanvas.ramp(MOSS[0], MOSS[1], MOSS[2]))
+	c.outline()
+	c.shadow(28, 16.5, 26, 2.5, 0.28)
+	return c.image
+
+
+func _pieces_sheet() -> Image:
+	var sheet := Image.create_empty(260, 100, false, Image.FORMAT_RGBA8)
+	sheet.fill(Color("#4f9a3e"))
+	var x := 2
+	for img: Image in [_ancestral_tree(), _png("res://assets/environments/tree.png"), _young_tree(), _sapling(),
+			_wall_base(), _fallen_column()]:
+		sheet.blend_rect(img, Rect2i(0, 0, img.get_width(), img.get_height()), Vector2i(x, 98 - img.get_height()))
+		x += img.get_width() + 4
+	return sheet
