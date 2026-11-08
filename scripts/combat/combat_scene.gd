@@ -30,6 +30,14 @@ var _party: Array[CharacterData] = []
 var _roller: DiceRoller = null
 var _configured := false
 var _busy := false
+## Pergunta ao jogador o que for opcional depois de acertar (Ataque Furtivo). Testes podem desligar.
+var ask_choices := true
+signal choice_made(value: bool)
+var _choice_panel: PanelContainer
+var _choice_title: Label
+var _choice_text: Label
+var _choice_yes: Button
+var _choice_no: Button
 var _selected_attack_id: String = ""
 var _log_lines: PackedStringArray = []
 var _inventory: Inventory = null
@@ -84,7 +92,9 @@ func _ready() -> void:
 	_actions_button.get_popup().id_pressed.connect(_on_action_menu)
 	_end_turn_button.get_parent().add_child(_actions_button)
 	_end_turn_button.get_parent().move_child(_actions_button, _end_turn_button.get_index())
+	_build_choice_panel()
 
+	manager.interactive_choices = ask_choices
 	var error := _build_combat()
 	if not error.is_empty():
 		_show_setup_error(error)
@@ -303,9 +313,98 @@ func _after_command(result: Dictionary) -> void:
 	_busy = true
 	_refresh()
 	await _present(result["events"])
+	while manager.has_pending_choice():
+		var use_it: bool = await _ask_sneak_attack()
+		var answer := manager.submit({"type": "choose", "actor": manager.current().id, "value": use_it})
+		if not answer["ok"]:
+			_status.text = answer["error"]
+			break
+		await _present(answer["events"])
 	_busy = false
 	_refresh()
 	_run_enemy_turns()
+
+
+# --- Pergunta do Ataque Furtivo ----------------------------------------------------
+
+## Painel "Acertou! Usar Ataque Furtivo?", no estilo do painel de resultado. Teclas 1 (usar) e 2 (não usar).
+func _build_choice_panel() -> void:
+	_choice_panel = PanelContainer.new()
+	_choice_panel.name = "ChoicePanel"
+	_choice_panel.visible = false
+	_choice_panel.add_theme_stylebox_override("panel", _result_panel.get_theme_stylebox("panel"))
+	_choice_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	_choice_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_choice_panel.grow_vertical = Control.GROW_DIRECTION_BOTH
+	add_child(_choice_panel)
+	var margin := MarginContainer.new()
+	for side: String in ["left", "right"]:
+		margin.add_theme_constant_override("margin_" + side, 10)
+	for side: String in ["top", "bottom"]:
+		margin.add_theme_constant_override("margin_" + side, 8)
+	_choice_panel.add_child(margin)
+	var column := VBoxContainer.new()
+	column.add_theme_constant_override("separation", 6)
+	margin.add_child(column)
+	_choice_title = Label.new()
+	_choice_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_choice_title.add_theme_font_size_override("font_size", 12)
+	_choice_title.add_theme_color_override("font_color", _result_label.get_theme_color("font_color"))
+	column.add_child(_choice_title)
+	_choice_text = Label.new()
+	_choice_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	column.add_child(_choice_text)
+	var buttons := HBoxContainer.new()
+	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	buttons.add_theme_constant_override("separation", 6)
+	column.add_child(buttons)
+	_choice_yes = Button.new()
+	_choice_yes.text = "1. Usar"
+	_choice_yes.custom_minimum_size = Vector2(80, 0)
+	_choice_yes.pressed.connect(func() -> void: choice_made.emit(true))
+	buttons.add_child(_choice_yes)
+	_choice_no = Button.new()
+	_choice_no.text = "2. Guardar"
+	_choice_no.custom_minimum_size = Vector2(80, 0)
+	_choice_no.pressed.connect(func() -> void: choice_made.emit(false))
+	buttons.add_child(_choice_no)
+
+
+## Mostra a pergunta da escolha pendente e espera a resposta do jogador.
+func _ask_sneak_attack() -> bool:
+	var ctx: Dictionary = manager.pending_choice["ctx"]
+	var critical := bool(ctx["roll"]["critical"])
+	var dice := CombatFeatures.table(ctx["actor"], manager, "sneak_attack")
+	_choice_title.text = "Acerto crítico!" if critical else "Acertou!"
+	_choice_text.text = "Usar o Ataque Furtivo neste golpe?\n+%s de dano%s. Só uma vez por turno." % [dice,
+			" (dados dobrados no crítico)" if critical else ""]
+	_choice_panel.visible = true
+	_choice_yes.grab_focus()
+	var value: bool = await choice_made
+	_choice_panel.visible = false
+	return value
+
+
+## Responde à pergunta pendente pelo código (testes) ou pelas teclas.
+func answer_choice(value: bool) -> void:
+	if is_choice_open():
+		choice_made.emit(value)
+
+
+func is_choice_open() -> bool:
+	return _choice_panel != null and _choice_panel.visible
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not is_choice_open() or not (event is InputEventKey) or not event.pressed or event.echo:
+		return
+	match (event as InputEventKey).keycode:
+		KEY_1, KEY_KP_1:
+			get_viewport().set_input_as_handled()
+			answer_choice(true)
+		KEY_2, KEY_KP_2, KEY_ESCAPE:
+			get_viewport().set_input_as_handled()
+			answer_choice(false)
 
 
 func _run_enemy_turns() -> void:
@@ -342,11 +441,20 @@ func _animate(event: Dictionary) -> void:
 			var to: Vector2i = event["to"]
 			var steps := maxi(absi(to.x - from.x), absi(to.y - from.y))
 			await token.walk_to(_board.cell_feet(to), STEP_TIME * steps)
+		"choice":
+			# Acertou e o jogador vai decidir o Ataque Furtivo: golpe e aviso, o dano vem depois da resposta.
+			var chooser := _board.token_for(manager.get_combatant(event["actor"]))
+			var chosen_target := _board.token_for(manager.get_combatant(event["target"]))
+			await chooser.attack_towards(chosen_target.position)
+			_board.float_text("CRÍTICO!" if event["critical"] else "Acertou!", chosen_target.position,
+					Color8(255, 226, 90) if event["critical"] else Color8(255, 240, 230), event["critical"])
+			await get_tree().create_timer(0.2).timeout
 		"attack":
 			var attacker := _board.token_for(manager.get_combatant(event["actor"]))
 			var target_unit := manager.get_combatant(event["target"])
 			var target := _board.token_for(target_unit)
-			await attacker.attack_towards(target.position)
+			if not event.get("after_choice", false):
+				await attacker.attack_towards(target.position)
 			var roll: Dictionary = event["roll"]
 			if roll["hit"]:
 				target.hurt(int(event["target_hp"]))
@@ -354,6 +462,9 @@ func _animate(event: Dictionary) -> void:
 					_board.float_text("CRÍTICO! %d" % event["damage"], target.position, Color8(255, 226, 90), true)
 				else:
 					_board.float_text(str(event["damage"]), target.position, Color8(255, 240, 230))
+				if str(event.get("features", "")).contains("Ataque Furtivo"):
+					await get_tree().create_timer(0.15).timeout
+					_board.float_text("Ataque Furtivo!", target.position + Vector2(0, -10), Color8(224, 180, 138))
 			else:
 				_board.float_text("Errou", target.position, Color8(190, 200, 230))
 			await get_tree().create_timer(0.2).timeout
