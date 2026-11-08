@@ -115,25 +115,24 @@ func _draw() -> void:
 	for y in manager.arena_size.y:
 		for x in manager.arena_size.x:
 			_draw_ground(Vector2i(x, y))
-	for y in manager.arena_size.y + 1:
-		draw_line(Vector2(0, y * CELL), Vector2(manager.arena_size.x * CELL, y * CELL), GRID_LINE)
-	for x in manager.arena_size.x + 1:
-		draw_line(Vector2(x * CELL, 0), Vector2(x * CELL, manager.arena_size.y * CELL), GRID_LINE)
+	# Grade: cada casa desenhada como um octógono (só o visual; as regras seguem a grade quadrada).
+	for y in manager.arena_size.y:
+		for x in manager.arena_size.x:
+			_draw_octagon_line(_octagon(Rect2(cell_to_local(Vector2i(x, y)), Vector2(CELL, CELL))), GRID_LINE)
 	for cell: Vector2i in reachable:
-		var rect := Rect2(cell_to_local(cell) + Vector2(2, 2), Vector2(CELL - 4, CELL - 4))
-		draw_rect(rect, MOVE_FILL)
-		draw_rect(rect, MOVE_LINE, false, 1.0)
+		var move := _octagon(_inset(cell, 2))
+		draw_colored_polygon(move, MOVE_FILL)
+		_draw_octagon_line(move, MOVE_LINE)
 	for cell in aim_cells:
-		var aim_rect := Rect2(cell_to_local(cell) + Vector2(3, 3), Vector2(CELL - 6, CELL - 6))
-		draw_rect(aim_rect, AIM_FILL)
-		_draw_dashed_rect(aim_rect, AIM_LINE)
+		var aim := _octagon(_inset(cell, 3))
+		draw_colored_polygon(aim, AIM_FILL)
+		_draw_dashed_octagon(aim, AIM_LINE)
 	var current := manager.current()
 	if current != null:
-		var origin := cell_to_local(current.position)
-		draw_rect(Rect2(origin + Vector2(1, 1), Vector2(CELL - 2, CELL - 2)), CURRENT_LINE, false, 1.0)
-		draw_rect(Rect2(origin + Vector2(3, 3), Vector2(CELL - 6, CELL - 6)), CURRENT_LINE, false, 1.0)
+		_draw_octagon_line(_octagon(_inset(current.position, 1)), CURRENT_LINE)
+		_draw_octagon_line(_octagon(_inset(current.position, 3)), CURRENT_LINE)
 	for unit in targets:
-		_draw_dashed_rect(Rect2(cell_to_local(unit.position) + Vector2(1, 1), Vector2(CELL - 2, CELL - 2)), TARGET_LINE)
+		_draw_dashed_octagon(_octagon(_inset(unit.position, 1)), TARGET_LINE)
 
 
 ## Cada casa = 2x2 tiles de grama do atlas da exploração, variando por posição.
@@ -150,7 +149,26 @@ func _draw_ground(cell: Vector2i) -> void:
 					Rect2(variant * 16, 0, 16, 16))
 
 
-func _draw_dashed_rect(rect: Rect2, color: Color) -> void:
-	var corners := [rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y)]
-	for i in 4:
-		draw_dashed_line(corners[i], corners[(i + 1) % 4], color, 2.0, 3.0)
+## Retângulo da casa recuado `margin` px de cada lado.
+func _inset(cell: Vector2i, margin: float) -> Rect2:
+	return Rect2(cell_to_local(cell) + Vector2(margin, margin), Vector2(CELL - 2 * margin, CELL - 2 * margin))
+
+
+## Octógono regular inscrito no retângulo (cantos cortados em ~29% do lado), em sentido horário.
+static func _octagon(rect: Rect2) -> PackedVector2Array:
+	var c := minf(rect.size.x, rect.size.y) / (2.0 + sqrt(2.0))
+	var p := rect.position
+	var e := rect.end
+	return PackedVector2Array([Vector2(p.x + c, p.y), Vector2(e.x - c, p.y), Vector2(e.x, p.y + c), Vector2(e.x, e.y - c),
+			Vector2(e.x - c, e.y), Vector2(p.x + c, e.y), Vector2(p.x, e.y - c), Vector2(p.x, p.y + c)])
+
+
+func _draw_octagon_line(points: PackedVector2Array, color: Color) -> void:
+	var closed := points.duplicate()
+	closed.append(points[0])
+	draw_polyline(closed, color, 1.0)
+
+
+func _draw_dashed_octagon(points: PackedVector2Array, color: Color) -> void:
+	for i in points.size():
+		draw_dashed_line(points[i], points[(i + 1) % points.size()], color, 2.0, 3.0)

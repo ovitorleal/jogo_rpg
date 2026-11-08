@@ -60,6 +60,13 @@ var offhand_used: bool = false
 var once_per_turn: Dictionary = {}
 ## Efeitos a aplicar depois do dano de um acerto (Golpe Astuto, Golpe Brutal), preenchidos pelo CombatFeatures.
 var pending_after_hit: Array[Dictionary] = []
+## Com true (a tela de combate liga), o ataque do jogador que acerta e pode usar o Ataque Furtivo pausa antes do
+## dano e espera o comando "choose". Testes e IA deixam false: o Ataque Furtivo é usado automaticamente.
+var interactive_choices: bool = false
+## Escolha aberta: {kind, ctx (a metade rolada do ataque), after ("attack" | "offhand")}. Vazio = nenhuma.
+var pending_choice: Dictionary = {}
+## Resposta ao Ataque Furtivo durante o dano do acerto: -1 automático, 0 recusado, 1 aceito.
+var sneak_choice: int = -1
 ## A ação atual veio do Surto de Ação (não pode ser a ação de Magia).
 var surge_action: bool = false
 ## Verdadeiro durante um ataque de oportunidade (Escapar da Horda).
@@ -188,7 +195,11 @@ func _submit(command: Dictionary) -> Dictionary:
 	var actor := current()
 	if actor == null or str(command.get("actor", "")) != actor.id:
 		return _fail("Não é o turno deste participante")
+	if not pending_choice.is_empty() and str(command.get("type", "")) != "choose":
+		return _fail("Responda à pergunta antes")
 	match str(command.get("type", "")):
+		"choose":
+			return _do_choose(bool(command.get("value", true)))
 		"move":
 			return _do_move(actor, command.get("to", Vector2i(-1, -1)))
 		"attack":
@@ -523,9 +534,48 @@ func _do_attack(actor: Combatant, target: Combatant, attack_id: String) -> Dicti
 	if str(attack.get("unarmed", "")) in ["grapple", "shove"]:
 		_resolve_unarmed_option(actor, target, attack, events)
 	else:
-		_resolve_weapon_attack(actor, target, attack, events, false)
+		var ctx := _roll_weapon_attack(actor, target, attack, events, false)
 		if "light" in attack.get("properties", []) and attack["attack_type"] == "melee":
 			light_weapon_used = str(attack["weapon_id"])
+		if _ask_sneak_attack(ctx, events, "attack"):
+			return {"ok": true, "error": "", "events": events}
+		if not bool(ctx["missed"]):
+			_finish_weapon_attack(ctx, events)
+	events.append_array(_check_end())
+	return {"ok": true, "error": "", "events": events}
+
+
+## Escolha pendente aberta por um ataque do jogador (Ataque Furtivo depois de acertar).
+func has_pending_choice() -> bool:
+	return not pending_choice.is_empty()
+
+
+## Pausa o ataque antes do dano para o jogador decidir o Ataque Furtivo: só com interactive_choices, só no turno
+## de quem ataca, só se acertou e o Ataque Furtivo pode ser usado. Devolve true se pausou.
+func _ask_sneak_attack(ctx: Dictionary, events: Array[Dictionary], after: String) -> bool:
+	var actor: Combatant = ctx["actor"]
+	var target: Combatant = ctx["target"]
+	if not interactive_choices or bool(ctx["missed"]) or actor != current() or actor.team != Combatant.Team.PARTY:
+		return false
+	if not CombatFeatures.sneak_attack_eligible(self, actor, target, ctx["attack"], ctx["adv"]["state"]):
+		return false
+	pending_choice = {"kind": "sneak_attack", "ctx": ctx, "after": after}
+	var roll: Dictionary = ctx["roll"]
+	events.append({"type": "choice", "kind": "sneak_attack", "actor": actor.id, "target": target.id,
+			"attack": ctx["attack"]["name"], "roll": roll, "critical": bool(roll["critical"]),
+			"dice": CombatFeatures.table(actor, self, "sneak_attack"), "offhand": bool(ctx["offhand"])})
+	return true
+
+
+## Responde à escolha pendente e termina o ataque (dano, efeitos e fim de combate).
+func _do_choose(value: bool) -> Dictionary:
+	if pending_choice.is_empty():
+		return _fail("Nenhuma pergunta aberta")
+	var ctx: Dictionary = pending_choice["ctx"]
+	pending_choice = {}
+	ctx["event"]["after_choice"] = true
+	var events: Array[Dictionary] = []
+	_finish_weapon_attack(ctx, events, 1 if value else 0)
 	events.append_array(_check_end())
 	return {"ok": true, "error": "", "events": events}
 
@@ -541,7 +591,18 @@ func _use_attack(actor: Combatant) -> void:
 
 ## Jogada de ataque com arma (ou desarmada), dano, efeitos de maestria e concentração.
 ## offhand = ataque extra da propriedade Leve (sem modificador no dano, salvo Duas Armas).
+## Resolve de uma vez (rolagem + dano), sem pausa: ataques de oportunidade, Trespassar, golpes automáticos.
 func _resolve_weapon_attack(actor: Combatant, target: Combatant, attack: Dictionary, events: Array[Dictionary],
+		offhand: bool, drop_modifier: bool = false) -> Dictionary:
+	var ctx := _roll_weapon_attack(actor, target, attack, events, offhand, drop_modifier)
+	if bool(ctx["missed"]):
+		return ctx["roll"]
+	return _finish_weapon_attack(ctx, events)
+
+
+## Primeira metade do ataque com arma: jogada, vantagem e o caminho do erro. Devolve o contexto para terminar o
+## acerto em _finish_weapon_attack (agora ou depois de uma escolha do jogador).
+func _roll_weapon_attack(actor: Combatant, target: Combatant, attack: Dictionary, events: Array[Dictionary],
 		offhand: bool, drop_modifier: bool = false) -> Dictionary:
 	var adv := attack_advantage(actor, target, attack)
 	var bless := _bless_roll(actor)
@@ -568,6 +629,8 @@ func _resolve_weapon_attack(actor: Combatant, target: Combatant, attack: Diction
 			"roll": roll, "advantage_reasons": adv["advantage"], "disadvantage_reasons": adv["disadvantage"],
 			"damage": 0, "damage_type": damage_type, "target_hp": target.hp, "bless": bless,
 			"offhand": offhand}
+	var ctx := {"actor": actor, "target": target, "attack": attack, "offhand": offhand, "drop_modifier": drop_modifier,
+			"adv": adv, "roll": roll, "damage_type": damage_type, "event": event, "missed": not roll["hit"]}
 	if not roll["hit"]:
 		events.append(event)
 		CombatFeatures.on_miss(self, actor, target)
@@ -579,14 +642,30 @@ func _resolve_weapon_attack(actor: Combatant, target: Combatant, attack: Diction
 						"damage": graze, "damage_type": attack["damage_type"], "target_hp": target.hp}
 				_apply_damage(target, Attack.apply_damage_modifiers(graze, str(attack["damage_type"]), target.all_resistances()),
 						events, graze_event)
-		return roll
+	return ctx
+
+
+## Segunda metade do ataque com arma (só acertos): dano, dano extra, maestria e efeitos depois do acerto.
+## use_sneak: -1 decide automaticamente, 0 recusa o Ataque Furtivo, 1 aceita.
+func _finish_weapon_attack(ctx: Dictionary, events: Array[Dictionary], use_sneak: int = -1) -> Dictionary:
+	var actor: Combatant = ctx["actor"]
+	var target: Combatant = ctx["target"]
+	var attack: Dictionary = ctx["attack"]
+	var roll: Dictionary = ctx["roll"]
+	var adv: Dictionary = ctx["adv"]
+	var damage_type: String = ctx["damage_type"]
+	var event: Dictionary = ctx["event"]
+	var offhand: bool = ctx["offhand"]
 	var raw := _weapon_damage(actor, attack, roll["critical"], offhand and not actor.has_feat("feat.two_weapon_fighting")
-			or drop_modifier)
+			or bool(ctx["drop_modifier"]))
 	var damage := Attack.apply_damage_modifiers(raw, damage_type, target.all_resistances())
 	var extra := _mark_damage(actor, target, roll["critical"])
 	var total := damage + int(extra["damage"])
 	var labels := PackedStringArray()
-	for bonus_damage: Dictionary in CombatFeatures.extra_damage(self, actor, target, attack, roll, adv["state"], events):
+	sneak_choice = use_sneak
+	var extras := CombatFeatures.extra_damage(self, actor, target, attack, roll, adv["state"], events)
+	sneak_choice = -1
+	for bonus_damage: Dictionary in extras:
 		var amount := Attack.apply_damage_modifiers(int(bonus_damage["amount"]), str(bonus_damage["type"]), target.all_resistances())
 		total += amount
 		labels.append("%s +%d" % [bonus_damage["label"], amount])
@@ -759,7 +838,11 @@ func _do_offhand(actor: Combatant, target: Combatant) -> Dictionary:
 		bonus_action_available = false
 	offhand_used = true
 	var events: Array[Dictionary] = []
-	_resolve_weapon_attack(actor, target, attack, events, true)
+	var ctx := _roll_weapon_attack(actor, target, attack, events, true)
+	if _ask_sneak_attack(ctx, events, "offhand"):
+		return {"ok": true, "error": "", "events": events}
+	if not bool(ctx["missed"]):
+		_finish_weapon_attack(ctx, events)
 	events.append_array(_check_end())
 	return {"ok": true, "error": "", "events": events}
 
