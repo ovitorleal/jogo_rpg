@@ -7,6 +7,8 @@
   (teclas 1 e 2). Recusar guarda o uso para outro ataque do mesmo turno, e o crítico aparece antes da decisão
   (os dados dobram). O dano extra aparece flutuando sobre o alvo e no registro ("Ataque Furtivo +N").
 - Testes do caso que vale no nível 1: aliado encostado no alvo libera o Ataque Furtivo; sozinho e sem vantagem, não.
+- As casas do tabuleiro de combate passam a ser desenhadas como octógonos (grade, movimento, alvo e quem está no
+  turno). Só o desenho muda: movimento, alcance e áreas seguem a grade quadrada.
 
 ### Alterado
 - O ataque com arma no `CombatManager` tem duas metades (rolagem e dano) e o comando novo `choose`. Só os ataques
