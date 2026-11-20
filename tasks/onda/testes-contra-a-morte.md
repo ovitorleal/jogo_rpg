@@ -1,7 +1,7 @@
 ---
 onda: testes-contra-a-morte
 fase-metodologia: 1
-estado: AGUARDANDO-APROVACAO
+estado: PRONTO-PARA-PASSO-2
 atualizado: 2026-11-07
 projeto: jogo_rpg
 caminho: C:\Users\ovito\OneDrive\Desktop\jogo_rpg
@@ -14,7 +14,7 @@ contratos:
 # 🗺️ PAINEL — testes-contra-a-morte
 
 ## Onde estamos AGORA
-Passo **1 (research)** concluído e aguardando a aprovação do responsável (`aprovado: true` no research).
+Passo **1 (research)** concluído e **aprovado** pelo responsável (2026-11-20).
 Próximo: `/passo-2-plan testes-contra-a-morte`.
 
 ## As fases
@@ -35,7 +35,7 @@ porque não há biblioteca licenciada. Decisões do responsável: morte real com
 inteligentes finalizam caídos (campo `finishes_downed` no monstro, começando pelo chefe goblin); derrota total
 volta ao último salvamento. O personagem ganha o campo `dead`, com migração no salvamento.
 
-**Artefato gerado:** `tasks/research/testes-contra-a-morte.md` (aguardando aprovado: true)
+**Artefato gerado:** `tasks/research/testes-contra-a-morte.md` (aprovado: true, Vitor Leal, 2026-11-20)
 
 **Ler antes de agir:**
 1. `tasks/research/testes-contra-a-morte.md` — decisões por problema, mapa de impacto e pontos para o plano
@@ -48,7 +48,7 @@ volta ao último salvamento. O personagem ganha o campo `dead`, com migração n
 - Em aberto para o plano: quem conduz o grupo com o líder morto; preço e lugar da ressurreição (neutro em relação
   ao compêndio do mestre); chance de finalizar; Poupar os Moribundos.
 
-**Gate pendente:** aprovação do research pelo responsável.
+**Gate pendente:** nenhum, pronto para seguir.
 
 **Próxima ação:**
 /passo-2-plan testes-contra-a-morte

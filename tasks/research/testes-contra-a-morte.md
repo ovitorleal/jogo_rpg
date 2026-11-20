@@ -4,7 +4,9 @@ onda: testes-contra-a-morte
 fase: research
 data: 2026-11-07
 projeto: As Crônicas de Arghaz
-aprovado: false
+aprovado: true
+aprovado_por: Vitor Leal
+aprovado_em: 2026-11-20
 llm-routing:
   proxima-fase: passo-2-plan
   modelo: claude-sonnet-5-5
@@ -258,7 +260,7 @@ segunda opção. O fluxo atual, que apaga tudo, sai.
 - [x] Hand-rolled justificado
 - [x] Padrões da codebase identificados
 - [x] Riscos e dependências mapeados
-- [ ] Revisado pelo humano
-- [ ] Aprovado para próxima fase
+- [x] Revisado pelo humano
+- [x] Aprovado para próxima fase (Vitor Leal, 2026-11-20: "eu aprovo os dois")
 
-aprovado: false
+aprovado: true
