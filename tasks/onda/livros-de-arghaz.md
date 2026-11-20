@@ -1,7 +1,7 @@
 ---
 onda: livros-de-arghaz
-fase-metodologia: 2
-estado: PRONTO-PARA-PASSO-3
+fase-metodologia: 3
+estado: AGUARDANDO-APROVACAO
 atualizado: 2026-11-20
 projeto: jogo_rpg
 caminho: C:\Users\ovito\OneDrive\Desktop\jogo_rpg
@@ -15,9 +15,12 @@ contratos:
 # 🗺️ PAINEL — livros-de-arghaz
 
 ## Onde estamos AGORA
-Passo **2 (plan)** concluído e **aprovado** pelo responsável (2026-11-20). Decisões D1-D4 e modelo do Ermo aprovados
-em 2026-11-07.
-Próximo: `/passo-3-security livros-de-arghaz`.
+Passo **3 (security)** escrito.
+- Risco geral baixo, com 3 contramedidas (CM-LA-01 a 03).
+- Um risco aceito pelo responsável: RR-LA-01, os livros do mestre estão públicos no GitHub.
+- Falta a aprovação do threat model (`aprovado: true` em `tasks/security/livros-de-arghaz.md`).
+
+Próximo: `/passo-4-code livros-de-arghaz`.
 
 ## As fases
 | # | Fase | Estado |
@@ -25,9 +28,9 @@ Próximo: `/passo-3-security livros-de-arghaz`.
 | 1 | Texto do jogo (crônicas, abertura, cenas, epílogo, diálogos, "Volte até") | ⬜ |
 | 2 | Documentos do cânone (`HISTORIA.md` reescrito, perguntas ao mestre) | ⬜ |
 | 3 | Peças do Ermo no gerador (sem tocar mapa) | ⬜ |
-| 4 | Posição salva segura ao carregar | ⬜ |
+| 4 | Posição salva segura ao carregar (CM-LA-01) | ⬜ |
 | 5 | Ermo nos mapas (Bosque, Clareira; vila só calçamento) | ⬜ |
-| 6 | Fechamento (ROADMAP, CHANGELOG, CLAUDE.md) | ⬜ |
+| 6 | Fechamento (ROADMAP, CHANGELOG, CLAUDE.md; CM-LA-03 na exportação) | ⬜ |
 
 ## Tabela de fontes do texto novo
 (Preenchida na Fase 1: cada frase nova com livro e capítulo ou seção do compêndio.)
@@ -37,33 +40,31 @@ Próximo: `/passo-3-security livros-de-arghaz`.
 ```
 Tarefa: livros-de-arghaz · Crônicas de Arghaz
 
-## Handoff — livros-de-arghaz — passo-2 concluído → passo-3
+## Handoff — livros-de-arghaz — passo-3 concluído → passo-4
 
 **Projeto:** jogo_rpg — `C:\Users\ovito\OneDrive\Desktop\jogo_rpg`
-**Branch:** `onda/livros-de-arghaz` (publicado; PR #29, não mesclar até o passo 5).
+**Branch:** `onda/livros-de-arghaz` (publicado; atualizado com o main em 2026-11-20).
 
-**Decisão desta fase:** 6 fases — 1 texto do jogo, 2 docs do cânone, 3 peças do Ermo no gerador, 4 posição salva
-segura, 5 Ermo nos mapas, 6 fechamento. Suposições a atacar primeiro: F1 trocar "Volte a %s" não quebra Amara/Lyra;
-F3 o gerador é determinístico (rodar sem mudança e conferir git status); F4 consulta de física em _ready enxerga
-os corpos (plano B geométrico); F5 o gerador reproduz as cenas versionadas (rodar sem mudança para user://).
-D1-D4 aceitos: "Volte até %s"; tirar Floresta Sussurrante, Ganso Dourado e Martelo do Fundo; sonho sem "minha
-garra"; reescrever as falas de Ignis, Lyra e Doran. Modelo do Ermo aprovado.
+**Decisão desta fase:** risco geral baixo; 3 contramedidas. Prioridade: CM-LA-01 (posição salva: só valor finito,
+fora do mapa vai para Entrances/*, busca com raio máximo; posição livre = comportamento de hoje), na Fase 4.
+CM-LA-02 (sem colchetes BBCode acidentais no texto novo) e CM-LA-03 (pacote Web sem docs/). RR-LA-01: livros do
+mestre públicos no GitHub, risco aceito pelo responsável ("Manter público").
 
-**Artefato gerado:** `tasks/specs/livros-de-arghaz.md` (aprovado: true, Vitor Leal, 2026-11-20) +
-`tasks/mockups/livros-de-arghaz/` (index.html, 3 PNG, `mock_ermo.gd.txt` = referência das peças)
+**Artefato gerado:** `tasks/security/livros-de-arghaz.md` (aguardando aprovado: true)
 
 **Ler antes de agir:**
-1. `tasks/specs/livros-de-arghaz.md` — fases, blast radius, grep de métrica
-2. `tasks/security/livros-de-arghaz.md` — ainda não existe; é o que o passo 3 cria
+1. `tasks/specs/livros-de-arghaz.md` — as 6 fases, a suposição mais arriscada de cada uma, o grep de métrica
+2. `tasks/security/livros-de-arghaz.md` — CM-LA-01..03 viram requisitos; plano de teste para o passo 5
+3. `docs/livros/` — a fonte de cada frase nova da Fase 1
 
 **Gotchas / decisões não-óbvias:**
-- Hoje não há proteção de colisão ao restaurar posição (save_game.gd:226-229, exploration_map.gd:43-45).
-- Calçamento = camada Detail sem colisão + RNG separado, senão todas as árvores mudam de lugar.
+- Ids nunca mudam (saves guardam ids); nomes dos companheiros esperam o arquivo do mestre.
+- `.docx` do mestre inspecionados: sem macros, embutidos ou links externos.
 - `exploration_map.gd` também está na folha de testes-contra-a-morte: reler folha e disco antes da Fase 4.
-- Nunca "Primeiro Dragão", nenhum número inventado, Wyrmgard não aparece.
+- llm-routing: Haiku por padrão; Sonnet nas Fases 4 e 5.
 
-**Gate pendente:** nenhum, pronto para seguir.
+**Gate pendente:** aprovação do threat model pelo responsável.
 
 **Próxima ação:**
-/passo-3-security livros-de-arghaz
+/passo-4-code livros-de-arghaz
 ```
