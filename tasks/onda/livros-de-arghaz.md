@@ -15,25 +15,24 @@ contratos:
 # 🗺️ PAINEL — livros-de-arghaz
 
 ## Onde estamos AGORA
-Passo **4 (code)**. Fases 1 e 2 entregues (`b04a2fa`, `7c18c1a`); 312 testes verdes, nenhum id alterado.
-Fases 1 e 2 **validadas** pelo responsável em 2026-11-20 ("aprovado"). Decisão no caminho: Garra-Rubra **fica**,
-porque vem do compêndio (o responsável pediu para trocar e voltou atrás ao saber da fonte).
-Agora: **Fase 3** (peças do Ermo no gerador, sem tocar mapa).
+Passo **4 (code)**. Fases 1-2 validadas (2026-11-20). Fases 3, 4 e 5 entregues (`f459e9c`, `b41cb03`, `334d063`);
+323 testes verdes.
+🔴 **Teto de 2 fases sem validação atingido (3 e 5): aguardando a verificação manual do responsável.**
+Não posso começar a Fase 6 (fechamento) antes disso.
 
-## Você valida (Fases 1 e 2)
-1. **Abertura.** Onde: jogo → Novo jogo. Ação: leia o texto da criação de personagem. Tem que: dizer "Era do
-   Despertar", sem ano e sem "Ione". Se falhar: copie a frase errada.
-2. **Chefe da vila.** Onde: Vila de Ribeira. Ação: veja o objetivo no topo e converse no poço. Tem que: objetivo
-   "Fale com a chefe da vila"; nome no diálogo "Chefe da vila"; nenhum "Ione". Se falhar: print do diálogo.
-3. **Diário.** Onde: tecla J, depois de aceitar a missão. Ação: abra as Crônicas. Tem que: "Arghaz e a mana" e "Os
-   kobolds e o Arauto" com o texto novo. Se falhar: o título da crônica errada.
-4. **Missão da Amara.** Onde: Clareira. Ação: vença o goblin da ruína. Tem que: o aviso diz "Volte até Amara". Se
-   falhar: o texto do aviso.
-5. **Texto completo.** Onde: `tasks/onda/livros-de-arghaz-textos.md` (o sonho, o epílogo e as 6 crônicas, que só
-   aparecem no fim do ato). Ação: leia. Tem que: soar fiel aos livros e sem invenção. Se falhar: o trecho e o que
-   mudar.
-6. **Resumo do cânone.** Onde: `docs/HISTORIA.md`. Ação: leia, principalmente "Perguntas em aberto para o mestre".
-   Tem que: estar correto pelas fontes. Se falhar: o parágrafo.
+## Você valida (Fases 3 e 5 — o Ermo nos mapas)
+1. **Bosque do Riacho.** Onde: da vila, siga para o Bosque. Ação: ande pela trilha do oeste até o acampamento. Tem
+   que: a trilha virou estrada antiga (pedras com falhas e mudas nas rachaduras), com duas árvores ancestrais à beira,
+   muralha e colunas caídas pela grama. Se falhar: print e o que estranhou.
+2. **Andar sobre as pedras.** Onde: a mesma estrada. Ação: ande por cima do calçamento e das raízes. Tem que: passar
+   livre; só o tronco das árvores e as ruínas bloqueiam. Se falhar: onde ficou preso.
+3. **Clareira da Encruzilhada.** Onde: Clareira. Ação: ande pela estrada a oeste e veja o lago. Tem que: calçamento
+   antigo na estrada, árvore ancestral na beira do lago, ruínas espalhadas; Amara, a ruína e a placa no mesmo lugar.
+   Se falhar: print.
+4. **Vila de Ribeira.** Onde: a praça do poço. Ação: olhe a praça. Tem que: pedras antigas na praça; casas, NPCs e
+   placas iguais a antes. Se falhar: print.
+5. **Save antigo.** Onde: Continuar (o seu save de antes). Ação: carregue. Tem que: carregar no lugar de sempre, sem
+   ficar preso em árvore ou ruína. Se falhar: em que mapa e onde.
 
 ## As fases
 | # | Fase | Estado |
@@ -69,29 +68,29 @@ Agora: **Fase 3** (peças do Ermo no gerador, sem tocar mapa).
 ```
 Tarefa: livros-de-arghaz · Crônicas de Arghaz
 
-## Handoff — livros-de-arghaz — passo-4, Fases 1 e 2 entregues → verificação manual
+## Handoff — livros-de-arghaz — passo-4, Fases 3-5 entregues → verificação manual
 
 **Projeto:** jogo_rpg — `C:\Users\ovito\OneDrive\Desktop\jogo_rpg`
-**Branch:** `onda/livros-de-arghaz` (publicado; commits b04a2fa e 7c18c1a).
+**Branch:** `onda/livros-de-arghaz` (publicado; f459e9c, b41cb03, 334d063).
 
-**Decisão desta fase:** F1 texto do jogo fiel aos livros (crônicas, abertura, sonho, epílogo, diálogos, "Volte
-até %s", chefe da vila sem nome); F2 HISTORIA.md como resumo do cânone (proposta 0.11 arquivada em docs/arquivo/).
-Teste novo tests/story/test_canon.gd trava termos que contradizem os livros. 312 testes verdes, nenhum id alterado.
-
-**Artefatos:** tasks/onda/livros-de-arghaz.md (painel, tabela de fontes, roteiro "Você valida"),
-tasks/onda/livros-de-arghaz-textos.md (todo o texto novo para leitura).
+**Decisão desta fase:** F3 peças do Ermo no gerador (árvore ancestral, jovem, muda, muralha, coluna, 4 ladrilhos de
+calçamento nas casas livres (6..9,0)). F4 CM-LA-01: safe_spawn/is_spot_blocked em exploration_map.gd (geometria,
+anéis de 16 px, máx. 8; inválido/fora do mapa → entrada). F5 Ermo nos mapas: camada Detail sem colisão, RNG próprio
+(_ermo) depois do espalhamento antigo, árvores ancestrais à beira da estrada antiga, 1 em 3 árvores do miolo vira
+jovem. 323 testes verdes; objetos antigos conferidos contra tests/fixtures/props_before_ermo.json.
 
 **Ler antes de agir:**
-1. tasks/onda/livros-de-arghaz.md — fases, roteiro de validação, dívida D-LA-01
-2. tasks/specs/livros-de-arghaz.md — Fases 3 a 6 (peças do Ermo, posição salva, mapas, fechamento)
+1. tasks/onda/livros-de-arghaz.md — roteiro "Você valida", fases, dívida D-LA-01
+2. tasks/specs/livros-de-arghaz.md — Fase 6 (fechamento) e o grep de métrica
+3. tasks/security/livros-de-arghaz.md — CM-LA-03 (pacote Web sem docs/) fica para a Fase 6
 
 **Gotchas / decisões não-óbvias:**
-- Fase 3: rodar o gerador de arte SEM mudança e conferir git status antes de criar peças.
-- Fase 4 (CM-LA-01): exploration_map.gd também está na folha de testes-contra-a-morte.
-- D-LA-01: Guia_do_Mestre_Arghaz.docx ainda cita Ione; regerar quando os nomes do mestre chegarem.
+- Regerar cenas muda todos os unique_id (Godot 4.7); tirando isso, o gerador reproduz as cenas versionadas.
+- village_props.tscn não muda: depois de regerar a vila, restaurar do git (só unique_id).
+- Árvore ancestral: espaçamento 2 e proteção 3 casas (a floresta é densa; o teste de zonas confere).
 
-**Gate pendente:** 🔴 aguardando verificação manual — roteiro de 6 itens no feed.
+**Gate pendente:** 🔴 aguardando verificação manual — roteiro de 5 itens no feed.
 
 **Próxima ação:**
-/passo-4-code livros-de-arghaz   (Fase 3, depois da validação)
+/passo-4-code livros-de-arghaz   (Fase 6, depois da validação)
 ```
