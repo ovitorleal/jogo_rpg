@@ -1,6 +1,6 @@
 ---
 onda: livros-de-arghaz
-fase-metodologia: 3
+fase-metodologia: 4
 estado: EM-CODIGO
 atualizado: 2026-11-20
 projeto: jogo_rpg
@@ -15,12 +15,24 @@ contratos:
 # 🗺️ PAINEL — livros-de-arghaz
 
 ## Onde estamos AGORA
-Passo **3 (security)** escrito.
-- Risco geral baixo, com 3 contramedidas (CM-LA-01 a 03).
-- Um risco aceito pelo responsável: RR-LA-01, os livros do mestre estão públicos no GitHub.
-- Threat model **aprovado** pelo responsável (2026-11-20).
+Passo **4 (code)**. Fases 1 e 2 entregues (`b04a2fa`, `7c18c1a`); 312 testes verdes, nenhum id alterado.
+🔴 **Teto de 2 fases atingido: aguardando a verificação manual do responsável** (roteiro abaixo).
+Não posso começar a Fase 3 antes disso.
 
-Próximo: `/passo-4-code livros-de-arghaz`.
+## Você valida (Fases 1 e 2)
+1. **Abertura.** Onde: jogo → Novo jogo. Ação: leia o texto da criação de personagem. Tem que: dizer "Era do
+   Despertar", sem ano e sem "Ione". Se falhar: copie a frase errada.
+2. **Chefe da vila.** Onde: Vila de Ribeira. Ação: veja o objetivo no topo e converse no poço. Tem que: objetivo
+   "Fale com a chefe da vila"; nome no diálogo "Chefe da vila"; nenhum "Ione". Se falhar: print do diálogo.
+3. **Diário.** Onde: tecla J, depois de aceitar a missão. Ação: abra as Crônicas. Tem que: "Arghaz e a mana" e "Os
+   kobolds e o Arauto" com o texto novo. Se falhar: o título da crônica errada.
+4. **Missão da Amara.** Onde: Clareira. Ação: vença o goblin da ruína. Tem que: o aviso diz "Volte até Amara". Se
+   falhar: o texto do aviso.
+5. **Texto completo.** Onde: `tasks/onda/livros-de-arghaz-textos.md` (o sonho, o epílogo e as 6 crônicas, que só
+   aparecem no fim do ato). Ação: leia. Tem que: soar fiel aos livros e sem invenção. Se falhar: o trecho e o que
+   mudar.
+6. **Resumo do cânone.** Onde: `docs/HISTORIA.md`. Ação: leia, principalmente "Perguntas em aberto para o mestre".
+   Tem que: estar correto pelas fontes. Se falhar: o parágrafo.
 
 ## As fases
 | # | Fase | Estado |
@@ -56,31 +68,29 @@ Próximo: `/passo-4-code livros-de-arghaz`.
 ```
 Tarefa: livros-de-arghaz · Crônicas de Arghaz
 
-## Handoff — livros-de-arghaz — passo-3 concluído → passo-4
+## Handoff — livros-de-arghaz — passo-4, Fases 1 e 2 entregues → verificação manual
 
 **Projeto:** jogo_rpg — `C:\Users\ovito\OneDrive\Desktop\jogo_rpg`
-**Branch:** `onda/livros-de-arghaz` (publicado; atualizado com o main em 2026-11-20).
+**Branch:** `onda/livros-de-arghaz` (publicado; commits b04a2fa e 7c18c1a).
 
-**Decisão desta fase:** risco geral baixo; 3 contramedidas. Prioridade: CM-LA-01 (posição salva: só valor finito,
-fora do mapa vai para Entrances/*, busca com raio máximo; posição livre = comportamento de hoje), na Fase 4.
-CM-LA-02 (sem colchetes BBCode acidentais no texto novo) e CM-LA-03 (pacote Web sem docs/). RR-LA-01: livros do
-mestre públicos no GitHub, risco aceito pelo responsável ("Manter público").
+**Decisão desta fase:** F1 texto do jogo fiel aos livros (crônicas, abertura, sonho, epílogo, diálogos, "Volte
+até %s", chefe da vila sem nome); F2 HISTORIA.md como resumo do cânone (proposta 0.11 arquivada em docs/arquivo/).
+Teste novo tests/story/test_canon.gd trava termos que contradizem os livros. 312 testes verdes, nenhum id alterado.
 
-**Artefato gerado:** `tasks/security/livros-de-arghaz.md` (aprovado: true, Vitor Leal, 2026-11-20)
+**Artefatos:** tasks/onda/livros-de-arghaz.md (painel, tabela de fontes, roteiro "Você valida"),
+tasks/onda/livros-de-arghaz-textos.md (todo o texto novo para leitura).
 
 **Ler antes de agir:**
-1. `tasks/specs/livros-de-arghaz.md` — as 6 fases, a suposição mais arriscada de cada uma, o grep de métrica
-2. `tasks/security/livros-de-arghaz.md` — CM-LA-01..03 viram requisitos; plano de teste para o passo 5
-3. `docs/livros/` — a fonte de cada frase nova da Fase 1
+1. tasks/onda/livros-de-arghaz.md — fases, roteiro de validação, dívida D-LA-01
+2. tasks/specs/livros-de-arghaz.md — Fases 3 a 6 (peças do Ermo, posição salva, mapas, fechamento)
 
 **Gotchas / decisões não-óbvias:**
-- Ids nunca mudam (saves guardam ids); nomes dos companheiros esperam o arquivo do mestre.
-- `.docx` do mestre inspecionados: sem macros, embutidos ou links externos.
-- `exploration_map.gd` também está na folha de testes-contra-a-morte: reler folha e disco antes da Fase 4.
-- llm-routing: Haiku por padrão; Sonnet nas Fases 4 e 5.
+- Fase 3: rodar o gerador de arte SEM mudança e conferir git status antes de criar peças.
+- Fase 4 (CM-LA-01): exploration_map.gd também está na folha de testes-contra-a-morte.
+- D-LA-01: Guia_do_Mestre_Arghaz.docx ainda cita Ione; regerar quando os nomes do mestre chegarem.
 
-**Gate pendente:** nenhum, pronto para seguir.
+**Gate pendente:** 🔴 aguardando verificação manual — roteiro de 6 itens no feed.
 
 **Próxima ação:**
-/passo-4-code livros-de-arghaz
+/passo-4-code livros-de-arghaz   (Fase 3, depois da validação)
 ```
