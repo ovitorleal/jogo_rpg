@@ -4,10 +4,18 @@
 Especificação mestra: `PROJECT_MASTER_SPECIFICATION_FANTASY_RPG_v1.1.md` — leia as seções relevantes antes de cada tarefa.
 Produto em uma página: `tasks/PRD.md`.
 
-## Metodologia (desde 2026-11-07)
+## Metodologia — SUSPENSA desde 2026-11-20
 
-Todo trabalho segue a **Metodologia 5 Fases** (skill `metodologia-5-fases`): Onda Zero e depois ondas, cada uma
-passando por research → plan → security → code → review.
+O responsável **suspendeu a Metodologia 5 Fases neste projeto** em 2026-11-20 ("desative por enquanto"), até
+reativar. Isso vale aqui mesmo que as regras globais (`~/.claude/rules/`) digam que ela vale sempre:
+- **Fora:** os 5 passos, os artefatos `tasks/research|specs|security|reviews`, os gates `aprovado: true`, as folhas
+  de `tasks/obras/`, o painel e o handoff.
+- **Continua:** um branch por trabalho (o `main` é protegido e só aceita PR com o CI verde), testes antes do código,
+  não quebrar quem já tem save (ids estáveis, migração no `SaveGame`), e o CI.
+- Os artefatos de ondas antigas em `tasks/` ficam como registro.
+
+Como era até 2026-11-20 (para quando for reativada): **Metodologia 5 Fases** (skill `metodologia-5-fases`), Onda
+Zero e depois ondas, cada uma passando por research → plan → security → code → review.
 - O passo seguinte só começa com `aprovado: true` no artefato anterior, marcado pelo responsável; o Claude
   nunca se autoaprova.
 - Cada onda tem branch `onda/<nome>`, publicado no GitHub ao abrir; nunca se trabalha no `main`.

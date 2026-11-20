@@ -403,7 +403,10 @@ func _add_prop(root: Node2D, kind: String, position: Vector2) -> void:
 # de lugar. Objetos sólidos novos ficam fora das áreas livres (CLEAR), da ruína e a mais de 2 casas de entradas,
 # personagens, placas e encontros (lidos da cena do mapa).
 
-## Posições das entradas e dos objetos do mapa (menos o Props), lidas do texto da cena (sem carregar scripts).
+## Posições das entradas e dos objetos do mapa (menos o Props), lidas do texto da cena (sem carregar scripts:
+## em --script os autoloads não existem). Espera o formato que o Godot salva: `position = Vector2(x, y)` depois do
+## cabeçalho do nó. Nó sem `position` (na origem) ou com `Transform2D` fica sem proteção; o teste
+## test_new_solid_pieces_keep_clear_of_protected_spots confere pela cena carregada.
 func _protected_spots(scene_path: String) -> Array[Vector2]:
 	var spots: Array[Vector2] = []
 	var watching := false

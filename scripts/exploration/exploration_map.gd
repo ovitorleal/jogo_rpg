@@ -15,6 +15,11 @@ const NEXT_MEMBER_HINT := "[Tab] próximo membro"
 ## Distância (px) entre pontos do rastro do líder e quantos pontos separam cada seguidor.
 const TRAIL_STEP := 4.0
 const TRAIL_GAP := 5
+## Busca de casa livre para a posição de volta: anéis de 16 px, no máximo 8.
+const SAFE_SPAWN_RINGS := 8
+const SAFE_SPAWN_STEP := 16.0
+## Nó da forma de colisão do jogador (o "pé"), usado para saber se uma posição está livre.
+const PLAYER_COLLISION := "Collision"
 
 ## Ação aguardando confirmação (texto do Interactable.action).
 var _pending_action: String = ""
@@ -35,9 +40,6 @@ var _trail: Array[Vector2] = []
 @onready var _ground: TileMapLayer = %Terrain.get_node("Ground")
 @onready var _player: Player = %Player
 
-## Busca de casa livre para a posição de volta (CM-LA-01): anéis de 16 px, no máximo 8.
-const SAFE_SPAWN_RINGS := 8
-const SAFE_SPAWN_STEP := 16.0
 @onready var _hud: ExplorationHud = %Hud
 
 
@@ -585,7 +587,6 @@ func _map_id() -> String:
 	return ""
 
 
-## Área do mapa em pixels, a partir dos tiles usados.
 ## Posição de volta (save ou combate) que não prende o jogador (CM-LA-01). Livre e dentro do mapa: igual.
 ## Bloqueada: a casa livre mais próxima, em anéis de 16 px (no máximo SAFE_SPAWN_RINGS). Fora do mapa, NaN,
 ## infinita ou sem vaga: a primeira entrada do mapa.
@@ -621,7 +622,7 @@ func is_spot_blocked(position: Vector2) -> bool:
 
 ## Retângulo do pé do jogador (a forma de colisão dele) se ele estivesse em `position`.
 func _feet_rect(position: Vector2) -> Rect2:
-	var collision := _player.get_node("Collision") as CollisionShape2D
+	var collision := _player.get_node(PLAYER_COLLISION) as CollisionShape2D
 	var r := collision.shape.get_rect()
 	return Rect2(position + collision.position + r.position, r.size)
 
@@ -640,7 +641,9 @@ func _solid_rects() -> Array[Rect2]:
 				continue
 			var r := shape.shape.get_rect()
 			var xform := shape.global_transform
-			rects.append(Rect2(xform * r.position, r.size * xform.get_scale().abs()))
+			var a := xform * r.position
+			var b := xform * r.end
+			rects.append(Rect2(a, b - a).abs())
 	return rects
 
 
@@ -661,6 +664,8 @@ func _blocked(position: Vector2, solids: Array[Rect2]) -> bool:
 				if data == null:
 					continue
 				var center := layer.to_global(layer.map_to_local(Vector2i(cx, cy)))
+				# Os polígonos de colisão do TileSet deste jogo são quadrados alinhados (o tile inteiro ou quadrantes
+				# 8x8, ver build_overworld.gd): o retângulo envolvente é exato. Tiles girados/espelhados não são usados.
 				for i in data.get_collision_polygons_count(0):
 					var points := data.get_collision_polygon_points(0, i)
 					var poly := Rect2(points[0], Vector2.ZERO)
@@ -672,6 +677,7 @@ func _blocked(position: Vector2, solids: Array[Rect2]) -> bool:
 	return false
 
 
+## Área do mapa em pixels, a partir dos tiles usados.
 func get_map_rect() -> Rect2i:
 	var used := _ground.get_used_rect()
 	var tile_size := _ground.tile_set.tile_size
