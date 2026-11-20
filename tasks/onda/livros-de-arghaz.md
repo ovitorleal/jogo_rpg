@@ -40,7 +40,7 @@ Agora: **Fase 3** (peças do Ermo no gerador, sem tocar mapa).
 |---|---|---|
 | 1 | Texto do jogo (crônicas, abertura, cenas, epílogo, diálogos, "Volte até") | ✅ `b04a2fa` · validado pelo responsável em 2026-11-20 ("aprovado") |
 | 2 | Documentos do cânone (`HISTORIA.md` reescrito, perguntas ao mestre) | ✅ `7c18c1a` · validado pelo responsável em 2026-11-20 ("aprovado") |
-| 3 | Peças do Ermo no gerador (sem tocar mapa) | ⬜ |
+| 3 | Peças do Ermo no gerador (sem tocar mapa) | ✅ código e testes; gerador conferido determinístico (16 arquivos idênticos) e atlas alterado só nas casas (6..9, 0); visual conferido contra o modelo; 🔴 você vê nos mapas na Fase 5 |
 | 4 | Posição salva segura ao carregar (CM-LA-01) | ⬜ |
 | 5 | Ermo nos mapas (Bosque, Clareira; vila só calçamento) | ⬜ |
 | 6 | Fechamento (ROADMAP, CHANGELOG, CLAUDE.md; CM-LA-03 na exportação) | ⬜ |

@@ -63,6 +63,9 @@ pernas de 5 px, golias com tronco de 10 px; cabeça de raio 6 (5,5 em gnomos e p
 | Água | `#1e4a8c` `#2a64b0` `#3c82d0` `#8cc8f2`, espuma `#e6f6ff` |
 | Pedra | `#4a4a5c` `#6e6e84` `#9090a6` `#b8b8cc` |
 | Folhagem | `#1e4a24` `#2f7a34` `#58b046` (pinheiro `#163a2a` `#245e3c` `#3e8a50`) |
+| Ermo: pedra antiga | `#4e4a50` `#77707a` `#9c95a0` `#c2bcc4` (a rampa da pedra, levemente quente) |
+| Ermo: casca e folhagem antigas | `#2e1c14` `#55361f` `#7e5532` / `#173c22` `#25632e` `#438c3c` |
+| Ermo: musgo | `#2f6a2a` `#4f9a3e` `#7ccc5a` |
 | Herói: pele / cabelo | `#b8694a` `#f0ac84` `#ffd6b4` / `#4a2416` `#8a4424` `#c87442` |
 | Herói: túnica / capa | `#22386e` `#3a66bc` `#6ea2f2` / `#6e1a28` `#b42e3c` `#ea5c5c` |
 | Metal / ouro | `#5c6a84` `#b4c4da` `#f2f8ff` / `#86560e` `#d09c2c` `#ffe27a` |
