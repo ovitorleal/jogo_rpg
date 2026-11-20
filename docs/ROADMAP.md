@@ -21,7 +21,7 @@
 | Correção | Respostas do diálogo pelas teclas 1-9 (`fix/dialogo-teclas-numericas`) | ✅ Concluída (2026-11-07) |
 | Correção | Ataque Furtivo opcional, perguntado depois do acerto (`fix/ataque-furtivo`) | ✅ Concluída (2026-11-07) |
 | Onda | `testes-contra-a-morte` — testes contra a morte, estabilizar, morte real e derrota com recarregar | 🔵 **EM OBRA desde 2026-11-07** — branch `onda/testes-contra-a-morte` · passo 1 · folha em `tasks/obras/testes-contra-a-morte.md`. ⛔ Não abrir outra onda que toque o combate ou o salvamento sem ler a folha |
-| Onda | `livros-de-arghaz` — história inicial fiel aos Livros I e II do mestre (e ao compêndio), Ermo no cenário, livros no repositório | 🔵 **EM OBRA desde 2026-11-07** — branch `onda/livros-de-arghaz` · passo 3 · folha em `tasks/obras/livros-de-arghaz.md`. ⛔ Não abrir outra onda que toque história, diálogos, crônicas ou o cenário dos mapas sem ler a folha |
+| Onda | `livros-de-arghaz` — história inicial fiel aos Livros I e II do mestre (e ao compêndio), Ermo no cenário, livros no repositório | 🔵 **EM OBRA desde 2026-11-07** — branch `onda/livros-de-arghaz` · passo 4 (Fases 1-2 entregues) · folha em `tasks/obras/livros-de-arghaz.md`. ⛔ Não abrir outra onda que toque história, diálogos, crônicas ou o cenário dos mapas sem ler a folha |
 
 A partir de 2026-11-07 o trabalho segue a Metodologia 5 Fases (ver `CLAUDE.md`). As próximas etapas viram
 **ondas**, com artefatos em `tasks/`.

@@ -2,7 +2,7 @@
 onda: livros-de-arghaz
 branch: onda/livros-de-arghaz
 aberta_em: 2026-11-07
-passo_atual: 3
+passo_atual: 4
 estado: ativa
 migration_reservada: 'nenhuma' # sem banco; ids de missão, diálogo, item e cena NÃO mudam, então o salvamento não muda de esquema
 ---
