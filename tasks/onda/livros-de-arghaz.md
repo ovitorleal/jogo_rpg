@@ -1,7 +1,7 @@
 ---
 onda: livros-de-arghaz
 fase-metodologia: 3
-estado: AGUARDANDO-APROVACAO
+estado: EM-CODIGO
 atualizado: 2026-11-20
 projeto: jogo_rpg
 caminho: C:\Users\ovito\OneDrive\Desktop\jogo_rpg
@@ -18,7 +18,7 @@ contratos:
 Passo **3 (security)** escrito.
 - Risco geral baixo, com 3 contramedidas (CM-LA-01 a 03).
 - Um risco aceito pelo responsável: RR-LA-01, os livros do mestre estão públicos no GitHub.
-- Falta a aprovação do threat model (`aprovado: true` em `tasks/security/livros-de-arghaz.md`).
+- Threat model **aprovado** pelo responsável (2026-11-20).
 
 Próximo: `/passo-4-code livros-de-arghaz`.
 
@@ -50,7 +50,7 @@ fora do mapa vai para Entrances/*, busca com raio máximo; posição livre = com
 CM-LA-02 (sem colchetes BBCode acidentais no texto novo) e CM-LA-03 (pacote Web sem docs/). RR-LA-01: livros do
 mestre públicos no GitHub, risco aceito pelo responsável ("Manter público").
 
-**Artefato gerado:** `tasks/security/livros-de-arghaz.md` (aguardando aprovado: true)
+**Artefato gerado:** `tasks/security/livros-de-arghaz.md` (aprovado: true, Vitor Leal, 2026-11-20)
 
 **Ler antes de agir:**
 1. `tasks/specs/livros-de-arghaz.md` — as 6 fases, a suposição mais arriscada de cada uma, o grep de métrica
@@ -63,7 +63,7 @@ mestre públicos no GitHub, risco aceito pelo responsável ("Manter público").
 - `exploration_map.gd` também está na folha de testes-contra-a-morte: reler folha e disco antes da Fase 4.
 - llm-routing: Haiku por padrão; Sonnet nas Fases 4 e 5.
 
-**Gate pendente:** aprovação do threat model pelo responsável.
+**Gate pendente:** nenhum, pronto para seguir.
 
 **Próxima ação:**
 /passo-4-code livros-de-arghaz

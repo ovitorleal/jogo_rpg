@@ -5,7 +5,9 @@ data: 2026-11-20
 projeto: As Crônicas de Arghaz
 referencia_spec: tasks/specs/livros-de-arghaz.md
 nivel_risco_geral: Baixo
-aprovado: false
+aprovado: true
+aprovado_por: Vitor Leal
+aprovado_em: 2026-11-20
 llm-routing:
   proxima-fase: passo-4-code
   modelo-padrao-subfase: claude-haiku-5-5
@@ -173,6 +175,6 @@ Só o registro de depuração da CM-LA-01. Nada sensível.
 - [x] Secrets: nenhum
 - [x] Contramedida concreta para cada risco
 - [x] Plano de teste de segurança para o passo 5
-- [ ] Aprovado pelo responsável
+- [x] Aprovado pelo responsável (Vitor Leal, 2026-11-20: "aprovo")
 
-aprovado: false
+aprovado: true
