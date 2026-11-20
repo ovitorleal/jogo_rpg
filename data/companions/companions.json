@@ -10,7 +10,7 @@
 			"class_id": "class.cleric",
 			"background_id": "background.acolyte",
 			"role": "Clérigo de apoio: cura, Bênção e Centelha Divina",
-			"how_to_recruit": "Aceitar a missão de Ione e falar com ele na vila",
+			"how_to_recruit": "Aceitar a missão da chefe da vila e falar com ele na vila",
 			"map_id": "map.village",
 			"dialogue_id": "dialogue.companion_doran",
 			"skills": ["medicine", "religion"],
@@ -36,7 +36,7 @@
 		{
 			"id": "companion.lyra",
 			"name": "Lyra Vento-Leste",
-			"description": "Elfa batedora que caça na Floresta Sussurrante há mais anos do que a vila existe. Um lobo faminto anda espantando a caça dela.",
+			"description": "Elfa batedora que caça nesta floresta há mais anos do que a vila existe. Um lobo faminto anda espantando a caça dela.",
 			"source": "original",
 			"species_id": "species.elf",
 			"class_id": "class.ranger",

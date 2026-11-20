@@ -4,11 +4,11 @@
 		{
 			"id": "quest.goblin_chief",
 			"name": "A Garra-Rubra",
-			"description": "Goblins comandados por Garra-Rubra atacam as carroças de Ribeira. Ione, a chefe da vila, pede que alguém dê um fim ao bando.",
+			"description": "Goblins comandados por Garra-Rubra atacam as carroças de Ribeira. A chefe da vila pede que alguém dê um fim ao bando.",
 			"source": "original",
-			"giver": "Ione",
+			"giver": "a chefe da vila",
 			"final": true,
-			"epilogue": "Fim do Ato I. A Garra Vermelha pulsa na sua mochila, e em algum lugar sob as montanhas do leste, algo imenso se vira no sono. Continua no Ato II: As Garras.",
+			"epilogue": "Fim do Ato I. A Garra Vermelha pulsa na sua mochila, e em algum lugar muito longe daqui algo imenso e desperto sabe que ela acordou. Continua no Ato II: As Garras.",
 			"objectives": [
 				{
 					"id": "talk_amara",

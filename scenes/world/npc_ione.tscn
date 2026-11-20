@@ -14,7 +14,7 @@ collision_mask = 0
 monitoring = false
 script = ExtResource("1_script")
 sheet = "res://assets/characters/npc_ione_sheet.png"
-prompt_text = "Conversar com Ione"
+prompt_text = "Conversar com a chefe da vila"
 message_text = "..."
 action = "talk:dialogue.ione"
 

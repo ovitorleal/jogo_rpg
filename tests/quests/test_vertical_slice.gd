@@ -57,13 +57,13 @@ func test_full_adventure_from_village_to_ending() -> void:
 	var hud: ExplorationHud = map.get_node("%Hud")
 	assert_true(hud.get_message_text().contains("Ribeira"), "Abertura da aventura ao chegar")
 	map.handle_interact()
-	assert_true(_objective(map).contains("Fale com Ione"), "Objetivo inicial claro: %s" % _objective(map))
+	assert_true(_objective(map).contains("Fale com a chefe da vila"), "Objetivo inicial claro: %s" % _objective(map))
 	(map.get_node("Objects/Ione") as Interactable).interact()
-	assert_eq(hud.get_speaker_name(), "Ione", "Ione conversa")
+	assert_eq(hud.get_speaker_name(), "Chefe da vila", "A chefe da vila conversa (sem nome próprio)")
 	var potions: int = party.inventory.count(Inventory.POTION)
 	map.choose_dialogue_option(0)
 	map.choose_dialogue_option(0)
-	assert_eq(party.inventory.count(Inventory.POTION), potions + 2, "Ione entrega duas poções")
+	assert_eq(party.inventory.count(Inventory.POTION), potions + 2, "A chefe da vila entrega duas poções")
 	assert_eq(quests.log.status("quest.goblin_chief"), QuestLog.Status.ACTIVE, "Missão principal aceita")
 	map.handle_interact()
 	assert_true(_objective(map).contains("Amara"), "Próximo passo: falar com Amara (%s)" % _objective(map))
@@ -96,7 +96,7 @@ func test_full_adventure_from_village_to_ending() -> void:
 
 	map = await _open(VILLAGE)
 	map.handle_interact()
-	assert_true(_objective(map).contains("fale com Ione"), "Objetivo: voltar a Ione (%s)" % _objective(map))
+	assert_true(_objective(map).contains("fale com a chefe da vila"), "Objetivo: voltar até a chefe da vila (%s)" % _objective(map))
 	var gold: int = party.inventory.gold
 	(map.get_node("Objects/Ione") as Interactable).interact()
 	map.choose_dialogue_option(0)
@@ -159,7 +159,7 @@ func test_new_game_starts_in_the_village_with_intro() -> void:
 	tree.root.add_child(screen)
 	await tree.process_frame
 	assert_eq(screen.START_SCENE, VILLAGE, "Novo jogo começa na Vila de Ribeira")
-	assert_true(str(screen.INTRO_TEXT).contains("Ione"), "Abertura diz com quem falar")
+	assert_true(str(screen.INTRO_TEXT).contains("chefe da vila"), "Abertura diz com quem falar")
 	screen.queue_free()
 	await tree.process_frame
 	_end()

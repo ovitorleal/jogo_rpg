@@ -15,12 +15,12 @@
 			"nodes": [
 				{
 					"id": "wait",
-					"text": "Hm. Forasteiro. A bigorna não espera e eu também não. Se quer ajudar Ribeira, fale primeiro com Ione, perto do poço.",
+					"text": "Hm. Forasteiro. A bigorna não espera e eu também não. Se quer ajudar Ribeira, fale primeiro com a chefe da vila, perto do poço.",
 					"choices": [{"text": "Vou falar com ela.", "next": ""}]
 				},
 				{
 					"id": "offer",
-					"text": "Então foi você que Ione mandou atrás do tal Garra-Rubra. Sozinho não volta inteiro. Meu martelo cura tanto quanto amassa: deixa eu ir junto.",
+					"text": "Então foi você que a chefe da vila mandou atrás do tal Garra-Rubra. Sozinho não volta inteiro. Meu martelo cura tanto quanto amassa: deixa eu ir junto.",
 					"choices": [
 						{"text": "Bem-vindo ao grupo, Doran.", "next": "joined", "action": "recruit:companion.doran"},
 						{"text": "Por que você quer ir?", "next": "why"},
@@ -85,7 +85,7 @@
 		{
 			"id": "dialogue.companion_lyra",
 			"name": "Lyra Vento-Leste",
-			"description": "Batedora élfica da Floresta Sussurrante.",
+			"description": "Batedora élfica da floresta de Ribeira.",
 			"source": "original",
 			"speaker": "Lyra",
 			"companion": "companion.lyra",

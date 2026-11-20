@@ -497,7 +497,7 @@ func refresh_objective() -> void:
 		return
 	var text := QuestManager.log.current_objective(Content.registry)
 	if text.is_empty() and QuestManager.log.status("quest.goblin_chief") == QuestLog.Status.NOT_STARTED:
-		text = "Fale com Ione, a chefe da vila, perto do poço de Ribeira"
+		text = "Fale com a chefe da vila, perto do poço de Ribeira"
 	_hud.set_objective(text)
 
 

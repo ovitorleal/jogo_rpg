@@ -4,7 +4,7 @@
 		{
 			"id": "route.east_road",
 			"name": "Estrada do Leste",
-			"description": "Trilha de terra que entra na Floresta Sussurrante até o Bosque do Riacho.",
+			"description": "Trilha de terra que entra na floresta de Ribeira até o Bosque do Riacho.",
 			"source": "original",
 			"from_map": "map.clearing",
 			"to_map": "map.forest_brook",

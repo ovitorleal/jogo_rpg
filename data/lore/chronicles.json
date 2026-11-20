@@ -8,52 +8,52 @@
 			"source": "original",
 			"order": 1,
 			"unlock": "",
-			"text": "Arghaz não foi criado. Não houve palavra divina nem martelo celestial: poeira e rocha se juntaram em torno de uma jovem estrela até formar um mundo enorme, três vezes maior que qualquer terra conhecida. A vida surgiu sozinha, e evoluiu sob uma força presente na matéria e no próprio espaço: a mana, a Segunda Corrente. Mana não é magia. É natureza, como a luz e a chuva. A magia é só o que alguns aprenderam a fazer com ela."
+			"text": "Arghaz é uma superterra colossal: um único grande continente, de leste a oeste, cercado por oceanos, ilhas e arquipélagos. Sua origem é natural, e nenhuma divindade conhecida precisou erguer suas montanhas. A mana também é natureza. A vida não nasceu dela, mas em sua presença: os organismos aprenderam a absorvê-la, armazená-la e reagir a ela muito antes de existir alguém capaz de lançar um feitiço. O que eras posteriores chamariam de magia começou como biologia."
 		},
 		{
 			"id": "lore.arauto",
 			"name": "Os kobolds e o Arauto",
-			"description": "O primeiro povo e o Primeiro Dragão.",
+			"description": "O primeiro povo pensante e quem aprendeu a escolher.",
 			"source": "original",
 			"order": 2,
 			"unlock": "quest_started:quest.goblin_chief",
-			"text": "Os kobolds foram o primeiro povo de Arghaz capaz de perguntar \"por quê?\". Pequenos e fracos, sobreviveram vivendo em grupo e aprendendo uns com os outros. Numa de suas ninhadas nasceu um filhote diferente: o primeiro ser capaz de controlar a mana conscientemente. Ele nunca parou de crescer. Gerações depois, o pequeno kobold era imenso, e ainda vivia. Foi o Arauto, o Primeiro Dragão."
+			"text": "Por eras, a vida reagiu à mana sem compreendê-la. Entre os kobolds surgiu o primeiro povo pensante conhecido, e numa ninhada comum nasceu aquele que mais tarde seria chamado Arauto: o primeiro capaz de manipular a mana conscientemente. Manipular não é criar. O Arauto não tirou a magia do nada; aprendeu a interferir no que já existia. Hoje, na Cidade dos Três, ele é adorado como divindade, embora tenha sido uma figura real da história."
 		},
 		{
 			"id": "lore.dragons",
-			"name": "As linhagens e a Era da Criação",
-			"description": "Os filhos do Arauto e os povos que eles fizeram.",
+			"name": "A Era dos Colossos",
+			"description": "Quando o mundo podia sustentar mais.",
 			"source": "original",
 			"order": 3,
 			"unlock": "event_seen:story.claw_found",
-			"text": "Os filhos do Arauto se dividiram em linhagens, cada uma de uma cor, e competiram entre si até levar a magia a níveis jamais alcançados. Fizeram os primeiros artefatos e as primeiras experiências deliberadas sobre a vida. A Grande Mãe criou os orcs, a primeira civilização. O Carrasco criou os elfos para julgar as outras criações. Dizem os elfos que anões, golias, pequeninos e draconatos também vieram de mãos dracônicas, cada povo um experimento de uma linhagem."
+			"text": "Nos períodos antigos, a mana era abundante o bastante para sustentar corpos colossais, longevidades extremas e ecossistemas difíceis de imaginar hoje. Entre os dragões ancestrais, a vida longa se aproximava de uma imortalidade biológica. Foi um tempo de biocriação e de redes de escala civilizacional. O que restou dele está em camadas: construções recentes repousam sobre ruínas élficas; abaixo delas, cidades orcs; mais fundo, estruturas dracônicas."
 		},
 		{
 			"id": "lore.silence",
-			"name": "O Silêncio e as Garras",
-			"description": "Por que não há mais dragões.",
+			"name": "A Rarefação e as Garras",
+			"description": "O mundo não perdeu a mana. Perdeu a antiga abundância.",
 			"source": "original",
 			"order": 4,
 			"unlock": "event_seen:story.claw_found",
-			"text": "Os elfos julgaram as criações e concluíram que o problema eram os criadores. Seguiu-se a Guerra das Escamas: linhagem contra linhagem, povos contra dragões. Ela terminou sem vencedores, no Silêncio: os dragões desapareceram de uma vez, mortos, adormecidos ou partidos, ninguém sabe. Ficaram as Garras, artefatos feitos das garras do próprio Arauto, uma por linhagem, cada uma guardando parte da vontade de sua linhagem."
+			"text": "Depois do colapso da Era Amaldiçoada, a mana começou a rarear. Recuou para regiões profundas e fissuras, as longevidades encurtaram e as novas gerações cresceram menores. Os dragões sobreviventes disputaram reservatórios e artefatos e aceleraram a própria extinção. Das relíquias daquele tempo, algumas levam o nome do Arauto: as Garras. Elas voltaram a aparecer, e quem entende só parte delas já as disputa."
 		},
 		{
 			"id": "lore.vermeth",
-			"name": "Vermeth, a Brasa que Dorme",
+			"name": "Vermeth, a Brasa Coroada",
 			"description": "A voz no sonho.",
 			"source": "original",
 			"order": 5,
 			"unlock": "event_seen:story.vermeth_dream",
-			"text": "Vermeth é a última herdeira da Linhagem Vermelha, adormecida sob as montanhas do leste desde o Silêncio. Fala por sonhos com quem toca uma Garra. Não é cruel por prazer: acredita que o mundo de hoje é um rascunho mal acabado, e que os dragões têm o dever de terminá-lo. Se reunir as Garras, poderá acordar o Arauto e recomeçar a Era da Criação."
+			"text": "Vermeth é uma dragoa adulta da Linhagem Vermelha, viva e desperta. Entre os seus, defende a conquista: acredita que os dragões só estarão seguros quando controlarem as fontes de mana e os povos capazes de ameaçá-los. Ela busca relíquias ligadas ao Arauto e tem pactos e agentes longe de casa. Onde fica essa casa, poucos sabem. E a cor das escamas não diz nada sobre ela: em Arghaz, linhagem não determina virtude nem crueldade."
 		},
 		{
 			"id": "lore.humans",
-			"name": "A Era dos Homens",
-			"description": "O povo que ninguém criou.",
+			"name": "A Era do Despertar",
+			"description": "Os povos e o tempo presente.",
 			"source": "original",
 			"order": 6,
 			"unlock": "quest_completed:quest.goblin_chief",
-			"text": "Depois do Silêncio surgiram os humanos, nas grandes planícies. Nenhum dragão os criou: como Arghaz, eles simplesmente aconteceram. A mana não os reconhece como reconhece os povos criados; eles a usam de forma menos instintiva, mas mais livre. Os deuses que os povos adoram, dizem os sábios mais ousados, são só a memória dos grandes dragões contada por mil anos. Estamos no ano 1.214 da Era dos Homens, e as Garras estão acordando."
+			"text": "Humanos, goblinoides, gnomos e pequeninos descendem de um mesmo Povo Humanoide Ancestral. Anões, golias e gigantes também compartilham ancestralidade, embora derivada de biocriação. Nenhum povo nasce bom ou cruel por linhagem. Hoje é a Era do Despertar: comunidades voltam a deixar suas muralhas, reabrir estradas e procurar costas esquecidas. Além das regiões conhecidas fica o Ermo, que não é vazio nem terra morta: é vida crescida sobre estradas, fortalezas e cidades que o mundo esqueceu."
 		}
 	]
 }

@@ -25,15 +25,26 @@ Próximo: `/passo-4-code livros-de-arghaz`.
 ## As fases
 | # | Fase | Estado |
 |---|---|---|
-| 1 | Texto do jogo (crônicas, abertura, cenas, epílogo, diálogos, "Volte até") | ⬜ |
+| 1 | Texto do jogo (crônicas, abertura, cenas, epílogo, diálogos, "Volte até") | ✅ código e testes; 🔴 aguardando verificação manual |
 | 2 | Documentos do cânone (`HISTORIA.md` reescrito, perguntas ao mestre) | ⬜ |
 | 3 | Peças do Ermo no gerador (sem tocar mapa) | ⬜ |
 | 4 | Posição salva segura ao carregar (CM-LA-01) | ⬜ |
 | 5 | Ermo nos mapas (Bosque, Clareira; vila só calçamento) | ⬜ |
 | 6 | Fechamento (ROADMAP, CHANGELOG, CLAUDE.md; CM-LA-03 na exportação) | ⬜ |
 
-## Tabela de fontes do texto novo
-(Preenchida na Fase 1: cada frase nova com livro e capítulo ou seção do compêndio.)
+## Tabela de fontes do texto novo (Fase 1)
+| Texto | O que afirma | Fonte |
+|---|---|---|
+| Crônica "Arghaz e a mana" | Superterra colossal, um continente, origem natural; vida nascida na presença da mana; magia começou como biologia | Livro II, prólogo e caps. 1-2 |
+| Crônica "Os kobolds e o Arauto" | Kobolds, primeiro povo pensante; Arauto manipula mana conscientemente; manipular não é criar; adorado na Cidade dos Três como figura real | Livro II, cap. 4; Livro I ("Verdade e Memória") |
+| Crônica "A Era dos Colossos" | Mana abundante, corpos colossais, dragões ancestrais quase imortais; biocriação e redes; arqueologia vertical | Livro II, cap. 6; Livro I (eras e ruínas) |
+| Crônica "A Rarefação e as Garras" | Rarefação após a Era Amaldiçoada; dragões disputaram reservatórios; Garras do Arauto reaparecem e são disputadas | Livro II, cap. 7; compêndio §9 |
+| Crônica "Vermeth, a Brasa Coroada" | Adulta, Linhagem Vermelha, desperta; defende a conquista; busca relíquias do Arauto; Wyrmgard não citada; cor não determina moral | Compêndio §7; Livro I |
+| Crônica "A Era do Despertar" | Povo Humanoide Ancestral; anões, golias e gigantes por biocriação; Era do Despertar; o Ermo | Livro I; compêndio §1 |
+| Abertura (`INTRO_TEXT`) | Era do Despertar, sem ano; reabertura das estradas | Livro I; compêndio §1 e §9 |
+| Sonho | Voz distante reconhece uma Garra do Arauto e quer buscá-la (sem posse, sem lugar) | Compêndio §7 e §12 (D3) |
+| Epílogo | Algo desperto e distante sabe que a Garra acordou | Compêndio §7 |
+| Chefe da vila, floresta de Ribeira, Estalagem de Ribeira, falas de Ignis, Lyra e Doran | Sem nome próprio inventado nem lore sem fonte | Decisões D2 e D4 |
 
 ## 📋 Handoff
 

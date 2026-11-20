@@ -36,7 +36,7 @@ message_text = "A placa diz: \"Bem-vindo, viajante. Cuidado com o lobo da mata a
 [node name="EastRoadSign" parent="Objects" instance=ExtResource("3_sign")]
 position = Vector2(872, 250)
 prompt_text = "Ler placa"
-message_text = "A placa diz: \"Estrada do Leste — Bosque do Riacho, meio dia de caminhada pela Floresta Sussurrante.\" Partir agora?"
+message_text = "A placa diz: \"Estrada do Leste — Bosque do Riacho, meio dia de caminhada pela floresta.\" Partir agora?"
 action = "travel:route.east_road"
 
 [node name="VillageRoadSign" parent="Objects" instance=ExtResource("3_sign")]

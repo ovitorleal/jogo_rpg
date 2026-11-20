@@ -3,10 +3,10 @@
 	"entries": [
 		{
 			"id": "dialogue.ione",
-			"name": "Ione, chefe da vila",
+			"name": "A chefe da vila",
 			"description": "A chefe da Vila de Ribeira, preocupada com os ataques dos goblins.",
 			"source": "original",
-			"speaker": "Ione",
+			"speaker": "Chefe da vila",
 			"portrait": "res://assets/portraits/ione_portrait.png",
 			"entries": [
 				{
@@ -29,7 +29,7 @@
 			"nodes": [
 				{
 					"id": "greeting",
-					"text": "Seja bem-vindo(a) a Ribeira. Sou Ione, chefe desta vila. Chegou num dia ruim: um bando de goblins, liderado por um tal de Garra-Rubra, ataca nossas carroças na estrada da floresta.",
+					"text": "Seja bem-vindo(a) a Ribeira. Sou a chefe desta vila. Chegou num dia ruim: um bando de goblins, liderado por um tal de Garra-Rubra, ataca nossas carroças na estrada da floresta.",
 					"choices": [
 						{
 							"text": "Eu posso ajudar.",
@@ -102,7 +102,7 @@
 				},
 				{
 					"id": "symbol",
-					"text": "Pelos... Esse símbolo na base da garra. Eu já vi isso no livro mais velho do templo, aquele que ninguém consegue ler direito. Dizem que fala das Garras do Arauto, de antes do Silêncio dos dragões. Se isso é real, Ribeira não é lugar para guardá-la.",
+					"text": "Pelos... Esse símbolo na base da garra. Eu já vi isso no livro mais velho do templo, aquele que ninguém consegue ler direito. Dizem que fala das Garras do Arauto, relíquias de eras que ninguém mais lembra direito. Se isso é real, Ribeira não é lugar para guardá-la.",
 					"choices": [
 						{
 							"text": "O que devo fazer com ela?",
@@ -112,10 +112,10 @@
 				},
 				{
 					"id": "vessa",
-					"text": "Leve-a a Vessa, a cidade das planícies, à Academia de Mana. Os sábios de lá saberão o que ela é. Mas hoje não: hoje à noite há festa na praça, e a estalagem será sempre sua casa, herói de Ribeira.",
+					"text": "Leve-a a Vessa, à Academia de Mana. Os sábios de lá saberão o que ela é. Mas hoje não: hoje à noite há festa na praça, e a estalagem será sempre sua casa, herói de Ribeira.",
 					"choices": [
 						{
-							"text": "Partirei para Vessa. Obrigado(a), Ione.",
+							"text": "Partirei para Vessa. Obrigado(a).",
 							"next": ""
 						}
 					]
@@ -125,7 +125,7 @@
 					"text": "Hoje à noite haverá festa na praça, e a estalagem será sempre sua casa. Volte quando quiser, herói de Ribeira.",
 					"choices": [
 						{
-							"text": "Obrigado(a), Ione.",
+							"text": "Obrigado(a).",
 							"next": ""
 						}
 					]

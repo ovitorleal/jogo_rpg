@@ -29,7 +29,7 @@ func test_quest_lifecycle_and_rewards() -> void:
 	assert_true(log.notify("defeat_encounter", "encounter.lone_wolf", _registry()).is_empty(), "Outro encontro não conta")
 	assert_true(not log.is_ready("quest.ruin_threat", _registry()), "Ainda não pronta")
 	var messages := log.notify("defeat_encounter", "encounter.ruin_goblin", _registry())
-	assert_true(str(messages).contains("Objetivo cumprido") and str(messages).contains("Volte a Amara"), "Avisos: %s" % str(messages))
+	assert_true(str(messages).contains("Objetivo cumprido") and str(messages).contains("Volte até Amara"), "Avisos: %s" % str(messages))
 	assert_true(log.is_ready("quest.ruin_threat", _registry()), "Pronta para entregar")
 	var done := log.complete("quest.ruin_threat", party, inv, _registry())
 	assert_true(done["ok"], "Entrega")
