@@ -8,7 +8,9 @@ branch: onda/livros-de-arghaz
 migration: nenhuma (sem banco; o salvamento não muda de esquema)
 research: tasks/research/livros-de-arghaz.md
 mockup: tasks/mockups/livros-de-arghaz/index.html
-aprovado: false
+aprovado: true
+aprovado_por: Vitor Leal
+aprovado_em: 2026-11-20
 llm-routing:
   proxima-fase: passo-3-security
   modelo: claude-haiku-5-5
@@ -196,6 +198,6 @@ selo, card dentro de card ou copy-poema; o texto cita as fontes.
 - [x] Modelo gerado
 - [x] Decisões D1-D4 do responsável (recomendações aceitas, 2026-11-07)
 - [x] Modelo do Ermo aprovado (Vitor Leal, 2026-11-07); script do modelo em `tasks/mockups/livros-de-arghaz/mock_ermo.gd.txt`
-- [ ] Spec aprovado
+- [x] Spec aprovado (Vitor Leal, 2026-11-20: "eu aprovo os dois")
 
-aprovado: false
+aprovado: true

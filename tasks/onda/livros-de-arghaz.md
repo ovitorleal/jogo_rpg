@@ -1,8 +1,8 @@
 ---
 onda: livros-de-arghaz
 fase-metodologia: 2
-estado: AGUARDANDO-APROVACAO
-atualizado: 2026-11-07
+estado: PRONTO-PARA-PASSO-3
+atualizado: 2026-11-20
 projeto: jogo_rpg
 caminho: C:\Users\ovito\OneDrive\Desktop\jogo_rpg
 contratos:
@@ -15,8 +15,8 @@ contratos:
 # 🗺️ PAINEL — livros-de-arghaz
 
 ## Onde estamos AGORA
-Passo **2 (plan)** escrito. Decisões D1-D4 e modelo do Ermo **aprovados** pelo responsável (2026-11-07). Falta a
-aprovação do spec (`aprovado: true` em `tasks/specs/livros-de-arghaz.md`).
+Passo **2 (plan)** concluído e **aprovado** pelo responsável (2026-11-20). Decisões D1-D4 e modelo do Ermo aprovados
+em 2026-11-07.
 Próximo: `/passo-3-security livros-de-arghaz`.
 
 ## As fases
@@ -49,7 +49,7 @@ os corpos (plano B geométrico); F5 o gerador reproduz as cenas versionadas (rod
 D1-D4 aceitos: "Volte até %s"; tirar Floresta Sussurrante, Ganso Dourado e Martelo do Fundo; sonho sem "minha
 garra"; reescrever as falas de Ignis, Lyra e Doran. Modelo do Ermo aprovado.
 
-**Artefato gerado:** `tasks/specs/livros-de-arghaz.md` (aguardando aprovado: true) +
+**Artefato gerado:** `tasks/specs/livros-de-arghaz.md` (aprovado: true, Vitor Leal, 2026-11-20) +
 `tasks/mockups/livros-de-arghaz/` (index.html, 3 PNG, `mock_ermo.gd.txt` = referência das peças)
 
 **Ler antes de agir:**
@@ -62,7 +62,7 @@ garra"; reescrever as falas de Ignis, Lyra e Doran. Modelo do Ermo aprovado.
 - `exploration_map.gd` também está na folha de testes-contra-a-morte: reler folha e disco antes da Fase 4.
 - Nunca "Primeiro Dragão", nenhum número inventado, Wyrmgard não aparece.
 
-**Gate pendente:** aprovação do spec pelo responsável.
+**Gate pendente:** nenhum, pronto para seguir.
 
 **Próxima ação:**
 /passo-3-security livros-de-arghaz
