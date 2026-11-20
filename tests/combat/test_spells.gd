@@ -257,7 +257,10 @@ func test_level_up_prepares_new_spells_and_migration() -> void:
 	old["schema_version"] = 3
 	var loaded: CharacterData = CharacterData.from_dict(old)[0]
 	assert_true(loaded != null and loaded.cantrips.is_empty(), "Save v3 carrega sem magias")
-	assert_eq(Spellcasting.fill_defaults(loaded, _registry()).size(), 6, "Magias padrão completadas (1 truque + 5)")
+	# Truques: tantos quanto a classe tem nos dados, até o limite do nível; preparadas: 5 no nível 2.
+	var cantrips := mini(int(Spellcasting.limits(loaded, _registry())["cantrips"]),
+			Spellcasting.class_spells("class.cleric", _registry(), 0, 0).size())
+	assert_eq(Spellcasting.fill_defaults(loaded, _registry()).size(), cantrips + 5, "Magias padrão completadas (truques + 5)")
 
 
 func test_combat_scene_casts_with_menu_and_click() -> void:

@@ -13,6 +13,9 @@ extends Control
 const STEP_TIME := 0.11
 const SPELL_PREFIX := "spell:"
 const OFFHAND_ID := "offhand"
+## Modo "Estabilizar aliado caído" (Medicina CD 10), escolhido no menu de ações.
+const STABILIZE_ID := "stabilize"
+const STABILIZE_MENU := 90
 const FEATURE_PREFIX := "feature:"
 const FEATURE_BASE := 100
 const TOGGLE_BASE := 200
@@ -122,7 +125,18 @@ func click_cell(cell: Vector2i) -> Dictionary:
 		return {"ok": false, "error": "Aguarde o seu turno", "events": []}
 	var actor := manager.current()
 	var occupant := manager.combatant_at(cell)
+	var fallen := manager.fallen_at(cell)
 	var result: Dictionary
+	if _selected_attack_id == STABILIZE_ID:
+		if fallen != null:
+			result = manager.submit({"type": "stabilize", "actor": actor.id, "target": fallen.id})
+			_selected_attack_id = ""
+		elif occupant == null:
+			result = manager.submit({"type": "move", "actor": actor.id, "to": cell})
+		else:
+			result = {"ok": false, "error": "Escolha um aliado caído", "events": []}
+		_after_command(result)
+		return result
 	if _selected_attack_id.begins_with(FEATURE_PREFIX):
 		var wants_enemy := _feature_target(_selected_attack_id.trim_prefix(FEATURE_PREFIX)) == "enemy"
 		if occupant != null and occupant.is_hostile_to(actor) == wants_enemy:
@@ -151,6 +165,8 @@ func click_cell(cell: Vector2i) -> Dictionary:
 			result = manager.submit({"type": "cast", "actor": actor.id, "spell_id": spell_id, "cell": cell})
 		elif occupant != null and (occupant.is_hostile_to(actor) == (entry["target"] == "enemy")):
 			result = manager.submit({"type": "cast", "actor": actor.id, "spell_id": spell_id, "target": occupant.id})
+		elif occupant == null and fallen != null and entry["target"] != "enemy":
+			result = manager.submit({"type": "cast", "actor": actor.id, "spell_id": spell_id, "target": fallen.id})
 		elif occupant == null:
 			result = manager.submit({"type": "move", "actor": actor.id, "to": cell})
 		else:
@@ -187,6 +203,10 @@ func _on_action_menu(id: int) -> void:
 		var toggle: Dictionary = _menu_toggles[id - TOGGLE_BASE]
 		manager.submit({"type": "option", "actor": manager.current().id, "key": toggle["key"], "value": toggle["value"]})
 		_refresh()
+		return
+	if id == STABILIZE_MENU:
+		select_attack(STABILIZE_ID)
+		_status.text = "Estabilizar: clique no aliado caído ao seu lado (Medicina, CD 10)."
 		return
 	if id >= FEATURE_BASE:
 		var action: Dictionary = _menu_features[id - FEATURE_BASE]
@@ -569,7 +589,10 @@ func _show_result() -> void:
 			_result_button.text = "Continuar"
 		CombatManager.Outcome.DEFEAT:
 			_result_label.text = "Derrota.\nSeu grupo caiu em combate."
-			_result_button.text = "Voltar ao título"
+			# Volta ao último salvamento (decisão do responsável); "Voltar ao título" fica como segunda opção.
+			_result_button.text = "Carregar último salvamento" if SaveManager.has_save() else "Voltar ao título"
+			if SaveManager.has_save():
+				_add_title_button()
 		CombatManager.Outcome.FLED:
 			_result_label.text = "Você fugiu do combate."
 			_result_button.text = "Continuar"
@@ -581,7 +604,22 @@ func _on_result_pressed() -> void:
 	if manager.state != CombatManager.State.FINISHED:
 		get_tree().change_scene_to_file(ExplorationManager.TITLE_SCENE)
 		return
+	if manager.outcome == CombatManager.Outcome.DEFEAT and SaveManager.has_save():
+		get_tree().change_scene_to_file(ExplorationManager.recover_from_defeat())
+		return
 	ExplorationManager.finish_encounter(manager.outcome, manager.total_xp() if manager.outcome == CombatManager.Outcome.VICTORY else 0)
+
+
+## Segunda opção na derrota: desistir e voltar ao título (apaga a partida em andamento, como antes).
+func _add_title_button() -> void:
+	if _result_button.get_parent().has_node("TitleButton"):
+		return
+	var title := Button.new()
+	title.name = "TitleButton"
+	title.text = "Voltar ao título"
+	title.custom_minimum_size = _result_button.custom_minimum_size
+	title.pressed.connect(func() -> void: ExplorationManager.finish_encounter(manager.outcome, 0))
+	_result_button.get_parent().add_child(title)
 
 
 func _on_cell_clicked(cell: Vector2i) -> void:
@@ -630,7 +668,13 @@ func _refresh() -> void:
 	var lines := PackedStringArray()
 	for unit in manager.turn_order:
 		var marker := "> " if unit == actor else "   "
-		var state := "" if unit.is_up() else (" (morto)" if unit.team == Combatant.Team.ENEMY else " (caído)")
+		var state := ""
+		if unit.dead or (not unit.is_up() and unit.character == null):
+			state = " (morto)"
+		elif unit.is_downed():
+			state = " (caído, estável)" if unit.stable else " (caído: %d %s, %d %s)" % [unit.death_successes,
+					"sucesso" if unit.death_successes == 1 else "sucessos", unit.death_failures,
+					"falha" if unit.death_failures == 1 else "falhas"]
 		var conditions := PackedStringArray()
 		for effect in unit.effects:
 			if effect["kind"] == "condition":
@@ -663,6 +707,9 @@ func _refresh() -> void:
 				continue
 			popup.add_item(entry[1], i)
 			popup.set_item_disabled(popup.get_item_index(i), not error.is_empty())
+		if manager.combatants.any(func(u: Combatant) -> bool: return u.is_downed() and not u.stable and not u.is_hostile_to(actor)):
+			popup.add_item("Estabilizar aliado caído (ação)", STABILIZE_MENU)
+			popup.set_item_disabled(popup.get_item_index(STABILIZE_MENU), not manager.action_available)
 		_menu_features = CombatFeatures.actions(manager, actor)
 		if not _menu_features.is_empty():
 			popup.add_separator("Classe")
@@ -717,6 +764,10 @@ func _refresh_highlights(actor: Combatant, party_turn: bool) -> void:
 		elif _selected_attack_id == OFFHAND_ID:
 			for unit in manager.combatants:
 				if manager.offhand_error(actor, unit).is_empty():
+					_board.targets.append(unit)
+		elif _selected_attack_id == STABILIZE_ID:
+			for unit in manager.combatants:
+				if manager.stabilize_error(actor, unit).is_empty():
 					_board.targets.append(unit)
 		elif _selected_attack_id.begins_with(FEATURE_PREFIX):
 			var feature_id := _selected_attack_id.trim_prefix(FEATURE_PREFIX)
@@ -778,7 +829,9 @@ func _refresh_attack_options(actor: Combatant) -> void:
 			"condition_save":
 				detail = "CD %d · %s" % [actor.spell_dc, CombatManager.CONDITION_NAMES.get(str(entry["effect"]), "Caído")]
 			"revive":
-				detail = "revive com 1 PV"
+				detail = "morto há até 1 minuto volta com 1 PV"
+			"stabilize":
+				detail = "caído fica estável"
 			"cleanse":
 				detail = "remove condição"
 			"full_heal":
@@ -815,6 +868,9 @@ func _refresh_attack_options(actor: Combatant) -> void:
 	if _selected_attack_id == OFFHAND_ID and manager.offhand_error(actor).is_empty():
 		valid_spell = true
 	if _selected_attack_id.begins_with(FEATURE_PREFIX):
+		valid_spell = true
+	# Modo Estabilizar continua escolhido enquanto houver aliado caído e a ação estiver livre.
+	if _selected_attack_id == STABILIZE_ID and manager.action_available:
 		valid_spell = true
 	if actor.get_attack(_selected_attack_id).is_empty() and not valid_spell:
 		_selected_attack_id = actor.attacks[0]["id"]

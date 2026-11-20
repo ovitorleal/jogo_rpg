@@ -25,6 +25,8 @@ var armor_id: String = ""
 var shield_id: String = ""
 var weapon_ids: Array[String] = []
 var current_hp: int = 0
+## Morto (testes contra a morte ou dano massivo) até a ressurreição. Ausente nos saves antigos: vivo.
+var dead: bool = false
 ## Dados de Vida gastos em descansos curtos (recuperados no descanso longo). Desde o esquema 2.
 var hit_dice_spent: int = 0
 ## Escolhas de aparência (corpo, cabelo, chifres...). Campos ausentes usam o padrão da espécie.
@@ -87,6 +89,7 @@ func to_dict() -> Dictionary:
 		"shield_id": shield_id,
 		"weapon_ids": weapon_ids.duplicate(),
 		"current_hp": current_hp,
+		"dead": dead,
 		"hit_dice_spent": hit_dice_spent,
 		"appearance": appearance.duplicate(),
 		"cantrips": cantrips.duplicate(),
@@ -126,6 +129,7 @@ static func from_dict(source: Dictionary) -> Array:
 	c.shield_id = _read_string(data, "shield_id", errors)
 	c.weapon_ids.assign(_read_array(data, "weapon_ids", errors).map(func(v: Variant) -> String: return str(v)))
 	c.current_hp = _read_int(data, "current_hp", errors)
+	c.dead = bool(data.get("dead", false))
 	c.hit_dice_spent = _read_int(data, "hit_dice_spent", errors)
 	if data.get("appearance") is Dictionary:
 		for key: Variant in data["appearance"]:

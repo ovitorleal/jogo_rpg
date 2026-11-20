@@ -1,5 +1,22 @@
 # Changelog
 
+## [Testes contra a morte] — 2026-11-20
+
+### Adicionado
+- Personagem a 0 PV fica Inconsciente e rola teste contra a morte no início do turno, como no SRD 5.2.1: 10 ou mais
+  é sucesso, 1 natural conta duas falhas, 20 natural levanta com 1 PV; três sucessos estabilizam, três falhas matam.
+  Levar dano caído conta falha (crítico, duas), e dano massivo mata na hora. A ordem de iniciativa mostra a contagem.
+- Estabilizar um aliado caído ao lado (menu Ações, teste de Medicina CD 10) e o truque Poupar os Moribundos (clérigo e
+  druida). Dá para clicar no aliado caído para curar, estabilizar ou ressuscitar.
+- Morte real: o morto continua morto ao salvar e carregar, não luta, não segue o grupo e não se cura no descanso. Com
+  o herói morto, o primeiro companheiro vivo conduz o grupo.
+- A chefe da vila ressuscita quem morreu por 100 PO (volta com 1 PV). Revivificar vale até 1 minuto depois da morte.
+- O Garra-Rubra às vezes ataca um caído ao lado (50%); os outros inimigos ignoram caídos.
+- Derrota total oferece "Carregar último salvamento" em vez de perder a partida.
+
+### Alterado
+- Depois de uma vitória, só os caídos vivos acordam com 1 PV; os mortos continuam mortos, e o XP vai para os vivos.
+
 ## [Onda livros-de-arghaz] — 2026-11-20 — História e Ermo pelos livros do mestre
 
 ### Alterado

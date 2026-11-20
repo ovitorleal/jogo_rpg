@@ -32,6 +32,17 @@
 					"text": "Seja bem-vindo(a) a Ribeira. Sou a chefe desta vila. Chegou num dia ruim: um bando de goblins, liderado por um tal de Garra-Rubra, ataca nossas carroças na estrada da floresta.",
 					"choices": [
 						{
+							"text": "Peço que você faça ressuscitar quem morreu (100 PO).",
+							"condition": "can_resurrect:100",
+							"action": "resurrect:100",
+							"next": "risen"
+						},
+						{
+							"text": "Quem morreu pode voltar?",
+							"condition": "cannot_afford_resurrection:100",
+							"next": "need_gold"
+						},
+						{
 							"text": "Eu posso ajudar.",
 							"next": "accept",
 							"action": "start_quest:quest.goblin_chief"
@@ -77,6 +88,17 @@
 					"text": "Garra-Rubra ainda está lá fora? A estrada para a Clareira fica a leste. Amara pode indicar o Bosque do Riacho.",
 					"choices": [
 						{
+							"text": "Peço que você faça ressuscitar quem morreu (100 PO).",
+							"condition": "can_resurrect:100",
+							"action": "resurrect:100",
+							"next": "risen"
+						},
+						{
+							"text": "Quem morreu pode voltar?",
+							"condition": "cannot_afford_resurrection:100",
+							"next": "need_gold"
+						},
+						{
 							"text": "Estou indo.",
 							"next": ""
 						}
@@ -86,6 +108,17 @@
 					"id": "victory",
 					"text": "Os goblins fugiram e Garra-Rubra caiu? Então Ribeira está a salvo! Aceite esta recompensa e a gratidão de todos nós.",
 					"choices": [
+						{
+							"text": "Peço que você faça ressuscitar quem morreu (100 PO).",
+							"condition": "can_resurrect:100",
+							"action": "resurrect:100",
+							"next": "risen"
+						},
+						{
+							"text": "Quem morreu pode voltar?",
+							"condition": "cannot_afford_resurrection:100",
+							"next": "need_gold"
+						},
 						{
 							"text": "Foi uma honra ajudar. E ele carregava isto: uma garra vermelha.",
 							"next": "symbol",
@@ -135,7 +168,38 @@
 					"text": "Graças a você, as carroças voltaram a passar. Ribeira não vai esquecer.",
 					"choices": [
 						{
+							"text": "Peço que você faça ressuscitar quem morreu (100 PO).",
+							"condition": "can_resurrect:100",
+							"action": "resurrect:100",
+							"next": "risen"
+						},
+						{
+							"text": "Quem morreu pode voltar?",
+							"condition": "cannot_afford_resurrection:100",
+							"next": "need_gold"
+						},
+						{
 							"text": "Até logo.",
+							"next": ""
+						}
+					]
+				},
+				{
+					"id": "risen",
+					"text": "Levo o corpo ao templo e rezo a noite inteira. Ao amanhecer, quem você perdeu respira de novo. Fraco, mas vivo.",
+					"choices": [
+						{
+							"text": "Obrigado(a).",
+							"next": ""
+						}
+					]
+				},
+				{
+					"id": "need_gold",
+					"text": "Pode, sim. O templo traz de volta quem caiu, mas as velas e os óleos custam 100 peças de ouro. Volte quando tiver.",
+					"choices": [
+						{
+							"text": "Volto depois.",
 							"next": ""
 						}
 					]

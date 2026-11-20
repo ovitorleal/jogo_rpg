@@ -47,7 +47,9 @@
 | Vantagem e desvantagem se anulam (qualquer quantidade) | `D20Test.resolve_advantage` | |
 | Turno: uma ação e movimento igual ao deslocamento; quadrados de 5 pés, diagonal também 5 pés | `CombatManager` | Atravessa aliados, não inimigos; não termina em casa ocupada |
 | Táticas de Matilha (Lobo): vantagem com aliado a até 5 pés do alvo | `CombatManager.attack_advantage` | |
-| Monstro a 0 PV morre; personagem a 0 PV cai inconsciente; grupo todo a 0 PV = derrota | `CombatManager` | Testes de morte ainda não implementados |
+| Monstro a 0 PV morre; personagem a 0 PV fica Inconsciente e Caído e rola teste contra a morte no início do turno (d20, 10+ sucesso; 1 natural, duas falhas; 20 natural, 1 PV; 3 sucessos, estável; 3 falhas, morte); dano a 0 PV é falha (crítico, duas); dano massivo (o que sobra depois de zerar os PV, igual ou maior que os PV máximos) mata; recuperar PV acorda; grupo todo a 0 PV = derrota (SRD 5.2.1, pp. 17-18) | `Combatant`, `CombatManager.roll_death_save`, `_apply_damage`, `heal_unit` | Monstros sempre morrem a 0 PV |
+| Estabilizar (a ação Ajudar): aliado caído ao lado, Sabedoria (Medicina) CD 10; Poupar os Moribundos estabiliza sem teste; estável não rola e volta a rolar se levar dano | `CombatManager._do_stabilize`, resolução `stabilize` | |
+| Revivificar: só em quem morreu há até 1 minuto (10 rodadas); volta com 1 PV | `CombatManager.spell_target_error`, resolução `revive` | O diamante não é cobrado |
 | XP do encontro dividido igualmente entre o grupo na vitória | `CombatManager.apply_results_to_party` | |
 
 ### Descanso e viagem (Fase 4)
@@ -190,7 +192,12 @@ opções marcáveis pelo comando `option`.
 | Adaptação | Motivo |
 |---|---|
 | Grupo limitado a protagonista + 2 companheiros; o melhor do grupo faz os testes de perícia das conversas | Escolha de design (estilo de RPG de grupo); no SRD qualquer um pode tentar e Ajudar daria vantagem |
-| Aliados caídos voltam com 1 PV depois de uma vitória | Ainda não há testes contra a morte nem estabilização; evita perder companheiros sem regra para isso |
+| Caídos vivos acordam com 1 PV logo depois de uma vitória; mortos continuam mortos | O SRD dá 1 PV depois de 1d4 horas; o jogo não tem passagem de horas |
+| Morte real: o morto não luta, não segue o grupo e não se cura no descanso até a ressurreição; com o herói morto, o primeiro companheiro vivo conduz o grupo no mapa | Decisão do responsável (2026-11-07 e 2026-11-20) |
+| Ressurreição fora do combate: serviço da chefe da vila por 100 PO, volta com 1 PV, sem a penalidade de Reviver os Mortos | Decisão do responsável; o Ato I tem pouco ouro e não há magia de 5º círculo no grupo |
+| Inimigo inteligente (campo `finishes_downed`, hoje só o Garra-Rubra) ataca um caído ao lado 50% das vezes; os outros ignoram caídos | Decisão do responsável; o SRD deixa a escolha ao mestre |
+| Derrota total oferece carregar o último salvamento | Decisão do responsável, em vez de perder a partida |
+| Poupar os Moribundos tem alcance fixo de 4,5 m (não aumenta nos níveis 5, 11 e 17) | Truques ainda não escalam alcance |
 | Companheiros na estalagem não ganham experiência; ao voltar, recebem a diferença para o líder | Simplifica o acompanhamento do nível pedido pelo responsável |
 | Propriedades de Maestria e ataques de oportunidade são aplicados automaticamente (o jogo escolhe aplicar) | Evita perguntas a cada golpe; a escolha raramente é desfavorável |
 | Ações Ajudar, Esconder, Influenciar, Preparar, Procurar, Estudar e Usar ainda não existem no combate | Dependem de cobertura, iluminação ou situações fora da grade atual |
@@ -201,7 +208,7 @@ opções marcáveis pelo comando `option`.
 | Esquiva Sobrenatural, Desviar Ataques, Retaliação, Indomável e Golpe de Sorte são usados automaticamente quando ajudam | O grupo tem um personagem; perguntar a cada reação deixaria o combate lento |
 | Fúria termina no fim do turno se o bárbaro não atacou nem forçou um teste e não estendeu com ação bônus | Leitura direta do SRD 5.2.1, sem o controle de "1 minuto" |
 | Defesa Paciente, Passo do Vento e Rajada de Golpes sem Foco usam a ação bônus; a versão com Foco aparece como item separado | Duas entradas no menu em vez de uma pergunta |
-| Testes de morte ainda não existem (Sobrevivente: só a parte de cura) | Derrota do grupo encerra o combate |
+| Sobrevivente (Campeão 18): só a parte de cura; a vantagem nos testes contra a morte ainda não | Fica para quando as características forem revisadas |
 | Golpe Divino é uma opção do menu ("em todo acerto corpo a corpo" ou "só em críticos"); usa primeiro o uso gratuito e depois o menor espaço livre | Evita interromper cada acerto com uma pergunta |
 | Cura pelas Mãos, Incansável e Véu da Natureza só no combate e no próprio personagem | Grupo de um personagem; sem menu de características fora do combate |
 | Montaria Fiel (Encontrar Montaria) e as magias de 2º círculo ou mais do Juramento de Devoção ficam sem efeito até existirem | Magias de 2º a 9º círculo chegam na entrega 6; invocação de criaturas ainda não existe |
@@ -235,7 +242,7 @@ opções marcáveis pelo comando `option`.
 | Curas e efeitos de apoio em área pegam só aliados (até o máximo de alvos, os mais feridos primeiro) | Escolha de alvos dentro da área fica para depois |
 | Raio Ardente: todos os raios no mesmo alvo; se ele cair, os seguintes vão para o inimigo mais próximo | Mira por raio fica para depois |
 | Medo não faz soltar o que segura nem correr; Enfeitiçar Monstro faz o inimigo ignorar quem o enfeitiçou; Dissipar Magia encerra todos os efeitos de concentração no alvo | IA simples; sem objetos soltos na grade |
-| Auxílio dura o combate (o PV extra some depois); Aura de Vida dá resistência a quem está na aura ao conjurar e não reanima; Escudo de Fogo é sempre o quente; Revivificar só reanima aliados caídos no mesmo combate | Sem passagem de horas; testes de morte ainda não existem |
+| Auxílio dura o combate (o PV extra some depois); Aura de Vida dá resistência a quem está na aura ao conjurar e não reanima; Escudo de Fogo é sempre o quente; Revivificar só reanima quem morreu no mesmo combate | Sem passagem de horas |
 | Magias de exploração, invocação, muralhas e transformação (Encontrar Montaria, Invocar Dragão, Muralha de Fogo/Pedra, Metamorfose, Lenda, Comunhão, Olho Arcano, Caminhar em Árvores, Nuvem de Névoa, Sugestão, Missão, Zona da Verdade, Alterar-se, Sopro do Dragão, Nuvem Fétida, Tempestade de Granizo, Guardião da Fé) não existem ainda; Montaria Fiel e Companheiro Dracônico seguem sem efeito | Precisam de sistemas novos (criaturas aliadas, terreno, exploração) |
 | Arcano Místico oferece só as magias de 6º a 9º círculo que existem (Círculo da Morte, Dedo da Morte, Palavra de Poder Atordoar, Palavra de Poder Matar) | Poucas magias de círculo alto cadastradas |
 | Garra-Rubra (chefe goblin) sem Fuga Ágil, Redirecionar Ataque e o dano extra com vantagem; enfrenta o grupo sozinho | Reações e ações bônus de monstros ainda não existem; dificuldade adequada ao nível 1–2 da demonstração |
@@ -271,7 +278,7 @@ opções marcáveis pelo comando `option`.
 - Características marcadas `"implemented": false` nos dados (aparecem na ficha como "ainda não implementada"): as das
   classes conjuradoras (entregas 3 a 5 da Fase 6.6), as exceções marciais listadas nas Adaptações e traços de espécie com
   escolha ou efeito em combate.
-- Testes de morte, condições (Caído, Inconsciente com efeitos, Amedrontado...), reações, ações bônus, Desengajar/Esquivar/Disparada.
+- Condições (Caído, Inconsciente com efeitos, Amedrontado...), reações, ações bônus, Desengajar/Esquivar/Disparada.
 - Derrubar da mordida do Lobo e Fuga Ágil do Goblin (registrados como não implementados).
 - Descanso curto/longo (hoje os PV perdidos só voltam com um novo personagem).
 - Experiência e subida de nível: Fase 5.

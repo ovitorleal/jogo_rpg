@@ -154,9 +154,10 @@ const TYPES := {
 			## "smite" = dano extra conjurado logo após acertar (Golpe Divino), não pelo menu de magias.
 			## "condition_save" = teste de resistência sem dano; a falha aplica o efeito (ex.: Comando);
 			## revive = volta com 1 PV; cleanse = remove condição; teleport = move o conjurador;
-			## power_word = efeito abaixo de hp_threshold; full_heal = recupera todos os PV.
+			## power_word = efeito abaixo de hp_threshold; full_heal = recupera todos os PV;
+			## stabilize = deixa estável um caído vivo (Poupar os Moribundos).
 			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff", "smite", "condition_save",
-					"revive", "cleanse", "teleport", "power_word", "full_heal"]},
+					"revive", "cleanse", "teleport", "power_word", "full_heal", "stabilize"]},
 			"save_ability": {"type": "string", "enum": ["", "str", "dex", "con", "int", "wis", "cha"], "required": false, "default": ""},
 			"half_on_save": {"type": "bool", "required": false, "default": false},
 			"damage": {"type": "string", "dice": true, "required": false, "default": ""},
@@ -237,6 +238,8 @@ const TYPES := {
 			"fly_speed": {"type": "int", "min": 0, "max": 120, "required": false, "default": 0},
 			## Ataques por ação de Ataque (Ataques Múltiplos do bloco); usado pela Forma Selvagem.
 			"multiattack": {"type": "int", "min": 1, "max": 4, "required": false, "default": 1},
+			## Inimigo inteligente: às vezes ataca um caído ao lado em vez de quem está de pé.
+			"finishes_downed": {"type": "bool", "required": false, "default": false},
 			"ability_scores": {"type": "array", "of": "int", "min": 1, "max": 30, "min_length": 6, "max_length": 6,
 					"allow_duplicates": true},
 			"challenge_rating": {"type": "string", "enum": ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5"]},
@@ -635,10 +638,12 @@ func _check_references(pending_refs: Array[Dictionary]) -> void:
 
 const DIALOGUE_CONDITIONS: Array[String] = ["quest_available", "quest_active", "quest_ready", "quest_completed",
 		"objective_open", "quest_started", "objective_done", "companion_recruited", "companion_available",
-		"gold_at_least", "gold_below", "trigger_resolved", "has_item", "lacks_item", "event_seen"]
+		"gold_at_least", "gold_below", "trigger_resolved", "has_item", "lacks_item", "event_seen",
+		"can_resurrect", "cannot_afford_resurrection"]
 ## give_item:<item_id>#<quantidade> entrega um item ao grupo; recruit:<companion_id> recruta;
-## pay_gold:<n> paga ouro do grupo.
-const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item", "recruit", "pay_gold"]
+## pay_gold:<n> paga ouro do grupo; resurrect:<n> paga n PO e traz o primeiro morto do grupo com 1 PV.
+const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item", "recruit", "pay_gold",
+		"resurrect"]
 
 
 ## Diálogos: nós referenciados existem, condições e ações conhecidas apontam para missões existentes.
@@ -684,7 +689,8 @@ func _check_rule(id: String, rule: String, allowed: Array[String], label: String
 	elif parts[0] in ["recruit", "companion_recruited", "companion_available"]:
 		if not has("companion", parts[1]):
 			errors.append("%s: %s com companheiro inexistente '%s'" % [id, label, parts[1]])
-	elif parts[0] in ["gold_at_least", "gold_below", "pay_gold"]:
+	elif parts[0] in ["gold_at_least", "gold_below", "pay_gold", "resurrect", "can_resurrect",
+			"cannot_afford_resurrection"]:
 		if not parts[1].is_valid_int() or int(parts[1]) < 0:
 			errors.append("%s: %s com valor inválido '%s'" % [id, label, parts[1]])
 	elif parts[0] == "event_seen":

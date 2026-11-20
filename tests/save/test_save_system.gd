@@ -71,6 +71,20 @@ func test_round_trip_restores_the_whole_game() -> void:
 	_end_game()
 
 
+func test_defeat_reloads_the_last_save() -> void:
+	# Derrota total volta ao último salvamento (decisão do responsável), em vez de apagar a partida.
+	_start_game()
+	assert_true(_saves().save_state(SaveGame.capture(MAP_LOCATION))["ok"], "Salvou")
+	PartyManager.inventory.gold = 0
+	var scene: String = ExplorationManager.recover_from_defeat()
+	assert_eq(scene, MAP_SCENE, "Volta ao mapa do salvamento")
+	assert_eq(PartyManager.inventory.gold, 37, "Com o estado do salvamento")
+	assert_true(PartyManager.has_party(), "O grupo continua existindo")
+	_saves().delete_save()
+	assert_eq(ExplorationManager.recover_from_defeat(), ExplorationManager.TITLE_SCENE, "Sem salvamento: título")
+	_end_game()
+
+
 func test_corrupted_or_unknown_files_are_rejected() -> void:
 	_start_game()
 	var state := SaveGame.capture(MAP_LOCATION)

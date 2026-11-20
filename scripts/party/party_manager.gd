@@ -6,6 +6,8 @@ extends Node
 signal party_changed
 
 var members: Array[CharacterData] = []
+## Ressurreição paga com a chefe da vila (decisão do responsável, 2026-11-20). Igual ao valor do diálogo.
+const RESURRECTION_PRICE := 100
 ## Itens e ouro do grupo (rações, poções, equipamento guardado).
 var inventory: Inventory = Inventory.starting_inventory()
 ## Companheiros recrutados e quem espera na estalagem.
@@ -51,7 +53,11 @@ func take_level_ups() -> Array[CharacterData]:
 	return result
 
 
+## Quem o jogador controla no mapa: o herói, ou, enquanto ele estiver morto, o primeiro companheiro vivo.
 func get_leader() -> CharacterData:
+	for c in members:
+		if not c.dead:
+			return c
 	return members[0] if not members.is_empty() else null
 
 
