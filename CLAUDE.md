@@ -56,7 +56,10 @@ passando por research → plan → security → code → review.
 - HUD: retratos do grupo em `PartyFrames` (atualizar com `ExplorationMap.refresh_party_frames()`); subida de nível
   anunciada por `ExplorationMap.announce_level_ups()` (compara com `PartyManager.seen_levels`; aviso
   `LevelUpBanner` + `LevelUpEffect`). Nunca anuncie direto no motor de regras.
-- História: `docs/HISTORIA.md` (cânone do autor + propostas aprovadas). Cenas em `data/story/` (gatilhos `arrive`/`rest`,
+- História: os materiais do mestre em `docs/livros/` mandam (Livros I e II; o compêndio completa). `docs/HISTORIA.md`
+  só resume as fontes. Nome sem fonte vira descrição ("a chefe da vila") até o mestre decidir; o teste
+  `tests/story/test_canon.gd` reprova termos que contradizem os livros. Ids de missão/diálogo/cena/crônica nunca mudam
+  (o save guarda ids). Cenas em `data/story/` (gatilhos `arrive`/`rest`,
   uma vez, falas por companheiro) e Crônicas em `data/lore/`, avaliadas pelo `StoryDirector` com as condições dos
   diálogos (`DialogueRunner.prepare/check`). Cenas vistas ficam em `ExplorationManager.once_events` (salvas).
 - Características/talentos: dados em `data/classes`, `data/subclasses`, `data/feats` (campo `grants` gera escolhas em
@@ -69,6 +72,10 @@ passando por research → plan → security → code → review.
 - O executor de testes reprova erros de script em tempo de execução (Logger); não use `push_error` para "falhas esperadas" que
   devam reprovar — use asserções.
 - Mapas novos: layout em `tools/art/build_overworld.gd` (`--layout <nome>`), cena com `%Terrain`, `Entrances/`, `Objects`.
+  Peças do Ermo usam o RNG próprio `_ermo`, depois do espalhamento antigo (não mexer na ordem do `_rng`, senão todos
+  os objetos mudam de lugar). Calçamento vai na camada `Detail`, sem colisão. Regerar uma cena troca todos os
+  `unique_id` (Godot 4.7): restaure do git a que não mudou de verdade (ex.: `village_props.tscn`).
+- Posição de volta (save ou combate) passa por `ExplorationMap.safe_spawn`: nunca nasce dentro de colisão.
 - O painel do navegador é compartilhado com o desenvolvedor: avisar antes de testar nele.
 - No navegador, eventos de teclado sintéticos precisam ser despachados no `<canvas>`, não no `window`.
 - Versionar arquivos `.uid` e `.import`; não versionar `.godot/` nem `exports/`.

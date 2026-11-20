@@ -1,5 +1,23 @@
 # Changelog
 
+## [Onda livros-de-arghaz] — 2026-11-20 — História e Ermo pelos livros do mestre
+
+### Alterado
+- Todo texto do jogo segue os Livros I e II do mestre e o Compêndio da Sexta Era (`docs/livros/`): abertura na Era do
+  Despertar, sem ano; as 6 crônicas reescritas (Arghaz e a mana, Os kobolds e o Arauto, A Era dos Colossos, A
+  Rarefação e as Garras, Vermeth a Brasa Coroada, A Era do Despertar); sonho, epílogo e falas sem lore inventada.
+- Nomes sem fonte viraram descrição: "a chefe da vila" (era Ione), "floresta de Ribeira" e "Estalagem de Ribeira".
+  Garra-Rubra, Amara, Ribeira, Vessa e Vermeth ficam, porque estão no compêndio.
+- O diário diz "Volte até %s" (era "Volte a %s").
+- `docs/HISTORIA.md` virou resumo do cânone, com a fonte de cada parte; a proposta 0.11 foi para `docs/arquivo/`.
+
+### Adicionado
+- O Ermo nos mapas: estrada antiga de pedra (camada sem colisão) na trilha do Bosque, na estrada da Clareira e na
+  praça da vila; árvores ancestrais à beira da estrada, árvores jovens, mudas nas rachaduras, muralhas e colunas
+  caídas. Peças geradas por `tools/art/`; nenhum objeto antigo mudou de lugar.
+- Posição de volta segura: quem salvou num ponto que agora tem um objeto volta na casa livre mais próxima.
+- Testes: trava do cânone (`test_canon`), peças e mapas do Ermo, posição segura.
+
 ## [Correção] — 2026-11-07 — Ataque Furtivo opcional
 
 ### Adicionado
