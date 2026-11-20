@@ -26,11 +26,16 @@ Próximo: `/passo-4-code livros-de-arghaz`.
 | # | Fase | Estado |
 |---|---|---|
 | 1 | Texto do jogo (crônicas, abertura, cenas, epílogo, diálogos, "Volte até") | ✅ código e testes; 🔴 aguardando verificação manual |
-| 2 | Documentos do cânone (`HISTORIA.md` reescrito, perguntas ao mestre) | ⬜ |
+| 2 | Documentos do cânone (`HISTORIA.md` reescrito, perguntas ao mestre) | ✅ escrito; 🔴 aguardando sua leitura |
 | 3 | Peças do Ermo no gerador (sem tocar mapa) | ⬜ |
 | 4 | Posição salva segura ao carregar (CM-LA-01) | ⬜ |
 | 5 | Ermo nos mapas (Bosque, Clareira; vila só calçamento) | ⬜ |
 | 6 | Fechamento (ROADMAP, CHANGELOG, CLAUDE.md; CM-LA-03 na exportação) | ⬜ |
+
+## Dívidas desta onda
+| ID | O quê | Motivo | Plano |
+|---|---|---|---|
+| D-LA-01 | `docs/Guia_do_Mestre_Arghaz.docx` ainda cita Ione e a Floresta Sussurrante | O gerador do `.docx` ficou num scratchpad apagado; refazer leva mais que minutos | Regerar a partir de `docs/GUIA_DO_MESTRE.md` (já atualizado) quando o mestre mandar os nomes, para gerar uma vez só |
 
 ## Tabela de fontes do texto novo (Fase 1)
 | Texto | O que afirma | Fonte |
