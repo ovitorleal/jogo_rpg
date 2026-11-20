@@ -24,6 +24,9 @@ static func spend_hit_die(c: CharacterData, registry: ContentRegistry, roller: D
 
 
 static func long_rest(c: CharacterData, registry: ContentRegistry) -> int:
+	# Morto só volta com ressurreição; o descanso não o cura.
+	if c.dead:
+		return 0
 	var before := c.current_hp
 	c.current_hp = CharacterSheet.build(c, registry).max_hp
 	c.hit_dice_spent = 0

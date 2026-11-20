@@ -43,10 +43,12 @@ func _build_frame(c: CharacterData, registry: ContentRegistry, index: int) -> Co
 	var max_hp := CharacterSheet.build(c, registry).max_hp
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 1)
-	box.set_meta("summary", "%s · Nv %d · PV %d/%d" % [c.name, c.level, c.current_hp, max_hp])
+	box.set_meta("summary", ("%s · Nv %d · morto" % [c.name, c.level]) if c.dead
+			else "%s · Nv %d · PV %d/%d" % [c.name, c.level, c.current_hp, max_hp])
 	var button := Button.new()
 	button.custom_minimum_size = FRAME_SIZE
-	button.tooltip_text = "%s — nível %d\nClique para ver a ficha" % [c.name, c.level]
+	button.tooltip_text = ("%s — morto\nA chefe da vila ressuscita por %d PO" % [c.name, PartyManager.RESURRECTION_PRICE]) \
+			if c.dead else "%s — nível %d\nClique para ver a ficha" % [c.name, c.level]
 	button.focus_mode = Control.FOCUS_NONE
 	var border := StyleBoxFlat.new()
 	border.bg_color = DARK
@@ -70,9 +72,21 @@ func _build_frame(c: CharacterData, registry: ContentRegistry, index: int) -> Co
 	portrait.offset_right = -2
 	portrait.offset_bottom = -2
 	portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if c.current_hp <= 0:
+	if c.dead:
+		portrait.modulate = Color(0.35, 0.3, 0.3)
+	elif c.current_hp <= 0:
 		portrait.modulate = Color(0.45, 0.45, 0.45)
 	button.add_child(portrait)
+	if c.dead:
+		var dead_label := Label.new()
+		dead_label.text = "Morto"
+		dead_label.add_theme_font_size_override("font_size", 7)
+		dead_label.add_theme_color_override("font_color", Color(0.95, 0.55, 0.5))
+		dead_label.add_theme_color_override("font_outline_color", Color.BLACK)
+		dead_label.add_theme_constant_override("outline_size", 3)
+		dead_label.position = Vector2(3, 2)
+		dead_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		button.add_child(dead_label)
 	var level := Label.new()
 	level.text = str(c.level)
 	level.add_theme_font_size_override("font_size", 7)

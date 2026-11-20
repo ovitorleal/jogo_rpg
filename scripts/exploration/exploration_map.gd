@@ -381,11 +381,17 @@ func refresh_followers() -> void:
 	if not PartyManager.has_party():
 		return
 	var parent: Node = _player.get_parent()
-	for i in range(1, PartyManager.members.size()):
+	# Seguem o líder os companheiros vivos (morto não anda; o líder pode ser um companheiro se o herói morreu).
+	var leader: CharacterData = PartyManager.get_leader()
+	var i := 0
+	for c in PartyManager.members:
+		if c == leader or c.dead:
+			continue
+		i += 1
 		var follower := PartyFollower.new()
 		follower.name = "Follower%d" % i
 		parent.add_child(follower)
-		follower.setup(PartyManager.members[i], _player.global_position + Vector2(-6.0 * i, -2.0 * i))
+		follower.setup(c, _player.global_position + Vector2(-6.0 * i, -2.0 * i))
 		_followers.append(follower)
 
 

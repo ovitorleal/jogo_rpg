@@ -73,6 +73,17 @@ func finish_encounter(outcome: int, xp: int, change_scene: bool = true) -> Strin
 	return destination
 
 
+## Derrota total: volta ao último salvamento (decisão do responsável, 2026-11-20) em vez de perder a partida.
+## Sem salvamento válido, recomeça do título. Devolve a cena para onde ir.
+func recover_from_defeat() -> String:
+	reset()
+	PartyManager.clear()
+	QuestManager.reset()
+	last_outcome = CombatManager.Outcome.DEFEAT
+	var loaded: Dictionary = SaveManager.load_game()
+	return str(loaded["scene"]) if loaded["ok"] else TITLE_SCENE
+
+
 ## Posição de retorno para este mapa, consumida uma única vez.
 func take_return_position(scene_path: String) -> Variant:
 	if has_return_position and scene_path == return_scene:

@@ -569,7 +569,10 @@ func _show_result() -> void:
 			_result_button.text = "Continuar"
 		CombatManager.Outcome.DEFEAT:
 			_result_label.text = "Derrota.\nSeu grupo caiu em combate."
-			_result_button.text = "Voltar ao título"
+			# Volta ao último salvamento (decisão do responsável); "Voltar ao título" fica como segunda opção.
+			_result_button.text = "Carregar último salvamento" if SaveManager.has_save() else "Voltar ao título"
+			if SaveManager.has_save():
+				_add_title_button()
 		CombatManager.Outcome.FLED:
 			_result_label.text = "Você fugiu do combate."
 			_result_button.text = "Continuar"
@@ -581,7 +584,22 @@ func _on_result_pressed() -> void:
 	if manager.state != CombatManager.State.FINISHED:
 		get_tree().change_scene_to_file(ExplorationManager.TITLE_SCENE)
 		return
+	if manager.outcome == CombatManager.Outcome.DEFEAT and SaveManager.has_save():
+		get_tree().change_scene_to_file(ExplorationManager.recover_from_defeat())
+		return
 	ExplorationManager.finish_encounter(manager.outcome, manager.total_xp() if manager.outcome == CombatManager.Outcome.VICTORY else 0)
+
+
+## Segunda opção na derrota: desistir e voltar ao título (apaga a partida em andamento, como antes).
+func _add_title_button() -> void:
+	if _result_button.get_parent().has_node("TitleButton"):
+		return
+	var title := Button.new()
+	title.name = "TitleButton"
+	title.text = "Voltar ao título"
+	title.custom_minimum_size = _result_button.custom_minimum_size
+	title.pressed.connect(func() -> void: ExplorationManager.finish_encounter(manager.outcome, 0))
+	_result_button.get_parent().add_child(title)
 
 
 func _on_cell_clicked(cell: Vector2i) -> void:

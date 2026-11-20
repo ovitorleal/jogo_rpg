@@ -638,10 +638,12 @@ func _check_references(pending_refs: Array[Dictionary]) -> void:
 
 const DIALOGUE_CONDITIONS: Array[String] = ["quest_available", "quest_active", "quest_ready", "quest_completed",
 		"objective_open", "quest_started", "objective_done", "companion_recruited", "companion_available",
-		"gold_at_least", "gold_below", "trigger_resolved", "has_item", "lacks_item", "event_seen"]
+		"gold_at_least", "gold_below", "trigger_resolved", "has_item", "lacks_item", "event_seen",
+		"can_resurrect", "cannot_afford_resurrection"]
 ## give_item:<item_id>#<quantidade> entrega um item ao grupo; recruit:<companion_id> recruta;
-## pay_gold:<n> paga ouro do grupo.
-const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item", "recruit", "pay_gold"]
+## pay_gold:<n> paga ouro do grupo; resurrect:<n> paga n PO e traz o primeiro morto do grupo com 1 PV.
+const DIALOGUE_ACTIONS: Array[String] = ["start_quest", "complete_quest", "give_item", "recruit", "pay_gold",
+		"resurrect"]
 
 
 ## Diálogos: nós referenciados existem, condições e ações conhecidas apontam para missões existentes.
@@ -687,7 +689,8 @@ func _check_rule(id: String, rule: String, allowed: Array[String], label: String
 	elif parts[0] in ["recruit", "companion_recruited", "companion_available"]:
 		if not has("companion", parts[1]):
 			errors.append("%s: %s com companheiro inexistente '%s'" % [id, label, parts[1]])
-	elif parts[0] in ["gold_at_least", "gold_below", "pay_gold"]:
+	elif parts[0] in ["gold_at_least", "gold_below", "pay_gold", "resurrect", "can_resurrect",
+			"cannot_afford_resurrection"]:
 		if not parts[1].is_valid_int() or int(parts[1]) < 0:
 			errors.append("%s: %s com valor inválido '%s'" % [id, label, parts[1]])
 	elif parts[0] == "event_seen":

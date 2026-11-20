@@ -123,6 +123,10 @@ func check(condition: String) -> bool:
 			return _inventory != null and _inventory.gold >= int(quest_id)
 		"gold_below":
 			return _inventory == null or _inventory.gold < int(quest_id)
+		"can_resurrect":
+			return _first_dead() != null and _inventory != null and _inventory.gold >= int(quest_id)
+		"cannot_afford_resurrection":
+			return _first_dead() != null and (_inventory == null or _inventory.gold < int(quest_id))
 		"trigger_resolved":
 			return _resolved.has(quest_id)
 		"has_item":
@@ -175,12 +179,28 @@ func _apply(action: String) -> Array[String]:
 		"recruit":
 			var joined := _roster.recruit(parts[1], _party, _registry)
 			lines.append(joined["text"] if joined["ok"] else joined["error"])
+		"resurrect":
+			var price := int(parts[1])
+			var fallen := _first_dead()
+			if fallen != null and _inventory != null and _inventory.gold >= price:
+				_inventory.gold -= price
+				fallen.dead = false
+				fallen.current_hp = 1
+				lines.append("%s voltou à vida com 1 PV. Pagou %d PO" % [fallen.name, price])
 		"pay_gold":
 			var cost := int(parts[1])
 			if _inventory != null and _inventory.gold >= cost:
 				_inventory.gold -= cost
 				lines.append("Pagou %d PO" % cost)
 	return lines
+
+
+## Primeiro morto do grupo (o herói antes dos companheiros), ou null.
+func _first_dead() -> CharacterData:
+	for c in _party:
+		if c.dead:
+			return c
+	return null
 
 
 ## Teste de perícia feito pelo membro do grupo com o maior bônus. Retorna {success, text}.
