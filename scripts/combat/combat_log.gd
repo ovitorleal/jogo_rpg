@@ -93,6 +93,21 @@ static func describe(event: Dictionary, manager: CombatManager) -> String:
 					Ability.format_modifier(event["modifier"]), event["total"], event["dc"], "escapa" if event["success"] else "continua preso"]
 		"down":
 			return "[color=#d6463c]%s %s![/color]" % [actor, "morre" if event["dead"] else "cai inconsciente"]
+		"death_save":
+			var outcome: String = {"sucesso": "sucesso", "falha": "falha", "falha dupla": "1 natural, duas falhas",
+					"levanta": "20 natural, levanta com 1 PV"}[event["result"]]
+			return "%s faz um teste contra a morte: %d, %s (sucessos %d, falhas %d)." % [actor, event["natural"], outcome,
+					event["successes"], event["failures"]]
+		"death_fail":
+			return "%s leva dano caído: %d %s (falhas %d)." % [actor, event["count"],
+					"falha" if int(event["count"]) == 1 else "falhas", event["failures"]]
+		"death":
+			return "[color=#d6463c][b]%s morre[/b][/color] (%s)." % [actor, event["reason"]]
+		"stable":
+			return "%s fica estável (%s)." % [actor, event["reason"]]
+		"stabilize":
+			return "%s tenta estabilizar %s: Medicina %d = %d contra CD %d, %s." % [actor, _name(manager, str(event["target"])),
+					event["natural"], event["total"], event["dc"], "sucesso" if event["success"] else "falha"]
 		"combat_end":
 			match int(event["outcome"]):
 				CombatManager.Outcome.VICTORY:

@@ -101,6 +101,16 @@ func fall(dead: bool) -> void:
 	queue_redraw()
 
 
+## Personagem que recuperou PV (cura, 20 natural, Revivificar): volta a ficar de pé.
+func rise() -> void:
+	downed = false
+	visible = true
+	modulate.a = 1.0
+	_sprite.rotation = 0.0
+	_sprite.modulate = Color.WHITE
+	queue_redraw()
+
+
 func refresh(snap_hp: bool = false) -> void:
 	if snap_hp:
 		shown_hp = unit.hp

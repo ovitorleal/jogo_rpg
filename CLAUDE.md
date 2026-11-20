@@ -51,6 +51,10 @@ Zero e depois ondas, cada uma passando por research → plan → security → co
 - Verificação visual: o painel do navegador pode estar pausado; prefira uma sonda com janela real que salva
   `root.get_texture().get_image()` no scratchpad.
 - Exploração: `Interactable` não decide efeitos; o `ExplorationMap` decide. Detalhes em `docs/ARCHITECTURE.md`.
+- Testes contra a morte: só personagens (`Combatant.character`); estado em `Combatant` (`death_successes/failures`,
+  `stable`, `dead`, `died_round`) e regra no `CombatManager` (`roll_death_save`, `_apply_damage`, `heal_unit`). Cura
+  sempre por `heal_unit` (morto não cura; caído acorda). Morte persiste em `CharacterData.dead` (ausente = vivo);
+  `PartyManager.get_leader()` é o primeiro membro vivo. Ressurreição paga: ação de diálogo `resurrect:<PO>`.
 - Combate: estado só muda via `CombatManager.submit()`/`run_enemy_turn()`; a cena só exibe eventos. Nos testes,
   `ExplorationManager.scene_changes_enabled = false` e `ai_delay = 0`; sempre restaurar no fim do teste.
 - Nunca trocar de cena dentro de callback de física (use `call_deferred`).

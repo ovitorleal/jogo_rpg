@@ -72,6 +72,8 @@ func sync_tokens(snap: bool = true) -> void:
 		if not unit.is_up() and not token.downed:
 			token.downed = true
 			token.visible = unit.team == Combatant.Team.PARTY
+		elif unit.is_up() and token.downed:
+			token.rise()
 		token.refresh(snap)
 
 

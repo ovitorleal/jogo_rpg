@@ -167,6 +167,14 @@ func combatant_at(cell: Vector2i) -> Combatant:
 	return null
 
 
+## Personagem caído (inconsciente ou morto) numa casa: alvo de cura, estabilizar e Revivificar.
+func fallen_at(cell: Vector2i) -> Combatant:
+	for unit in combatants:
+		if unit.character != null and not unit.is_up() and unit.position == cell:
+			return unit
+	return null
+
+
 func living(team: Combatant.Team) -> Array[Combatant]:
 	var result: Array[Combatant] = []
 	for unit in combatants:
