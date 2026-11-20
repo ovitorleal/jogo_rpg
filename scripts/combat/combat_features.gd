@@ -497,23 +497,10 @@ static func brutal_effects(actor: Combatant) -> Array:
 
 ## Ataque Furtivo: uma vez por turno, arma de Acuidade ou à distância, com vantagem (ou aliado
 ## adjacente ao alvo e sem desvantagem). Golpe Astuto troca dados por efeitos.
+## O jogador recusou o Ataque Furtivo neste acerto (CombatManager.sneak_choice == 0): não consome o uso do turno.
 static func sneak_attack(m: CombatManager, actor: Combatant, target: Combatant, attack: Dictionary, roll: Dictionary,
 		advantage_state: D20Test.Advantage) -> Dictionary:
-	if not actor.has_feature("feature.sneak_attack") or m.once_per_turn.has("sneak_attack"):
-		return {}
-	if str(attack.get("weapon_id", "")).is_empty():
-		return {}
-	var properties: Array = attack.get("properties", [])
-	if not ("finesse" in properties or attack["attack_type"] == "ranged"):
-		return {}
-	var allowed := advantage_state == D20Test.Advantage.ADVANTAGE
-	if not allowed and advantage_state != D20Test.Advantage.DISADVANTAGE:
-		for ally in m.combatants:
-			if ally != actor and ally.is_up() and not ally.is_hostile_to(actor) and not ally.is_incapacitated() \
-					and m._adjacent(ally, target):
-				allowed = true
-				break
-	if not allowed:
+	if m.sneak_choice == 0 or not sneak_attack_eligible(m, actor, target, attack, advantage_state):
 		return {}
 	m.once_per_turn["sneak_attack"] = true
 	var dice := DiceExpression.parse(table(actor, m, "sneak_attack"))
@@ -526,6 +513,27 @@ static func sneak_attack(m: CombatManager, actor: Combatant, target: Combatant, 
 		m.pending_after_hit.append({"kind": "cunning", "effects": effects})
 	return {"amount": roll(m, "%dd6" % count, roll["critical"]) if count > 0 else 0, "type": str(attack["damage_type"]),
 			"label": "Ataque Furtivo"}
+
+
+## O Ataque Furtivo pode ser usado neste acerto? (não consome o uso do turno; serve para perguntar ao jogador)
+static func sneak_attack_eligible(m: CombatManager, actor: Combatant, target: Combatant, attack: Dictionary,
+		advantage_state: D20Test.Advantage) -> bool:
+	if not actor.has_feature("feature.sneak_attack") or m.once_per_turn.has("sneak_attack"):
+		return false
+	if str(attack.get("weapon_id", "")).is_empty():
+		return false
+	var properties: Array = attack.get("properties", [])
+	if not ("finesse" in properties or attack["attack_type"] == "ranged"):
+		return false
+	if advantage_state == D20Test.Advantage.ADVANTAGE:
+		return true
+	if advantage_state == D20Test.Advantage.DISADVANTAGE:
+		return false
+	for ally in m.combatants:
+		if ally != actor and ally.is_up() and not ally.is_hostile_to(actor) and not ally.is_incapacitated() \
+				and m._adjacent(ally, target):
+			return true
+	return false
 
 
 ## Efeitos do Golpe Astuto escolhidos que cabem nos dados (1 efeito; 2 com Golpe Astuto Aprimorado).

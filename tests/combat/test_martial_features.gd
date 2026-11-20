@@ -183,6 +183,46 @@ func test_sneak_attack_steady_aim_and_cunning_strike() -> void:
 	assert_true(goblin.has_condition("prone") or not goblin.is_up(), "Rasteira derruba (Destreza 1)")
 
 
+## Combate com o ladino e um aliado guerreiro; o ladino age primeiro (iniciativa 20 contra 2).
+func _fight_with_ally(rogue: CharacterData, dice: Array[int]) -> CombatManager:
+	var reg: ContentRegistry = _e()._registry()
+	var manager := CombatManager.new()
+	manager.registry = reg
+	var party: Array[Combatant] = [Combatant.from_character(rogue, reg),
+			Combatant.from_character(_e()._hero("class.fighter"), reg)]
+	var all_dice: Array[int] = [20, 2, 1, 1]
+	all_dice.append_array(dice)
+	manager.setup(party, _e()._goblins(2), Vector2i(12, 8), true, DiceRoller.scripted(all_dice))
+	manager.start()
+	return manager
+
+
+func test_sneak_attack_at_level_1_with_ally_next_to_target() -> void:
+	var manager := _fight_with_ally(_at("class.rogue", 1), [15, 3, 4])
+	var hero := _hero(manager)
+	var ally: Combatant = manager.living(Combatant.Team.PARTY)[1]
+	var goblin := _enemy(manager)
+	assert_eq(manager.current(), hero, "O ladino age primeiro")
+	goblin.position = hero.position + Vector2i(1, 0)
+	ally.position = goblin.position + Vector2i(0, 1)
+	var result := manager.submit({"type": "attack", "actor": hero.id, "target": goblin.id, "attack_id": "item.shortsword"})
+	assert_true(result["ok"], "Ataque aceito: %s" % result.get("error", ""))
+	var event: Dictionary = _events(result, "attack")[0]
+	assert_true(str(event["features"]).contains("Ataque Furtivo"),
+			"Aliado encostado no alvo libera o Ataque Furtivo no nível 1 (%s)" % event["features"])
+	assert_eq(event["damage"], 3 + hero.modifiers[Ability.DEXTERITY] + 4, "1d6 da espada curta + Destreza + 1d6 furtivo")
+
+
+func test_no_sneak_attack_alone_without_advantage() -> void:
+	var manager := _fight(_at("class.rogue", 1), [15, 3, 4])
+	var hero := _hero(manager)
+	var goblin := _enemy(manager)
+	goblin.position = hero.position + Vector2i(1, 0)
+	var result := manager.submit({"type": "attack", "actor": hero.id, "target": goblin.id, "attack_id": "item.shortsword"})
+	var event: Dictionary = _events(result, "attack")[0]
+	assert_true(not str(event["features"]).contains("Ataque Furtivo"), "Sozinho e sem vantagem não há Ataque Furtivo (regra)")
+
+
 func test_uncanny_dodge_evasion_elusive_and_reflexes() -> void:
 	var rogue := _at("class.rogue", 18)
 	var manager := _fight(rogue, [])
