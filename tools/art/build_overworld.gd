@@ -15,11 +15,14 @@ const TEXTURE_PATH := "res://assets/tilesets/overworld_tiles.png"
 
 const LAYOUTS := {
 	"test_map": {"size": Vector2i(60, 34), "seed": 20261024,
-			"terrain": "res://scenes/world/test_map_terrain.tscn", "props": "res://scenes/world/test_map_props.tscn"},
+			"terrain": "res://scenes/world/test_map_terrain.tscn", "props": "res://scenes/world/test_map_props.tscn",
+			"scene": "res://scenes/world/test_map.tscn"},
 	"forest_brook": {"size": Vector2i(44, 26), "seed": 20261025,
-			"terrain": "res://scenes/world/forest_brook_terrain.tscn", "props": "res://scenes/world/forest_brook_props.tscn"},
+			"terrain": "res://scenes/world/forest_brook_terrain.tscn", "props": "res://scenes/world/forest_brook_props.tscn",
+			"scene": "res://scenes/world/forest_brook.tscn"},
 	"village": {"size": Vector2i(40, 26), "seed": 20261026,
-			"terrain": "res://scenes/world/village_terrain.tscn", "props": "res://scenes/world/village_props.tscn"},
+			"terrain": "res://scenes/world/village_terrain.tscn", "props": "res://scenes/world/village_props.tscn",
+			"scene": "res://scenes/world/village.tscn"},
 }
 
 enum V { GRASS, DIRT, SAND, WATER }
@@ -36,6 +39,11 @@ const PROP_SCENES := {
 	"house_red": "res://scenes/world/props/house_red.tscn",
 	"house_blue": "res://scenes/world/props/house_blue.tscn",
 	"well": "res://scenes/world/props/well.tscn",
+	"ancestral_tree": "res://scenes/world/props/ancestral_tree.tscn",
+	"young_tree": "res://scenes/world/props/young_tree.tscn",
+	"sapling": "res://scenes/world/props/sapling.tscn",
+	"wall_base": "res://scenes/world/props/wall_base.tscn",
+	"fallen_column": "res://scenes/world/props/fallen_column.tscn",
 }
 ## Vila de Ribeira: casas (tile da base da porta) e o poço da praça.
 const VILLAGE_BUILDINGS := [["house_red", Vector2i(12, 9)], ["house_blue", Vector2i(27, 9)],
@@ -56,6 +64,11 @@ var _layout := "test_map"
 var _rng := RandomNumberGenerator.new()
 var _vertices: Array = []
 var _blocked := {}
+## Ermo (onda livros-de-arghaz): RNG próprio, para não mudar a sequência do _rng e, com ela, o lugar de nenhum
+## objeto antigo. Casas de calçamento (célula -> variação) e posições protegidas lidas da cena do mapa.
+var _ermo := RandomNumberGenerator.new()
+var _paving := {}
+var _protected: Array[Vector2] = []
 
 
 func _initialize() -> void:
@@ -97,9 +110,15 @@ func _initialize() -> void:
 	var walls := TileMapLayer.new()
 	walls.name = "Walls"
 	walls.tile_set = tile_set
+	var detail := TileMapLayer.new()
+	detail.name = "Detail"
+	detail.tile_set = tile_set
+	detail.collision_enabled = false
 	terrain.add_child(ground)
+	terrain.add_child(detail)
 	terrain.add_child(walls)
 	ground.owner = terrain
+	detail.owner = terrain
 	walls.owner = terrain
 	for y in MAP.y:
 		for x in MAP.x:
@@ -108,6 +127,9 @@ func _initialize() -> void:
 			if wall != Vector2i(-1, -1):
 				walls.set_cell(Vector2i(x, y), 0, wall)
 				_blocked[Vector2i(x, y)] = true
+	_ermo.seed = int(LAYOUTS[_layout]["seed"]) + 7
+	_protected = _protected_spots(LAYOUTS[_layout]["scene"])
+	_lay_paving(detail)
 	if not _pack(terrain, LAYOUTS[_layout]["terrain"]):
 		quit(1)
 		return
@@ -144,6 +166,8 @@ func _build_tile_set(texture: Texture2D) -> TileSet:
 
 	for v in 4:
 		source.create_tile(Vector2i(v, 0))
+	for v in ENV.PAVING_MISSING.size():
+		source.create_tile(ENV.PAVING_ORIGIN + Vector2i(v, 0))
 	for coords in [BLOCKER, WALL]:
 		source.create_tile(coords)
 		_add_quadrants(source, coords, 15)
@@ -333,6 +357,8 @@ func _build_props() -> Node2D:
 		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["tree", "pine", "tree"], 46, 2)
 		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["bush"], 14, 1)
 		_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["rock"], 8, 1)
+		# Árvores ancestrais à beira da trilha antiga (raízes sobre as pedras), longe das bordas.
+		_add_ermo(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), Rect2i(6, 8, 18, 11), 2, 2, 2)
 		return root
 	# Bosque a sudeste, árvores espalhadas, pedras e arbustos.
 	_scatter(root, taken, GROVE, ["tree", "tree", "pine"], 16, 2)
@@ -340,6 +366,7 @@ func _build_props() -> Node2D:
 	_scatter(root, taken, Rect2i(34, 2, 24, 13), ["tree", "pine"], 6, 3)
 	_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["rock"], 18, 1)
 	_scatter(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), ["bush"], 22, 1)
+	_add_ermo(root, taken, Rect2i(2, 2, MAP.x - 4, MAP.y - 4), Rect2i(5, 12, 18, 11), 1, 2, 2)
 	return root
 
 
@@ -369,3 +396,149 @@ func _add_prop(root: Node2D, kind: String, position: Vector2) -> void:
 	prop.position = position
 	root.add_child(prop)
 	prop.owner = root
+
+
+# --- Ermo (onda livros-de-arghaz): estrada antiga, árvores ancestrais e ruínas -----------------------
+# Tudo aqui usa o _ermo (RNG próprio) e roda depois do espalhamento antigo: nenhum objeto que já existia muda
+# de lugar. Objetos sólidos novos ficam fora das áreas livres (CLEAR), da ruína e a mais de 2 casas de entradas,
+# personagens, placas e encontros (lidos da cena do mapa).
+
+## Posições das entradas e dos objetos do mapa (menos o Props), lidas do texto da cena (sem carregar scripts).
+func _protected_spots(scene_path: String) -> Array[Vector2]:
+	var spots: Array[Vector2] = []
+	var watching := false
+	for line in FileAccess.get_file_as_string(scene_path).split("\n"):
+		if line.begins_with("[node "):
+			watching = (line.contains("parent=\"Objects\"") or line.contains("parent=\"Entrances\"")) \
+					and not line.contains("name=\"Props\"")
+		elif watching and line.begins_with("position = Vector2("):
+			var nums := line.trim_prefix("position = Vector2(").trim_suffix(")").split(",")
+			spots.append(Vector2(float(nums[0]), float(nums[1])))
+			watching = false
+	return spots
+
+
+## A casa está perto (raio em casas) de um ponto protegido, da ruína ou de uma área livre?
+func _is_protected(cell: Vector2i, radius: int) -> bool:
+	for spot in _protected:
+		var s := Vector2i(floori(spot.x / 16.0), floori(spot.y / 16.0))
+		if maxi(absi(s.x - cell.x), absi(s.y - cell.y)) <= radius:
+			return true
+	if _layout == "test_map" and RUIN.grow(1).has_point(cell):
+		return true
+	for rect: Rect2i in CLEAR[_layout]:
+		if rect.has_point(cell):
+			return true
+	return false
+
+
+## Quantos cantos da casa são de terra (a estrada antiga corre sob a terra batida).
+func _dirt_corners(x: int, y: int) -> int:
+	var n := 0
+	for c in [_vertices[y][x], _vertices[y][x + 1], _vertices[y + 1][x + 1], _vertices[y + 1][x]]:
+		if c == V.DIRT:
+			n += 1
+	return n
+
+
+## Onde fica a estrada antiga em cada mapa: a trilha do Bosque, o trecho oeste da estrada da Clareira e a praça
+## da vila. Casas sem nenhum canto de terra ficam de fora.
+func _is_old_road(x: int, y: int) -> bool:
+	if _blocked.has(Vector2i(x, y)) or _dirt_corners(x, y) == 0:
+		return false
+	match _layout:
+		"forest_brook":
+			return x >= 3 and x <= 24
+		"test_map":
+			return x >= 3 and x <= 23 and y >= 14 and y <= 20
+		"village":
+			return Vector2(x + 0.5 - 20.5, (y + 0.5 - 12.5) * 1.2).length() <= 3.6
+	return false
+
+
+## Calçamento na camada Detail: pedras inteiras no meio da estrada, gastas nas beiradas, com falhas.
+func _lay_paving(detail: TileMapLayer) -> void:
+	_paving.clear()
+	for y in MAP.y:
+		for x in MAP.x:
+			if not _is_old_road(x, y):
+				continue
+			var full := _dirt_corners(x, y) == 4
+			if _ermo.randf() < (0.2 if full else 0.5):
+				continue
+			var variant: int = [0, 0, 1, 1, 2][_ermo.randi_range(0, 4)] if full else [2, 3, 3][_ermo.randi_range(0, 2)]
+			detail.set_cell(Vector2i(x, y), 0, ENV.PAVING_ORIGIN + Vector2i(variant, 0))
+			_paving[Vector2i(x, y)] = variant
+
+
+## Peças do Ermo: algumas árvores comuns viram jovens (mesmo lugar, colisão menor), árvores ancestrais, ruínas e
+## mudas nas rachaduras do calçamento.
+## `road_side`: onde as árvores ancestrais podem ficar (à beira da estrada antiga).
+func _add_ermo(root: Node2D, taken: Dictionary, area: Rect2i, road_side: Rect2i, ancestral: int, walls: int,
+		columns: int) -> void:
+	_swap_young_trees(root)
+	# A copa pode cobrir as vizinhas (floresta densa); só o tronco precisa de espaço livre.
+	_place_ermo(root, taken, road_side, "ancestral_tree", ancestral, 2, 3, 1)
+	_place_ermo(root, taken, area, "wall_base", walls, 3, 4, 1)
+	_place_ermo(root, taken, area, "fallen_column", columns, 3, 4, 1)
+	var worn: Array[Vector2i] = []
+	for cell: Vector2i in _paving:
+		if int(_paving[cell]) >= 2 and not _is_protected(cell, 2):
+			worn.append(cell)
+	worn.sort()
+	for i in mini(3, worn.size()):
+		var cell := worn[_ermo.randi_range(0, worn.size() - 1)]
+		worn.erase(cell)
+		_add_prop(root, "sapling", Vector2(cell * 16) + Vector2(8, 14))
+
+
+## Uma em cada três árvores comuns do miolo (fora da moldura) vira árvore jovem no mesmo ponto.
+func _swap_young_trees(root: Node2D) -> void:
+	var count := 0
+	for child in root.get_children():
+		if not child.name.begins_with("tree_"):
+			continue
+		var pos := (child as Node2D).position
+		if pos.y <= 14.0 or pos.y >= MAP.y * 16 - 1:
+			continue
+		count += 1
+		if count % 3 != 1:
+			continue
+		var index := child.get_index()
+		var young: Node2D = (load(PROP_SCENES["young_tree"]) as PackedScene).instantiate()
+		young.name = "young_" + child.name
+		young.position = pos
+		root.add_child(young)
+		young.owner = root
+		root.move_child(young, index)
+		root.remove_child(child)
+		child.free()
+
+
+## Coloca `count` peças em grama aberta: fora de áreas protegidas (raio `protect` casas), afastadas
+## `spacing` casas de qualquer objeto, com `half_width` casas livres para cada lado.
+func _place_ermo(root: Node2D, taken: Dictionary, area: Rect2i, kind: String, count: int, spacing: int,
+		protect: int, half_width: int) -> void:
+	var placed := 0
+	var attempts := 0
+	while placed < count and attempts < count * 200:
+		attempts += 1
+		var cell := Vector2i(_ermo.randi_range(area.position.x, area.end.x - 1), _ermo.randi_range(area.position.y, area.end.y - 1))
+		var ok := true
+		for dx in range(-half_width, half_width + 1):
+			var c := cell + Vector2i(dx, 0)
+			if c.x < 1 or c.x >= MAP.x - 1 or not _is_open_grass(c) or _paving.has(c) or _is_protected(c, protect):
+				ok = false
+				break
+		if not ok:
+			continue
+		for other: Vector2i in taken:
+			if maxi(absi(other.x - cell.x), absi(other.y - cell.y)) < spacing:
+				ok = false
+				break
+		if not ok:
+			continue
+		for dx in range(-half_width, half_width + 1):
+			taken[cell + Vector2i(dx, 0)] = true
+		_add_prop(root, kind, Vector2(cell * 16) + Vector2(8, 14))
+		placed += 1
