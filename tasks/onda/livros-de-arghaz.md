@@ -16,8 +16,9 @@ contratos:
 
 ## Onde estamos AGORA
 Passo **4 (code)**. Fases 1 e 2 entregues (`b04a2fa`, `7c18c1a`); 312 testes verdes, nenhum id alterado.
-🔴 **Teto de 2 fases atingido: aguardando a verificação manual do responsável** (roteiro abaixo).
-Não posso começar a Fase 3 antes disso.
+Fases 1 e 2 **validadas** pelo responsável em 2026-11-20 ("aprovado"). Decisão no caminho: Garra-Rubra **fica**,
+porque vem do compêndio (o responsável pediu para trocar e voltou atrás ao saber da fonte).
+Agora: **Fase 3** (peças do Ermo no gerador, sem tocar mapa).
 
 ## Você valida (Fases 1 e 2)
 1. **Abertura.** Onde: jogo → Novo jogo. Ação: leia o texto da criação de personagem. Tem que: dizer "Era do
@@ -37,8 +38,8 @@ Não posso começar a Fase 3 antes disso.
 ## As fases
 | # | Fase | Estado |
 |---|---|---|
-| 1 | Texto do jogo (crônicas, abertura, cenas, epílogo, diálogos, "Volte até") | ✅ código e testes; 🔴 aguardando verificação manual |
-| 2 | Documentos do cânone (`HISTORIA.md` reescrito, perguntas ao mestre) | ✅ escrito; 🔴 aguardando sua leitura |
+| 1 | Texto do jogo (crônicas, abertura, cenas, epílogo, diálogos, "Volte até") | ✅ `b04a2fa` · validado pelo responsável em 2026-11-20 ("aprovado") |
+| 2 | Documentos do cânone (`HISTORIA.md` reescrito, perguntas ao mestre) | ✅ `7c18c1a` · validado pelo responsável em 2026-11-20 ("aprovado") |
 | 3 | Peças do Ermo no gerador (sem tocar mapa) | ⬜ |
 | 4 | Posição salva segura ao carregar (CM-LA-01) | ⬜ |
 | 5 | Ermo nos mapas (Bosque, Clareira; vila só calçamento) | ⬜ |
