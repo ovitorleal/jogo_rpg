@@ -154,9 +154,10 @@ const TYPES := {
 			## "smite" = dano extra conjurado logo após acertar (Golpe Divino), não pelo menu de magias.
 			## "condition_save" = teste de resistência sem dano; a falha aplica o efeito (ex.: Comando);
 			## revive = volta com 1 PV; cleanse = remove condição; teleport = move o conjurador;
-			## power_word = efeito abaixo de hp_threshold; full_heal = recupera todos os PV.
+			## power_word = efeito abaixo de hp_threshold; full_heal = recupera todos os PV;
+			## stabilize = deixa estável um caído vivo (Poupar os Moribundos).
 			"resolution": {"type": "string", "enum": ["spell_attack", "save", "auto", "heal", "buff", "smite", "condition_save",
-					"revive", "cleanse", "teleport", "power_word", "full_heal"]},
+					"revive", "cleanse", "teleport", "power_word", "full_heal", "stabilize"]},
 			"save_ability": {"type": "string", "enum": ["", "str", "dex", "con", "int", "wis", "cha"], "required": false, "default": ""},
 			"half_on_save": {"type": "bool", "required": false, "default": false},
 			"damage": {"type": "string", "dice": true, "required": false, "default": ""},
@@ -237,6 +238,8 @@ const TYPES := {
 			"fly_speed": {"type": "int", "min": 0, "max": 120, "required": false, "default": 0},
 			## Ataques por ação de Ataque (Ataques Múltiplos do bloco); usado pela Forma Selvagem.
 			"multiattack": {"type": "int", "min": 1, "max": 4, "required": false, "default": 1},
+			## Inimigo inteligente: às vezes ataca um caído ao lado em vez de quem está de pé.
+			"finishes_downed": {"type": "bool", "required": false, "default": false},
 			"ability_scores": {"type": "array", "of": "int", "min": 1, "max": 30, "min_length": 6, "max_length": 6,
 					"allow_duplicates": true},
 			"challenge_rating": {"type": "string", "enum": ["0", "1/8", "1/4", "1/2", "1", "2", "3", "4", "5"]},

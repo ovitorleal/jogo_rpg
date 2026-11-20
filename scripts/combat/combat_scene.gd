@@ -778,7 +778,9 @@ func _refresh_attack_options(actor: Combatant) -> void:
 			"condition_save":
 				detail = "CD %d · %s" % [actor.spell_dc, CombatManager.CONDITION_NAMES.get(str(entry["effect"]), "Caído")]
 			"revive":
-				detail = "revive com 1 PV"
+				detail = "morto há até 1 minuto volta com 1 PV"
+			"stabilize":
+				detail = "caído fica estável"
 			"cleanse":
 				detail = "remove condição"
 			"full_heal":

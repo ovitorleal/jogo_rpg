@@ -166,7 +166,10 @@ func test_aid_mass_cure_revivify_and_death_ward() -> void:
 			"5d8 + Sabedoria + Discípulo da Vida (2 + 5) + Curandeiro Abençoado (curou o aliado: 2 + 5)")
 	manager.action_available = true
 	manager.slot_used_this_turn = false
+	# Revivificar só serve em quem morreu há até 1 minuto (SRD 5.2.1).
 	ally.hp = 0
+	ally.dead = true
+	ally.died_round = manager.round_number
 	var revive := _cast(manager, hero, "spell.revivify", ally)
 	assert_true(revive["ok"] and ally.hp == 1, "Revivificar: volta com 1 PV (%s)" % revive["error"])
 	manager.action_available = true

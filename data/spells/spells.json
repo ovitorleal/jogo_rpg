@@ -649,6 +649,21 @@
 			"color": "#9ad8ff"
 		},
 		{
+			"id": "spell.spare_the_dying",
+			"name": "Poupar os Moribundos",
+			"description": "Escolha uma criatura caída a até 4,5 m, que não esteja morta: ela fica estável.",
+			"source": "SRD 5.2.1",
+			"level": 0,
+			"school": "necromancy",
+			"classes": ["class.cleric", "class.druid"],
+			"casting_time": "action",
+			"range_feet": 15,
+			"target": "ally",
+			"resolution": "stabilize",
+			"vfx": "heal",
+			"color": "#e8f0d0"
+		},
+		{
 			"id": "spell.revivify",
 			"name": "Revivificar",
 			"description": "Toque: uma criatura caída volta com 1 PV.",

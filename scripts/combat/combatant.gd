@@ -70,10 +70,24 @@ var xp: int = 0
 var initiative: int = 0
 ## Personagem de origem (null para monstros); recebe PV e XP ao fim do combate.
 var character: CharacterData = null
+## Testes contra a morte (SRD 5.2.1, pp. 17-18), só para personagens; monstros morrem a 0 PV.
+var death_successes: int = 0
+var death_failures: int = 0
+var stable: bool = false
+var dead: bool = false
+## Rodada em que morreu (Revivificar vale até 10 rodadas depois).
+var died_round: int = -1
+## Monstro inteligente que às vezes ataca um caído ao lado (campo "finishes_downed" do monstro).
+var finishes_downed: bool = false
 
 
 func is_up() -> bool:
 	return hp > 0
+
+
+## Personagem a 0 PV e vivo: Inconsciente, rola testes contra a morte enquanto não estiver estável.
+func is_downed() -> bool:
+	return character != null and hp <= 0 and not dead
 
 
 func is_hostile_to(other: Combatant) -> bool:
@@ -306,6 +320,7 @@ static func from_monster(entry: Dictionary, index: int, total_of_kind: int) -> C
 	unit.speed_feet = maxi(unit.speed_feet, int(entry.get("fly_speed", 0)))
 	if int(entry.get("multiattack", 1)) > 1:
 		unit.state["multiattack"] = int(entry["multiattack"])
+	unit.finishes_downed = bool(entry.get("finishes_downed", false))
 	for i in Ability.ALL.size():
 		unit.modifiers[Ability.ALL[i]] = Ability.modifier(int(entry["ability_scores"][i]))
 		unit.scores[Ability.ALL[i]] = int(entry["ability_scores"][i])

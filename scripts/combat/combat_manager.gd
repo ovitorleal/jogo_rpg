@@ -30,6 +30,13 @@ const NEIGHBORS: Array[Vector2i] = [
 ]
 ## Proteção contra laços infinitos (ex.: dois lados que não conseguem se ferir).
 const MAX_ROUNDS := 100
+## Testes contra a morte (SRD 5.2.1, pp. 17-18).
+const DEATH_SAVE_DC := 10
+const STABILIZE_DC := 10
+## Revivificar: morte "no último minuto" = 10 rodadas.
+const REVIVIFY_ROUNDS := 10
+## Chance (em d100) de um inimigo inteligente atacar um caído ao lado em vez de quem está de pé.
+const FINISH_DOWNED_CHANCE := 50
 const CONDITION_NAMES := {
 	"blinded": "Cego", "charmed": "Enfeitiçado", "deafened": "Surdo", "frightened": "Amedrontado",
 	"grappled": "Agarrado", "incapacitated": "Incapacitado", "invisible": "Invisível", "paralyzed": "Paralisado",
@@ -215,6 +222,8 @@ func _submit(command: Dictionary) -> Dictionary:
 					command.get("cell"), command.get("targets", []))
 		"offhand":
 			return _do_offhand(actor, get_combatant(str(command.get("target", ""))))
+		"stabilize":
+			return _do_stabilize(actor, get_combatant(str(command.get("target", ""))))
 		"dash", "disengage", "dodge":
 			return _do_standard_action(actor, str(command["type"]), bool(command.get("bonus", false)))
 		"feature":
@@ -289,7 +298,7 @@ func attacks_per_action(actor: Combatant) -> int:
 
 
 func _target_error(actor: Combatant, target: Combatant, attack: Dictionary) -> String:
-	if target == null or not target.is_up():
+	if target == null or not (target.is_up() or target.is_downed()):
 		return "Alvo inválido"
 	if not target.is_hostile_to(actor):
 		return "Só é possível atacar inimigos"
@@ -419,11 +428,17 @@ func apply_results_to_party(registry: ContentRegistry = null) -> void:
 	var party := combatants.filter(func(u: Combatant) -> bool: return u.team == Combatant.Team.PARTY)
 	for unit: Combatant in party:
 		if unit.character != null:
-			# Sem testes contra a morte: depois de uma vitória, quem caiu se levanta com 1 PV.
-			unit.character.current_hp = maxi(unit.hp, 1) if outcome == Outcome.VICTORY else unit.hp
+			# Morto continua morto (até a ressurreição). Caído vivo acorda com 1 PV depois de uma vitória (o SRD dá
+			# 1 PV depois de 1d4 horas; o tempo é encurtado, ver RULES_POLICY).
+			unit.character.dead = unit.dead
+			if unit.dead:
+				unit.character.current_hp = 0
+			else:
+				unit.character.current_hp = maxi(unit.hp, 1) if outcome == Outcome.VICTORY else unit.hp
 			# Astúcia Mágica (Bruxo 2): o rito de 1 minuto é feito depois do combate, se houver espaços gastos.
 			if registry != null:
 				ClassFeatures.magical_cunning(unit.character, registry)
+	party = party.filter(func(u: Combatant) -> bool: return not u.dead)
 	if outcome == Outcome.VICTORY and not party.is_empty():
 		@warning_ignore("integer_division")
 		var share := total_xp() / party.size()
@@ -1059,6 +1074,9 @@ func _advance_turn() -> Array[Dictionary]:
 			events.append({"type": "round_start", "round": round_number})
 		var unit := turn_order[_turn_index]
 		_expire_effects("turn_start", unit.id)
+		# Caído e não estável: teste contra a morte no início do turno (com 20 natural, levanta e joga o turno).
+		if unit.is_downed() and not unit.stable:
+			roll_death_save(unit, events)
 		if unit.is_up():
 			action_available = true
 			bonus_action_available = true
@@ -1209,9 +1227,19 @@ func spell_target_error(actor: Combatant, spell_id: String, target: Combatant) -
 		_:
 			if target.is_hostile_to(actor):
 				return "Escolha um aliado"
-			if entry["resolution"] == "revive" and target.is_up():
-				return "Só para quem está caído"
-			if not target.is_up() and not entry["resolution"] in ["heal", "full_heal", "revive"]:
+			if entry["resolution"] == "revive":
+				if not target.dead:
+					return "Só para quem morreu"
+				if round_number - target.died_round > REVIVIFY_ROUNDS:
+					return "Morreu há mais de 1 minuto"
+			elif target.dead:
+				return "Aliado morto"
+			if entry["resolution"] == "stabilize":
+				if not target.is_downed():
+					return "Só para quem está caído"
+				if target.stable:
+					return "Já está estável"
+			if not target.is_up() and not entry["resolution"] in ["heal", "full_heal", "revive", "stabilize"]:
 				return "Aliado caído"
 	var kinds: Array = entry.get("creature_types", [])
 	if not kinds.is_empty() and not target.creature_type in kinds:
@@ -1520,23 +1548,27 @@ func _resolve_spell_on(actor: Combatant, spell: Dictionary, target: Combatant, s
 			var amount := maxi(0, rolled + int(spell.get("modifier", actor.spell_modifier)))
 			if _cast_with_slot and actor.has_feature("feature.disciple_of_life"):
 				amount += 2 + slot_level
-			var before := target.hp
-			target.hp = mini(target.max_hp, target.hp + amount)
-			event["healed"] = target.hp - before
-			if target != actor and target.hp > before:
+			var healed := heal_unit(target, amount, events)
+			event["healed"] = healed
+			if target != actor and healed > 0:
 				_healed_others = true
 			event["target_hp"] = target.hp
 		"buff":
 			affected = true
 		"revive":
+			target.dead = false
+			target.died_round = -1
 			target.hp = 1
+			_wake(target, events)
 			event["healed"] = 1
 			event["target_hp"] = 1
 			event["effect"] = "volta com 1 PV"
+		"stabilize":
+			_stabilize(target, events, entry["name"])
+			event["effect"] = "estável"
 		"cleanse", "full_heal":
 			if entry["resolution"] == "full_heal":
-				event["healed"] = target.max_hp - target.hp
-				target.hp = target.max_hp
+				event["healed"] = heal_unit(target, target.max_hp, events)
 				event["target_hp"] = target.hp
 			var removed := PackedStringArray()
 			for condition: String in entry["cleanse"]:
@@ -1678,13 +1710,21 @@ func _apply_spell_effect(actor: Combatant, entry: Dictionary, target: Combatant,
 
 ## Dano em um alvo: PV, queda e teste de concentração. "event" (o que causou o dano) entra antes.
 func _apply_damage(target: Combatant, damage: int, events: Array[Dictionary], event: Dictionary) -> void:
+	var was_downed := target.is_downed()
+	var hp_before := target.hp
 	var absorbed := mini(target.temp_hp, damage)
 	if absorbed > 0:
 		target.temp_hp -= absorbed
 		event["temp_absorbed"] = absorbed
-	target.hp = maxi(0, target.hp - (damage - absorbed))
+	var remaining := damage - absorbed
+	target.hp = maxi(0, target.hp - remaining)
 	event["target_hp"] = target.hp
 	events.append(event)
+	if was_downed:
+		# Já estava caído: dano conta falha (crítico, duas) ou mata, se igualar os PV máximos.
+		if remaining > 0:
+			_damage_while_downed(target, remaining, bool(event.get("roll", {}).get("critical", false)), events)
+		return
 	if damage > 0:
 		for effect in target.effects.duplicate():
 			if effect.get("ends_on_damage", false):
@@ -1697,7 +1737,15 @@ func _apply_damage(target: Combatant, damage: int, events: Array[Dictionary], ev
 	if not target.is_up() and CombatFeatures.on_zero_hp(self, target, events):
 		event["target_hp"] = target.hp
 	if not target.is_up():
-		events.append({"type": "down", "actor": target.id, "dead": target.team == Combatant.Team.ENEMY})
+		# Monstro morre a 0 PV. Personagem fica Inconsciente, salvo dano massivo: o que sobra depois de zerar
+		# os PV igual ou maior que os PV máximos mata na hora.
+		var killed := target.character == null or remaining - hp_before >= target.max_hp
+		if target.character != null:
+			if killed:
+				_die(target, events, "dano massivo")
+			else:
+				_fall_unconscious(target, events)
+		events.append({"type": "down", "actor": target.id, "dead": killed})
 		CombatFeatures.on_unit_down(self, target, str(event.get("actor", "")), events)
 		_end_concentration(target, events, "caiu")
 	elif damage > 0 and not target.concentration.is_empty() and not CombatFeatures.keeps_concentration(target):
@@ -1721,6 +1769,135 @@ func _end_concentration(unit: Combatant, events: Array[Dictionary], reason: Stri
 		other.effects = kept
 	events.append({"type": "concentration_end", "actor": unit.id, "spell": unit.concentration["name"], "reason": reason})
 	unit.concentration = {}
+
+
+# --- Testes contra a morte (SRD 5.2.1, pp. 17-18) ---------------------------------------------------
+
+## Personagem chega a 0 PV: Inconsciente (e Caído), contagem zerada.
+func _fall_unconscious(unit: Combatant, events: Array[Dictionary]) -> void:
+	_reset_death_saves(unit)
+	add_condition(unit, "unconscious", unit.id, events)
+	add_condition(unit, "prone", unit.id, events)
+
+
+func _reset_death_saves(unit: Combatant) -> void:
+	unit.death_successes = 0
+	unit.death_failures = 0
+	unit.stable = false
+
+
+func _die(unit: Combatant, events: Array[Dictionary], reason: String) -> void:
+	unit.dead = true
+	unit.hp = 0
+	unit.stable = false
+	unit.died_round = round_number
+	events.append({"type": "death", "actor": unit.id, "reason": reason})
+
+
+func _damage_while_downed(unit: Combatant, amount: int, critical: bool, events: Array[Dictionary]) -> void:
+	if amount >= unit.max_hp:
+		_die(unit, events, "dano massivo")
+		return
+	unit.stable = false
+	_add_death_failures(unit, 2 if critical else 1, events, "dano")
+
+
+func _add_death_failures(unit: Combatant, count: int, events: Array[Dictionary], reason: String) -> void:
+	unit.death_failures += count
+	events.append({"type": "death_fail", "actor": unit.id, "count": count, "reason": reason,
+			"successes": unit.death_successes, "failures": unit.death_failures})
+	if unit.death_failures >= 3:
+		_die(unit, events, "testes contra a morte")
+
+
+## Teste contra a morte no início do turno de quem está caído: d20 sem modificador, CD 10. 1 natural conta duas
+## falhas; 20 natural levanta com 1 PV; três sucessos estabilizam; três falhas matam.
+func roll_death_save(unit: Combatant, events: Array[Dictionary]) -> void:
+	var natural := _roller.roll_die(20)
+	var event := {"type": "death_save", "actor": unit.id, "natural": natural, "dc": DEATH_SAVE_DC}
+	if natural == 20:
+		unit.hp = 1
+		_wake(unit, events)
+		event["result"] = "levanta"
+	elif natural == 1:
+		unit.death_failures += 2
+		event["result"] = "falha dupla"
+	elif natural >= DEATH_SAVE_DC:
+		unit.death_successes += 1
+		event["result"] = "sucesso"
+	else:
+		unit.death_failures += 1
+		event["result"] = "falha"
+	event["successes"] = unit.death_successes
+	event["failures"] = unit.death_failures
+	events.append(event)
+	if unit.death_failures >= 3:
+		_die(unit, events, "testes contra a morte")
+	elif unit.death_successes >= 3:
+		_stabilize(unit, events, "três sucessos")
+
+
+func _stabilize(unit: Combatant, events: Array[Dictionary], reason: String) -> void:
+	_reset_death_saves(unit)
+	unit.stable = true
+	events.append({"type": "stable", "actor": unit.id, "reason": reason})
+
+
+## Recuperou PV: deixa de estar Inconsciente e a contagem zera (continua Caído até se levantar).
+func _wake(unit: Combatant, events: Array[Dictionary]) -> void:
+	_reset_death_saves(unit)
+	remove_condition(unit, "unconscious", events)
+
+
+## Cura respeitando a regra: morto não se cura; caído que recupera PV acorda. Devolve os PV curados.
+func heal_unit(target: Combatant, amount: int, events: Array[Dictionary]) -> int:
+	if target.dead or amount <= 0:
+		return 0
+	var before := target.hp
+	target.hp = mini(target.max_hp, target.hp + amount)
+	if before <= 0 and target.hp > 0:
+		_wake(target, events)
+	return target.hp - before
+
+
+## Estabilizar (a ação Ajudar do SRD): aliado caído ao lado, teste de Sabedoria (Medicina) CD 10.
+func stabilize_error(actor: Combatant, target: Combatant) -> String:
+	if target == null or not target.is_downed() or target.is_hostile_to(actor):
+		return "Escolha um aliado caído"
+	if target.stable:
+		return "Já está estável"
+	if actor.is_incapacitated():
+		return "Incapacitado"
+	if not action_available:
+		return "A ação deste turno já foi usada"
+	if not _adjacent(actor, target):
+		return "Fique ao lado do aliado caído"
+	return ""
+
+
+func _do_stabilize(actor: Combatant, target: Combatant) -> Dictionary:
+	var error := stabilize_error(actor, target)
+	if not error.is_empty():
+		return _fail(error)
+	action_available = false
+	var test: D20Test
+	if actor.character != null and registry != null:
+		test = CharacterSheet.build(actor.character, registry).roll_skill_check(&"medicine", STABILIZE_DC, _roller)
+	else:
+		test = D20Test.roll(_roller, int(actor.modifiers.get(Ability.WISDOM, 0)), STABILIZE_DC)
+	var events: Array[Dictionary] = [{"type": "stabilize", "actor": actor.id, "target": target.id, "natural": test.natural,
+			"total": test.total, "dc": STABILIZE_DC, "success": test.success}]
+	if test.success:
+		_stabilize(target, events, "Medicina")
+	return {"ok": true, "error": "", "events": events}
+
+
+## Caído vivo do lado inimigo encostado em `actor` (para os inimigos que finalizam caídos).
+func _adjacent_downed(actor: Combatant) -> Combatant:
+	for unit in combatants:
+		if unit.is_downed() and unit.is_hostile_to(actor) and _adjacent(actor, unit):
+			return unit
+	return null
 
 
 ## Teste de resistência do alvo (com Bênção, se houver).
@@ -1827,6 +2004,10 @@ func _push(actor: Combatant, target: Combatant, squares: int, events: Array[Dict
 # --- IA -----------------------------------------------------------------------
 
 func _choose_target(actor: Combatant) -> Combatant:
+	if actor.finishes_downed:
+		var downed := _adjacent_downed(actor)
+		if downed != null and _roller.roll_die(100) <= FINISH_DOWNED_CHANCE:
+			return downed
 	var best: Combatant = null
 	for unit in living(Combatant.Team.PARTY if actor.team == Combatant.Team.ENEMY else Combatant.Team.ENEMY):
 		# Enfeitiçado não ataca quem o enfeitiçou.

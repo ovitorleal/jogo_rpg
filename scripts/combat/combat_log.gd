@@ -173,7 +173,7 @@ static func _describe_spell(event: Dictionary, manager: CombatManager, actor: St
 			var both := " (inclui %d de %s)" % [second["damage"], DAMAGE_TYPE_NAMES.get(second["damage_type"], second["damage_type"])] \
 					if not second.is_empty() else ""
 			return text + "; %d de dano %s%s%s. PV de %s: %d." % [event["damage"], damage_name, both, effect, target, event["target_hp"]]
-		"revive", "cleanse", "full_heal":
+		"revive", "cleanse", "full_heal", "stabilize":
 			return "%s: %s%s. PV de %s: %d." % [event["spell"], target, effect, target, event["target_hp"]]
 		"power_word":
 			if int(event["damage"]) > 0:

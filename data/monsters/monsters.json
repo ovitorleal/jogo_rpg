@@ -91,6 +91,7 @@
 		},
 		{
 			"id": "monster.goblin_boss",
+			"finishes_downed": true,
 			"name": "Garra-Rubra",
 			"description": "Chefe goblin de capa vermelha, com camisão de malha e escudo; golpeia duas vezes por turno.",
 			"source": "SRD 5.2.1",
