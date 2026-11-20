@@ -15,6 +15,11 @@ const NEXT_MEMBER_HINT := "[Tab] próximo membro"
 ## Distância (px) entre pontos do rastro do líder e quantos pontos separam cada seguidor.
 const TRAIL_STEP := 4.0
 const TRAIL_GAP := 5
+## Busca de casa livre para a posição de volta: anéis de 16 px, no máximo 8.
+const SAFE_SPAWN_RINGS := 8
+const SAFE_SPAWN_STEP := 16.0
+## Nó da forma de colisão do jogador (o "pé"), usado para saber se uma posição está livre.
+const PLAYER_COLLISION := "Collision"
 
 ## Ação aguardando confirmação (texto do Interactable.action).
 var _pending_action: String = ""
@@ -34,6 +39,7 @@ var _trail: Array[Vector2] = []
 
 @onready var _ground: TileMapLayer = %Terrain.get_node("Ground")
 @onready var _player: Player = %Player
+
 @onready var _hud: ExplorationHud = %Hud
 
 
@@ -41,7 +47,7 @@ func _ready() -> void:
 	var back: Variant = ExplorationManager.take_return_position(scene_file_path)
 	var entrance := ExplorationManager.take_entrance(scene_file_path)
 	if back is Vector2:
-		_player.global_position = back
+		_player.global_position = safe_spawn(back)
 		_player.reset_physics_interpolation()
 	elif not entrance.is_empty() and has_node("Entrances/%s" % entrance):
 		_player.global_position = (get_node("Entrances/%s" % entrance) as Node2D).global_position
@@ -497,7 +503,7 @@ func refresh_objective() -> void:
 		return
 	var text := QuestManager.log.current_objective(Content.registry)
 	if text.is_empty() and QuestManager.log.status("quest.goblin_chief") == QuestLog.Status.NOT_STARTED:
-		text = "Fale com Ione, a chefe da vila, perto do poço de Ribeira"
+		text = "Fale com a chefe da vila, perto do poço de Ribeira"
 	_hud.set_objective(text)
 
 
@@ -579,6 +585,96 @@ func _map_id() -> String:
 		if Content.registry.get_entry("map", id).get("scene") == scene_file_path:
 			return id
 	return ""
+
+
+## Posição de volta (save ou combate) que não prende o jogador (CM-LA-01). Livre e dentro do mapa: igual.
+## Bloqueada: a casa livre mais próxima, em anéis de 16 px (no máximo SAFE_SPAWN_RINGS). Fora do mapa, NaN,
+## infinita ou sem vaga: a primeira entrada do mapa.
+func safe_spawn(position: Vector2) -> Vector2:
+	var bounds := Rect2(get_map_rect())
+	if position.is_finite() and bounds.has_point(position):
+		var solids := _solid_rects()
+		if not _blocked(position, solids):
+			return position
+		for ring in range(1, SAFE_SPAWN_RINGS + 1):
+			var best := Vector2.INF
+			for dy in range(-ring, ring + 1):
+				for dx in range(-ring, ring + 1):
+					if maxi(absi(dx), absi(dy)) != ring:
+						continue
+					var candidate := position + Vector2(dx, dy) * SAFE_SPAWN_STEP
+					if bounds.has_point(candidate) and not _blocked(candidate, solids) and (not best.is_finite()
+							or candidate.distance_squared_to(position) < best.distance_squared_to(position)):
+						best = candidate
+			if best.is_finite():
+				print("[Exploração] posição de volta bloqueada; jogador movido de %s para %s" % [position, best])
+				return best
+	var entrances := get_node_or_null("Entrances")
+	if entrances != null and entrances.get_child_count() > 0:
+		return (entrances.get_child(0) as Node2D).global_position
+	return position if position.is_finite() else Vector2.ZERO
+
+
+## O pé do jogador nesta posição encosta em algo sólido (objeto do cenário ou ladrilho com colisão)?
+func is_spot_blocked(position: Vector2) -> bool:
+	return _blocked(position, _solid_rects())
+
+
+## Retângulo do pé do jogador (a forma de colisão dele) se ele estivesse em `position`.
+func _feet_rect(position: Vector2) -> Rect2:
+	var collision := _player.get_node(PLAYER_COLLISION) as CollisionShape2D
+	var r := collision.shape.get_rect()
+	return Rect2(position + collision.position + r.position, r.size)
+
+
+## Retângulos (globais) dos corpos sólidos que bloqueiam o jogador. Geometria, sem consultar a física: vale
+## no primeiro quadro, antes de o motor de física registrar os corpos.
+func _solid_rects() -> Array[Rect2]:
+	var rects: Array[Rect2] = []
+	for node in find_children("*", "StaticBody2D", true, false):
+		var body := node as StaticBody2D
+		if (body.collision_layer & _player.collision_mask) == 0:
+			continue
+		for child in body.get_children():
+			var shape := child as CollisionShape2D
+			if shape == null or shape.disabled or shape.shape == null:
+				continue
+			var r := shape.shape.get_rect()
+			var xform := shape.global_transform
+			var a := xform * r.position
+			var b := xform * r.end
+			rects.append(Rect2(a, b - a).abs())
+	return rects
+
+
+func _blocked(position: Vector2, solids: Array[Rect2]) -> bool:
+	var feet := _feet_rect(position)
+	for rect in solids:
+		if rect.intersects(feet):
+			return true
+	for node in find_children("*", "TileMapLayer", true, false):
+		var layer := node as TileMapLayer
+		if layer.tile_set == null or layer.tile_set.get_physics_layers_count() == 0 or not layer.collision_enabled:
+			continue
+		var first := layer.local_to_map(layer.to_local(feet.position))
+		var last := layer.local_to_map(layer.to_local(feet.end))
+		for cy in range(first.y, last.y + 1):
+			for cx in range(first.x, last.x + 1):
+				var data := layer.get_cell_tile_data(Vector2i(cx, cy))
+				if data == null:
+					continue
+				var center := layer.to_global(layer.map_to_local(Vector2i(cx, cy)))
+				# Os polígonos de colisão do TileSet deste jogo são quadrados alinhados (o tile inteiro ou quadrantes
+				# 8x8, ver build_overworld.gd): o retângulo envolvente é exato. Tiles girados/espelhados não são usados.
+				for i in data.get_collision_polygons_count(0):
+					var points := data.get_collision_polygon_points(0, i)
+					var poly := Rect2(points[0], Vector2.ZERO)
+					for p in points:
+						poly = poly.expand(p)
+					poly.position += center
+					if poly.intersects(feet):
+						return true
+	return false
 
 
 ## Área do mapa em pixels, a partir dos tiles usados.

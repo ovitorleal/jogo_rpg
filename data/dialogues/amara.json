@@ -21,7 +21,7 @@
 			"nodes": [
 				{
 					"id": "chief_info",
-					"text": "Ione mandou você atrás de Garra-Rubra? Ele acampa no Bosque do Riacho: siga a Estrada do Leste (placa a leste daqui). Ele golpeia duas vezes por turno, então chegue descansado. Se quiser treinar antes, um goblin tomou a ruína a sudoeste.",
+					"text": "A chefe da vila mandou você atrás de Garra-Rubra? Ele acampa no Bosque do Riacho: siga a Estrada do Leste (placa a leste daqui). Ele golpeia duas vezes por turno, então chegue descansado. Se quiser treinar antes, um goblin tomou a ruína a sudoeste.",
 					"choices": [
 						{"text": "Obrigado(a), Amara.", "next": ""},
 						{"text": "Me fale da ruína.", "next": "greeting"}

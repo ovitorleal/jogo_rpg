@@ -3,7 +3,8 @@ extends SceneTree
 ## Uso: godot --headless --path . --script res://tools/art/generate_environment.gd
 ##
 ## Atlas (overworld_tiles.png, 16 colunas):
-##   linha 0: grama 0-3 (variações), 4 = bloqueio invisível, 5 = muro
+##   linha 0: grama 0-3 (variações), 4 = bloqueio invisível, 5 = muro,
+##            6-9 = calçamento antigo do Ermo (camada de enfeite sobre a grama; pedras faltando são transparentes)
 ##   linhas 1-4: transições terra sobre grama (máscara 0-15 em 4x4, colunas 0-3)
 ##              transições areia sobre grama (colunas 4-7)
 ##              transições água sobre areia (colunas 8-15: máscara m em (8 + (m % 4) * ... ) ver WATER_*)
@@ -23,6 +24,15 @@ const OUT_CAMPFIRE := "res://assets/environments/campfire_sheet.png"
 const OUT_HOUSE_RED := "res://assets/environments/house_red.png"
 const OUT_HOUSE_BLUE := "res://assets/environments/house_blue.png"
 const OUT_WELL := "res://assets/environments/well.png"
+# Ermo (Livro I e II): vida crescida sobre estradas e ruínas antigas.
+const OUT_ANCESTRAL_TREE := "res://assets/environments/ancestral_tree.png"
+const OUT_YOUNG_TREE := "res://assets/environments/young_tree.png"
+const OUT_SAPLING := "res://assets/environments/sapling.png"
+const OUT_WALL_BASE := "res://assets/environments/wall_base.png"
+const OUT_FALLEN_COLUMN := "res://assets/environments/fallen_column.png"
+const PAVING_ORIGIN := Vector2i(6, 0)
+## Chance de faltar uma pedra em cada variação do calçamento (gasto → beira da estrada).
+const PAVING_MISSING := [0.04, 0.12, 0.25, 0.45]
 const ICONS_DIR := "res://assets/icons"
 
 ## Posição no atlas: terra/areia em blocos 4x4 a partir de (0,1) e (4,1);
@@ -38,6 +48,11 @@ const SAND := ["#b89a5c", "#d8bc7a", "#ecd496", "#fae8b4"]
 const WATER := ["#1e4a8c", "#2a64b0", "#3c82d0", "#8cc8f2"]
 const FOAM := Color("#e6f6ff")
 const STONE := ["#4a4a5c", "#6e6e84", "#9090a6", "#b8b8cc"]
+## Ermo: pedra antiga (a rampa da pedra, levemente quente), casca e folhagem antigas, musgo.
+const OLD_STONE := ["#4e4a50", "#77707a", "#9c95a0", "#c2bcc4"]
+const OLD_BARK := ["#2e1c14", "#55361f", "#7e5532"]
+const OLD_LEAVES := ["#173c22", "#25632e", "#438c3c"]
+const MOSS := ["#2f6a2a", "#4f9a3e", "#7ccc5a"]
 
 var _seed := 1
 
@@ -47,6 +62,8 @@ func _initialize() -> void:
 	for v in 4:
 		_put(atlas, Vector2i(v, 0), _grass_tile(v))
 	_put(atlas, Vector2i(5, 0), _wall_tile())
+	for v in PAVING_MISSING.size():
+		_put(atlas, PAVING_ORIGIN + Vector2i(v, 0), _paving_tile(v))
 	for mask in 16:
 		var cell := Vector2i(mask % 4, mask / 4)
 		_put(atlas, DIRT_ORIGIN + cell, _transition_tile(mask, "dirt", 0))
@@ -63,6 +80,11 @@ func _initialize() -> void:
 	ok = ok and _save(_house(["#7a2a24", "#b8423a", "#e06a52"]), OUT_HOUSE_RED)
 	ok = ok and _save(_house(["#24406a", "#3a62a0", "#5c8ad0"]), OUT_HOUSE_BLUE)
 	ok = ok and _save(_well(), OUT_WELL)
+	ok = ok and _save(_ancestral_tree(), OUT_ANCESTRAL_TREE)
+	ok = ok and _save(_young_tree(), OUT_YOUNG_TREE)
+	ok = ok and _save(_sapling(), OUT_SAPLING)
+	ok = ok and _save(_wall_base(), OUT_WALL_BASE)
+	ok = ok and _save(_fallen_column(), OUT_FALLEN_COLUMN)
 	for icon_name in ["potion", "rations", "coin", "weapon", "armor", "shield"]:
 		ok = ok and _save(_icon(icon_name), "%s/icon_%s.png" % [ICONS_DIR, icon_name])
 	quit(0 if ok else 1)
@@ -507,4 +529,162 @@ func _sign() -> Image:
 				c.set_px(x, y, wood[0])
 	c.outline()
 	c.shadow(8, 15, 4, 1)
+	return c.image
+
+
+# --- Ermo (Livro I e II): estradas e ruínas antigas sob a floresta -----------------------------------
+
+## Calçamento antigo 16x16 (encaixa sem emenda): pedras gastas 8x4 em fiadas desencontradas, juntas com capim,
+## rachaduras. Pedras que faltam ficam transparentes e deixam a grama do chão aparecer.
+func _paving_tile(variant: int) -> Image:
+	var img := Image.create_empty(T, T, false, Image.FORMAT_RGBA8)
+	var missing: float = PAVING_MISSING[variant]
+	for y in T:
+		@warning_ignore("integer_division")
+		var row := y / 4
+		var off := 4 if row % 2 == 1 else 0
+		for x in T:
+			var sx := (x + off) % T
+			@warning_ignore("integer_division")
+			var block := row * 2 + sx / 8
+			var r := _hash(block, variant, 61)
+			if r < missing:
+				continue
+			var tone := Color(OLD_STONE[1]) if r < 0.6 else (Color(OLD_STONE[2]) if r < 0.9 else Color(OLD_STONE[0]))
+			var lx := sx % 8
+			var ly := y % 4
+			var c := tone
+			if lx == 0 or ly == 0:
+				c = Color(MOSS[1]) if _hash(x, y, 13 + variant) < 0.35 else Color(OLD_STONE[0])
+			elif ly == 1 and _hash(x, y, 3 + variant) < 0.5:
+				c = tone.lightened(0.12)
+			elif _hash(x, y, 9 + variant) < 0.06:
+				c = Color(OLD_STONE[0])
+			img.set_pixel(x, y, c)
+	return img
+
+
+## Árvore ancestral 128x104, pivô (64, 92): tronco largo com sapopemas e musgo, raízes sobre o chão e copa muito
+## acima das árvores novas ("as novas não ocupam o mesmo teto", Livro II, cap. 7).
+func _ancestral_tree() -> Image:
+	var c := PixelCanvas.new(128, 104)
+	var bark := PixelCanvas.ramp(OLD_BARK[0], OLD_BARK[1], OLD_BARK[2])
+	var roots := c.new_mask()
+	for path: Array in [
+			[Vector2(56, 90), Vector2(36, 96), Vector2(14, 100)],
+			[Vector2(72, 90), Vector2(94, 95), Vector2(118, 99)],
+			[Vector2(60, 92), Vector2(52, 101)],
+			[Vector2(68, 92), Vector2(80, 102)]]:
+		for i in path.size() - 1:
+			c.mask_line(roots, path[i], path[i + 1], maxf(4.5 - i * 1.6, 1.4))
+	c.paint_part(roots, bark, 1, 1)
+	var trunk := c.new_mask()
+	c.mask_polygon(trunk, PackedVector2Array([
+		Vector2(54, 40), Vector2(74, 40), Vector2(76, 70), Vector2(84, 84), Vector2(92, 92),
+		Vector2(36, 92), Vector2(44, 84), Vector2(52, 70)]))
+	c.paint_part(trunk, bark, 2, 2)
+	for x in [58, 63, 68, 72]:
+		for y in range(44, 88):
+			if _hash(x, y, 41) < 0.7:
+				c.set_px(x, y, Color(OLD_BARK[0]))
+	var moss := c.new_mask()
+	c.mask_ellipse(moss, 57, 76, 4, 6)
+	c.mask_ellipse(moss, 46, 88, 5, 3)
+	c.paint_part(moss, PixelCanvas.ramp(MOSS[0], MOSS[1], MOSS[2]))
+	var leaves := PixelCanvas.ramp(OLD_LEAVES[0], OLD_LEAVES[1], OLD_LEAVES[2])
+	var canopy := c.new_mask()
+	c.mask_ellipse(canopy, 64, 26, 40, 22)
+	c.mask_ellipse(canopy, 38, 36, 18, 12)
+	c.mask_ellipse(canopy, 90, 36, 18, 12)
+	c.mask_ellipse(canopy, 64, 12, 26, 12)
+	c.paint_part(canopy, leaves, 2, 3)
+	for i in 260:
+		var x := int(_hash(i, 1, 501) * 128)
+		var y := int(_hash(i, 2, 501) * 50)
+		if c.mask_get(canopy, x, y) and c.mask_get(canopy, x + 1, y + 1):
+			var lit := x + y < 86
+			c.set_px(x, y, leaves[2].lightened(0.12) if lit else leaves[0])
+			c.set_px(x + 1, y, leaves[2] if lit else leaves[0].darkened(0.1))
+	c.outline()
+	c.shadow(64, 92.5, 30, 4, 0.3)
+	return c.image
+
+
+## Árvore jovem 20x32, pivô (10, 30): a geração menor, crescida depois.
+func _young_tree() -> Image:
+	var c := PixelCanvas.new(20, 32)
+	var trunk := c.new_mask()
+	c.mask_rect(trunk, 9, 18, 2, 12)
+	c.paint_part(trunk, PixelCanvas.ramp("#3a2214", "#6a3e22", "#9a6232"), 1, 1)
+	var canopy := c.new_mask()
+	c.mask_ellipse(canopy, 10, 12, 8, 8)
+	c.mask_ellipse(canopy, 10, 7, 5, 5)
+	c.paint_part(canopy, PixelCanvas.ramp("#24602c", "#3a8c3c", "#6cc054"), 1, 2)
+	c.outline()
+	c.shadow(10, 30.5, 6, 1.5)
+	return c.image
+
+
+## Muda brotando da rachadura de uma estrada antiga, 12x16, pivô (6, 14) (epílogo do Livro II).
+func _sapling() -> Image:
+	var c := PixelCanvas.new(12, 16)
+	var stem := c.new_mask()
+	c.mask_rect(stem, 6, 7, 1, 7)
+	c.paint_part(stem, PixelCanvas.ramp("#3a2214", "#6a3e22", "#9a6232"), 0, 0)
+	var leaf := c.new_mask()
+	c.mask_ellipse(leaf, 4, 7, 2.5, 1.5)
+	c.mask_ellipse(leaf, 8, 5, 2.5, 1.5)
+	c.mask_ellipse(leaf, 6, 3, 1.5, 2)
+	c.paint_part(leaf, PixelCanvas.ramp("#2f7a34", "#58b046", "#8ad86a"), 1, 1)
+	c.outline()
+	return c.image
+
+
+## Base de muralha antiga 48x28, pivô (24, 26): duas fiadas irregulares, topo quebrado, musgo e hera.
+func _wall_base() -> Image:
+	var c := PixelCanvas.new(48, 28)
+	var wall := c.new_mask()
+	c.mask_polygon(wall, PackedVector2Array([
+		Vector2(2, 26), Vector2(2, 12), Vector2(8, 10), Vector2(12, 6), Vector2(20, 7), Vector2(24, 12),
+		Vector2(32, 11), Vector2(36, 4), Vector2(42, 5), Vector2(46, 14), Vector2(46, 26)]))
+	c.paint_part(wall, PixelCanvas.ramp(OLD_STONE[0], OLD_STONE[1], OLD_STONE[3]), 1, 2)
+	for y in [13, 19]:
+		for x in range(3, 46):
+			if c.mask_get(wall, x, y):
+				c.set_px(x, y, Color(OLD_STONE[0]))
+	for x in [10, 22, 34, 16, 28, 40]:
+		var y0 := 8 if x in [10, 22, 34] else 14
+		for y in range(y0, y0 + 5):
+			if c.mask_get(wall, x, y):
+				c.set_px(x, y, Color(OLD_STONE[0]))
+	var moss := c.new_mask()
+	c.mask_ellipse(moss, 14, 8, 6, 2.5)
+	c.mask_ellipse(moss, 39, 6, 5, 2)
+	c.mask_line(moss, Vector2(30, 12), Vector2(26, 25), 1.5)
+	c.mask_line(moss, Vector2(6, 12), Vector2(8, 24), 1.2)
+	c.paint_part(moss, PixelCanvas.ramp(MOSS[0], MOSS[1], MOSS[2]))
+	c.outline()
+	c.shadow(24, 26.5, 22, 2, 0.28)
+	return c.image
+
+
+## Coluna caída 56x20, pivô (28, 16): tambores de pedra, ponta quebrada, musgo por cima.
+func _fallen_column() -> Image:
+	var c := PixelCanvas.new(56, 20)
+	var col := c.new_mask()
+	c.mask_round_rect(col, 4, 5, 44, 11, 4)
+	c.mask_polygon(col, PackedVector2Array([Vector2(47, 5), Vector2(53, 7), Vector2(50, 10), Vector2(54, 13), Vector2(47, 16)]))
+	c.paint_part(col, PixelCanvas.ramp(OLD_STONE[0], OLD_STONE[2], OLD_STONE[3]), 2, 2)
+	for x in [15, 27, 39]:
+		for y in range(5, 16):
+			if c.mask_get(col, x, y):
+				c.set_px(x, y, Color(OLD_STONE[0]))
+	for x in range(6, 46, 3):
+		c.set_px(x, 8, Color(OLD_STONE[1]))
+	var moss := c.new_mask()
+	c.mask_ellipse(moss, 20, 5, 9, 2)
+	c.mask_ellipse(moss, 36, 6, 5, 1.5)
+	c.paint_part(moss, PixelCanvas.ramp(MOSS[0], MOSS[1], MOSS[2]))
+	c.outline()
+	c.shadow(28, 16.5, 26, 2.5, 0.28)
 	return c.image

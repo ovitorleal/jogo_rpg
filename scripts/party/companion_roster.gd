@@ -6,7 +6,7 @@ extends RefCounted
 ## Só lógica; o PartyManager guarda a instância e o grupo ativo.
 
 const MAX_PARTY := 3
-const INN_NAME := "Estalagem do Ganso Dourado, em Ribeira"
+const INN_NAME := "Estalagem de Ribeira"
 
 ## Ids dos companheiros já recrutados (no grupo ou no banco).
 var recruited: Array[String] = []

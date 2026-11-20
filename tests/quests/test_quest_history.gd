@@ -28,7 +28,7 @@ func test_goblin_killed_before_talking_to_amara_counts() -> void:
 	QuestManager.notify("defeat_encounter", "encounter.ruin_goblin")
 	var started := QuestManager.log.start("quest.ruin_threat", registry)
 	assert_true(str(started["text"]).contains("Objetivo já cumprido"), "Avisa que o goblin já foi derrotado: %s" % started["text"])
-	assert_true(str(started["text"]).contains("Volte a Amara"), "E que é só voltar a Amara")
+	assert_true(str(started["text"]).contains("Volte até Amara"), "E que é só voltar até Amara")
 	assert_true(QuestManager.log.is_ready("quest.ruin_threat", registry), "Missão pronta para entregar")
 	_end()
 
@@ -40,7 +40,7 @@ func test_every_kind_of_objective_is_remembered() -> void:
 	QuestManager.notify("reach_map", "map.forest_brook")
 	QuestManager.log.start("quest.goblin_chief", registry)
 	QuestManager.log.start("quest.brook_message", registry)
-	assert_true(QuestManager.log.is_ready("quest.goblin_chief", registry), "Amara e Garra-Rubra antes de Ione")
+	assert_true(QuestManager.log.is_ready("quest.goblin_chief", registry), "Amara e Garra-Rubra antes da chefe da vila")
 	assert_true(QuestManager.log.is_ready("quest.brook_message", registry), "Bosque visitado antes do recado")
 	_end()
 

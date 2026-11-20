@@ -8,7 +8,9 @@ branch: onda/livros-de-arghaz
 migration: nenhuma (sem banco; o salvamento não muda de esquema)
 research: tasks/research/livros-de-arghaz.md
 mockup: tasks/mockups/livros-de-arghaz/index.html
-aprovado: false
+aprovado: true
+aprovado_por: Vitor Leal
+aprovado_em: 2026-11-20
 llm-routing:
   proxima-fase: passo-3-security
   modelo: claude-haiku-5-5
@@ -177,6 +179,10 @@ Ermo e spec.
 - Ato II, cidades do compêndio, missões novas.
 - Leitura dos livros dentro do jogo.
 - Resolver Doran, Ignis, Lyra e as descrições de espécie (vão para o mestre).
+- Trocar os nomes dos 6 companheiros. **Decisão do responsável (2026-11-07):** os nomes ficam como estão até o
+  mestre mandar a lista, pedida em `Nomes_para_o_Mestre.docx`, que também oferece nomear a chefe da vila, a
+  floresta, a estalagem e o deus do Doran. Quando a resposta chegar, trocar só o nome exibido (ids e saves não
+  mudam). Amara fica porque está no compêndio.
 - Tocar `tests/party/test_companions.gd` e `data/monsters/`.
 - Reescrever `docs/CHANGELOG.md`.
 
@@ -192,6 +198,6 @@ selo, card dentro de card ou copy-poema; o texto cita as fontes.
 - [x] Modelo gerado
 - [x] Decisões D1-D4 do responsável (recomendações aceitas, 2026-11-07)
 - [x] Modelo do Ermo aprovado (Vitor Leal, 2026-11-07); script do modelo em `tasks/mockups/livros-de-arghaz/mock_ermo.gd.txt`
-- [ ] Spec aprovado
+- [x] Spec aprovado (Vitor Leal, 2026-11-20: "eu aprovo os dois")
 
-aprovado: false
+aprovado: true

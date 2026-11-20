@@ -63,7 +63,7 @@ func _ready() -> void:
 ## Resumo: história, herói (classe, nível, XP, ouro), recompensas e missões concluídas.
 static func summary_text() -> String:
 	var lines := PackedStringArray()
-	lines.append("Garra-Rubra foi derrotado e as carroças voltam a cruzar a Floresta Sussurrante em paz. "
+	lines.append("Garra-Rubra foi derrotado e as carroças voltam a cruzar a floresta em paz. "
 			+ "Na praça de Ribeira, a festa vai até o amanhecer.")
 	lines.append("")
 	var leader: CharacterData = PartyManager.get_leader()

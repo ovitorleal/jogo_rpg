@@ -5,8 +5,8 @@ na tela **"Ribeira está salva!"**. O objetivo atual fica sempre no canto superi
 
 ## Roteiro
 
-1. **Vila de Ribeira** (início). A abertura diz para procurar Ione, a chefe da vila, perto do poço.
-   Ione oferece a missão principal "A Garra-Rubra" e entrega 2 Poções de Cura. Na estalagem (placa ao norte da praça)
+1. **Vila de Ribeira** (início). A abertura diz para procurar a chefe da vila, perto do poço.
+   A chefe da vila oferece a missão principal "A Garra-Rubra" e entrega 2 Poções de Cura. Na estalagem (placa ao norte da praça)
    o grupo faz um descanso longo de graça.
 2. **Estrada da Vila** (placa a leste). Viagem de 2 trechos pelos Campos de Ribeira. No primeiro trecho aparece sempre
    a **criança perdida** (encontro não combativo com teste de perícia); depois, o sorteio da região.
@@ -14,7 +14,7 @@ na tela **"Ribeira está salva!"**. O objetivo atual fica sempre no canto superi
    ruína (missão opcional "Ameaça na Ruína", com poções de recompensa).
 4. **Estrada do Leste** até o **Bosque do Riacho**. Garra-Rubra espera no acampamento, ao lado da fogueira.
 5. **Combate** contra Garra-Rubra (chefe goblin do SRD: CA 17, 21 PV, dois ataques por turno).
-6. **Volta** pela Estrada do Leste e pela Estrada da Vila até Ione.
+6. **Volta** pela Estrada do Leste e pela Estrada da Vila até a chefe da vila.
 7. **Recompensa** (300 XP, 50 PO, 2 poções) e **tela de conclusão** com o resumo. O jogo é salvo antes.
    Dela dá para continuar explorando ou voltar ao título.
 
@@ -23,24 +23,24 @@ na tela **"Ribeira está salva!"**. O objetivo atual fica sempre no canto superi
 | Item | Onde está |
 |---|---|
 | Uma vila | Vila de Ribeira (`scenes/world/village.tscn`, layout `village` do `build_overworld.gd`) |
-| Uma região de exploração | Floresta Sussurrante (Clareira e Bosque do Riacho) e Campos de Ribeira |
+| Uma região de exploração | Floresta de Ribeira (Clareira e Bosque do Riacho) e Campos de Ribeira |
 | Uma rota de viagem | Estrada da Vila e Estrada do Leste (`data/routes/routes.json`) |
 | Um encontro não combativo | Criança perdida, garantida no 1º trecho da Estrada da Vila (`scripted_events`) |
 | Um combate | Garra-Rubra (`encounter.goblin_chief`), mais os combates opcionais e sorteados |
 | Uma missão | "A Garra-Rubra" (`data/quests/main_quest.json`, `final: true`) |
-| Um NPC | Ione (`data/dialogues/ione.json`), além de Amara |
+| Um NPC | A chefe da vila (`data/dialogues/ione.json`), além de Amara |
 | Uma recompensa | XP, ouro e poções da missão, ouro e poção do encontro |
 | Um salvamento | Autosave nos pontos seguros e salvamento antes da tela de conclusão |
 | Um objetivo final claro | Objetivo na tela a cada passo e tela de conclusão |
 
 ## Companheiros (0.9.0)
 
-O grupo leva o protagonista e até dois companheiros; os demais recrutados esperam na Estalagem do Ganso Dourado
+O grupo leva o protagonista e até dois companheiros; os demais recrutados esperam na Estalagem de Ribeira
 (livro de hóspedes, ao lado da estalagem). Dados em `data/companions/`, conversas em `data/dialogues/companions.json`.
 
 | Companheiro | Espécie e classe | Onde | Como recrutar |
 |---|---|---|---|
-| Doran Martelo-Fundo | Anão, Clérigo (Acólito) | Vila de Ribeira | Aceitar a missão de Ione |
+| Doran Martelo-Fundo | Anão, Clérigo (Acólito) | Vila de Ribeira | Aceitar a missão da chefe da vila |
 | Bruna Pé-Ligeiro | Pequenina, Ladina (Criminosa) | Vila de Ribeira | Concluir "Ameaça na Ruína" (Amara) |
 | Lyra Vento-Leste | Elfa, Patrulheira (Soldado) | Clareira | Derrotar o lobo da mata ("A Caça de Lyra") |
 | Kael Brasa-Negra | Tiefling, Bruxo (Sábio) | Clareira | Emprestar 15 PO |
@@ -52,8 +52,9 @@ O grupo leva o protagonista e até dois companheiros; os demais recrutados esper
 A aventura é o Ato I da campanha de `docs/HISTORIA.md`:
 - **A Garra Vermelha:** Garra-Rubra a deixa ao ser derrotado. Ao voltar ao acampamento, o grupo a examina, e os
   companheiros presentes comentam.
-- **O sonho:** no primeiro descanso com a Garra, o herói sonha com Vermeth.
-- **Ione:** reconhece o símbolo da Garra e aponta Vessa como próximo destino.
+- **O sonho:** no primeiro descanso com a Garra, o herói ouve em sonho uma voz distante que quer a Garra; o sonho
+  desbloqueia a crônica "Vermeth, a Brasa Coroada".
+- **A chefe da vila:** reconhece o símbolo da Garra e aponta Vessa como próximo destino.
 - **Crônicas:** se desbloqueiam no diário ao longo do caminho.
 - **Fim:** a tela de conclusão termina com o epílogo do Ato I.
 
@@ -61,5 +62,5 @@ A aventura é o Ato I da campanha de `docs/HISTORIA.md`:
 
 - Derrota leva ao título; **Continuar** carrega o último salvamento automático (chegada ao mapa, fim de conversa...).
 - Fugir do combate é permitido; o gatilho só volta a disparar depois que o jogador sai dele.
-- A tela de conclusão aparece uma vez, ao entregar a missão; depois Ione só agradece.
+- A tela de conclusão aparece uma vez, ao entregar a missão; depois a chefe da vila só agradece.
 - Teste de ponta a ponta: `tests/quests/test_vertical_slice.gd`; companheiros em `tests/party/test_companions.gd`.

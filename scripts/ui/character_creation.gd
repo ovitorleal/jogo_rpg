@@ -4,10 +4,10 @@ extends Control
 
 const TITLE_SCENE := "res://scenes/menus/title_screen.tscn"
 const START_SCENE := "res://scenes/world/village.tscn"
-const INTRO_TEXT := "Arghaz, ano 1.214 da Era dos Homens. Mil anos atrás os dragões silenciaram, e o mundo seguiu " \
-		+ "sem eles. Depois de dias de estrada, você chega à Vila de Ribeira, onde os moradores cochicham sobre goblins " \
-		+ "ousados demais e uma garra vermelha que brilha no escuro. Dizem que Ione, a chefe da vila, procura alguém " \
-		+ "corajoso. Ela costuma ficar perto do poço da praça."
+const INTRO_TEXT := "Arghaz, Era do Despertar. As comunidades voltam a deixar suas muralhas e a reabrir estradas " \
+		+ "que o mundo esqueceu. Depois de dias de viagem, você chega à Vila de Ribeira, onde os moradores cochicham " \
+		+ "sobre goblins ousados demais e uma garra vermelha que brilha no escuro. Dizem que a chefe da vila procura " \
+		+ "alguém corajoso. Ela costuma ficar perto do poço da praça."
 const DEFAULT_NAME := "Viajante"
 const LABEL_WIDTH := 92.0
 const LOOK_LABELS := {

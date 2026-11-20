@@ -24,13 +24,13 @@ Leia antes:
 
 | Tipo | Nome | Observação |
 |---|---|---|
-| Mapa | Vila de Ribeira | Ione, estalagem (descanso e organização do grupo), Doran e Bruna |
+| Mapa | Vila de Ribeira | A chefe da vila, estalagem (descanso e organização do grupo), Doran e Bruna |
 | Mapa | Clareira da Encruzilhada | Amara, lago, ruína com goblin, lobo, Lyra e Kael |
 | Mapa | Bosque do Riacho | Acampamento de Garra-Rubra, Tarka e Ignis |
 | Rota | Estrada da Vila | Vila ⇄ Clareira |
 | Rota | Estrada do Leste | Clareira ⇄ Bosque |
 | Região | Campos de Ribeira | Por onde passa a Estrada da Vila |
-| Região | Floresta Sussurrante | Por onde passa a Estrada do Leste |
+| Região | Floresta de Ribeira | Por onde passa a Estrada do Leste |
 
 **Mapas novos** (por exemplo, Vessa, Montes de Ferro ou a ruína por dentro) dão trabalho de arte e layout. Na
 proposta, diga como é o lugar e o que tem nele, e a equipe desenha.
@@ -65,7 +65,7 @@ escolha com teste de perícia e um resultado: XP, item, dano leve ou tempo perdi
 ### Personagens
 
 - **NPCs:**
-  - **Ione**, chefe de Ribeira: dá a missão principal;
+  - **a chefe da vila** (ainda sem nome próprio): dá a missão principal;
   - **Amara**, guarda da Clareira: dá duas missões.
 - **Companheiros recrutáveis:**
 
@@ -82,7 +82,7 @@ escolha com teste de perícia e um resultado: XP, item, dano leve ou tempo perdi
 
 | Missão | Quem dá | Objetivos | Recompensa |
 |---|---|---|---|
-| A Garra-Rubra (final do Ato I) | Ione | falar com Amara; derrotar Garra-Rubra | 300 XP, 50 PO |
+| A Garra-Rubra (final do Ato I) | a chefe da vila | falar com Amara; derrotar Garra-Rubra | 300 XP, 50 PO |
 | Ameaça na Ruína | Amara | derrotar o goblin da ruína | 150 XP, 20 PO |
 | Recado ao Bosque | Amara | chegar ao Bosque do Riacho | 100 XP, 10 PO |
 | A Caça de Lyra | Lyra | derrotar o lobo | 50 XP, e a Lyra entra no grupo |

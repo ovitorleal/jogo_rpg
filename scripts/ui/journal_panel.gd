@@ -47,7 +47,7 @@ static func format(quests: QuestLog, registry: ContentRegistry, lore: Array[Dict
 			var done := quests.is_objective_done(quest_id, objective["id"])
 			lines.append("  %s %s" % ["[lb]x]" if done else "[lb] ]", objective["text"]])
 		if ready:
-			lines.append("  [lb] ] Voltar a %s" % quest["giver"])
+			lines.append("  [lb] ] Voltar até %s" % quest["giver"])
 		lines.append("")
 	var completed := quests.completed_ids()
 	if not completed.is_empty():

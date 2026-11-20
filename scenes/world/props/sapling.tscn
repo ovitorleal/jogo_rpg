@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/environments/sapling.png" id="1_texture"]
+
+[node name="Sapling" type="StaticBody2D"]
+collision_mask = 0
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_texture")
+offset = Vector2(0, -6)

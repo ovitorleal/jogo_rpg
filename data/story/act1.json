@@ -23,18 +23,18 @@
 		{
 			"id": "story.vermeth_dream",
 			"name": "O sonho de fogo",
-			"description": "Na primeira noite com a Garra Vermelha, o herói sonha com Vermeth.",
+			"description": "Na primeira noite com a Garra Vermelha, o herói ouve uma voz distante.",
 			"source": "original",
 			"trigger": "rest",
 			"map_id": "",
 			"condition": "has_item:item.red_claw",
 			"speaker": "Uma voz no sonho",
-			"text": "Você sonha com uma montanha que respira. Sob a rocha, algo imenso e vermelho abre um olho do tamanho de um lago. \"Você trouxe minha garra para casa, pequena coisa. Obrigada.\" A voz não é cruel; é paciente, como quem corrige um desenho mal feito. \"Durma. Logo terminaremos o que meu pai começou.\" Você acorda com a Garra quente na mão, sem lembrar de tê-la pegado.",
+			"text": "Você sonha com fogo atrás de uma porta que não consegue ver. Algo imenso e vermelho, muito longe daqui, abre um olho do tamanho de um lago. \"Então uma das Garras do Arauto acordou, e está nas suas mãos, pequena coisa.\" A voz não é cruel; é paciente, como quem já sabe o fim da história. \"Guarde-a bem. Eu vou buscá-la.\" Você acorda com a Garra quente na mão, sem lembrar de tê-la pegado.",
 			"remarks": [
 				{"companion": "companion.kael", "text": "Você também ouviu? Ela... me chamou pelo nome. Esqueça o que eu disse. Foi só um sonho."},
-				{"companion": "companion.ignis", "text": "Vermeth. O nome veio até mim acordado. Meu avô dizia que a Linhagem Vermelha nunca morreu: só dorme."},
-				{"companion": "companion.doran", "text": "Rezei a noite toda e o Martelo do Fundo não respondeu. Pela primeira vez, ele ficou em silêncio."},
-				{"companion": "companion.lyra", "text": "Os elfos chamam isso de \"chamado da escama\". Quem ouve, ou destrói a Garra, ou se perde."},
+				{"companion": "companion.ignis", "text": "Vermeth. O nome veio até mim acordado. Meu avô dizia que a Linhagem Vermelha ainda tem quem fale por ela. Eu achava que era história de velho."},
+				{"companion": "companion.doran", "text": "Rezei a noite toda e não tive resposta. Pela primeira vez, o silêncio me assustou."},
+				{"companion": "companion.lyra", "text": "Os anciões do meu povo dizem que certas relíquias chamam quem as carrega. Quem ouve, ou se livra delas, ou se perde."},
 				{"companion": "companion.tarka", "text": "Uma dragoa de verdade! E ela fala! Ótimo. Vai ser uma luta digna."},
 				{"companion": "companion.bruna", "text": "Eu dormi como uma pedra. Mas acordei com a mochila mais leve... e a Garra no seu colo. Não fui eu, juro."}
 			]

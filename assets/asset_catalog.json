@@ -113,7 +113,7 @@
 			"license": "project",
 			"prompt_reference": "",
 			"approval_status": "in_review",
-			"notes": "Atlas 16x16: 4 gramas, bloqueio invisível, muro; transições (marching squares) terra/grama, areia/grama e água/areia (água com 3 quadros a 3 fps). Gerado por tools/art/generate_environment.gd."
+			"notes": "Atlas 16x16: 4 gramas, bloqueio invisível, muro; transições (marching squares) terra/grama, areia/grama e água/areia (água com 3 quadros a 3 fps). Linha 0, colunas 6-9: calçamento antigo do Ermo (enfeite com transparência, onda livros-de-arghaz). Gerado por tools/art/generate_environment.gd."
 		},
 		{
 			"asset_id": "environment.tree",
@@ -513,7 +513,101 @@
 			"prompt_reference": "ChatGPT (OpenAI), gerado pelo responsável; original em art_source/arghaz/logo-arghaz.png",
 			"approval_status": "approved",
 			"notes": "Logo de As Crônicas de Arghaz. Termos da OpenAI: direitos sobre o resultado cedidos ao usuário."
+		},
+		{
+			"asset_id": "environment.ancestral_tree",
+			"category": "environments",
+			"file_path": "res://assets/environments/ancestral_tree.png",
+			"dimensions": [
+				128,
+				104
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Árvore ancestral do Ermo: tronco largo com sapopemas e musgo, raízes sobre o chão; pivô na base do tronco (64, 92). Livro II, cap. 7. Gerado por tools/art/generate_environment.gd."
+		},
+		{
+			"asset_id": "environment.young_tree",
+			"category": "environments",
+			"file_path": "res://assets/environments/young_tree.png",
+			"dimensions": [
+				20,
+				32
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Árvore jovem do Ermo, a geração menor; pivô (10, 30). Gerado por tools/art/generate_environment.gd."
+		},
+		{
+			"asset_id": "environment.sapling",
+			"category": "environments",
+			"file_path": "res://assets/environments/sapling.png",
+			"dimensions": [
+				12,
+				16
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Muda brotando da rachadura de uma estrada antiga; pivô (6, 14); sem colisão. Epílogo do Livro II. Gerado por tools/art/generate_environment.gd."
+		},
+		{
+			"asset_id": "environment.wall_base",
+			"category": "environments",
+			"file_path": "res://assets/environments/wall_base.png",
+			"dimensions": [
+				48,
+				28
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Base de muralha antiga com musgo e hera; pivô (24, 26). Gerado por tools/art/generate_environment.gd."
+		},
+		{
+			"asset_id": "environment.fallen_column",
+			"category": "environments",
+			"file_path": "res://assets/environments/fallen_column.png",
+			"dimensions": [
+				56,
+				20
+			],
+			"format": "png",
+			"transparency": true,
+			"animation_frames": 1,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Coluna caída com musgo; pivô (28, 16). Gerado por tools/art/generate_environment.gd."
 		}
-
 	]
 }

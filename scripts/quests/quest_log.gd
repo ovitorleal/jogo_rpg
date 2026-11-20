@@ -51,7 +51,7 @@ func start(quest_id: String, registry: ContentRegistry) -> Dictionary:
 			quests[quest_id]["done"].append(objective["id"])
 			lines.append("Objetivo já cumprido: %s" % objective["text"])
 	if lines.size() > 1 and is_ready(quest_id, registry):
-		lines.append("Volte a %s para concluir \"%s\"." % [quest["giver"], quest["name"]])
+		lines.append("Volte até %s para concluir \"%s\"." % [quest["giver"], quest["name"]])
 	return {"ok": true, "error": "", "text": "\n".join(lines)}
 
 
@@ -68,7 +68,7 @@ func notify(kind: String, target: String, registry: ContentRegistry) -> Array[St
 				quests[quest_id]["done"].append(objective["id"])
 				messages.append("Objetivo cumprido: %s" % objective["text"])
 		if is_ready(quest_id, registry):
-			messages.append("Volte a %s para concluir \"%s\"." % [quest["giver"], quest["name"]])
+			messages.append("Volte até %s para concluir \"%s\"." % [quest["giver"], quest["name"]])
 	return messages
 
 

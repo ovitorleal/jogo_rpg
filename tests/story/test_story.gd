@@ -1,6 +1,6 @@
 extends "res://tests/base_test.gd"
 ## Fase 9: a história no jogo. Garra Vermelha como recompensa do chefe, cenas de história (chegada e
-## descanso) com falas dos companheiros, crônicas desbloqueadas no diário, Ione reconhecendo a Garra e o
+## descanso) com falas dos companheiros, crônicas desbloqueadas no diário, a chefe da vila reconhecendo a Garra e o
 ## epílogo do Ato I.
 
 const FACTORY_TESTS := preload("res://tests/characters/test_character_factory.gd")
@@ -81,7 +81,7 @@ func test_chronicles_unlock_as_the_story_advances() -> void:
 	QuestManager.log.start("quest.goblin_chief", registry)
 	assert_true("lore.arauto" in _lore_ids(), "Com a missão, os kobolds e o Arauto")
 	ExplorationManager.once_events["story.claw_found"] = true
-	assert_true("lore.dragons" in _lore_ids() and "lore.silence" in _lore_ids(), "A Garra revela as linhagens e o Silêncio")
+	assert_true("lore.dragons" in _lore_ids() and "lore.silence" in _lore_ids(), "A Garra revela as Eras e a Rarefação")
 	ExplorationManager.once_events["story.vermeth_dream"] = true
 	assert_true("lore.vermeth" in _lore_ids(), "O sonho revela Vermeth")
 	var journal := JournalPanel.format(QuestManager.log, registry, StoryDirector.unlocked_lore(_conditions(), registry))
@@ -112,7 +112,7 @@ func test_first_rest_with_the_claw_brings_the_dream() -> void:
 	(map.get_node("Objects/Inn") as Interactable).interact()
 	map.handle_interact()
 	assert_eq(hud.get_speaker_name(), "Uma voz no sonho", "Sonho com Vermeth no descanso")
-	assert_true(hud.get_message_text().contains("Você trouxe minha garra"), "Fala de Vermeth")
+	assert_true(hud.get_message_text().contains("Eu vou buscá-la"), "A voz distante quer a Garra")
 	map.handle_interact()
 	(map.get_node("Objects/Inn") as Interactable).interact()
 	map.handle_interact()
@@ -136,9 +136,9 @@ func test_ione_recognizes_the_claw_and_points_to_vessa() -> void:
 	var ione := DialogueRunner.new()
 	ione.begin(registry.get_entry("dialogue", "dialogue.ione"), QuestManager.log, PartyManager.members,
 			PartyManager.inventory, registry)
-	assert_true(str(ione.choices()[0]["text"]).contains("garra vermelha"), "Com a Garra, o herói mostra a Ione")
+	assert_true(str(ione.choices()[0]["text"]).contains("garra vermelha"), "Com a Garra, o herói mostra à chefe da vila")
 	ione.choose(0)
-	assert_eq(ione.node["id"], "symbol", "Ione reconhece o símbolo")
+	assert_eq(ione.node["id"], "symbol", "A chefe da vila reconhece o símbolo")
 	assert_eq(QuestManager.log.status("quest.goblin_chief"), QuestLog.Status.COMPLETED, "Missão concluída")
 	ione.choose(0)
 	assert_true(str(ione.node["text"]).contains("Vessa"), "Gancho para o Ato II")

@@ -20,11 +20,11 @@
 | Onda Zero | Fundação da Metodologia 5 Fases (CI, gitleaks, PRD, proteção do main) | ✅ Concluída (2026-11-07) — `tasks/onda-zero/fundacao.md` |
 | Correção | Respostas do diálogo pelas teclas 1-9 (`fix/dialogo-teclas-numericas`) | ✅ Concluída (2026-11-07) |
 | Correção | Ataque Furtivo opcional, perguntado depois do acerto (`fix/ataque-furtivo`) | ✅ Concluída (2026-11-07) |
-| Onda | `testes-contra-a-morte` — testes contra a morte, estabilizar, morte real e derrota com recarregar | 🔵 **EM OBRA desde 2026-11-07** — branch `onda/testes-contra-a-morte` · passo 1 · folha em `tasks/obras/testes-contra-a-morte.md`. ⛔ Não abrir outra onda que toque o combate ou o salvamento sem ler a folha |
-| Onda | `livros-de-arghaz` — história inicial fiel aos Livros I e II do mestre (e ao compêndio), Ermo no cenário, livros no repositório | 🔵 **EM OBRA desde 2026-11-07** — branch `onda/livros-de-arghaz` · passo 2 · folha em `tasks/obras/livros-de-arghaz.md`. ⛔ Não abrir outra onda que toque história, diálogos, crônicas ou o cenário dos mapas sem ler a folha |
+| Onda | `testes-contra-a-morte` — testes contra a morte, estabilizar, morte real e derrota com recarregar | ⏸ Pausada (2026-11-20, metodologia suspensa). Research aprovado em `tasks/research/testes-contra-a-morte.md`; código ainda não começou |
+| Onda | `livros-de-arghaz` — história inicial fiel aos Livros I e II do mestre (e ao compêndio), Ermo no cenário, livros no repositório | ✅ Concluída (2026-11-20) — texto e Ermo validados pelo responsável; painel em `tasks/onda/livros-de-arghaz.md` |
 
-A partir de 2026-11-07 o trabalho segue a Metodologia 5 Fases (ver `CLAUDE.md`). As próximas etapas viram
-**ondas**, com artefatos em `tasks/`.
+De 2026-11-07 a 2026-11-20 o trabalho seguiu a Metodologia 5 Fases; desde 2026-11-20 ela está suspensa (ver `CLAUDE.md`).
+Os artefatos das ondas daquele período ficam em `tasks/` como registro.
 
 Extras pós-Fase 5: aparência modular das espécies (0.5.1) e arte dos personagens em alta resolução (0.5.2), 2026-10-24 — ver abaixo.
 
