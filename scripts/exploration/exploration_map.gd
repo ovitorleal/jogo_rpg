@@ -78,10 +78,11 @@ func _ready() -> void:
 	var message := ExplorationManager.take_return_message()
 	if not message.is_empty():
 		notes.append(message)
-	notes.append_array(QuestManager.take_pending_messages())
+	notes.append_array(_quest_sound(QuestManager.take_pending_messages()))
 	var map_id := _map_id()
 	if not map_id.is_empty():
-		notes.append_array(QuestManager.notify("reach_map", map_id))
+		AudioManager.play_music(str(Content.registry.get_entry("map", map_id).get("music", "")))
+		notes.append_array(_quest_sound(QuestManager.notify("reach_map", map_id)))
 	notes.append_array(_recall_defeated_encounters())
 	if not play_story("arrive", notes) and not notes.is_empty():
 		_show_player_line("\n".join(notes))
@@ -286,6 +287,7 @@ func cycle_member() -> void:
 func _show_overlay(kind: String) -> void:
 	var leader := viewed_member()
 	_open_kind = kind
+	AudioManager.play_sfx("open")
 	match kind:
 		"sheet":
 			_hud.show_sheet(CharacterSheet.build(leader, Content.registry))
@@ -367,6 +369,7 @@ func announce_level_ups() -> void:
 		if body != null:
 			LevelUpEffect.play_on(body)
 	if not risen.is_empty():
+		AudioManager.play_sfx("level_up")
 		refresh_party_frames()
 
 
@@ -424,7 +427,7 @@ func start_dialogue(dialogue_id: String) -> void:
 	_dialogue.begin(entry, QuestManager.log, PartyManager.members, PartyManager.inventory, Content.registry,
 			PartyManager.roster, null, ExplorationManager.resolved_triggers, ExplorationManager.once_events)
 	# Objetivo "conversar com": cumprido ao começar a conversa (depois de escolher a fala de abertura).
-	_dialogue_notes.append_array(QuestManager.notify("talk", dialogue_id))
+	_dialogue_notes.append_array(_quest_sound(QuestManager.notify("talk", dialogue_id)))
 	_player.input_enabled = false
 	_hud.hide_prompt()
 	_show_dialogue_node()
@@ -478,7 +481,14 @@ func _recall_defeated_encounters() -> Array[String]:
 			continue
 		if ExplorationManager.is_resolved(trigger.trigger_id) \
 				and not QuestManager.log.has_happened("defeat_encounter", trigger.encounter_id):
-			messages.append_array(QuestManager.notify("defeat_encounter", trigger.encounter_id))
+			messages.append_array(_quest_sound(QuestManager.notify("defeat_encounter", trigger.encounter_id)))
+	return messages
+
+
+## Missão atualizada (objetivo cumprido, missão nova ou concluída): toca o aviso e devolve as mensagens.
+func _quest_sound(messages: Array[String]) -> Array[String]:
+	if not messages.is_empty():
+		AudioManager.play_sfx("quest")
 	return messages
 
 

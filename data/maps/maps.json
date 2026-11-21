@@ -7,7 +7,8 @@
 			"description": "Campo aberto onde duas estradas se cruzam, perto de um lago e de uma ruína.",
 			"source": "original",
 			"scene": "res://scenes/world/test_map.tscn",
-			"region_id": "region.whispering_forest"
+			"region_id": "region.whispering_forest",
+			"music": "forest"
 		},
 		{
 			"id": "map.forest_brook",
@@ -15,7 +16,8 @@
 			"description": "Recanto sombreado da floresta, cortado por um riacho, com um acampamento antigo.",
 			"source": "original",
 			"scene": "res://scenes/world/forest_brook.tscn",
-			"region_id": "region.whispering_forest"
+			"region_id": "region.whispering_forest",
+			"music": "forest"
 		},
 		{
 			"id": "map.village",
@@ -23,7 +25,8 @@
 			"description": "Vila de lavradores à beira dos campos, com uma estalagem, um poço na praça e a estrada que leva à floresta.",
 			"source": "original",
 			"scene": "res://scenes/world/village.tscn",
-			"region_id": "region.ribeira_fields"
+			"region_id": "region.ribeira_fields",
+			"music": "village"
 		}
 	]
 }

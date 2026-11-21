@@ -39,6 +39,12 @@ func refresh_appearance() -> void:
 	_play("idle")
 
 
+## Intervalo entre sons de passo ao andar.
+const STEP_INTERVAL := 0.32
+
+var _step_timer := 0.0
+
+
 func _physics_process(_delta: float) -> void:
 	var direction := Vector2.ZERO
 	if input_enabled:
@@ -48,8 +54,13 @@ func _physics_process(_delta: float) -> void:
 	if direction != Vector2.ZERO:
 		facing = SpriteLibrary.direction_of(direction, facing)
 		_play("walk")
+		_step_timer -= _delta
+		if _step_timer <= 0.0:
+			_step_timer = STEP_INTERVAL
+			AudioManager.play_sfx("step", 0.12)
 	else:
 		_play("idle")
+		_step_timer = 0.0
 	_update_target()
 
 

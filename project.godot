@@ -19,6 +19,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
+Settings="*res://scripts/core/settings.gd"
+AudioManager="*res://scripts/core/audio_manager.gd"
 Content="*res://scripts/core/content.gd"
 PartyManager="*res://scripts/party/party_manager.gd"
 ExplorationManager="*res://scripts/exploration/exploration_manager.gd"

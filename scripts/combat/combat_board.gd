@@ -69,7 +69,9 @@ func sync_tokens(snap: bool = true) -> void:
 		if snap:
 			token.position = cell_feet(unit.position)
 		token.z_index = unit.position.y
-		if not unit.is_up() and not token.downed:
+		# Com animações, quem tomba/esconde é a animação de queda (evento "down"); aqui só quando não há animação
+		# (snap), senão o inimigo morto sumia antes de o golpe ser mostrado.
+		if not unit.is_up() and not token.downed and snap:
 			token.downed = true
 			token.visible = unit.team == Combatant.Team.PARTY
 		elif unit.is_up() and token.downed:
@@ -99,6 +101,33 @@ func float_text(text: String, at: Vector2, color: Color, big: bool = false) -> v
 	var tween := label.create_tween()
 	tween.tween_property(label, "position:y", label.position.y - 14.0, 0.7).set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.7).set_delay(0.35)
+	tween.tween_callback(label.queue_free)
+
+
+## Número de dano que salta em arco, com a cor do tipo de dano; maior no crítico.
+func damage_number(amount: int, at: Vector2, damage_type: String, critical: bool = false) -> void:
+	var label := Label.new()
+	label.text = ("%d!" % amount) if critical else str(amount)
+	label.add_theme_font_size_override("font_size", 15 if critical else 11)
+	label.add_theme_color_override("font_color", CombatFx.damage_color(damage_type))
+	label.add_theme_color_override("font_outline_color", Color8(26, 16, 32))
+	label.add_theme_constant_override("outline_size", 5 if critical else 4)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.size = Vector2(60, 20)
+	label.pivot_offset = Vector2(30, 10)
+	label.position = at - Vector2(30, 36)
+	label.z_index = 100
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.scale = Vector2(0.5, 0.5)
+	add_child(label)
+	var drift := randf_range(-10.0, 10.0)
+	var tween := label.create_tween()
+	tween.tween_property(label, "scale", Vector2(1.25, 1.25) if critical else Vector2(1.1, 1.1), 0.08)
+	tween.tween_property(label, "scale", Vector2.ONE, 0.1)
+	tween.parallel().tween_property(label, "position:y", label.position.y - 16.0, 0.28).set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(label, "position:x", label.position.x + drift, 0.55)
+	tween.tween_property(label, "position:y", label.position.y - 8.0, 0.3).set_ease(Tween.EASE_IN)
+	tween.parallel().tween_property(label, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(label.queue_free)
 
 

@@ -1,5 +1,30 @@
 # Changelog
 
+## [Áudio] — 2026-11-21
+
+### Adicionado
+- Som em todo o jogo, gerado por código no estilo 8/16-bit (`tools/audio/generate_audio.gd`, sem arquivo de terceiros):
+  17 efeitos (golpe, crítico, erro, magia, cura, queda, inimigo que se desfaz, teste contra a morte, passos, clique,
+  abrir painel, moedas, subida de nível, poção, missão, vinhetas de vitória e derrota).
+- Uma música por lugar, em laço: título calmo, vila calma, floresta e clareira misteriosas, combate tenso. A troca entre
+  faixas é suave. A música de cada mapa vem do campo `music` em `data/maps/maps.json`.
+- Menu de pausa (Esc): volume da música, volume dos efeitos e silenciar tudo. A tecla M silencia em qualquer tela.
+  As opções ficam gravadas em `user://settings.cfg`.
+- Autoload `AudioManager`, com os barramentos Music e SFX. Todo botão faz clique.
+
+## [Combate mais vivo] — 2026-11-21
+
+### Adicionado
+- Golpe com peso: o alvo pisca, recua para longe de quem bateu e solta faíscas; o número de dano salta em arco, com a
+  cor do tipo de dano (fogo, frio, radiante...) e maior no crítico.
+- A tela treme no crítico, no Ataque Furtivo e quando alguém cai. Inimigo morto se desfaz em partículas; aliado que cai
+  levanta poeira.
+- Opções no menu de pausa (Esc): ligar ou desligar o tremor de tela. As opções ficam em `user://settings.cfg`, fora do
+  salvamento da partida (autoload `Settings`).
+
+### Corrigido
+- O inimigo morto sumia do tabuleiro antes de a animação do golpe começar.
+
 ## [Testes contra a morte] — 2026-11-20
 
 ### Adicionado

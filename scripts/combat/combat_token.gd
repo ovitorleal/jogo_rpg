@@ -72,16 +72,20 @@ func attack_towards(point: Vector2) -> void:
 	play("idle")
 
 
-## Pisca em vermelho e treme ao receber dano; a barra desce para new_hp.
-func hurt(new_hp: int) -> void:
+## Ao receber dano: clarão branco, vermelho e recuo para longe de quem bateu (`from`; sem origem, treme no
+## lugar). A barra desce para new_hp.
+func hurt(new_hp: int, from: Vector2 = Vector2.INF) -> void:
 	shown_hp = new_hp
 	queue_redraw()
 	var origin := position
+	var push := (position - from).normalized() * 4.0 if from.is_finite() and from != position else Vector2(2, 0)
 	var tween := create_tween()
-	tween.tween_property(_sprite, "modulate", Color(1.8, 0.5, 0.5), 0.06)
-	tween.tween_property(self, "position", origin + Vector2(2, 0), 0.04)
-	tween.tween_property(self, "position", origin - Vector2(2, 0), 0.04)
-	tween.tween_property(self, "position", origin, 0.04)
+	tween.tween_property(_sprite, "modulate", Color(2.2, 2.2, 2.2), 0.03)
+	tween.tween_property(_sprite, "modulate", Color(1.8, 0.5, 0.5), 0.05)
+	tween.parallel().tween_property(self, "position", origin + push.round(), 0.05).set_ease(Tween.EASE_OUT)
+	if not from.is_finite():
+		tween.tween_property(self, "position", origin - push, 0.04)
+	tween.tween_property(self, "position", origin, 0.1).set_ease(Tween.EASE_IN_OUT)
 	tween.tween_property(_sprite, "modulate", Color.WHITE, 0.12)
 	await tween.finished
 
@@ -90,6 +94,10 @@ func hurt(new_hp: int) -> void:
 func fall(dead: bool) -> void:
 	downed = true
 	_sprite.stop()
+	if get_parent() != null:
+		# Inimigo morto se desfaz em partículas; quem cai levanta poeira.
+		CombatFx.burst(get_parent(), position + (Vector2(0, -12) if dead else Vector2.ZERO),
+				Color8(220, 205, 190) if dead else CombatFx.DUST_COLOR, "dissolve" if dead else "dust")
 	var tween := create_tween()
 	tween.tween_property(_sprite, "rotation", PI / 2.0 if facing != "left" else -PI / 2.0, 0.25)
 	tween.parallel().tween_property(_sprite, "modulate", Color(0.55, 0.55, 0.6, 0.9), 0.25)

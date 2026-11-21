@@ -82,6 +82,7 @@ func _ready() -> void:
 	if _roller == null:
 		_roller = DiceRoller.new()
 	_result_panel.visible = false
+	AudioManager.play_music("combat", 0.4)
 	_board.cell_clicked.connect(_on_cell_clicked)
 	_attack_option.item_selected.connect(_on_attack_selected)
 	_end_turn_button.pressed.connect(_on_end_turn_pressed)
@@ -453,6 +454,11 @@ func _present(events: Array) -> void:
 	_board.refresh()
 
 
+## Tremor da tela do combate (opção "Tremor de tela" no menu de pausa).
+func _shake(strength: float) -> void:
+	CombatFx.shake(self, strength, Settings.screen_shake)
+
+
 func _animate(event: Dictionary) -> void:
 	match str(event.get("type", "")):
 		"move":
@@ -477,28 +483,48 @@ func _animate(event: Dictionary) -> void:
 				await attacker.attack_towards(target.position)
 			var roll: Dictionary = event["roll"]
 			if roll["hit"]:
-				target.hurt(int(event["target_hp"]))
+				AudioManager.play_sfx("crit" if roll["critical"] else "hit", 0.08)
+				target.hurt(int(event["target_hp"]), attacker.position)
+				CombatFx.burst(_board, target.position + Vector2(0, -12), CombatFx.SPARK_COLOR, "spark")
+				_board.damage_number(int(event["damage"]), target.position, str(event.get("damage_type", "")), roll["critical"])
 				if roll["critical"]:
-					_board.float_text("CRÍTICO! %d" % event["damage"], target.position, Color8(255, 226, 90), true)
-				else:
-					_board.float_text(str(event["damage"]), target.position, Color8(255, 240, 230))
+					_board.float_text("CRÍTICO!", target.position + Vector2(0, -14), Color8(255, 226, 90), true)
+					_shake(3.0)
 				if str(event.get("features", "")).contains("Ataque Furtivo"):
+					_shake(2.0)
 					await get_tree().create_timer(0.15).timeout
-					_board.float_text("Ataque Furtivo!", target.position + Vector2(0, -10), Color8(224, 180, 138))
+					_board.float_text("Ataque Furtivo!", target.position + Vector2(0, -24), Color8(224, 180, 138))
 			else:
+				AudioManager.play_sfx("miss", 0.1)
 				_board.float_text("Errou", target.position, Color8(190, 200, 230))
 			await get_tree().create_timer(0.2).timeout
 		"down":
 			var unit := manager.get_combatant(event["actor"])
+			_shake(2.5 if unit.team == Combatant.Team.PARTY else 1.5)
+			AudioManager.play_sfx("dissolve" if bool(event["dead"]) else "down")
 			await _board.token_for(unit).fall(bool(event["dead"]))
 		"cast":
+			AudioManager.play_sfx("spell", 0.05)
 			await _animate_cast(event)
+		"heal":
+			AudioManager.play_sfx("potion")
+			var drinker := _board.token_for(manager.get_combatant(event["actor"]))
+			if drinker != null and int(event.get("amount", 0)) > 0:
+				drinker.refresh(false)
+				_board.float_text("+%d" % event["amount"], drinker.position, Color8(140, 255, 150))
+			await get_tree().create_timer(0.15).timeout
+		"death_save":
+			AudioManager.play_sfx("death_save")
+			await get_tree().create_timer(0.3).timeout
 		"spell_effect":
 			var target_token := _board.token_for(manager.get_combatant(event["target"]))
 			if int(event["damage"]) > 0:
+				AudioManager.play_sfx("hit", 0.08)
 				target_token.hurt(int(event["target_hp"]))
-				_board.float_text(str(event["damage"]), target_token.position, Color8(255, 240, 230))
+				_board.damage_number(int(event["damage"]), target_token.position, str(event.get("damage_type", "")),
+						bool(event.get("roll", {}).get("critical", false)))
 			elif int(event["healed"]) > 0:
+				AudioManager.play_sfx("heal")
 				target_token.refresh(false)
 				_board.float_text("+%d" % event["healed"], target_token.position, Color8(140, 255, 150))
 			elif event.has("roll") and not event["roll"]["hit"]:
@@ -523,8 +549,9 @@ func _animate(event: Dictionary) -> void:
 				await fx.finished
 			if int(event.get("damage", 0)) > 0 and event.has("target"):
 				feature_token.hurt(int(feature_unit.hp))
-				_board.float_text(str(event["damage"]), feature_token.position, Color8(255, 240, 230))
+				_board.damage_number(int(event["damage"]), feature_token.position, str(event.get("damage_type", "")))
 			elif int(event.get("healed", 0)) > 0:
+				AudioManager.play_sfx("heal")
 				feature_token.refresh(false)
 				_board.float_text("+%d" % event["healed"], feature_token.position, Color8(140, 255, 150))
 			await get_tree().create_timer(0.1).timeout
@@ -577,6 +604,9 @@ func _animate_cast(event: Dictionary) -> void:
 
 func _show_result() -> void:
 	manager.apply_results_to_party(Content.registry)
+	if manager.outcome in [CombatManager.Outcome.VICTORY, CombatManager.Outcome.DEFEAT]:
+		AudioManager.stop_music(0.3)
+		AudioManager.play_sfx("victory" if manager.outcome == CombatManager.Outcome.VICTORY else "defeat")
 	match manager.outcome:
 		CombatManager.Outcome.VICTORY:
 			loot_lines = manager.inventory.grant(int(encounter.get("reward_gold", 0)), encounter.get("reward_items", []),
@@ -584,6 +614,7 @@ func _show_result() -> void:
 			_result_label.text = "Vitória!\n+%d XP" % manager.total_xp()
 			if not loot_lines.is_empty():
 				_result_label.text += "\n" + ", ".join(loot_lines)
+				get_tree().create_timer(0.9).timeout.connect(AudioManager.play_sfx.bind("coin", 0.0))
 			for message in manager.level_up_messages:
 				_result_label.text += "\n" + message
 			_result_button.text = "Continuar"

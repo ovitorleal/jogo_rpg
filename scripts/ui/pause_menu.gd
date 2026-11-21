@@ -10,6 +10,10 @@ signal title_requested
 var resume_button: Button
 var save_button: Button
 var title_button: Button
+var shake_toggle: CheckButton
+var music_slider: HSlider
+var sfx_slider: HSlider
+var mute_toggle: CheckButton
 var _status: Label
 
 
@@ -35,6 +39,7 @@ func _ready() -> void:
 	resume_button = _button(column, "Continuar jogo", resume_requested)
 	save_button = _button(column, "Salvar agora", save_requested)
 	title_button = _button(column, "Voltar ao título", title_requested)
+	_build_options(column)
 	_status = Label.new()
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_status.custom_minimum_size.x = 200
@@ -42,6 +47,56 @@ func _ready() -> void:
 	_status.add_theme_font_size_override("font_size", 8)
 	_status.add_theme_color_override("font_color", Color(0.522, 0.592, 0.722))
 	column.add_child(_status)
+
+
+## Opções do jogador (Settings): gravadas na hora, valem para qualquer partida.
+func _build_options(parent: Control) -> void:
+	var header := Label.new()
+	header.text = "Opções"
+	header.add_theme_font_size_override("font_size", 10)
+	header.add_theme_color_override("font_color", Color(0.878, 0.706, 0.541))
+	parent.add_child(header)
+	music_slider = _slider(parent, "Música", Settings.music_volume, "music_volume")
+	sfx_slider = _slider(parent, "Efeitos", Settings.sfx_volume, "sfx_volume")
+	mute_toggle = CheckButton.new()
+	mute_toggle.text = "Silenciar tudo [M]"
+	mute_toggle.button_pressed = Settings.muted
+	mute_toggle.toggled.connect(func(on: bool) -> void:
+		if on != Settings.muted:
+			Settings.set_value("muted", on))
+	parent.add_child(mute_toggle)
+	# A tecla M silencia de qualquer tela: a caixa acompanha.
+	Settings.changed.connect(_on_setting_changed)
+	shake_toggle = CheckButton.new()
+	shake_toggle.text = "Tremor de tela no combate"
+	shake_toggle.button_pressed = Settings.screen_shake
+	shake_toggle.toggled.connect(func(on: bool) -> void: Settings.set_value("screen_shake", on))
+	parent.add_child(shake_toggle)
+
+
+func _slider(parent: Control, text: String, value: float, key: String) -> HSlider:
+	var row := HBoxContainer.new()
+	var label := Label.new()
+	label.text = text
+	label.custom_minimum_size.x = 56
+	label.add_theme_font_size_override("font_size", 9)
+	row.add_child(label)
+	var slider := HSlider.new()
+	slider.min_value = 0.0
+	slider.max_value = 1.0
+	slider.step = 0.05
+	slider.value = value
+	slider.custom_minimum_size.x = 110
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slider.value_changed.connect(func(v: float) -> void: Settings.set_value(key, v))
+	row.add_child(slider)
+	parent.add_child(row)
+	return slider
+
+
+func _on_setting_changed(key: String) -> void:
+	if key == "muted" and mute_toggle != null:
+		mute_toggle.set_pressed_no_signal(Settings.muted)
 
 
 func open(status: String) -> void:
