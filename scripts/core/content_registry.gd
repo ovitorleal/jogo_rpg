@@ -294,6 +294,8 @@ const TYPES := {
 		"fields": {
 			"scene": {"type": "string"},
 			"region_id": {"type": "string", "ref": "region"},
+			## Música do lugar (faixa do AudioManager).
+			"music": {"type": "string", "enum": ["title", "village", "forest", "combat"]},
 		},
 	},
 	"region": {

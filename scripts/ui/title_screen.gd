@@ -50,6 +50,7 @@ func _ready() -> void:
 	_quit_button.visible = not OS.has_feature("web")
 	_quit_button.pressed.connect(_on_quit_pressed)
 
+	AudioManager.play_music("title")
 	_credits_text.text = credits_text()
 	_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_status_label.custom_minimum_size.x = 380

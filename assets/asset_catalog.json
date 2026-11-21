@@ -608,6 +608,405 @@
 			"prompt_reference": "",
 			"approval_status": "in_review",
 			"notes": "Coluna caída com musgo; pivô (28, 16). Gerado por tools/art/generate_environment.gd."
+		},
+		{
+			"asset_id": "sfx.hit",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/hit.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Golpe que acerta. 0.12 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.crit",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/crit.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Golpe crítico. 0.30 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.miss",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/miss.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Golpe que erra (vento). 0.24 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.spell",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/spell.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Magia lançada. 0.44 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.heal",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/heal.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Cura. 0.58 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.down",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/down.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Alguém cai. 0.36 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.dissolve",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/dissolve.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Inimigo se desfaz. 0.55 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.death_save",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/death_save.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Teste contra a morte (batida de coração). 0.30 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.step",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/step.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Passo na exploração. 0.04 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.click",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/click.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Clique de botão. 0.03 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.open",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/open.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Abrir painel. 0.14 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.coin",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/coin.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Moedas. 0.26 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.level_up",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/level_up.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Subida de nível. 0.87 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.victory",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/victory.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Vinheta de vitória. 1.06 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.defeat",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/defeat.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Vinheta de derrota. 1.74 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.potion",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/potion.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Beber poção. 0.26 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "sfx.quest",
+			"category": "audio",
+			"file_path": "res://assets/audio/sfx/quest.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Missão atualizada. 0.70 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "music.title",
+			"category": "audio",
+			"file_path": "res://assets/audio/music/title.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Música em laço: tela de título, calma e aberta. 25.26 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "music.village",
+			"category": "audio",
+			"file_path": "res://assets/audio/music/village.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Música em laço: vila, calma. 19.20 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "music.forest",
+			"category": "audio",
+			"file_path": "res://assets/audio/music/forest.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Música em laço: floresta e clareira, misteriosa. 26.67 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
+		},
+		{
+			"asset_id": "music.combat",
+			"category": "audio",
+			"file_path": "res://assets/audio/music/combat.wav",
+			"dimensions": [
+				0,
+				0
+			],
+			"format": "wav",
+			"transparency": false,
+			"animation_frames": 0,
+			"animation_fps": 0,
+			"source_type": "original_procedural",
+			"source_url": "",
+			"license": "project",
+			"prompt_reference": "",
+			"approval_status": "in_review",
+			"notes": "Música em laço: combate, tensa. 27.43 s, 22050 Hz, mono, 16 bits. Sintetizado por tools/audio/generate_audio.gd."
 		}
 	]
 }

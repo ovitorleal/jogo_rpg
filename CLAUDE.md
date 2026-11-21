@@ -90,6 +90,9 @@ Zero e depois ondas, cada uma passando por research → plan → security → co
 - Posição de volta (save ou combate) passa por `ExplorationMap.safe_spawn`: nunca nasce dentro de colisão.
 - Opções do jogador (volumes, silenciar, tremor) no autoload `Settings` (`user://settings.cfg`, fora do save); nos testes
   troque `Settings.path` por um arquivo próprio e restaure. Efeitos de combate em `CombatFx` (só apresentação).
+- Som: só via `AudioManager` (`play_sfx(nome)`, `play_music(faixa)`; nomes em `SFX_NAMES`/`MUSIC_TRACKS`). Os WAV são
+  gerados por `tools/audio/generate_audio.gd` (som novo = função `_sfx_<nome>` + entrada no catálogo); música do mapa
+  no campo `music` de `data/maps/`. Músicas precisam de `edit/loop_mode=2` no `.import`.
 - O painel do navegador é compartilhado com o desenvolvedor: avisar antes de testar nele.
 - No navegador, eventos de teclado sintéticos precisam ser despachados no `<canvas>`, não no `window`.
 - Versionar arquivos `.uid` e `.import`; não versionar `.godot/` nem `exports/`.
