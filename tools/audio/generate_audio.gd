@@ -23,7 +23,8 @@ func _initialize() -> void:
 	for track: String in MUSIC:
 		_buf = PackedFloat32Array()
 		_compose(MUSIC[track])
-		ok = _save("%s/%s.wav" % [MUSIC_DIR, track], 0.75) and ok
+		# Música mais baixa que os efeitos: fica de fundo.
+		ok = _save("%s/%s.wav" % [MUSIC_DIR, track], 0.2) and ok
 	quit(0 if ok else 1)
 
 
@@ -173,8 +174,10 @@ func _sfx_step() -> void:
 	_hiss(0.0, 0.045, 0.25, 0.6, 0.002, 0.035, 17)
 
 
+## Clique suave: triângulo grave e curto, sem a aspereza da onda quadrada.
 func _sfx_click() -> void:
-	_tone(0.0, 0.035, 1200.0, 1150.0, "square", 0.35, 0.001, 0.02, 0.4)
+	_tone(0.0, 0.05, 520.0, 440.0, "tri", 0.35, 0.004, 0.04)
+	_tone(0.0, 0.05, 1040.0, 880.0, "sine", 0.06, 0.004, 0.04)
 
 
 func _sfx_open() -> void:

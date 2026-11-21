@@ -105,6 +105,22 @@ func test_bus_volumes_follow_settings_and_mute() -> void:
 	_restore()
 
 
+## As opções gravadas valem já ao abrir o jogo, sem precisar mexer no controle de novo.
+func test_saved_volumes_apply_on_load() -> void:
+	await tree.process_frame
+	_isolate()
+	var config := ConfigFile.new()
+	config.set_value("audio", "music_volume", 0.1)
+	config.set_value("audio", "sfx_volume", 0.2)
+	config.save(TEST_PATH)
+	_settings().load_settings()
+	assert_eq(snappedf(AudioServer.get_bus_volume_db(AudioServer.get_bus_index(&"Music")), 0.1),
+			snappedf(linear_to_db(0.1), 0.1), "Volume da música gravado vale ao carregar")
+	assert_eq(snappedf(AudioServer.get_bus_volume_db(AudioServer.get_bus_index(&"SFX")), 0.1),
+			snappedf(linear_to_db(0.2), 0.1), "Volume dos efeitos gravado vale ao carregar")
+	_restore()
+
+
 func test_m_key_toggles_mute() -> void:
 	await tree.process_frame  # os autoloads (Content, Settings) ficam prontos no 1º quadro
 	_isolate()

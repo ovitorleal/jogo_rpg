@@ -11,6 +11,8 @@
 - Menu de pausa (Esc): volume da música, volume dos efeitos e silenciar tudo. A tecla M silencia em qualquer tela.
   As opções ficam gravadas em `user://settings.cfg`.
 - Autoload `AudioManager`, com os barramentos Music e SFX. Todo botão faz clique.
+- Corrigido: os volumes escolhidos no menu não valiam ao abrir o jogo de novo (voltava o padrão até mexer no controle).
+- Ajuste depois de ouvir: música bem mais baixa (volume padrão 25%, gravada com menos ganho) e clique mais suave e baixo.
 
 ## [Combate mais vivo] — 2026-11-21
 
