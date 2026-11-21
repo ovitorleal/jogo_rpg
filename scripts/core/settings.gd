@@ -5,11 +5,11 @@ extends Node
 signal changed(key: String)
 
 const DEFAULT_PATH := "user://settings.cfg"
-const DEFAULTS := {"music_volume": 0.4, "sfx_volume": 0.8, "muted": false, "screen_shake": true}
+const DEFAULTS := {"music_volume": 0.25, "sfx_volume": 0.8, "muted": false, "screen_shake": true}
 
 ## Caminho do arquivo (os testes trocam por um arquivo próprio).
 var path: String = DEFAULT_PATH
-var music_volume: float = 0.4
+var music_volume: float = 0.25
 var sfx_volume: float = 0.8
 var muted: bool = false
 var screen_shake: bool = true
@@ -24,7 +24,14 @@ func reset_to_defaults() -> void:
 		set(key, DEFAULTS[key])
 
 
+## Lê as opções do disco e avisa quem escuta (changed com chave vazia = todas), para o áudio já abrir com os
+## volumes gravados.
 func load_settings() -> void:
+	_read()
+	changed.emit("")
+
+
+func _read() -> void:
 	reset_to_defaults()
 	var config := ConfigFile.new()
 	if config.load(path) != OK:

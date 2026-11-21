@@ -24,7 +24,7 @@ func _initialize() -> void:
 		_buf = PackedFloat32Array()
 		_compose(MUSIC[track])
 		# Música mais baixa que os efeitos: fica de fundo.
-		ok = _save("%s/%s.wav" % [MUSIC_DIR, track], 0.45) and ok
+		ok = _save("%s/%s.wav" % [MUSIC_DIR, track], 0.2) and ok
 	quit(0 if ok else 1)
 
 
