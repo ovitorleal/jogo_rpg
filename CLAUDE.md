@@ -88,6 +88,8 @@ Zero e depois ondas, cada uma passando por research → plan → security → co
   os objetos mudam de lugar). Calçamento vai na camada `Detail`, sem colisão. Regerar uma cena troca todos os
   `unique_id` (Godot 4.7): restaure do git a que não mudou de verdade (ex.: `village_props.tscn`).
 - Posição de volta (save ou combate) passa por `ExplorationMap.safe_spawn`: nunca nasce dentro de colisão.
+- Opções do jogador (volumes, silenciar, tremor) no autoload `Settings` (`user://settings.cfg`, fora do save); nos testes
+  troque `Settings.path` por um arquivo próprio e restaure. Efeitos de combate em `CombatFx` (só apresentação).
 - O painel do navegador é compartilhado com o desenvolvedor: avisar antes de testar nele.
 - No navegador, eventos de teclado sintéticos precisam ser despachados no `<canvas>`, não no `window`.
 - Versionar arquivos `.uid` e `.import`; não versionar `.godot/` nem `exports/`.

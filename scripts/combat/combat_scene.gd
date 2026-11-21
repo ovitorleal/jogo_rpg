@@ -453,6 +453,11 @@ func _present(events: Array) -> void:
 	_board.refresh()
 
 
+## Tremor da tela do combate (opção "Tremor de tela" no menu de pausa).
+func _shake(strength: float) -> void:
+	CombatFx.shake(self, strength, Settings.screen_shake)
+
+
 func _animate(event: Dictionary) -> void:
 	match str(event.get("type", "")):
 		"move":
@@ -477,19 +482,22 @@ func _animate(event: Dictionary) -> void:
 				await attacker.attack_towards(target.position)
 			var roll: Dictionary = event["roll"]
 			if roll["hit"]:
-				target.hurt(int(event["target_hp"]))
+				target.hurt(int(event["target_hp"]), attacker.position)
+				CombatFx.burst(_board, target.position + Vector2(0, -12), CombatFx.SPARK_COLOR, "spark")
+				_board.damage_number(int(event["damage"]), target.position, str(event.get("damage_type", "")), roll["critical"])
 				if roll["critical"]:
-					_board.float_text("CRÍTICO! %d" % event["damage"], target.position, Color8(255, 226, 90), true)
-				else:
-					_board.float_text(str(event["damage"]), target.position, Color8(255, 240, 230))
+					_board.float_text("CRÍTICO!", target.position + Vector2(0, -14), Color8(255, 226, 90), true)
+					_shake(3.0)
 				if str(event.get("features", "")).contains("Ataque Furtivo"):
+					_shake(2.0)
 					await get_tree().create_timer(0.15).timeout
-					_board.float_text("Ataque Furtivo!", target.position + Vector2(0, -10), Color8(224, 180, 138))
+					_board.float_text("Ataque Furtivo!", target.position + Vector2(0, -24), Color8(224, 180, 138))
 			else:
 				_board.float_text("Errou", target.position, Color8(190, 200, 230))
 			await get_tree().create_timer(0.2).timeout
 		"down":
 			var unit := manager.get_combatant(event["actor"])
+			_shake(2.5 if unit.team == Combatant.Team.PARTY else 1.5)
 			await _board.token_for(unit).fall(bool(event["dead"]))
 		"cast":
 			await _animate_cast(event)
@@ -497,7 +505,8 @@ func _animate(event: Dictionary) -> void:
 			var target_token := _board.token_for(manager.get_combatant(event["target"]))
 			if int(event["damage"]) > 0:
 				target_token.hurt(int(event["target_hp"]))
-				_board.float_text(str(event["damage"]), target_token.position, Color8(255, 240, 230))
+				_board.damage_number(int(event["damage"]), target_token.position, str(event.get("damage_type", "")),
+						bool(event.get("roll", {}).get("critical", false)))
 			elif int(event["healed"]) > 0:
 				target_token.refresh(false)
 				_board.float_text("+%d" % event["healed"], target_token.position, Color8(140, 255, 150))
@@ -523,7 +532,7 @@ func _animate(event: Dictionary) -> void:
 				await fx.finished
 			if int(event.get("damage", 0)) > 0 and event.has("target"):
 				feature_token.hurt(int(feature_unit.hp))
-				_board.float_text(str(event["damage"]), feature_token.position, Color8(255, 240, 230))
+				_board.damage_number(int(event["damage"]), feature_token.position, str(event.get("damage_type", "")))
 			elif int(event.get("healed", 0)) > 0:
 				feature_token.refresh(false)
 				_board.float_text("+%d" % event["healed"], feature_token.position, Color8(140, 255, 150))

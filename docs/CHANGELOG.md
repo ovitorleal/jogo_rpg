@@ -1,5 +1,18 @@
 # Changelog
 
+## [Combate mais vivo] — 2026-11-21
+
+### Adicionado
+- Golpe com peso: o alvo pisca, recua para longe de quem bateu e solta faíscas; o número de dano salta em arco, com a
+  cor do tipo de dano (fogo, frio, radiante...) e maior no crítico.
+- A tela treme no crítico, no Ataque Furtivo e quando alguém cai. Inimigo morto se desfaz em partículas; aliado que cai
+  levanta poeira.
+- Opções no menu de pausa (Esc): ligar ou desligar o tremor de tela. As opções ficam em `user://settings.cfg`, fora do
+  salvamento da partida (autoload `Settings`).
+
+### Corrigido
+- O inimigo morto sumia do tabuleiro antes de a animação do golpe começar.
+
 ## [Testes contra a morte] — 2026-11-20
 
 ### Adicionado

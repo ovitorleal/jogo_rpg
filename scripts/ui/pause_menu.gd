@@ -10,6 +10,7 @@ signal title_requested
 var resume_button: Button
 var save_button: Button
 var title_button: Button
+var shake_toggle: CheckButton
 var _status: Label
 
 
@@ -35,6 +36,7 @@ func _ready() -> void:
 	resume_button = _button(column, "Continuar jogo", resume_requested)
 	save_button = _button(column, "Salvar agora", save_requested)
 	title_button = _button(column, "Voltar ao título", title_requested)
+	_build_options(column)
 	_status = Label.new()
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_status.custom_minimum_size.x = 200
@@ -42,6 +44,20 @@ func _ready() -> void:
 	_status.add_theme_font_size_override("font_size", 8)
 	_status.add_theme_color_override("font_color", Color(0.522, 0.592, 0.722))
 	column.add_child(_status)
+
+
+## Opções do jogador (Settings): gravadas na hora, valem para qualquer partida.
+func _build_options(parent: Control) -> void:
+	var header := Label.new()
+	header.text = "Opções"
+	header.add_theme_font_size_override("font_size", 10)
+	header.add_theme_color_override("font_color", Color(0.878, 0.706, 0.541))
+	parent.add_child(header)
+	shake_toggle = CheckButton.new()
+	shake_toggle.text = "Tremor de tela no combate"
+	shake_toggle.button_pressed = Settings.screen_shake
+	shake_toggle.toggled.connect(func(on: bool) -> void: Settings.set_value("screen_shake", on))
+	parent.add_child(shake_toggle)
 
 
 func open(status: String) -> void:

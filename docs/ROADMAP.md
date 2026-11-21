@@ -20,6 +20,7 @@
 | Onda Zero | Fundação da Metodologia 5 Fases (CI, gitleaks, PRD, proteção do main) | ✅ Concluída (2026-11-07) — `tasks/onda-zero/fundacao.md` |
 | Correção | Respostas do diálogo pelas teclas 1-9 (`fix/dialogo-teclas-numericas`) | ✅ Concluída (2026-11-07) |
 | Correção | Ataque Furtivo opcional, perguntado depois do acerto (`fix/ataque-furtivo`) | ✅ Concluída (2026-11-07) |
+| Extra | Combate mais vivo: impacto, tremor de tela, morte com partículas, números de dano por tipo, opção no menu | ✅ Concluída (2026-11-21) |
 | Extra | Testes contra a morte (SRD 5.2.1): caído rola, estabilizar, Poupar os Moribundos, morte real com ressurreição paga, derrota volta ao último salvamento | ✅ Concluída (2026-11-20) |
 | Onda | `livros-de-arghaz` — história inicial fiel aos Livros I e II do mestre (e ao compêndio), Ermo no cenário, livros no repositório | ✅ Concluída (2026-11-20) — texto e Ermo validados pelo responsável; painel em `tasks/onda/livros-de-arghaz.md` |
 
