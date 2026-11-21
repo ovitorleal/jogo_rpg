@@ -5,11 +5,11 @@ extends Node
 signal changed(key: String)
 
 const DEFAULT_PATH := "user://settings.cfg"
-const DEFAULTS := {"music_volume": 0.7, "sfx_volume": 0.8, "muted": false, "screen_shake": true}
+const DEFAULTS := {"music_volume": 0.4, "sfx_volume": 0.8, "muted": false, "screen_shake": true}
 
 ## Caminho do arquivo (os testes trocam por um arquivo próprio).
 var path: String = DEFAULT_PATH
-var music_volume: float = 0.7
+var music_volume: float = 0.4
 var sfx_volume: float = 0.8
 var muted: bool = false
 var screen_shake: bool = true

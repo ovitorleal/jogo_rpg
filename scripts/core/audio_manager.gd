@@ -12,7 +12,7 @@ const MUSIC_BUS := &"Music"
 const SFX_BUS := &"SFX"
 const SFX_VOICES := 8
 ## Efeitos que soam baixo de propósito (repetem muito).
-const QUIET := {"step": -10.0, "click": -6.0}
+const QUIET := {"step": -10.0, "click": -14.0}
 const FADE := 0.8
 
 var current_track := ""
